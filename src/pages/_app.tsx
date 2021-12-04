@@ -1,15 +1,17 @@
-import "styles/globals.css";
+import 'styles/globals.css'
 
-import { type AppProps } from "next/app";
-import Head from "next/head";
+import { type AppProps } from 'next/app'
+import Head from 'next/head'
 
 function Haku({ Component, pageProps }: AppProps) {
-  return <>
-  <Head>
+  return (
+    <>
+      <Head>
         <title>Haku</title>
       </Head>
-    <Component {...pageProps} />
-  </>;
+      <Component {...pageProps} />
+    </>
+  )
 }
 
-export default Haku;
+export default Haku

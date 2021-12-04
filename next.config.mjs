@@ -3,6 +3,6 @@
  */
 const nextConfig = {
   // TODO(HiDeoo)
-};
+}
 
-export default nextConfig;
+export default nextConfig
