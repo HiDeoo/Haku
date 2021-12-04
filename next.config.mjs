@@ -2,7 +2,10 @@
  * @type {import('next').NextConfig}
  */
 const nextConfig = {
-  // TODO(HiDeoo)
+  devIndicators: {
+    buildActivity: false,
+  },
+  reactStrictMode: true,
 }
 
 export default nextConfig
