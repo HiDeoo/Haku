@@ -9,9 +9,12 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@radix-ui/colors": "0.1.8",
+    "@stitches/react": "1.2.6",
     "next": "12.0.5",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "stitches-reset": "1.0.0"
   },
   "devDependencies": {
     "@types/node": "16.11.11",
