@@ -7,3 +7,8 @@ datasource db {
   url               = env("DB_URL")
   shadowDatabaseUrl = env("SHADOW_DB_URL")
 }
+
+model EmailAllowList {
+  id    Int    @id @default(autoincrement())
+  email String @unique
+}
