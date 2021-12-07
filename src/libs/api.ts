@@ -35,7 +35,7 @@ export function createApiRoute<Get, Post, Put, Delete, Patch>(
         }
       }
 
-      await handler(req, res)
+      return handler(req, res)
     } catch (error) {
       let statusCode = StatusCode.ServerErrorInternal
       let message = 'Something went wrong!'
