@@ -1,6 +1,6 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
 
-export default function withAdmin(handler: (req: NextApiRequest, res: NextApiResponse) => Promise<void>) {
+export function withAdmin(handler: NextApiHandler) {
   return (req: NextApiRequest, res: NextApiResponse) => {
     const apiKey = req.headers['api-key']
 
