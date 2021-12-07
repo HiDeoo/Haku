@@ -9,3 +9,7 @@ export function getAllowedEmails(): Promise<EmailAllowList[]> {
 export function addAllowedEmail(email: EmailAllowList['email']): Promise<EmailAllowList> {
   return prisma.emailAllowList.create({ data: { email } })
 }
+
+export async function removeAllowedEmail(id: EmailAllowList['id']): Promise<void> {
+  await prisma.emailAllowList.delete({ where: { id } })
+}
