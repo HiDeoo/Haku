@@ -1,6 +1,7 @@
 import type { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
 import StatusCode from 'status-code-enum'
-import { z } from 'zod'
+
+import { z } from 'utils/validation'
 
 export function withAdmin(handler: NextApiHandler) {
   return (req: NextApiRequest, res: NextApiResponse) => {
@@ -14,10 +15,15 @@ export function withAdmin(handler: NextApiHandler) {
   }
 }
 
-export function withValidation(handler: NextApiHandler, schema: z.ZodType<unknown>) {
+export function withValidation<Schema extends ApiRequestValidationSchema>(
+  handler: ApiHandlerWithValidation<Schema>,
+  bodySchema?: Schema['body'],
+  querySchema?: Schema['query']
+) {
   return (req: NextApiRequest, res: NextApiResponse) => {
     try {
-      schema.parse(req.body)
+      req.body = bodySchema?.parse(req.body)
+      req.query = querySchema?.parse(req.query) as NextApiRequest['query']
 
       return handler(req, res)
     } catch (error) {
@@ -26,6 +32,15 @@ export function withValidation(handler: NextApiHandler, schema: z.ZodType<unknow
   }
 }
 
-export interface ValidatedApiRequest<T extends z.ZodType<unknown>> extends NextApiRequest {
-  body: z.infer<T>
+type ValidationSchema = z.ZodType<unknown>
+type ApiRequestValidationSchema = { body?: ValidationSchema; query?: ValidationSchema }
+
+export type ValidatedApiRequest<Schema extends ApiRequestValidationSchema> = Omit<NextApiRequest, 'body' | 'query'> & {
+  body: Schema['body'] extends ValidationSchema ? z.infer<Schema['body']> : NextApiRequest['body']
+  query: Schema['query'] extends ValidationSchema ? z.infer<Schema['query']> : NextApiRequest['query']
 }
+
+type ApiHandlerWithValidation<Schema extends ApiRequestValidationSchema, T = unknown> = (
+  req: ValidatedApiRequest<Schema>,
+  res: NextApiResponse<T>
+) => void | Promise<void>

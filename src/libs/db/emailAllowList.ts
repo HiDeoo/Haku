@@ -21,7 +21,7 @@ export async function removeAllowedEmail(id: EmailAllowList['id']): Promise<void
   const existingEmail = await prisma.emailAllowList.findUnique({ where: { id } })
 
   if (!existingEmail) {
-    throw new ApiClientError('This email do not exist.')
+    throw new ApiClientError('This email does not exist.')
   }
 
   await prisma.emailAllowList.delete({ where: { id } })
