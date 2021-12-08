@@ -13,6 +13,8 @@ declare global {
 
       ADMIN_API_KEY: string
 
+      NEXTAUTH_SECRET: string
+
       DB_URL: string
       MIGRATE_DB_URL: string
       SHADOW_DB_URL: string
