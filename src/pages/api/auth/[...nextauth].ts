@@ -6,6 +6,10 @@ import { EmailApiProvider } from 'libs/auth'
 
 const auth = NextAuth({
   adapter: PrismaAdapter(prisma),
+  pages: {
+    signIn: '/auth/login',
+    verifyRequest: '/auth/verify',
+  },
   providers: [
     EmailApiProvider({
       sendVerificationRequest({ identifier: email, url, provider: { from } }) {

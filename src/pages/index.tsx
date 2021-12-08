@@ -17,14 +17,21 @@ const Text = styled('div', {
 const Home: NextPage = () => {
   const { data: session } = useSession()
 
+  function login() {
+    signIn()
+  }
+
+  function logout() {
+    signOut({ callbackUrl: `/auth/login` })
+  }
+
   return (
     <>
       <Text>Hello2</Text>
       <Text testeroni>Hello2</Text>
       <hr />
       <h1>{session ? 'LOGGED IN' : 'ANON'}</h1>
-      <button onClick={() => signIn()}>Sign in</button>
-      <button onClick={() => signOut()}>Sign out</button>
+      {session ? <button onClick={logout}>Sign out</button> : <button onClick={login}>Sign in</button>}
     </>
   )
 }
