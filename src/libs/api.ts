@@ -1,4 +1,5 @@
 import type { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
+import { type Session } from 'next-auth'
 import { StatusCode } from 'status-code-enum'
 
 import { HttpMethod } from 'utils/http'
@@ -53,6 +54,14 @@ export function createApiRoute<Get, Post, Put, Delete, Patch>(
       return res.status(statusCode).json({ error: message })
     }
   }
+}
+
+export function getApiRequestUser(req: NextApiRequest): Session['user'] {
+  if (!req.user) {
+    throw new Error('Unauthenticated API request received for an authenticated endpoint.')
+  }
+
+  return req.user
 }
 
 export class ApiClientError extends Error {

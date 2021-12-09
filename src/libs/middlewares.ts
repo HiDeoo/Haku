@@ -1,4 +1,5 @@
 import type { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
+import { getSession } from 'next-auth/react'
 import StatusCode from 'status-code-enum'
 
 import { z } from 'utils/validation'
@@ -10,6 +11,20 @@ export function withAdmin(handler: NextApiHandler) {
     if (apiKey !== process.env.ADMIN_API_KEY) {
       return res.status(StatusCode.ClientErrorUnauthorized).end()
     }
+
+    return handler(req, res)
+  }
+}
+
+export function withAuth(handler: NextApiHandler) {
+  return async (req: NextApiRequest, res: NextApiResponse) => {
+    const session = await getSession({ req })
+
+    if (!session) {
+      return res.status(StatusCode.ClientErrorUnauthorized).end()
+    }
+
+    req.user = session.user
 
     return handler(req, res)
   }
