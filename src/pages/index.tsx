@@ -1,6 +1,7 @@
 import { type NextPage } from 'next'
-import { useSession, signIn, signOut } from 'next-auth/react'
+import { signOut } from 'next-auth/react'
 
+import useUser from 'hooks/useUser'
 import { styled } from 'styles/stitches'
 
 const Text = styled('div', {
@@ -15,11 +16,7 @@ const Text = styled('div', {
 })
 
 const Home: NextPage = () => {
-  const { data: session } = useSession()
-
-  function login() {
-    signIn()
-  }
+  const user = useUser()
 
   function logout() {
     signOut({ callbackUrl: `/auth/login` })
@@ -30,9 +27,8 @@ const Home: NextPage = () => {
       <Text>Hello2</Text>
       <Text testeroni>Hello2</Text>
       <hr />
-      <h1>{session ? 'LOGGED IN' : 'ANON'}</h1>
-      {session && <div>{JSON.stringify(session.user)}</div>}
-      {session ? <button onClick={logout}>Sign out</button> : <button onClick={login}>Sign in</button>}
+      {user && <div>{JSON.stringify(user)}</div>}
+      <button onClick={logout}>Sign out</button>
     </>
   )
 }
