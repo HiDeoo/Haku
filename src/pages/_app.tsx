@@ -4,11 +4,16 @@ import { SessionProvider } from 'next-auth/react'
 import { reset } from 'stitches-reset'
 
 import { globalCss } from 'styles/stitches'
+import Route from 'components/Route'
+
+const unsecureRoutes = ['/auth/error', '/auth/login', '/auth/verify']
 
 const globalStyles = globalCss(reset)
 
-function Haku({ Component, pageProps: { session, ...pageProps } }: AppProps) {
+function Haku({ Component, pageProps: { session, ...pageProps }, router: { route } }: AppProps) {
   globalStyles()
+
+  const isUnsecureRoute = unsecureRoutes.includes(route)
 
   return (
     <>
@@ -16,7 +21,9 @@ function Haku({ Component, pageProps: { session, ...pageProps } }: AppProps) {
         <title>Haku</title>
       </Head>
       <SessionProvider session={session}>
-        <Component {...pageProps} />
+        <Route secure={!isUnsecureRoute}>
+          <Component {...pageProps} />
+        </Route>
       </SessionProvider>
     </>
   )

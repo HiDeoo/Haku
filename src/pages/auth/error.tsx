@@ -1,6 +1,6 @@
 import { type NextPage } from 'next'
 import { useRouter } from 'next/router'
-import { useSession, signIn } from 'next-auth/react'
+import { signIn } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 
 const errorMessages: Partial<Record<ErrorType, string>> = {
@@ -9,16 +9,9 @@ const errorMessages: Partial<Record<ErrorType, string>> = {
 }
 
 const Error: NextPage = () => {
-  const { isReady, push, query } = useRouter()
-  const { status } = useSession()
+  const { isReady, query } = useRouter()
 
   const [message, setMessage] = useState('')
-
-  useEffect(() => {
-    if (status === 'authenticated') {
-      push('/')
-    }
-  }, [push, status])
 
   useEffect(() => {
     if (isReady) {

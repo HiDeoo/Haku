@@ -1,31 +1,16 @@
 import { type NextPage } from 'next'
-import { useRouter } from 'next/router'
-import { useSession, signIn } from 'next-auth/react'
-import { useEffect } from 'react'
+import { signIn } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
 
 const Login: NextPage = () => {
-  const { push } = useRouter()
-  const { status } = useSession()
-
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FormFields>()
 
-  useEffect(() => {
-    if (status === 'authenticated') {
-      push('/')
-    }
-  }, [push, status])
-
   function onSubmit({ email }: FormFields) {
     signIn('email-api', { email })
-  }
-
-  if (status === 'loading') {
-    return <div>LOADING</div>
   }
 
   return (
