@@ -10,7 +10,7 @@ const Login: NextPage = () => {
   } = useForm<FormFields>()
 
   function onSubmit({ email }: FormFields) {
-    signIn('email-api', { email })
+    signIn('email-api', { email, callbackUrl: '/' })
   }
 
   return (
