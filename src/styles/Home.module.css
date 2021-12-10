@@ -1,0 +1,7 @@
+.test {
+  @apply bg-green-200 text-blue-600;
+
+  &:hover {
+    @apply bg-blue-400;
+  }
+}
