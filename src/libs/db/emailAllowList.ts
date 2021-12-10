@@ -7,8 +7,12 @@ export function getAllowedEmails(): Promise<EmailAllowList[]> {
   return prisma.emailAllowList.findMany()
 }
 
+export function getAllowedEmailByEmail(email: EmailAllowList['email']): Promise<EmailAllowList | null> {
+  return prisma.emailAllowList.findUnique({ where: { email } })
+}
+
 export async function addAllowedEmail(email: EmailAllowList['email']): Promise<EmailAllowList> {
-  const existingEmail = await prisma.emailAllowList.findUnique({ where: { email } })
+  const existingEmail = await getAllowedEmailByEmail(email)
 
   if (existingEmail) {
     throw new ApiClientError('This email already exists.')
