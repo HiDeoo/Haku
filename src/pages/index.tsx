@@ -2,18 +2,7 @@ import { type NextPage } from 'next'
 import { signOut } from 'next-auth/react'
 
 import useUser from 'hooks/useUser'
-import { styled } from 'styles/stitches'
-
-const Text = styled('div', {
-  backgroundColor: '$blue10',
-  variants: {
-    testeroni: {
-      true: {
-        backgroundColor: '$slate1',
-      },
-    },
-  },
-})
+import styles from 'styles/Home.module.css'
 
 const Home: NextPage = () => {
   const user = useUser()
@@ -24,8 +13,10 @@ const Home: NextPage = () => {
 
   return (
     <>
-      <Text>Hello2</Text>
-      <Text testeroni>Hello2</Text>
+      <div className="bg-red-600">Hello2</div>
+      <div className="bg-green-500">Hello2</div>
+      <div className="bg-[#ff00ff]">Hello2</div>
+      <div className={styles.test}>Hello2</div>
       <hr />
       {user && <div>{JSON.stringify(user)}</div>}
       <button onClick={logout}>Sign out</button>
