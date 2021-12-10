@@ -10,6 +10,7 @@ const auth = NextAuth({
   adapter: PrismaAdapter(prisma),
   callbacks: { session: getSession, signIn: canLogin },
   pages: {
+    error: '/auth/error',
     signIn: '/auth/login',
     verifyRequest: '/auth/verify',
   },
