@@ -1,5 +1,11 @@
 import { type EmailConfig } from 'next-auth/providers'
 
+const errorMessages: Partial<Record<ErrorType, string>> = {
+  AccessDenied: 'You do not have permission to login.',
+  EmailSignin: 'The login email could not be sent, please try again.',
+  Verification: 'The login link is no longer valid.',
+}
+
 export function EmailApiProvider(options: EmailApiProviderUserOptions): EmailConfig {
   return {
     id: 'email-api',
@@ -11,6 +17,20 @@ export function EmailApiProvider(options: EmailApiProviderUserOptions): EmailCon
   }
 }
 
-interface EmailApiProviderUserOptions {
+export function getAuthErrorMesssage(queryStringErrorType: QueryStringErrorType): string {
+  const errorType: ErrorType = isErrorType(queryStringErrorType) ? queryStringErrorType : 'Default'
+
+  return errorMessages[errorType] ?? 'Something went wrong'
+}
+
+function isErrorType(error: string | string[] | undefined): error is ErrorType {
+  return typeof error === 'string' && errorTypes.includes(error as ErrorType)
+}
+
+const errorTypes = ['AccessDenied', 'Configuration', 'EmailSignin', 'Default', 'Verification'] as const
+type ErrorType = typeof errorTypes[number]
+type QueryStringErrorType = string | string[] | undefined
+
+export interface EmailApiProviderUserOptions {
   sendVerificationRequest: EmailConfig['sendVerificationRequest']
 }

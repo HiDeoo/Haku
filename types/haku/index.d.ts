@@ -11,6 +11,11 @@ declare global {
       SHADOW_DB_USER: string
       SHADOW_DB_PASSWORD: string
 
+      EMAIL_JS_USER_ID: string
+      EMAIL_JS_ACCESS_TOKEN: string
+      EMAIL_JS_SERVICE_ID: string
+      EMAIL_JS_TEMPLATE_ID_LOGIN: string
+
       ADMIN_API_KEY: string
 
       NEXTAUTH_SECRET: string

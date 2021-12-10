@@ -2,8 +2,9 @@ import NextAuth, { type CallbacksOptions } from 'next-auth'
 import { PrismaAdapter } from '@next-auth/prisma-adapter'
 
 import { prisma } from 'libs/db'
-import { EmailApiProvider } from 'libs/auth'
+import { EmailApiProvider, type EmailApiProviderUserOptions } from 'libs/auth'
 import { getAllowedEmailByEmail } from 'libs/db/emailAllowList'
+import { sendLoginEmail } from 'libs/email'
 
 const auth = NextAuth({
   adapter: PrismaAdapter(prisma),
@@ -12,17 +13,7 @@ const auth = NextAuth({
     signIn: '/auth/login',
     verifyRequest: '/auth/verify',
   },
-  providers: [
-    EmailApiProvider({
-      sendVerificationRequest({ identifier: email, url, provider: { from } }) {
-        // TODO(HiDeoo)
-        console.log('email ', email)
-        console.log('url ', url)
-        console.log('from ', from)
-        return
-      },
-    }),
-  ],
+  providers: [EmailApiProvider({ sendVerificationRequest })],
   secret: process.env.NEXTAUTH_SECRET,
 })
 
@@ -34,12 +25,21 @@ function getSession({ session, user }: Parameters<CallbacksOptions['session']>[0
   return session
 }
 
-async function canLogin({ user }: Parameters<CallbacksOptions['signIn']>[0]) {
-  const allowedEmail = await getAllowedEmailByEmail(user.email)
+async function canLogin({ email, user }: Parameters<CallbacksOptions['signIn']>[0]) {
+  if (email.verificationRequest) {
+    const allowedEmail = await getAllowedEmailByEmail(user.email)
 
-  if (!allowedEmail) {
-    return '/auth/error?error=AccessDenied'
+    if (!allowedEmail) {
+      return '/auth/error?error=AccessDenied'
+    }
   }
 
   return true
+}
+
+function sendVerificationRequest({
+  identifier: email,
+  url,
+}: Parameters<EmailApiProviderUserOptions['sendVerificationRequest']>[0]) {
+  return sendLoginEmail(email, url)
 }
