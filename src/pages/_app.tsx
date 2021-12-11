@@ -7,13 +7,9 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 
 import Route from 'components/Route'
 
-const unsecureRoutes = ['/auth/error', '/auth/login', '/auth/verify']
-
 const queryClient = new QueryClient()
 
-function Haku({ Component, pageProps: { session, ...pageProps }, router: { route } }: AppProps) {
-  const isUnsecureRoute = unsecureRoutes.includes(route)
-
+function Haku({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
     <>
       <Head>
@@ -21,7 +17,7 @@ function Haku({ Component, pageProps: { session, ...pageProps }, router: { route
       </Head>
       <QueryClientProvider client={queryClient}>
         <SessionProvider session={session}>
-          <Route secure={!isUnsecureRoute}>
+          <Route>
             <Component {...pageProps} />
           </Route>
         </SessionProvider>
