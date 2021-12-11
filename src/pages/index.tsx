@@ -1,11 +1,17 @@
 import { type NextPage } from 'next'
 import { signOut } from 'next-auth/react'
+import { useQuery } from 'react-query'
 
 import useUser from 'hooks/useUser'
 import styles from 'styles/Home.module.css'
+import { getTest } from 'libs/api/test'
 
 const Home: NextPage = () => {
   const user = useUser()
+
+  const query = useQuery('todos', getTest)
+
+  console.log('query ', query)
 
   function logout() {
     signOut({ callbackUrl: `/auth/login` })

@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 import { createApiRoute, getApiRequestUser } from 'libs/api'
-import { withAuth } from 'libs/middlewares'
+import { withAuth } from 'libs/api/middlewares'
 
 const route = createApiRoute(
   {
