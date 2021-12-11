@@ -2,7 +2,7 @@ import type { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
 import { type Session } from 'next-auth'
 import { StatusCode } from 'status-code-enum'
 
-import { HttpMethod } from 'utils/http'
+import { HttpMethod } from 'libs/http'
 
 export function createApiRoute<Get, Post, Put, Delete, Patch>(
   route: ApiRoute<Get, Post, Put, Delete, Patch>,

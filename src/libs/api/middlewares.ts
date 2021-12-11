@@ -2,7 +2,7 @@ import type { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from 'next-auth/react'
 import StatusCode from 'status-code-enum'
 
-import { z } from 'utils/validation'
+import { z } from 'libs/validation'
 
 export function withAdmin(handler: NextApiHandler) {
   return (req: NextApiRequest, res: NextApiResponse) => {

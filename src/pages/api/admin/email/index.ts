@@ -4,7 +4,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { ValidatedApiRequest, withAdmin, withValidation } from 'libs/api/middlewares'
 import { addAllowedEmail, getAllowedEmails } from 'libs/db/emailAllowList'
 import { createApiRoute } from 'libs/api'
-import { z, zEmail } from 'utils/validation'
+import { z, zEmail } from 'libs/validation'
 
 const postSchema = z.object({
   email: zEmail,

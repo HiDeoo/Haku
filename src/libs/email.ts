@@ -1,4 +1,4 @@
-import { HttpMethod } from 'utils/http'
+import { HttpMethod } from 'libs/http'
 
 async function sendEmail(templateId: string, templateParams: Record<string, string> = {}) {
   try {
