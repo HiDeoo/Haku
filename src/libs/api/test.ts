@@ -1,3 +1,5 @@
+import { client } from 'libs/api'
+
 export async function getTest() {
-  return Promise.resolve('plop')
+  return client.get('test').json<{ id: string }>()
 }

@@ -11,7 +11,7 @@ const Home: NextPage = () => {
 
   const query = useQuery('todos', getTest)
 
-  console.log('query ', query)
+  console.log('query ', query.data?.id)
 
   function logout() {
     signOut({ callbackUrl: `/auth/login` })

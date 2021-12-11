@@ -12,8 +12,8 @@ const route = createApiRoute(
 
 export default route
 
-async function getHandler(req: NextApiRequest, res: NextApiResponse<string>) {
+async function getHandler(req: NextApiRequest, res: NextApiResponse<Record<string, string>>) {
   const { id } = getApiRequestUser(req)
 
-  return res.status(200).json(id)
+  return res.status(200).json({ id })
 }
