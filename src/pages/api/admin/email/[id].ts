@@ -1,8 +1,8 @@
 import type { NextApiResponse } from 'next'
 
-import { createApiRoute } from 'libs/api'
-import { ValidatedApiRequest, withAdmin, withValidation } from 'libs/middlewares'
-import { z, zStringAsNumber } from 'utils/validation'
+import { createApiRoute } from 'libs/api/routes'
+import { ValidatedApiRequest, withAdmin, withValidation } from 'libs/api/routes/middlewares'
+import { z, zStringAsNumber } from 'libs/validation'
 import { removeAllowedEmail } from 'libs/db/emailAllowList'
 
 const deleteSchema = z.object({

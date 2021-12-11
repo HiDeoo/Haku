@@ -13,11 +13,13 @@
   "dependencies": {
     "@next-auth/prisma-adapter": "0.5.2-next.19",
     "@prisma/client": "3.6.0",
+    "ky": "0.28.7",
     "next": "12.0.7",
     "next-auth": "4.0.2",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-hook-form": "7.21.0",
+    "react-query": "3.34.2",
     "status-code-enum": "1.0.0",
     "zod": "3.11.6"
   },

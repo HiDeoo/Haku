@@ -1,6 +1,6 @@
 import { EmailAllowList } from '@prisma/client'
 
-import { ApiClientError } from 'libs/api'
+import { ApiClientError } from 'libs/api/routes'
 import { prisma } from 'libs/db'
 
 export function getAllowedEmails(): Promise<EmailAllowList[]> {

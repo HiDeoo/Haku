@@ -1,10 +1,10 @@
 import { type EmailAllowList } from '@prisma/client'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import { ValidatedApiRequest, withAdmin, withValidation } from 'libs/middlewares'
+import { ValidatedApiRequest, withAdmin, withValidation } from 'libs/api/routes/middlewares'
 import { addAllowedEmail, getAllowedEmails } from 'libs/db/emailAllowList'
-import { createApiRoute } from 'libs/api'
-import { z, zEmail } from 'utils/validation'
+import { createApiRoute } from 'libs/api/routes'
+import { z, zEmail } from 'libs/validation'
 
 const postSchema = z.object({
   email: zEmail,
