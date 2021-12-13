@@ -1,4 +1,4 @@
-import { EmailAllowList } from '@prisma/client'
+import { type EmailAllowList } from '@prisma/client'
 
 import { ApiClientError } from 'libs/api/routes'
 import { prisma } from 'libs/db'

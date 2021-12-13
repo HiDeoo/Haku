@@ -18,15 +18,18 @@ model User {
   name          String?
   email         String?   @unique
   emailVerified DateTime?
-  sessions      Session[]
+
+  sessions Session[]
+  folders  Folder[]
 }
 
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
-  userId       String
   expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model VerificationToken {
@@ -35,4 +38,22 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Folder {
+  id   Int        @id @default(autoincrement())
+  name String
+  type FolderType
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  parentId Int?
+  parent   Folder?  @relation("FolderToFolder", fields: [parentId], references: [id])
+  children Folder[] @relation("FolderToFolder")
+}
+
+enum FolderType {
+  NOTE
+  TODO
 }
