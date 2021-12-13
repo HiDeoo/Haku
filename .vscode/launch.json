@@ -11,13 +11,13 @@
       "name": "Debug Server",
       "type": "node-terminal",
       "request": "launch",
-      "command": "yarn dev"
+      "command": "pnpm dev"
     },
     {
       "name": "Debug Full Stack",
       "type": "node-terminal",
       "request": "launch",
-      "command": "yarn dev",
+      "command": "pnpm dev",
       "console": "integratedTerminal",
       "serverReadyAction": {
         "pattern": "started server on .+, url: (https?://.+)",
