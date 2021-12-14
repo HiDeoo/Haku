@@ -38,7 +38,7 @@ function isHierarchicalTreeItem<T extends HierarchicalListBaseItem>(item: T | Tr
 }
 
 type HierarchicalListItemId = string | number
-type HierarchicalListBaseItem = { id: HierarchicalListItemId; parentId: HierarchicalListItemId | null }
+export type HierarchicalListBaseItem = { id: HierarchicalListItemId; parentId: HierarchicalListItemId | null }
 
 type TreeItem<T extends HierarchicalListBaseItem> = T & { children: TreeItem<T>[] }
 export type Tree<T extends HierarchicalListBaseItem> = TreeItem<T>[]

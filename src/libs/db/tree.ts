@@ -1,12 +1,15 @@
-import { Folder } from '@prisma/client'
+import { Folder, FolderType } from '@prisma/client'
 
 import { prisma } from 'libs/db'
-import { hierarchicalListToTree, type Tree } from 'libs/tree'
+import { hierarchicalListToTree, type Tree, type HierarchicalListBaseItem } from 'libs/tree'
 
 // TODO(HiDeoo) user id
-// TODO(HiDeoo) type
 export async function getNoteTree(userId: UserId): Promise<NoteTree> {
-  const folders = await prisma.$queryRaw<NoteTreeItem[]>`
+  return getTree(userId, FolderType.NOTE)
+}
+
+async function getTree<T extends HierarchicalListBaseItem>(userId: UserId, folderType: FolderType): Promise<Tree<T>> {
+  const folders = await prisma.$queryRaw<T[]>`
 WITH RECURSIVE root_to_leaf AS (
   SELECT
     "id",
@@ -17,6 +20,7 @@ WITH RECURSIVE root_to_leaf AS (
     "Folder"
   WHERE
     "parentId" IS NULL
+    AND "type" = ${folderType}
 
   UNION
 

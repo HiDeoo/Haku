@@ -54,6 +54,8 @@ async function seedFolderForUser(user?: User) {
 
   const folder3 = await createFolder({ data: { ...baseFolder, name: 'folder3' } })
   await createFolder({ data: { ...baseFolder, name: 'folder3_1', parentId: folder3.id } })
+
+  await createFolder({ data: { ...baseFolder, name: 'folder4', type: FolderType.TODO } })
 }
 
 main()
