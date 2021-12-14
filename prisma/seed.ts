@@ -5,9 +5,10 @@ import { prisma } from '../src/libs/db'
 async function main() {
   await seedEmailAllowList()
 
-  const users = await seedUser()
+  const users = await seedUsers()
 
   await seedFolderForUser(users[0])
+  await seedFolderForUser(users[1])
 }
 
 function seedEmailAllowList(count = 10) {
@@ -18,17 +19,14 @@ function seedEmailAllowList(count = 10) {
   return prisma.emailAllowList.createMany({ data: emails })
 }
 
-async function seedUser(): Promise<User[]> {
+async function seedUsers(): Promise<[User, User]> {
   const user1 = await prisma.user.create({ data: { email: 'user1@example.com', emailVerified: new Date() } })
+  const user2 = await prisma.user.create({ data: { email: 'user2@example.com', emailVerified: new Date() } })
 
-  return [user1]
+  return [user1, user2]
 }
 
-async function seedFolderForUser(user?: User) {
-  if (!user) {
-    throw new Error('Missing user to seed folders.')
-  }
-
+async function seedFolderForUser(user: User) {
   /**
    * folder1
    * |__ folder1_1
