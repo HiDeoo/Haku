@@ -4,14 +4,14 @@ import { useQuery } from 'react-query'
 
 import useUser from 'hooks/useUser'
 import styles from 'styles/Home.module.css'
-import { getTest } from 'libs/api/test'
+import { getNoteTree } from 'libs/api/notes'
 
 const Home: NextPage = () => {
   const user = useUser()
 
-  const query = useQuery('todos', getTest)
+  const query = useQuery('content', getNoteTree)
 
-  console.log('query ', query.data?.id)
+  console.log('content ', query.data)
 
   function logout() {
     signOut({ callbackUrl: `/auth/login` })
