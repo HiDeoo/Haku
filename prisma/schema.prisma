@@ -51,6 +51,8 @@ model Folder {
   parentId Int?
   parent   Folder?  @relation("FolderToFolder", fields: [parentId], references: [id])
   children Folder[] @relation("FolderToFolder")
+
+  @@unique([parentId, type, userId, name], map: "Folder_parentId_type_userId_name_unique_constraint")
 }
 
 enum FolderType {
