@@ -56,12 +56,12 @@ export function createApiRoute<Get, Post, Put, Delete, Patch>(
   }
 }
 
-export function getApiRequestUser(req: NextApiRequest): Session['user'] {
+export function getApiRequestUser(req: NextApiRequest): Omit<Session['user'], 'id'> & { userId: UserId } {
   if (!req.user) {
     throw new Error('Unauthenticated API request received for an authenticated endpoint.')
   }
 
-  return req.user
+  return { ...req.user, userId: req.user.id }
 }
 
 export class ApiClientError extends Error {
