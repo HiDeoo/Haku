@@ -4,9 +4,9 @@
   "scripts": {
     "dev": "next dev",
     "dev:migrate": "dotenv -c -- ts-node prisma/migrate.ts",
-    "build": "tsc --noEmit && next build",
+    "build": "next build",
     "start": "next start",
-    "lint": "next lint -d . --max-warnings=0",
+    "lint": "next lint -d . --max-warnings=0 && tsc --noEmit",
     "test:integration": "TEST_TYPE=integration jest -i",
     "prepare": "husky install",
     "preinstall": "npx only-allow pnpm"
