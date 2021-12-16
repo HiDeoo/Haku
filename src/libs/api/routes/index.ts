@@ -82,6 +82,6 @@ interface ApiRoute<Get, Post, Put, Delete, Patch> {
 
 type ApiMiddleware = (handler: NextApiHandler) => NextApiHandler
 
-interface ApiClientErrorResponse {
+export interface ApiClientErrorResponse {
   error: string
 }

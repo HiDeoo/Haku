@@ -1,16 +1,18 @@
 import { type NextApiHandler } from 'next'
 import { type Session } from 'next-auth'
-import { testApiHandler } from 'next-test-api-route-handler'
+import { testApiHandler, type TestParameters } from 'next-test-api-route-handler'
 
 import { getTestApiUrl, rest, server } from 'tests/integration/mocks/http'
 
 export function testApiRoute<T>(
   route: string,
   handler: NextApiHandler<T>,
-  test: (obj: { fetch: (init?: RequestInit) => FetchReturnType<T> }) => Promise<void>
+  test: (obj: { fetch: (init?: RequestInit) => FetchReturnType<T> }) => Promise<void>,
+  dynamicRouteParams?: TestParameters['params']
 ) {
   return testApiHandler<T>({
     handler,
+    params: dynamicRouteParams,
     url: `/api/${route}`,
     test: async (testParams) => {
       server.use(rest.get(getTestApiUrl('auth/session'), (_req, res, ctx) => res(ctx.json(getTestUserSession(1)))))
