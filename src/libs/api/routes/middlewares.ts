@@ -37,14 +37,18 @@ export function withValidation<Schema extends ApiRequestValidationSchema>(
 ) {
   return (req: NextApiRequest, res: NextApiResponse) => {
     try {
-      req.body = bodySchema?.parse(req.body)
-      req.query = querySchema?.parse(req.query) as NextApiRequest['query']
+      req.body = bodySchema?.parse(parseJson(req.body))
+      req.query = querySchema?.parse(parseJson(req.query)) as NextApiRequest['query']
 
       return handler(req, res)
     } catch (error) {
       return res.status(StatusCode.ClientErrorBadRequest).end()
     }
   }
+}
+
+function parseJson(json: unknown) {
+  return typeof json === 'string' ? JSON.parse(json) : json
 }
 
 type ValidationSchema = z.ZodType<unknown>
