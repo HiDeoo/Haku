@@ -5,6 +5,9 @@ const nextConfig = {
   devIndicators: {
     buildActivity: false,
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   reactStrictMode: true,
 }
 

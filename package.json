@@ -5,7 +5,7 @@
     "dev": "next dev",
     "dev:migrate": "dotenv -c -- bash -c 'DB_URL=$MIGRATE_DB_URL pnpm prisma migrate dev'",
     "dev:reset": "dotenv -c -- bash -c 'DB_URL=$MIGRATE_DB_URL pnpm prisma migrate reset'",
-    "build": "next build",
+    "build": "tsc --noEmit && next build",
     "start": "next start",
     "lint": "next lint -d . --max-warnings=0",
     "test:integration": "TEST_TYPE=integration jest -i",
