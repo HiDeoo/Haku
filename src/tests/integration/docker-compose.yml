@@ -1,0 +1,10 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:13-alpine
+    container_name: haku-tests-integration-db
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_PASSWORD: test
