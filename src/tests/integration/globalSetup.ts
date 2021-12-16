@@ -13,7 +13,7 @@ async function setup() {
     timeout: 5_000,
   })
 
-  await execa.command('pnpm prisma migrate deploy', { env: { ...process.env, DB_URL: process.env.DB_URL } })
+  await execa.command('prisma migrate deploy', { env: { ...process.env, DB_URL: process.env.DB_URL } })
 }
 
 export default setup
