@@ -17,7 +17,5 @@ async function getHandler(req: NextApiRequest, res: NextApiResponse<NoteTree>) {
   const { userId } = getApiRequestUser(req)
   const content = await getNoteTree(userId)
 
-  console.log('content ', JSON.stringify(content, null, '\t'))
-
   return res.status(200).json(content)
 }

@@ -4,32 +4,55 @@ import { testApiHandler, type TestParameters } from 'next-test-api-route-handler
 
 import { getTestApiUrl, rest, server } from 'tests/integration/mocks/http'
 
+// The test users will have sequential numbered IDs starting at `0`.
+export const TEST_USER_COUNT = 2
+
 export function testApiRoute<T>(
   route: string,
   handler: NextApiHandler<T>,
-  test: (obj: { fetch: (init?: RequestInit) => FetchReturnType<T> }) => Promise<void>,
-  dynamicRouteParams?: TestParameters['params']
+  test: (obj: { fetch: FetchFn }) => Promise<void>,
+  options?: TestApiRouteOptions
 ) {
   return testApiHandler<T>({
     handler,
-    params: dynamicRouteParams,
+    params: options?.dynamicRouteParams,
     url: `/api/${route}`,
     test: async (testParams) => {
-      server.use(rest.get(getTestApiUrl('auth/session'), (_req, res, ctx) => res(ctx.json(getTestUserSession(1)))))
+      server.use(
+        rest.get(getTestApiUrl('auth/session'), (_req, res, ctx) => res(ctx.json(getTestUserSession(options?.userId))))
+      )
 
-      await test(testParams)
+      await test({ fetch: testParams.fetch as FetchFn })
     },
   })
 }
 
-function getTestUserSession(userId: number): Session {
-  return { expires: '', user: { id: `${userId}`, email: `test${userId}@example.com` } }
+export function getTestUser(userId = '0'): UserWithUserId {
+  const userIdAsNumber = parseInt(userId, 10)
+
+  if (userIdAsNumber < 0 || userIdAsNumber >= TEST_USER_COUNT) {
+    throw new Error('Invalid test user ID.')
+  }
+
+  return { userId: `${userId}`, email: `test${userId}@example.com` }
 }
 
+function getTestUserSession(userId?: string): Session {
+  const user = getTestUser(userId)
+
+  return { expires: '', user: { email: user.email, id: user.userId } }
+}
+
+interface TestApiRouteOptions {
+  dynamicRouteParams?: TestParameters['params']
+  userId?: UserId
+}
+
+type FetchFn = (init?: RequestInit) => FetchReturnType
 type FetchReturnValue = Awaited<ReturnType<typeof fetch>>
-type FetchReturnType<T> = Promise<
+type FetchReturnType = Promise<
   Omit<FetchReturnValue, 'json' | 'headers'> & {
-    json: (...args: Parameters<FetchReturnValue['json']>) => Promise<T>
+    json: <U>(...args: Parameters<FetchReturnValue['json']>) => Promise<U>
     headers: FetchReturnValue['headers'] & {
       raw: () => Record<string, string | string[]>
     }

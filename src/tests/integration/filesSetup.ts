@@ -1,4 +1,5 @@
 import { server } from 'tests/integration/mocks/http'
+import { TEST_USER_COUNT } from 'tests/integration'
 import { prisma } from 'libs/db'
 
 let tableNames: { tableName: string }[]
@@ -7,6 +8,14 @@ beforeAll(async () => {
   tableNames = await prisma.$queryRaw`SELECT "tablename" AS "tableName" FROM "pg_tables" WHERE "schemaname"='public'`
 
   server.listen({ onUnhandledRequest: () => undefined })
+})
+
+beforeEach(async () => {
+  await prisma.user.createMany({
+    data: Array.from({ length: TEST_USER_COUNT }).map((_, index) => {
+      return { email: `test${index}@example.com`, id: `${index}` }
+    }),
+  })
 })
 
 afterEach(async () => {
