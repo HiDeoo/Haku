@@ -33,14 +33,14 @@ describe('admin/email', () => {
       }))
 
     test('should return allowed emails', () =>
-      testApiRoute<EmailAllowList[]>('admin/email', getAndPostHandler, async ({ fetch }) => {
+      testApiRoute('admin/email', getAndPostHandler, async ({ fetch }) => {
         const email1 = 'test1@example.com'
         const email2 = 'test2@example.com'
 
         await prisma.emailAllowList.createMany({ data: [{ email: email1 }, { email: email2 }] })
 
         const res = await fetch({ method: HttpMethod.GET, headers: { 'Api-Key': process.env.ADMIN_API_KEY } })
-        const json = await res.json()
+        const json = await res.json<EmailAllowList[]>()
 
         expect(json.length).toEqual(2)
         expect(json[0]?.email).toEqual(email1)
@@ -50,7 +50,7 @@ describe('admin/email', () => {
 
   describe('POST', () => {
     test('should add a new email', () =>
-      testApiRoute<EmailAllowList>('admin/email', getAndPostHandler, async ({ fetch }) => {
+      testApiRoute('admin/email', getAndPostHandler, async ({ fetch }) => {
         const email = 'test@example.com'
 
         const res = await fetch({
@@ -58,7 +58,7 @@ describe('admin/email', () => {
           headers: { 'Api-Key': process.env.ADMIN_API_KEY },
           body: JSON.stringify({ email }),
         })
-        const json = await res.json()
+        const json = await res.json<EmailAllowList>()
 
         expect(json.id).toBeDefined()
         expect(json.email).toEqual(email)
@@ -69,7 +69,7 @@ describe('admin/email', () => {
       }))
 
     test('should not add a new duplicated email', () =>
-      testApiRoute<ApiClientErrorResponse>('admin/email', getAndPostHandler, async ({ fetch }) => {
+      testApiRoute('admin/email', getAndPostHandler, async ({ fetch }) => {
         const email = 'test@example.com'
 
         await prisma.emailAllowList.create({ data: { email } })
@@ -79,7 +79,7 @@ describe('admin/email', () => {
           headers: { 'Api-Key': process.env.ADMIN_API_KEY },
           body: JSON.stringify({ email: email }),
         })
-        const json = await res.json()
+        const json = await res.json<ApiClientErrorResponse>()
 
         expect(res.status).toBe(StatusCode.ClientErrorForbidden)
         expect(json.error).toBe('This email already exists.')
@@ -92,7 +92,7 @@ describe('admin/email', () => {
 
       const { id } = await prisma.emailAllowList.create({ data: { email } })
 
-      return testApiRoute<ApiClientErrorResponse>(
+      return testApiRoute(
         `admin/email/${id}`,
         deleteHandler,
         async ({ fetch }) => {
@@ -102,7 +102,7 @@ describe('admin/email', () => {
 
           expect(dbEmail).toBeNull()
         },
-        { id: `${id}` }
+        { dynamicRouteParams: { id: `${id}` } }
       )
     })
 
@@ -114,12 +114,12 @@ describe('admin/email', () => {
         deleteHandler,
         async ({ fetch }) => {
           const res = await fetch({ method: HttpMethod.DELETE, headers: { 'Api-Key': process.env.ADMIN_API_KEY } })
-          const json = await res.json()
+          const json = await res.json<ApiClientErrorResponse>()
 
           expect(res.status).toBe(StatusCode.ClientErrorForbidden)
           expect(json.error).toBe('This email does not exist.')
         },
-        { id: `${id}` }
+        { dynamicRouteParams: { id: `${id}` } }
       )
     })
   })

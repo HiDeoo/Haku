@@ -1,10 +1,9 @@
 import type { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
-import { type Session } from 'next-auth'
 import { StatusCode } from 'status-code-enum'
 
 import { HttpMethod } from 'libs/http'
 
-export function createApiRoute<Get, Post, Put, Delete, Patch>(
+export function createApiRoute<Get = never, Post = never, Put = never, Delete = never, Patch = never>(
   route: ApiRoute<Get, Post, Put, Delete, Patch>,
   middlewares?: ApiMiddleware[]
 ) {
@@ -56,7 +55,7 @@ export function createApiRoute<Get, Post, Put, Delete, Patch>(
   }
 }
 
-export function getApiRequestUser(req: NextApiRequest): Omit<Session['user'], 'id'> & { userId: UserId } {
+export function getApiRequestUser(req: NextApiRequest): UserWithUserId {
   if (!req.user) {
     throw new Error('Unauthenticated API request received for an authenticated endpoint.')
   }

@@ -30,12 +30,12 @@ export function withAuth(handler: NextApiHandler) {
   }
 }
 
-export function withValidation<Schema extends ApiRequestValidationSchema>(
-  handler: ApiHandlerWithValidation<Schema>,
+export function withValidation<Schema extends ApiRequestValidationSchema, T>(
+  handler: ApiHandlerWithValidation<Schema, T>,
   bodySchema?: Schema['body'],
   querySchema?: Schema['query']
 ) {
-  return (req: NextApiRequest, res: NextApiResponse) => {
+  return (req: NextApiRequest, res: NextApiResponse<T>) => {
     try {
       req.body = bodySchema?.parse(parseJson(req.body))
       req.query = querySchema?.parse(parseJson(req.query)) as NextApiRequest['query']
@@ -59,7 +59,7 @@ export type ValidatedApiRequest<Schema extends ApiRequestValidationSchema> = Omi
   query: Schema['query'] extends ValidationSchema ? z.infer<Schema['query']> : NextApiRequest['query']
 }
 
-type ApiHandlerWithValidation<Schema extends ApiRequestValidationSchema, T = unknown> = (
+type ApiHandlerWithValidation<Schema extends ApiRequestValidationSchema, T> = (
   req: ValidatedApiRequest<Schema>,
   res: NextApiResponse<T>
 ) => void | Promise<void>
