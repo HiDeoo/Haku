@@ -34,17 +34,17 @@ describe('admin/email', () => {
 
     test('should return allowed emails', () =>
       testApiRoute('admin/email', getAndPostHandler, async ({ fetch }) => {
-        const email1 = 'test1@example.com'
-        const email2 = 'test2@example.com'
+        const email0 = 'test1@example.com'
+        const email1 = 'test2@example.com'
 
-        await prisma.emailAllowList.createMany({ data: [{ email: email1 }, { email: email2 }] })
+        await prisma.emailAllowList.createMany({ data: [{ email: email0 }, { email: email1 }] })
 
         const res = await fetch({ method: HttpMethod.GET, headers: { 'Api-Key': process.env.ADMIN_API_KEY } })
         const json = await res.json<EmailAllowList[]>()
 
         expect(json.length).toEqual(2)
-        expect(json[0]?.email).toEqual(email1)
-        expect(json[1]?.email).toEqual(email2)
+        expect(json[0]?.email).toEqual(email0)
+        expect(json[1]?.email).toEqual(email1)
       }))
   })
 
