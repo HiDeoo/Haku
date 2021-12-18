@@ -7,6 +7,7 @@ import { testApiRoute } from 'tests/integration'
 import { HttpMethod } from 'libs/http'
 import { prisma } from 'libs/db'
 import { type ApiClientErrorResponse } from 'libs/api/routes'
+import { API_ERROR_EMAIL_ALREADY_EXISTS, API_ERROR_EMAIL_DOES_NOT_EXISTS } from 'libs/api/routes/errors'
 
 describe('admin/email', () => {
   describe('GET', () => {
@@ -82,7 +83,7 @@ describe('admin/email', () => {
         const json = await res.json<ApiClientErrorResponse>()
 
         expect(res.status).toBe(StatusCode.ClientErrorForbidden)
-        expect(json.error).toBe('This email already exists.')
+        expect(json.error).toBe(API_ERROR_EMAIL_ALREADY_EXISTS)
 
         const dbEmails = await prisma.emailAllowList.findMany({ where: { email } })
 
@@ -117,7 +118,7 @@ describe('admin/email', () => {
           const json = await res.json<ApiClientErrorResponse>()
 
           expect(res.status).toBe(StatusCode.ClientErrorForbidden)
-          expect(json.error).toBe('This email does not exist.')
+          expect(json.error).toBe(API_ERROR_EMAIL_DOES_NOT_EXISTS)
         },
         { dynamicRouteParams: { id: '1' } }
       )

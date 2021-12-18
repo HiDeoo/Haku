@@ -2,6 +2,7 @@ import type { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
 import { StatusCode } from 'status-code-enum'
 
 import { HttpMethod } from 'libs/http'
+import { API_ERROR_UNKNOWN } from 'libs/api/routes/errors'
 
 export function createApiRoute<Get = never, Post = never, Put = never, Delete = never, Patch = never>(
   route: ApiRoute<Get, Post, Put, Delete, Patch>,
@@ -41,7 +42,7 @@ export function createApiRoute<Get = never, Post = never, Put = never, Delete = 
       await handler(req, res)
     } catch (error) {
       let statusCode = StatusCode.ServerErrorInternal
-      let message = 'Something went wrong!'
+      let message = API_ERROR_UNKNOWN
 
       if (error instanceof ApiClientError) {
         statusCode = error.httpStatusCode

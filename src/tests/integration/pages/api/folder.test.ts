@@ -7,6 +7,7 @@ import postHandler from 'pages/api/folder'
 import { type FolderData } from 'libs/db/folder'
 import { prisma } from 'libs/db'
 import { ApiClientErrorResponse } from 'libs/api/routes'
+import { API_ERROR_FOLDER_PARENT_DOES_NOT_EXISTS } from 'libs/api/routes/errors'
 
 describe('folder', () => {
   describe('POST', () => {
@@ -71,7 +72,7 @@ describe('folder', () => {
         const json = await res.json<ApiClientErrorResponse>()
 
         expect(res.status).toBe(StatusCode.ClientErrorForbidden)
-        expect(json.error).toBe('The parent folder specified does not exist.')
+        expect(json.error).toBe(API_ERROR_FOLDER_PARENT_DOES_NOT_EXISTS)
 
         const dbFolder = await prisma.folder.findMany({ where: { name, type, parentId, userId } })
 
