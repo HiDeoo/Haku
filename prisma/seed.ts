@@ -59,7 +59,7 @@ main()
   .catch(async (error) => {
     await prisma.$disconnect()
 
-    console.error('Error while seeding datase:', error)
+    console.error('Error while seeding database:', error)
 
     process.exit(1)
   })
