@@ -4,7 +4,7 @@ import { getTestUser, testApiRoute } from 'tests/integration'
 import { HttpMethod } from 'libs/http'
 import handler from 'pages/api/notes'
 import { prisma } from 'libs/db'
-import { type NoteTree } from 'libs/db/tree'
+import { type NoteTreeData } from 'libs/db/tree'
 
 describe('notes', () => {
   describe('GET', () => {
@@ -29,7 +29,7 @@ describe('notes', () => {
         })
 
         const res = await fetch({ method: HttpMethod.GET })
-        const json = await res.json<NoteTree>()
+        const json = await res.json<NoteTreeData>()
 
         expect(json.length).toEqual(3)
         expect(json[0]?.name).toEqual(folder_0)
@@ -96,7 +96,7 @@ describe('notes', () => {
         await prisma.folder.create({ data: getFolderData(userId, folder_2_0_0_1, folder_2_0_0_id) })
 
         const res = await fetch({ method: HttpMethod.GET })
-        const json = await res.json<NoteTree>()
+        const json = await res.json<NoteTreeData>()
 
         expect(json.length).toBe(3)
 
@@ -166,7 +166,7 @@ describe('notes', () => {
         })
 
         const res = await fetch({ method: HttpMethod.GET })
-        const json = await res.json<NoteTree>()
+        const json = await res.json<NoteTreeData>()
 
         expect(json.length).toEqual(2)
 

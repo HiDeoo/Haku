@@ -1,11 +1,11 @@
-import { Folder, FolderType } from '@prisma/client'
+import { FolderType } from '@prisma/client'
 
 import { prisma } from 'libs/db'
+import { type FolderData } from 'libs/db/folder'
 
-type NoteTreeItem = Pick<Folder, 'id' | 'parentId' | 'name'> & { level: number }
-export type NoteTree = Tree<NoteTreeItem>
+export type NoteTreeData = Tree<NoteTreeItem>
 
-export async function getNoteTree(userId: UserId): Promise<NoteTree> {
+export async function getNoteTree(userId: UserId): Promise<NoteTreeData> {
   return getTree(userId, FolderType.NOTE)
 }
 
@@ -85,6 +85,8 @@ export function hierarchicalListToTree<T extends HierarchicalListBaseItem>(list:
 function isHierarchicalTreeItem<T extends HierarchicalListBaseItem>(item: T | TreeItem<T>): item is TreeItem<T> {
   return typeof (item as TreeItem<T>).children !== 'undefined'
 }
+
+type NoteTreeItem = FolderData & { level: number }
 
 type HierarchicalListItemId = string | number
 type HierarchicalListBaseItem = { id: HierarchicalListItemId; parentId: HierarchicalListItemId | null }

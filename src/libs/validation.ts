@@ -1,3 +1,4 @@
+import { FolderType } from '@prisma/client'
 import { z } from 'zod'
 
 export { z } from 'zod'
@@ -12,3 +13,5 @@ export const zStringAsNumber = z
     return Number.isFinite(num) && !Number.isNaN(num)
   })
   .transform(Number)
+
+export const zFolderType = z.nativeEnum(FolderType)
