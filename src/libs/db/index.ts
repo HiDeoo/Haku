@@ -14,6 +14,8 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 export function handleDbError(error: unknown, options: DbErrorHandlerOptions): never {
+  let apiClientErrorMessage: string | undefined
+
   if (error instanceof PrismaClientKnownRequestError) {
     switch (error.code) {
       case 'P2002': {
@@ -21,12 +23,15 @@ export function handleDbError(error: unknown, options: DbErrorHandlerOptions): n
           const { target } = error.meta
 
           target.forEach((constraint) => {
-            const message = options.unique?.[constraint]
-
-            if (message) {
-              throw new ApiClientError(message)
-            }
+            apiClientErrorMessage = options.unique?.[constraint]
           })
+        }
+
+        break
+      }
+      case 'P2003': {
+        if (isDbErrorMetaWithFieldName(error.meta)) {
+          apiClientErrorMessage = options.fKey?.[error.meta.field_name.replace('_fkey (index)', '')]
         }
 
         break
@@ -37,7 +42,7 @@ export function handleDbError(error: unknown, options: DbErrorHandlerOptions): n
           error.meta.cause === 'Record to delete does not exist.' &&
           options.delete
         ) {
-          throw new ApiClientError(options.delete)
+          apiClientErrorMessage = options.delete
         }
 
         break
@@ -45,11 +50,14 @@ export function handleDbError(error: unknown, options: DbErrorHandlerOptions): n
     }
   }
 
+  if (apiClientErrorMessage) {
+    throw new ApiClientError(apiClientErrorMessage)
+  }
+
   throw error
 }
 
 function isDbErrorMetaWithTarget(meta: unknown): meta is DbErrorMetaWithTarget {
-  console.log('meta ', meta)
   return typeof meta !== 'undefined' && Array.isArray((meta as DbErrorMetaWithTarget).target)
 }
 
@@ -57,9 +65,14 @@ function isDbErrorMetaWithCause(meta: unknown): meta is DbErrorMetaWithCause {
   return typeof meta !== 'undefined' && typeof (meta as DbErrorMetaWithCause).cause === 'string'
 }
 
+function isDbErrorMetaWithFieldName(meta: unknown): meta is DbErrorMetaWithFieldName {
+  return typeof meta !== 'undefined' && typeof (meta as DbErrorMetaWithFieldName).field_name === 'string'
+}
+
 export interface DbErrorHandlerOptions {
-  unique?: Record<string, string>
   delete?: string
+  fKey?: Record<string, string>
+  unique?: Record<string, string>
 }
 
 interface DbErrorMetaWithTarget {
@@ -68,4 +81,8 @@ interface DbErrorMetaWithTarget {
 
 interface DbErrorMetaWithCause {
   cause: string
+}
+
+interface DbErrorMetaWithFieldName {
+  field_name: string
 }
