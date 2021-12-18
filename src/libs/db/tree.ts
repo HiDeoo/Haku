@@ -9,8 +9,11 @@ export async function getNoteTree(userId: UserId): Promise<NoteTreeData> {
   return getTree(userId, FolderType.NOTE)
 }
 
-async function getTree<T extends HierarchicalListBaseItem>(userId: UserId, folderType: FolderType): Promise<Tree<T>> {
-  const folders = await prisma.$queryRaw<T[]>`
+async function getTree<Item extends HierarchicalListBaseItem>(
+  userId: UserId,
+  folderType: FolderType
+): Promise<Tree<Item>> {
+  const folders = await prisma.$queryRaw<Item[]>`
 WITH RECURSIVE root_to_leaf AS (
   SELECT
     "id",
@@ -48,11 +51,13 @@ ORDER BY
 }
 
 // The list should be ordered in such a way that the parent of an item is always defined before its children.
-export function hierarchicalListToTree<T extends HierarchicalListBaseItem>(list: (T | TreeItem<T>)[]): Tree<T> {
+export function hierarchicalListToTree<Item extends HierarchicalListBaseItem>(
+  list: (Item | TreeItem<Item>)[]
+): Tree<Item> {
   const hierarchyError = new Error('Unable to generate tree from an unordered hierarchical list')
   const indexMap: Record<HierarchicalListItemId, number> = {}
-  const tree: TreeItem<T>[] = []
-  let treeItem: TreeItem<T>
+  const tree: TreeItem<Item>[] = []
+  let treeItem: TreeItem<Item>
 
   const clonedList = [...list]
 
@@ -82,8 +87,10 @@ export function hierarchicalListToTree<T extends HierarchicalListBaseItem>(list:
   return tree
 }
 
-function isHierarchicalTreeItem<T extends HierarchicalListBaseItem>(item: T | TreeItem<T>): item is TreeItem<T> {
-  return typeof (item as TreeItem<T>).children !== 'undefined'
+function isHierarchicalTreeItem<Item extends HierarchicalListBaseItem>(
+  item: Item | TreeItem<Item>
+): item is TreeItem<Item> {
+  return typeof (item as TreeItem<Item>).children !== 'undefined'
 }
 
 type NoteTreeItem = FolderData & { level: number }
@@ -91,5 +98,5 @@ type NoteTreeItem = FolderData & { level: number }
 type HierarchicalListItemId = string | number
 type HierarchicalListBaseItem = { id: HierarchicalListItemId; parentId: HierarchicalListItemId | null }
 
-type TreeItem<T extends HierarchicalListBaseItem> = T & { children: TreeItem<T>[] }
-type Tree<T extends HierarchicalListBaseItem> = TreeItem<T>[]
+type TreeItem<Item extends HierarchicalListBaseItem> = Item & { children: TreeItem<Item>[] }
+type Tree<Item extends HierarchicalListBaseItem> = TreeItem<Item>[]
