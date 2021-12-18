@@ -20,11 +20,7 @@ export function handleDbError(error: unknown, options: DbErrorHandlerOptions): n
     switch (error.code) {
       case 'P2002': {
         if (isDbErrorMetaWithTarget(error.meta)) {
-          const { target } = error.meta
-
-          target.forEach((constraint) => {
-            apiClientErrorMessage = options.unique?.[constraint]
-          })
+          apiClientErrorMessage = options.unique?.[error.meta.target.join('_')]
         }
 
         break
@@ -69,6 +65,7 @@ function isDbErrorMetaWithFieldName(meta: unknown): meta is DbErrorMetaWithField
   return typeof meta !== 'undefined' && typeof (meta as DbErrorMetaWithFieldName).field_name === 'string'
 }
 
+// Multi-column constraints should be identified using a string being an underscore separated list of columns.
 export interface DbErrorHandlerOptions {
   delete?: string
   fKey?: Record<string, string>

@@ -139,8 +139,8 @@ describe('notes', () => {
 
     test('should return only the content of the current user', () =>
       testApiRoute(handler, async ({ fetch }) => {
-        const { userId: userId_0 } = getTestUser('0')
-        const { userId: userId_1 } = getTestUser('1')
+        const { userId: userId0 } = getTestUser('0')
+        const { userId: userId1 } = getTestUser('1')
 
         const folder_0_user_0 = 'folder_0_user_0'
         const folder_1_user_0 = 'folder_1_user_0'
@@ -148,20 +148,20 @@ describe('notes', () => {
         const folder_0_1_user_0 = 'folder_0_1_user_0'
 
         const { id: folder_0_user_0_id } = await prisma.folder.create({
-          data: getFolderData(userId_0, folder_0_user_0),
+          data: getFolderData(userId0, folder_0_user_0),
         })
 
-        await prisma.folder.create({ data: getFolderData(userId_0, folder_0_0_user_0, folder_0_user_0_id) })
-        await prisma.folder.create({ data: getFolderData(userId_0, folder_0_1_user_0, folder_0_user_0_id) })
+        await prisma.folder.create({ data: getFolderData(userId0, folder_0_0_user_0, folder_0_user_0_id) })
+        await prisma.folder.create({ data: getFolderData(userId0, folder_0_1_user_0, folder_0_user_0_id) })
 
-        await prisma.folder.create({ data: getFolderData(userId_0, folder_1_user_0) })
+        await prisma.folder.create({ data: getFolderData(userId0, folder_1_user_0) })
 
         await prisma.folder.createMany({
           data: [
-            getFolderData(userId_1, 'folder_0_user_1'),
-            getFolderData(userId_1, 'folder_1_user_1'),
-            getFolderData(userId_1, 'folder_0_0_user_1'),
-            getFolderData(userId_1, 'folder_0_1_user_1'),
+            getFolderData(userId1, 'folder_0_user_1'),
+            getFolderData(userId1, 'folder_1_user_1'),
+            getFolderData(userId1, 'folder_0_0_user_1'),
+            getFolderData(userId1, 'folder_0_1_user_1'),
           ],
         })
 
