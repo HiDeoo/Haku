@@ -1,7 +1,11 @@
 import { type Folder, FolderType } from '@prisma/client'
 
 import { ApiClientError } from 'libs/api/routes'
-import { API_ERROR_FOLDER_ALREADY_EXISTS, API_ERROR_FOLDER_PARENT_DOES_NOT_EXISTS } from 'libs/api/routes/errors'
+import {
+  API_ERROR_FOLDER_ALREADY_EXISTS,
+  API_ERROR_FOLDER_PARENT_DOES_NOT_EXISTS,
+  API_ERROR_FOLDER_PARENT_INVALID_TYPE,
+} from 'libs/api/routes/errors'
 import { handleDbError, prisma } from 'libs/db'
 
 export type FolderData = Pick<Folder, 'id' | 'parentId' | 'name'>
@@ -17,6 +21,10 @@ export async function addFolder(
 
     if (!parentFolder) {
       throw new ApiClientError(API_ERROR_FOLDER_PARENT_DOES_NOT_EXISTS)
+    }
+
+    if (parentFolder.type !== type) {
+      throw new ApiClientError(API_ERROR_FOLDER_PARENT_INVALID_TYPE)
     }
   }
 
@@ -35,6 +43,6 @@ export async function addFolder(
   }
 }
 
-function getFolderById(id: number, userId: UserId): Promise<FolderData | null> {
+function getFolderById(id: number, userId: UserId): Promise<Folder | null> {
   return prisma.folder.findFirst({ where: { id, userId } })
 }

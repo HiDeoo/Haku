@@ -7,7 +7,11 @@ import postHandler from 'pages/api/folder'
 import { type FolderData } from 'libs/db/folder'
 import { prisma } from 'libs/db'
 import { ApiClientErrorResponse } from 'libs/api/routes'
-import { API_ERROR_FOLDER_ALREADY_EXISTS, API_ERROR_FOLDER_PARENT_DOES_NOT_EXISTS } from 'libs/api/routes/errors'
+import {
+  API_ERROR_FOLDER_ALREADY_EXISTS,
+  API_ERROR_FOLDER_PARENT_DOES_NOT_EXISTS,
+  API_ERROR_FOLDER_PARENT_INVALID_TYPE,
+} from 'libs/api/routes/errors'
 
 describe('folder', () => {
   describe('POST', () => {
@@ -97,6 +101,29 @@ describe('folder', () => {
         expect(json.error).toBe(API_ERROR_FOLDER_PARENT_DOES_NOT_EXISTS)
 
         const dbFolder = await prisma.folder.findMany({ where: { name, type, parentId, userId: userId0 } })
+
+        expect(dbFolder.length).toBe(0)
+      }))
+
+    test('should not add a new folder inside an existing folder of a different type', () =>
+      testApiRoute(postHandler, async ({ fetch }) => {
+        const { userId } = getTestUser()
+
+        const name = 'folder'
+        const type = FolderType.NOTE
+
+        const { id: parentId } = await prisma.folder.create({ data: { userId, name: 'parent', type: FolderType.TODO } })
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: JSON.stringify({ name, type, parentId }),
+        })
+        const json = await res.json<ApiClientErrorResponse>()
+
+        expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+        expect(json.error).toBe(API_ERROR_FOLDER_PARENT_INVALID_TYPE)
+
+        const dbFolder = await prisma.folder.findMany({ where: { name, type, parentId, userId } })
 
         expect(dbFolder.length).toBe(0)
       }))
