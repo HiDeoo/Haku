@@ -136,6 +136,52 @@ describe('notes', () => {
         expect(json[2]?.children[1]?.name).toBe(folder_2_1)
         expect(json[2]?.children[1]?.children.length).toBe(0)
       }))
+
+    test('should return only the content of the current user', () =>
+      testApiRoute('admin/email', handler, async ({ fetch }) => {
+        const { userId: userId_0 } = getTestUser('0')
+        const { userId: userId_1 } = getTestUser('1')
+
+        const folder_0_user_0 = 'folder_0_user_0'
+        const folder_1_user_0 = 'folder_1_user_0'
+        const folder_0_0_user_0 = 'folder_0_0_user_0'
+        const folder_0_1_user_0 = 'folder_0_1_user_0'
+
+        const { id: folder_0_user_0_id } = await prisma.folder.create({
+          data: getFolderData(userId_0, folder_0_user_0),
+        })
+
+        await prisma.folder.create({ data: getFolderData(userId_0, folder_0_0_user_0, folder_0_user_0_id) })
+        await prisma.folder.create({ data: getFolderData(userId_0, folder_0_1_user_0, folder_0_user_0_id) })
+
+        await prisma.folder.create({ data: getFolderData(userId_0, folder_1_user_0) })
+
+        await prisma.folder.createMany({
+          data: [
+            getFolderData(userId_1, 'folder_0_user_1'),
+            getFolderData(userId_1, 'folder_1_user_1'),
+            getFolderData(userId_1, 'folder_0_0_user_1'),
+            getFolderData(userId_1, 'folder_0_1_user_1'),
+          ],
+        })
+
+        const res = await fetch({ method: HttpMethod.GET })
+        const json = await res.json<NoteTree>()
+
+        expect(json.length).toEqual(2)
+
+        expect(json[0]?.name).toEqual(folder_0_user_0)
+        expect(json[0]?.children.length).toEqual(2)
+
+        expect(json[0]?.children[0]?.name).toEqual(folder_0_0_user_0)
+        expect(json[0]?.children[0]?.children.length).toEqual(0)
+
+        expect(json[0]?.children[1]?.name).toEqual(folder_0_1_user_0)
+        expect(json[0]?.children[1]?.children.length).toEqual(0)
+
+        expect(json[1]?.name).toEqual(folder_1_user_0)
+        expect(json[1]?.children.length).toEqual(0)
+      }))
   })
 })
 
