@@ -77,12 +77,16 @@ describe('admin/email', () => {
         const res = await fetch({
           method: HttpMethod.POST,
           headers: { 'Api-Key': process.env.ADMIN_API_KEY },
-          body: JSON.stringify({ email: email }),
+          body: JSON.stringify({ email }),
         })
         const json = await res.json<ApiClientErrorResponse>()
 
         expect(res.status).toBe(StatusCode.ClientErrorForbidden)
         expect(json.error).toBe('This email already exists.')
+
+        const dbEmails = await prisma.emailAllowList.findMany({ where: { email } })
+
+        expect(dbEmails.length).toBe(1)
       }))
   })
 
