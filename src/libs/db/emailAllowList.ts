@@ -1,7 +1,6 @@
 import { type EmailAllowList } from '@prisma/client'
 
-import { ApiClientError } from 'libs/api/routes'
-import { prisma } from 'libs/db'
+import { handleDbError, prisma } from 'libs/db'
 
 export function getAllowedEmails(): Promise<EmailAllowList[]> {
   return prisma.emailAllowList.findMany()
@@ -12,21 +11,17 @@ export function getAllowedEmailByEmail(email: EmailAllowList['email']): Promise<
 }
 
 export async function addAllowedEmail(email: EmailAllowList['email']): Promise<EmailAllowList> {
-  const existingEmail = await getAllowedEmailByEmail(email)
-
-  if (existingEmail) {
-    throw new ApiClientError('This email already exists.')
+  try {
+    return await prisma.emailAllowList.create({ data: { email } })
+  } catch (error) {
+    handleDbError(error, { unique: { email: 'This email already exists.' } })
   }
-
-  return prisma.emailAllowList.create({ data: { email } })
 }
 
 export async function removeAllowedEmail(id: EmailAllowList['id']): Promise<void> {
-  const existingEmail = await prisma.emailAllowList.findUnique({ where: { id } })
-
-  if (!existingEmail) {
-    throw new ApiClientError('This email does not exist.')
+  try {
+    await prisma.emailAllowList.delete({ where: { id } })
+  } catch (error) {
+    handleDbError(error, { delete: 'This email does not exist.' })
   }
-
-  await prisma.emailAllowList.delete({ where: { id } })
 }
