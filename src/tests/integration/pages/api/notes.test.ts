@@ -9,7 +9,7 @@ import { type NoteTree } from 'libs/db/tree'
 describe('notes', () => {
   describe('GET', () => {
     test('should return an empty tree', () =>
-      testApiRoute('admin/email', handler, async ({ fetch }) => {
+      testApiRoute(handler, async ({ fetch }) => {
         const res = await fetch({ method: HttpMethod.GET })
         const json = await res.json()
 
@@ -17,7 +17,7 @@ describe('notes', () => {
       }))
 
     test('should return a tree with only root nodes', () =>
-      testApiRoute('admin/email', handler, async ({ fetch }) => {
+      testApiRoute(handler, async ({ fetch }) => {
         const { userId } = getTestUser()
 
         const folder_0 = 'folder_0'
@@ -38,7 +38,7 @@ describe('notes', () => {
       }))
 
     test('should return a tree with nested nodes', () =>
-      testApiRoute('admin/email', handler, async ({ fetch }) => {
+      testApiRoute(handler, async ({ fetch }) => {
         const { userId } = getTestUser()
 
         /**
@@ -138,7 +138,7 @@ describe('notes', () => {
       }))
 
     test('should return only the content of the current user', () =>
-      testApiRoute('admin/email', handler, async ({ fetch }) => {
+      testApiRoute(handler, async ({ fetch }) => {
         const { userId: userId_0 } = getTestUser('0')
         const { userId: userId_1 } = getTestUser('1')
 

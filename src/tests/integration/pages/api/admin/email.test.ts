@@ -11,21 +11,21 @@ import { type ApiClientErrorResponse } from 'libs/api/routes'
 describe('admin/email', () => {
   describe('GET', () => {
     test('should fail without an API key', () =>
-      testApiRoute('admin/email', getAndPostHandler, async ({ fetch }) => {
+      testApiRoute(getAndPostHandler, async ({ fetch }) => {
         const res = await fetch({ method: HttpMethod.GET })
 
         expect(res.status).toBe(StatusCode.ClientErrorUnauthorized)
       }))
 
     test('should fail with an invalid API key', () =>
-      testApiRoute('admin/email', getAndPostHandler, async ({ fetch }) => {
+      testApiRoute(getAndPostHandler, async ({ fetch }) => {
         const res = await fetch({ method: HttpMethod.GET, headers: { 'Api-Key': 'abc' } })
 
         expect(res.status).toBe(StatusCode.ClientErrorUnauthorized)
       }))
 
     test('should return an empty list of allowed emails', () =>
-      testApiRoute('admin/email', getAndPostHandler, async ({ fetch }) => {
+      testApiRoute(getAndPostHandler, async ({ fetch }) => {
         const res = await fetch({ method: HttpMethod.GET, headers: { 'Api-Key': process.env.ADMIN_API_KEY } })
         const json = await res.json()
 
@@ -33,7 +33,7 @@ describe('admin/email', () => {
       }))
 
     test('should return allowed emails', () =>
-      testApiRoute('admin/email', getAndPostHandler, async ({ fetch }) => {
+      testApiRoute(getAndPostHandler, async ({ fetch }) => {
         const email0 = 'test1@example.com'
         const email1 = 'test2@example.com'
 
@@ -50,7 +50,7 @@ describe('admin/email', () => {
 
   describe('POST', () => {
     test('should add a new email', () =>
-      testApiRoute('admin/email', getAndPostHandler, async ({ fetch }) => {
+      testApiRoute(getAndPostHandler, async ({ fetch }) => {
         const email = 'test@example.com'
 
         const res = await fetch({
@@ -69,7 +69,7 @@ describe('admin/email', () => {
       }))
 
     test('should not add a new duplicated email', () =>
-      testApiRoute('admin/email', getAndPostHandler, async ({ fetch }) => {
+      testApiRoute(getAndPostHandler, async ({ fetch }) => {
         const email = 'test@example.com'
 
         await prisma.emailAllowList.create({ data: { email } })
@@ -93,7 +93,6 @@ describe('admin/email', () => {
       const { id } = await prisma.emailAllowList.create({ data: { email } })
 
       return testApiRoute(
-        `admin/email/${id}`,
         deleteHandler,
         async ({ fetch }) => {
           await fetch({ method: HttpMethod.DELETE, headers: { 'Api-Key': process.env.ADMIN_API_KEY } })
@@ -107,10 +106,7 @@ describe('admin/email', () => {
     })
 
     test('should not delete a non existing email', async () => {
-      const id = 1
-
       return testApiRoute(
-        `admin/email/${id}`,
         deleteHandler,
         async ({ fetch }) => {
           const res = await fetch({ method: HttpMethod.DELETE, headers: { 'Api-Key': process.env.ADMIN_API_KEY } })
@@ -119,7 +115,7 @@ describe('admin/email', () => {
           expect(res.status).toBe(StatusCode.ClientErrorForbidden)
           expect(json.error).toBe('This email does not exist.')
         },
-        { dynamicRouteParams: { id: `${id}` } }
+        { dynamicRouteParams: { id: '1' } }
       )
     })
   })

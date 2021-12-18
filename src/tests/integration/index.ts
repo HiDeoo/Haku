@@ -8,7 +8,6 @@ import { getTestApiUrl, rest, server } from 'tests/integration/mocks/http'
 export const TEST_USER_COUNT = 2
 
 export function testApiRoute<T>(
-  route: string,
   handler: NextApiHandler<T>,
   test: (obj: { fetch: FetchFn }) => Promise<void>,
   options?: TestApiRouteOptions
@@ -16,7 +15,6 @@ export function testApiRoute<T>(
   return testApiHandler<T>({
     handler,
     params: options?.dynamicRouteParams,
-    url: `/api/${route}`,
     test: async (testParams) => {
       server.use(
         rest.get(getTestApiUrl('auth/session'), (_req, res, ctx) => res(ctx.json(getTestUserSession(options?.userId))))
