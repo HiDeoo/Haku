@@ -3,6 +3,7 @@ import { StatusCode } from 'status-code-enum'
 
 import { HttpMethod } from 'libs/http'
 import { API_ERROR_UNKNOWN } from 'libs/api/routes/errors'
+import { type ApiRequestValidationSchema, type ValidatedApiRequest } from 'libs/api/routes/middlewares'
 
 export function createApiRoute<Get = never, Post = never, Put = never, Delete = never, Patch = never>(
   route: ApiRoute<Get, Post, Put, Delete, Patch>,
@@ -56,7 +57,9 @@ export function createApiRoute<Get = never, Post = never, Put = never, Delete = 
   }
 }
 
-export function getApiRequestUser(req: NextApiRequest): UserWithUserId {
+export function getApiRequestUser<Schema extends ApiRequestValidationSchema>(
+  req: NextApiRequest | ValidatedApiRequest<Schema>
+): UserWithUserId {
   if (!req.user) {
     throw new Error('Unauthenticated API request received for an authenticated endpoint.')
   }

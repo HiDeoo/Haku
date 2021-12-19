@@ -52,7 +52,7 @@ function parseJson(json: unknown) {
 }
 
 type ValidationSchema = z.ZodType<unknown>
-type ApiRequestValidationSchema = { body?: ValidationSchema; query?: ValidationSchema }
+export type ApiRequestValidationSchema = { body?: ValidationSchema; query?: ValidationSchema }
 
 export type ValidatedApiRequest<Schema extends ApiRequestValidationSchema> = Omit<NextApiRequest, 'body' | 'query'> & {
   body: Schema['body'] extends ValidationSchema ? z.infer<Schema['body']> : NextApiRequest['body']

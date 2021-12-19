@@ -15,3 +15,13 @@ export const zStringAsNumber = z
   .transform(Number)
 
 export const zFolderType = z.nativeEnum(FolderType)
+
+export function zOneOf<T extends z.ZodRawShape>(objectSchema: z.ZodObject<T>) {
+  const keys = Object.keys(objectSchema._def.shape())
+
+  return objectSchema.partial().refine((data) => {
+    const dataKeys = Object.keys(data)
+
+    return keys.some((key) => dataKeys.indexOf(key) !== -1)
+  })
+}
