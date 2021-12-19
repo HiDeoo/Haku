@@ -97,7 +97,7 @@ describe('admin/email', () => {
 
           expect(dbEmail).toBeNull()
         },
-        { dynamicRouteParams: { id: `${id}` } }
+        { dynamicRouteParams: { id } }
       )
     })
 
@@ -111,7 +111,7 @@ describe('admin/email', () => {
           expect(res.status).toBe(StatusCode.ClientErrorForbidden)
           expect(json.error).toBe(API_ERROR_EMAIL_DOES_NOT_EXISTS)
         },
-        { dynamicRouteParams: { id: '1' } }
+        { dynamicRouteParams: { id: 1 } }
       )
     })
   })

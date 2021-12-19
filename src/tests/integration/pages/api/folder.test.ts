@@ -180,7 +180,7 @@ describe('folder', () => {
 
           expect(dbFolder?.name).toBe(newName)
         },
-        { dynamicRouteParams: { id: `${id}` } }
+        { dynamicRouteParams: { id } }
       )
     })
 
@@ -204,7 +204,7 @@ describe('folder', () => {
 
           expect(dbFolder?.name).toBe(name)
         },
-        { dynamicRouteParams: { id: `${id}` } }
+        { dynamicRouteParams: { id } }
       )
     })
 
@@ -228,7 +228,7 @@ describe('folder', () => {
           expect(dbFolder).toBeDefined()
           expect(dbFolder?.parentId).toBe(newParentId)
         },
-        { dynamicRouteParams: { id: `${id}` } }
+        { dynamicRouteParams: { id } }
       )
     })
 
@@ -252,7 +252,7 @@ describe('folder', () => {
           expect(dbFolder).toBeDefined()
           expect(dbFolder?.parentId).toBeNull()
         },
-        { dynamicRouteParams: { id: `${id}` } }
+        { dynamicRouteParams: { id } }
       )
     })
 
@@ -279,7 +279,7 @@ describe('folder', () => {
           expect(dbFolder).toBeDefined()
           expect(dbFolder?.parentId).toBe(parentId)
         },
-        { dynamicRouteParams: { id: `${id}` } }
+        { dynamicRouteParams: { id } }
       )
     })
 
@@ -303,7 +303,7 @@ describe('folder', () => {
           expect(dbFolder).toBeDefined()
           expect(dbFolder?.parentId).toBe(parentId)
         },
-        { dynamicRouteParams: { id: `${id}` } }
+        { dynamicRouteParams: { id } }
       )
     })
 
@@ -328,7 +328,7 @@ describe('folder', () => {
           expect(dbFolder).toBeDefined()
           expect(dbFolder?.parentId).toBe(parentId)
         },
-        { dynamicRouteParams: { id: `${id}` } }
+        { dynamicRouteParams: { id } }
       )
     })
 
@@ -353,7 +353,7 @@ describe('folder', () => {
           expect(dbFolder).toBeDefined()
           expect(dbFolder?.parentId).toBe(parentId)
         },
-        { dynamicRouteParams: { id: `${id}` } }
+        { dynamicRouteParams: { id } }
       )
     })
 
@@ -381,7 +381,7 @@ describe('folder', () => {
           expect(dbFolder?.name).toBe(newName)
           expect(dbFolder?.parentId).toBe(newParentId)
         },
-        { dynamicRouteParams: { id: `${id}` } }
+        { dynamicRouteParams: { id } }
       )
     })
 
@@ -405,7 +405,7 @@ describe('folder', () => {
           expect(dbFolder).toBeDefined()
           expect(dbFolder?.name).toBe(name)
         },
-        { dynamicRouteParams: { id: `${id}` } }
+        { dynamicRouteParams: { id } }
       )
     })
 
@@ -428,7 +428,7 @@ describe('folder', () => {
 
           expect(dbFolders.length).toBe(0)
         },
-        { dynamicRouteParams: { id: '1' } }
+        { dynamicRouteParams: { id: 1 } }
       )
     })
   })

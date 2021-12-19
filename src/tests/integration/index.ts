@@ -14,7 +14,7 @@ export function testApiRoute<ResponseType>(
 ) {
   return testApiHandler<ResponseType>({
     handler,
-    params: options?.dynamicRouteParams,
+    params: mapDynamicRouteParams(options?.dynamicRouteParams),
     test: async (testParams) => {
       server.use(
         rest.get(getTestApiUrl('auth/session'), (_req, res, ctx) => res(ctx.json(getTestUserSession(options?.userId))))
@@ -41,8 +41,20 @@ function getTestUserSession(userId?: string): Session {
   return { expires: '', user: { email: user.email, id: user.userId } }
 }
 
+function mapDynamicRouteParams(params: TestApiRouteOptions['dynamicRouteParams']): TestParameters['params'] {
+  if (!params) {
+    return
+  }
+
+  return Object.entries(params).reduce((acc, [key, value]) => {
+    acc[key] = typeof value === 'number' ? value.toString() : value
+
+    return acc
+  }, {} as NonNullable<TestParameters['params']>)
+}
+
 interface TestApiRouteOptions {
-  dynamicRouteParams?: TestParameters['params']
+  dynamicRouteParams?: Record<string, string | string[] | number>
   userId?: UserId
 }
 
