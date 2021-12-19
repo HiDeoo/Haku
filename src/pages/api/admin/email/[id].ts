@@ -1,7 +1,7 @@
 import type { NextApiResponse } from 'next'
 
 import { createApiRoute } from 'libs/api/routes'
-import { ValidatedApiRequest, withAdmin, withValidation } from 'libs/api/routes/middlewares'
+import { type ValidatedApiRequest, withAdmin, withValidation } from 'libs/api/routes/middlewares'
 import { z, zStringAsNumber } from 'libs/validation'
 import { removeAllowedEmail } from 'libs/db/emailAllowList'
 
