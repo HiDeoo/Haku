@@ -13,34 +13,36 @@ export type FolderData = Pick<Folder, 'id' | 'parentId' | 'name'>
 export async function addFolder(
   userId: UserId,
   type: FolderType,
-  name: string,
-  parentId?: number
+  name: FolderData['name'],
+  parentId?: FolderData['parentId']
 ): Promise<FolderData> {
-  if (parentId) {
-    const parentFolder = await getFolderById(parentId, userId)
+  return prisma.$transaction(async (prisma) => {
+    if (parentId) {
+      const parentFolder = await getFolderById(parentId, userId)
 
-    if (!parentFolder) {
-      throw new ApiClientError(API_ERROR_FOLDER_PARENT_DOES_NOT_EXISTS)
+      if (!parentFolder) {
+        throw new ApiClientError(API_ERROR_FOLDER_PARENT_DOES_NOT_EXISTS)
+      }
+
+      if (parentFolder.type !== type) {
+        throw new ApiClientError(API_ERROR_FOLDER_PARENT_INVALID_TYPE)
+      }
     }
 
-    if (parentFolder.type !== type) {
-      throw new ApiClientError(API_ERROR_FOLDER_PARENT_INVALID_TYPE)
+    try {
+      return await prisma.folder.create({
+        data: { userId, type, name, parentId },
+        select: { id: true, name: true, parentId: true },
+      })
+    } catch (error) {
+      handleDbError(error, {
+        unique: {
+          type_userId_name: API_ERROR_FOLDER_ALREADY_EXISTS,
+          parentId_type_userId_name: API_ERROR_FOLDER_ALREADY_EXISTS,
+        },
+      })
     }
-  }
-
-  try {
-    return await prisma.folder.create({
-      data: { userId, type, name, parentId },
-      select: { id: true, name: true, parentId: true },
-    })
-  } catch (error) {
-    handleDbError(error, {
-      unique: {
-        type_userId_name: API_ERROR_FOLDER_ALREADY_EXISTS,
-        parentId_type_userId_name: API_ERROR_FOLDER_ALREADY_EXISTS,
-      },
-    })
-  }
+  })
 }
 
 function getFolderById(id: number, userId: UserId): Promise<Folder | null> {
