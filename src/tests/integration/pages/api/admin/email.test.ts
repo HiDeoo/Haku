@@ -35,10 +35,8 @@ describe('admin/email', () => {
 
     test('should return allowed emails', () =>
       testApiRoute(getAndPostHandler, async ({ fetch }) => {
-        const email0 = 'test1@example.com'
-        const email1 = 'test2@example.com'
-
-        await prisma.emailAllowList.createMany({ data: [{ email: email0 }, { email: email1 }] })
+        const { email: email0 } = await createDbEmailAllowList({ email: 'test1@example.com' })
+        const { email: email1 } = await createDbEmailAllowList({ email: 'test2@example.com' })
 
         const res = await fetch({ method: HttpMethod.GET, headers: { 'Api-Key': process.env.ADMIN_API_KEY } })
         const json = await res.json<EmailAllowList[]>()
@@ -61,19 +59,14 @@ describe('admin/email', () => {
         })
         const json = await res.json<EmailAllowList>()
 
-        expect(json.id).toBeDefined()
-        expect(json.email).toEqual(email)
+        const dbEmail = await getDbEmailAllowList(json.id)
 
-        const dbEmail = await prisma.emailAllowList.findUnique({ where: { email: email } })
-
-        expect(dbEmail?.id).toBe(json.id)
+        expect(dbEmail?.email).toBe(json.email)
       }))
 
     test('should not add a new duplicated email', () =>
       testApiRoute(getAndPostHandler, async ({ fetch }) => {
-        const email = 'test@example.com'
-
-        await prisma.emailAllowList.create({ data: { email } })
+        const { email } = await createDbEmailAllowList()
 
         const res = await fetch({
           method: HttpMethod.POST,
@@ -85,7 +78,7 @@ describe('admin/email', () => {
         expect(res.status).toBe(StatusCode.ClientErrorForbidden)
         expect(json.error).toBe(API_ERROR_EMAIL_ALREADY_EXISTS)
 
-        const dbEmails = await prisma.emailAllowList.findMany({ where: { email } })
+        const dbEmails = await getDbEmailAllowLists({ email })
 
         expect(dbEmails.length).toBe(1)
       }))
@@ -93,16 +86,14 @@ describe('admin/email', () => {
 
   describe('DELETE', () => {
     test('should delete an email', async () => {
-      const email = 'test@example.com'
-
-      const { id } = await prisma.emailAllowList.create({ data: { email } })
+      const { id } = await createDbEmailAllowList()
 
       return testApiRoute(
         deleteHandler,
         async ({ fetch }) => {
           await fetch({ method: HttpMethod.DELETE, headers: { 'Api-Key': process.env.ADMIN_API_KEY } })
 
-          const dbEmail = await prisma.emailAllowList.findUnique({ where: { id } })
+          const dbEmail = await getDbEmailAllowList(id)
 
           expect(dbEmail).toBeNull()
         },
@@ -125,3 +116,25 @@ describe('admin/email', () => {
     })
   })
 })
+
+function createDbEmailAllowList(options?: DbEmailAllowListOptions) {
+  return prisma.emailAllowList.create({
+    data: {
+      email: options?.email ?? 'test@example.com',
+    },
+  })
+}
+
+function getDbEmailAllowLists(options: DbEmailAllowListOptions) {
+  return prisma.emailAllowList.findMany({
+    where: options,
+  })
+}
+
+function getDbEmailAllowList(id: EmailAllowList['id']) {
+  return prisma.emailAllowList.findUnique({ where: { id } })
+}
+
+interface DbEmailAllowListOptions {
+  email?: EmailAllowList['email']
+}

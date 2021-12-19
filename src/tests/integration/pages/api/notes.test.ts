@@ -5,6 +5,7 @@ import { HttpMethod } from 'libs/http'
 import handler from 'pages/api/notes'
 import { prisma } from 'libs/db'
 import { type NoteTreeData } from 'libs/db/tree'
+import { type FolderData } from 'libs/db/folder'
 
 describe('notes', () => {
   describe('GET', () => {
@@ -18,15 +19,9 @@ describe('notes', () => {
 
     test('should return a tree with only root nodes', () =>
       testApiRoute(handler, async ({ fetch }) => {
-        const { userId } = getTestUser()
-
-        const folder_0 = 'folder_0'
-        const folder_1 = 'folder_1'
-        const folder_2 = 'folder_2'
-
-        await prisma.folder.createMany({
-          data: [getFolderData(userId, folder_0), getFolderData(userId, folder_1), getFolderData(userId, folder_2)],
-        })
+        const { name: folder_0 } = await createDbFolder({ name: 'folder_0' })
+        const { name: folder_1 } = await createDbFolder({ name: 'folder_1' })
+        const { name: folder_2 } = await createDbFolder({ name: 'folder_2' })
 
         const res = await fetch({ method: HttpMethod.GET })
         const json = await res.json<NoteTreeData>()
@@ -39,8 +34,6 @@ describe('notes', () => {
 
     test('should return a tree with nested nodes', () =>
       testApiRoute(handler, async ({ fetch }) => {
-        const { userId } = getTestUser()
-
         /**
          * folder0
          * |__ folder0_0
@@ -56,44 +49,34 @@ describe('notes', () => {
          * |__ folder2_1
          */
 
-        const folder_0 = 'folder_0'
-        const folder_0_0 = 'folder_0_0'
-        const folder_0_1 = 'folder_0_1'
-        const folder_0_1_0 = 'folder_0_1_0'
-        const folder_0_1_1 = 'folder_0_1_1'
-        const folder_1 = 'folder_1'
-        const folder_2 = 'folder_2'
-        const folder_2_0 = 'folder_2_0'
-        const folder_2_0_0 = 'folder_2_0_0'
-        const folder_2_0_0_0 = 'folder_2_0_0_0'
-        const folder_2_0_0_1 = 'folder_2_0_0_1'
-        const folder_2_1 = 'folder_2_1'
+        const { id: folder_0_id, name: folder_0 } = await createDbFolder({ name: 'folder_0' })
 
-        const { id: folder_0_id } = await prisma.folder.create({ data: getFolderData(userId, folder_0) })
-
-        await prisma.folder.create({ data: getFolderData(userId, folder_0_0, folder_0_id) })
-        const { id: folder_0_1_id } = await prisma.folder.create({
-          data: getFolderData(userId, folder_0_1, folder_0_id),
+        const { name: folder_0_0 } = await createDbFolder({ name: 'folder_0_0', parentId: folder_0_id })
+        const { id: folder_0_1_id, name: folder_0_1 } = await createDbFolder({
+          name: 'folder_0_1',
+          parentId: folder_0_id,
         })
 
-        await prisma.folder.create({ data: getFolderData(userId, folder_0_1_0, folder_0_1_id) })
-        await prisma.folder.create({ data: getFolderData(userId, folder_0_1_1, folder_0_1_id) })
+        const { name: folder_0_1_0 } = await createDbFolder({ name: 'folder_0_1_0', parentId: folder_0_1_id })
+        const { name: folder_0_1_1 } = await createDbFolder({ name: 'folder_0_1_1', parentId: folder_0_1_id })
 
-        await prisma.folder.create({ data: getFolderData(userId, folder_1) })
+        const { name: folder_1 } = await createDbFolder({ name: 'folder_1' })
 
-        const { id: folder_2_id } = await prisma.folder.create({ data: getFolderData(userId, folder_2) })
+        const { id: folder_2_id, name: folder_2 } = await createDbFolder({ name: 'folder_2' })
 
-        const { id: folder_2_0_id } = await prisma.folder.create({
-          data: getFolderData(userId, folder_2_0, folder_2_id),
+        const { id: folder_2_0_id, name: folder_2_0 } = await createDbFolder({
+          name: 'folder_2_0',
+          parentId: folder_2_id,
         })
-        await prisma.folder.create({ data: getFolderData(userId, folder_2_1, folder_2_id) })
+        const { name: folder_2_1 } = await createDbFolder({ name: 'folder_2_1', parentId: folder_2_id })
 
-        const { id: folder_2_0_0_id } = await prisma.folder.create({
-          data: getFolderData(userId, folder_2_0_0, folder_2_0_id),
+        const { id: folder_2_0_0_id, name: folder_2_0_0 } = await createDbFolder({
+          name: 'folder_2_0_0',
+          parentId: folder_2_0_id,
         })
 
-        await prisma.folder.create({ data: getFolderData(userId, folder_2_0_0_0, folder_2_0_0_id) })
-        await prisma.folder.create({ data: getFolderData(userId, folder_2_0_0_1, folder_2_0_0_id) })
+        const { name: folder_2_0_0_0 } = await createDbFolder({ name: 'folder_2_0_0_0', parentId: folder_2_0_0_id })
+        const { name: folder_2_0_0_1 } = await createDbFolder({ name: 'folder_2_0_0_1', parentId: folder_2_0_0_id })
 
         const res = await fetch({ method: HttpMethod.GET })
         const json = await res.json<NoteTreeData>()
@@ -139,31 +122,23 @@ describe('notes', () => {
 
     test('should return only the content of the current user', () =>
       testApiRoute(handler, async ({ fetch }) => {
-        const { userId: userId0 } = getTestUser('0')
+        const { id: folder_0_user_0_id, name: folder_0_user_0 } = await createDbFolder({ name: 'folder_0_user_0' })
+        const { name: folder_1_user_0 } = await createDbFolder({ name: 'folder_1_user_0' })
+
+        const { name: folder_0_0_user_0 } = await createDbFolder({
+          name: 'folder_0_0_user_0',
+          parentId: folder_0_user_0_id,
+        })
+        const { name: folder_0_1_user_0 } = await createDbFolder({
+          name: 'folder_0_1_user_0',
+          parentId: folder_0_user_0_id,
+        })
+
         const { userId: userId1 } = getTestUser('1')
 
-        const folder_0_user_0 = 'folder_0_user_0'
-        const folder_1_user_0 = 'folder_1_user_0'
-        const folder_0_0_user_0 = 'folder_0_0_user_0'
-        const folder_0_1_user_0 = 'folder_0_1_user_0'
+        const { id: folder_0_user_1_id } = await createDbFolder({ name: 'folder_0_user_1', userId: userId1 })
 
-        const { id: folder_0_user_0_id } = await prisma.folder.create({
-          data: getFolderData(userId0, folder_0_user_0),
-        })
-
-        await prisma.folder.create({ data: getFolderData(userId0, folder_0_0_user_0, folder_0_user_0_id) })
-        await prisma.folder.create({ data: getFolderData(userId0, folder_0_1_user_0, folder_0_user_0_id) })
-
-        await prisma.folder.create({ data: getFolderData(userId0, folder_1_user_0) })
-
-        await prisma.folder.createMany({
-          data: [
-            getFolderData(userId1, 'folder_0_user_1'),
-            getFolderData(userId1, 'folder_1_user_1'),
-            getFolderData(userId1, 'folder_0_0_user_1'),
-            getFolderData(userId1, 'folder_0_1_user_1'),
-          ],
-        })
+        await createDbFolder({ name: 'folder_0_0_user_1', parentId: folder_0_user_1_id })
 
         const res = await fetch({ method: HttpMethod.GET })
         const json = await res.json<NoteTreeData>()
@@ -182,9 +157,38 @@ describe('notes', () => {
         expect(json[1]?.name).toEqual(folder_1_user_0)
         expect(json[1]?.children.length).toEqual(0)
       }))
+
+    test('should return only the content of the proper type', () =>
+      testApiRoute(handler, async ({ fetch }) => {
+        const { name: folder_0_type_note } = await createDbFolder({ name: 'folder_0_type_note' })
+
+        await createDbFolder({ name: 'folder_0_type_todo', type: FolderType.TODO })
+
+        const res = await fetch({ method: HttpMethod.GET })
+        const json = await res.json<NoteTreeData>()
+
+        expect(json.length).toEqual(1)
+
+        expect(json[0]?.name).toEqual(folder_0_type_note)
+        expect(json[0]?.children.length).toEqual(0)
+      }))
   })
 })
 
-function getFolderData(userId: string, name: string, parentId?: number) {
-  return { type: FolderType.NOTE, userId, name, parentId }
+function createDbFolder(options: DbFolderOptions) {
+  return prisma.folder.create({
+    data: {
+      name: options.name,
+      parentId: options?.parentId,
+      type: options?.type ?? FolderType.NOTE,
+      userId: options?.userId ?? getTestUser().userId,
+    },
+  })
+}
+
+interface DbFolderOptions {
+  name: FolderData['name']
+  parentId?: FolderData['parentId']
+  type?: FolderType
+  userId?: UserId
 }
