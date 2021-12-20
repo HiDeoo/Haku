@@ -70,7 +70,7 @@ export async function updateFolder(id: FolderData['id'], userId: UserId, data: U
   })
 }
 
-function getFolderById(id: number, userId: UserId): Promise<Folder | null> {
+export function getFolderById(id: number, userId: UserId): Promise<Folder | null> {
   return prisma.folder.findFirst({ where: { id, userId } })
 }
 

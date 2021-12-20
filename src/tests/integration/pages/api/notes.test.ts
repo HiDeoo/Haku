@@ -1,4 +1,5 @@
 import { FolderType } from '@prisma/client'
+import StatusCode from 'status-code-enum'
 
 import { getTestUser, testApiRoute } from 'tests/integration'
 import { HttpMethod } from 'libs/http'
@@ -6,6 +7,13 @@ import handler from 'pages/api/notes'
 import { prisma } from 'libs/db'
 import { type NoteTreeData } from 'libs/db/tree'
 import { type FolderData } from 'libs/db/folder'
+import { type NoteData } from 'libs/db/note'
+import { type ApiClientErrorResponse } from 'libs/api/routes'
+import {
+  API_ERROR_FOLDER_DOES_NOT_EXIST,
+  API_ERROR_FOLDER_INVALID_TYPE,
+  API_ERROR_NOTE_ALREADY_EXISTS,
+} from 'libs/api/routes/errors'
 
 describe('notes', () => {
   describe('GET', () => {
@@ -173,6 +181,140 @@ describe('notes', () => {
         expect(json[0]?.children.length).toEqual(0)
       }))
   })
+
+  describe.only('POST', () => {
+    test('should add a new note at the root', () =>
+      testApiRoute(handler, async ({ fetch }) => {
+        const name = 'note'
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: JSON.stringify({ name }),
+        })
+        const json = await res.json<NoteData>()
+
+        const dbNote = await getDbNote(json.id)
+
+        expect(dbNote).toBeDefined()
+        expect(dbNote?.name).toBe(name)
+        expect(dbNote?.folderId).toBeNull()
+      }))
+
+    test('should add a new note inside an existing folder', () =>
+      testApiRoute(handler, async ({ fetch }) => {
+        const { id: folderId } = await createDbFolder({ name: 'parent' })
+
+        const name = 'note'
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: JSON.stringify({ name, folderId }),
+        })
+        const json = await res.json<NoteData>()
+
+        const dbNote = await getDbNote(json.id)
+
+        expect(dbNote).toBeDefined()
+        expect(dbNote?.name).toBe(name)
+        expect(dbNote?.folderId).toBe(folderId)
+      }))
+
+    test('should not add a new note inside a nonexisting folder', () =>
+      testApiRoute(handler, async ({ fetch }) => {
+        const name = 'note'
+        const folderId = 1
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: JSON.stringify({ name, folderId }),
+        })
+        const json = await res.json<ApiClientErrorResponse>()
+
+        expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+        expect(json.error).toBe(API_ERROR_FOLDER_DOES_NOT_EXIST)
+
+        const dbNotes = await getDbNotes({ name, folderId })
+
+        expect(dbNotes.length).toBe(0)
+      }))
+
+    test('should not add a new note inside an existing folder not owned by the current user', () =>
+      testApiRoute(handler, async ({ fetch }) => {
+        const { id: folderId } = await createDbFolder({ name: 'parent', userId: getTestUser('1').userId })
+
+        const name = 'note'
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: JSON.stringify({ name, folderId }),
+        })
+        const json = await res.json<ApiClientErrorResponse>()
+
+        expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+        expect(json.error).toBe(API_ERROR_FOLDER_DOES_NOT_EXIST)
+
+        const dbNotes = await getDbNotes({ name, folderId })
+
+        expect(dbNotes.length).toBe(0)
+      }))
+
+    test('should not add a new note inside an existing folder of a different type', () =>
+      testApiRoute(handler, async ({ fetch }) => {
+        const { id: folderId } = await createDbFolder({ name: 'parent', type: FolderType.TODO })
+
+        const name = 'note'
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: JSON.stringify({ name, folderId }),
+        })
+        const json = await res.json<ApiClientErrorResponse>()
+
+        expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+        expect(json.error).toBe(API_ERROR_FOLDER_INVALID_TYPE)
+
+        const dbNotes = await getDbNotes({ name, folderId })
+
+        expect(dbNotes.length).toBe(0)
+      }))
+
+    test('should not add a new duplicated note at the root', () =>
+      testApiRoute(handler, async ({ fetch }) => {
+        const { name } = await createDbNote()
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: JSON.stringify({ name }),
+        })
+        const json = await res.json<ApiClientErrorResponse>()
+
+        expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+        expect(json.error).toBe(API_ERROR_NOTE_ALREADY_EXISTS)
+
+        const dbNotes = await getDbNotes({ name })
+
+        expect(dbNotes.length).toBe(1)
+      }))
+
+    test('should not add a new duplicated note inside an existing folder', () =>
+      testApiRoute(handler, async ({ fetch }) => {
+        const { id: folderId } = await createDbFolder({ name: 'parent' })
+        const { name } = await createDbNote({ folderId })
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: JSON.stringify({ name, folderId }),
+        })
+        const json = await res.json<ApiClientErrorResponse>()
+
+        expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+        expect(json.error).toBe(API_ERROR_NOTE_ALREADY_EXISTS)
+
+        const dbNotes = await getDbNotes({ name, folderId })
+
+        expect(dbNotes.length).toBe(1)
+      }))
+  })
 })
 
 function createDbFolder(options: DbFolderOptions) {
@@ -186,9 +328,38 @@ function createDbFolder(options: DbFolderOptions) {
   })
 }
 
+function getDbNotes(options: DbNoteOptions) {
+  return prisma.note.findMany({
+    where: {
+      ...options,
+      userId: options.userId ?? getTestUser().userId,
+    },
+  })
+}
+
+function createDbNote(options?: DbNoteOptions) {
+  return prisma.note.create({
+    data: {
+      name: options?.name ?? 'note',
+      folderId: options?.folderId,
+      userId: options?.userId ?? getTestUser().userId,
+    },
+  })
+}
+
+function getDbNote(id: NoteData['id']) {
+  return prisma.note.findUnique({ where: { id } })
+}
+
 interface DbFolderOptions {
   name: FolderData['name']
   parentId?: FolderData['parentId']
   type?: FolderType
+  userId?: UserId
+}
+
+interface DbNoteOptions {
+  name?: NoteData['name']
+  folderId?: NoteData['folderId']
   userId?: UserId
 }

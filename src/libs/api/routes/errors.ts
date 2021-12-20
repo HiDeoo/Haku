@@ -7,3 +7,6 @@ export const API_ERROR_FOLDER_PARENT_DOES_NOT_EXIST = 'The parent folder specifi
 export const API_ERROR_FOLDER_PARENT_INVALID_TYPE = 'The parent folder type is invalid.'
 export const API_ERROR_FOLDER_ALREADY_EXISTS = 'A folder with the same name already exists.'
 export const API_ERROR_FOLDER_DOES_NOT_EXIST = 'The folder specified does not exist.'
+export const API_ERROR_FOLDER_INVALID_TYPE = 'The folder type is invalid.'
+
+export const API_ERROR_NOTE_ALREADY_EXISTS = 'A note with the same name already exists.'
