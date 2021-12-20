@@ -3,8 +3,8 @@ import StatusCode from 'status-code-enum'
 
 import { getTestUser, testApiRoute } from 'tests/integration'
 import { HttpMethod } from 'libs/http'
-import postHandler from 'pages/api/folder'
-import patchHandler from 'pages/api/folder/[id]'
+import postHandler from 'pages/api/folders'
+import patchHandler from 'pages/api/folders/[id]'
 import { type FolderData } from 'libs/db/folder'
 import { prisma } from 'libs/db'
 import { ApiClientErrorResponse } from 'libs/api/routes'
@@ -15,7 +15,7 @@ import {
   API_ERROR_FOLDER_PARENT_INVALID_TYPE,
 } from 'libs/api/routes/errors'
 
-describe('folder', () => {
+describe('folders', () => {
   describe('POST', () => {
     test('should add a new folder at the root', () =>
       testApiRoute(postHandler, async ({ fetch }) => {

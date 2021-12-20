@@ -1,15 +1,15 @@
 import { type EmailAllowList } from '@prisma/client'
 import StatusCode from 'status-code-enum'
 
-import getAndPostHandler from 'pages/api/admin/email'
-import deleteHandler from 'pages/api/admin/email/[id]'
+import getAndPostHandler from 'pages/api/admin/emails'
+import deleteHandler from 'pages/api/admin/emails/[id]'
 import { testApiRoute } from 'tests/integration'
 import { HttpMethod } from 'libs/http'
 import { prisma } from 'libs/db'
 import { type ApiClientErrorResponse } from 'libs/api/routes'
 import { API_ERROR_EMAIL_ALREADY_EXISTS, API_ERROR_EMAIL_DOES_NOT_EXISTS } from 'libs/api/routes/errors'
 
-describe('admin/email', () => {
+describe('admin/emails', () => {
   describe('GET', () => {
     test('should fail without an API key', () =>
       testApiRoute(getAndPostHandler, async ({ fetch }) => {
