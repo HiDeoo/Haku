@@ -20,7 +20,7 @@ export function testApiRoute<ResponseType>(
         rest.get(getTestApiUrl('auth/session'), (_req, res, ctx) => res(ctx.json(getTestUserSession(options?.userId))))
       )
 
-      await test({ fetch: testParams.fetch as FetchFn })
+      await test({ fetch: testParams.fetch as unknown as FetchFn })
     },
   })
 }
