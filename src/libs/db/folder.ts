@@ -11,6 +11,8 @@ import { handleDbError, prisma } from 'libs/db'
 
 export type FolderData = Pick<Folder, 'id' | 'parentId' | 'name'>
 
+const folderDataSelect = { id: true, name: true, parentId: true }
+
 export async function addFolder(
   userId: UserId,
   type: FolderType,
@@ -23,7 +25,7 @@ export async function addFolder(
     try {
       return await prisma.folder.create({
         data: { userId, type, name, parentId },
-        select: { id: true, name: true, parentId: true },
+        select: folderDataSelect,
       })
     } catch (error) {
       handleDbError(error, {
@@ -55,6 +57,7 @@ export async function updateFolder(id: FolderData['id'], userId: UserId, data: U
           name: data.name,
           parentId: data.parentId,
         },
+        select: folderDataSelect,
       })
     } catch (error) {
       handleDbError(error, {
