@@ -11,7 +11,7 @@ import { ApiClientErrorResponse } from 'libs/api/routes'
 import {
   API_ERROR_FOLDER_ALREADY_EXISTS,
   API_ERROR_FOLDER_DOES_NOT_EXIST,
-  API_ERROR_FOLDER_PARENT_DOES_NOT_EXISTS,
+  API_ERROR_FOLDER_PARENT_DOES_NOT_EXIST,
   API_ERROR_FOLDER_PARENT_INVALID_TYPE,
 } from 'libs/api/routes/errors'
 
@@ -68,7 +68,7 @@ describe('folders', () => {
         const json = await res.json<ApiClientErrorResponse>()
 
         expect(res.status).toBe(StatusCode.ClientErrorForbidden)
-        expect(json.error).toBe(API_ERROR_FOLDER_PARENT_DOES_NOT_EXISTS)
+        expect(json.error).toBe(API_ERROR_FOLDER_PARENT_DOES_NOT_EXIST)
 
         const dbFolders = await getDbFolders({ name, type, parentId })
 
@@ -89,7 +89,7 @@ describe('folders', () => {
         const json = await res.json<ApiClientErrorResponse>()
 
         expect(res.status).toBe(StatusCode.ClientErrorForbidden)
-        expect(json.error).toBe(API_ERROR_FOLDER_PARENT_DOES_NOT_EXISTS)
+        expect(json.error).toBe(API_ERROR_FOLDER_PARENT_DOES_NOT_EXIST)
 
         const dbFolders = await getDbFolders({ name, type, parentId })
 
@@ -294,7 +294,7 @@ describe('folders', () => {
           const json = await res.json<ApiClientErrorResponse>()
 
           expect(res.status).toBe(StatusCode.ClientErrorForbidden)
-          expect(json.error).toBe(API_ERROR_FOLDER_PARENT_DOES_NOT_EXISTS)
+          expect(json.error).toBe(API_ERROR_FOLDER_PARENT_DOES_NOT_EXIST)
 
           const dbFolder = await getDbFolder(id)
 
@@ -319,7 +319,7 @@ describe('folders', () => {
           const json = await res.json<ApiClientErrorResponse>()
 
           expect(res.status).toBe(StatusCode.ClientErrorForbidden)
-          expect(json.error).toBe(API_ERROR_FOLDER_PARENT_DOES_NOT_EXISTS)
+          expect(json.error).toBe(API_ERROR_FOLDER_PARENT_DOES_NOT_EXIST)
 
           const dbFolder = await getDbFolder(id)
 

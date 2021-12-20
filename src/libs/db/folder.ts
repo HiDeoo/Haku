@@ -4,7 +4,7 @@ import { ApiClientError } from 'libs/api/routes'
 import {
   API_ERROR_FOLDER_ALREADY_EXISTS,
   API_ERROR_FOLDER_DOES_NOT_EXIST,
-  API_ERROR_FOLDER_PARENT_DOES_NOT_EXISTS,
+  API_ERROR_FOLDER_PARENT_DOES_NOT_EXIST,
   API_ERROR_FOLDER_PARENT_INVALID_TYPE,
 } from 'libs/api/routes/errors'
 import { handleDbError, prisma } from 'libs/db'
@@ -79,7 +79,7 @@ async function validateParentFolder(parentId: FolderData['parentId'] | undefined
     const parentFolder = await getFolderById(parentId, userId)
 
     if (!parentFolder) {
-      throw new ApiClientError(API_ERROR_FOLDER_PARENT_DOES_NOT_EXISTS)
+      throw new ApiClientError(API_ERROR_FOLDER_PARENT_DOES_NOT_EXIST)
     }
 
     if (parentFolder.type !== type) {
