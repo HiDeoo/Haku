@@ -1,13 +1,13 @@
 import { FolderType, Note } from '@prisma/client'
 
 import { handleDbError, prisma } from 'libs/db'
-import { ApiClientError } from 'libs/api/routes'
+import { getFolderById } from 'libs/db/folder'
 import {
+  ApiError,
   API_ERROR_FOLDER_DOES_NOT_EXIST,
   API_ERROR_FOLDER_INVALID_TYPE,
   API_ERROR_NOTE_ALREADY_EXISTS,
 } from 'libs/api/routes/errors'
-import { getFolderById } from 'libs/db/folder'
 
 export type NoteData = Pick<Note, 'id' | 'folderId' | 'name'>
 
@@ -42,11 +42,11 @@ async function validateFolder(folderId: NoteData['folderId'] | undefined, userId
     const folder = await getFolderById(folderId, userId)
 
     if (!folder) {
-      throw new ApiClientError(API_ERROR_FOLDER_DOES_NOT_EXIST)
+      throw new ApiError(API_ERROR_FOLDER_DOES_NOT_EXIST)
     }
 
     if (folder.type !== FolderType.NOTE) {
-      throw new ApiClientError(API_ERROR_FOLDER_INVALID_TYPE)
+      throw new ApiError(API_ERROR_FOLDER_INVALID_TYPE)
     }
   }
 }

@@ -7,8 +7,8 @@ import postHandler from 'pages/api/folders'
 import patchHandler from 'pages/api/folders/[id]'
 import { type FolderData } from 'libs/db/folder'
 import { prisma } from 'libs/db'
-import { ApiClientErrorResponse } from 'libs/api/routes'
 import {
+  type ApiErrorResponse,
   API_ERROR_FOLDER_ALREADY_EXISTS,
   API_ERROR_FOLDER_DOES_NOT_EXIST,
   API_ERROR_FOLDER_PARENT_DOES_NOT_EXIST,
@@ -65,7 +65,7 @@ describe('folders', () => {
           method: HttpMethod.POST,
           body: JSON.stringify({ name, type, parentId }),
         })
-        const json = await res.json<ApiClientErrorResponse>()
+        const json = await res.json<ApiErrorResponse>()
 
         expect(res.status).toBe(StatusCode.ClientErrorForbidden)
         expect(json.error).toBe(API_ERROR_FOLDER_PARENT_DOES_NOT_EXIST)
@@ -86,7 +86,7 @@ describe('folders', () => {
           method: HttpMethod.POST,
           body: JSON.stringify({ name, type, parentId }),
         })
-        const json = await res.json<ApiClientErrorResponse>()
+        const json = await res.json<ApiErrorResponse>()
 
         expect(res.status).toBe(StatusCode.ClientErrorForbidden)
         expect(json.error).toBe(API_ERROR_FOLDER_PARENT_DOES_NOT_EXIST)
@@ -107,7 +107,7 @@ describe('folders', () => {
           method: HttpMethod.POST,
           body: JSON.stringify({ name, type, parentId }),
         })
-        const json = await res.json<ApiClientErrorResponse>()
+        const json = await res.json<ApiErrorResponse>()
 
         expect(res.status).toBe(StatusCode.ClientErrorForbidden)
         expect(json.error).toBe(API_ERROR_FOLDER_PARENT_INVALID_TYPE)
@@ -126,7 +126,7 @@ describe('folders', () => {
           method: HttpMethod.POST,
           body: JSON.stringify({ name, type }),
         })
-        const json = await res.json<ApiClientErrorResponse>()
+        const json = await res.json<ApiErrorResponse>()
 
         expect(res.status).toBe(StatusCode.ClientErrorForbidden)
         expect(json.error).toBe(API_ERROR_FOLDER_ALREADY_EXISTS)
@@ -145,7 +145,7 @@ describe('folders', () => {
           method: HttpMethod.POST,
           body: JSON.stringify({ name, type, parentId }),
         })
-        const json = await res.json<ApiClientErrorResponse>()
+        const json = await res.json<ApiErrorResponse>()
 
         expect(res.status).toBe(StatusCode.ClientErrorForbidden)
         expect(json.error).toBe(API_ERROR_FOLDER_ALREADY_EXISTS)
@@ -193,7 +193,7 @@ describe('folders', () => {
             method: HttpMethod.PATCH,
             body: JSON.stringify({ name: newName }),
           })
-          const json = await res.json<ApiClientErrorResponse>()
+          const json = await res.json<ApiErrorResponse>()
 
           expect(res.status).toBe(StatusCode.ClientErrorForbidden)
           expect(json.error).toBe(API_ERROR_FOLDER_ALREADY_EXISTS)
@@ -267,7 +267,7 @@ describe('folders', () => {
             method: HttpMethod.PATCH,
             body: JSON.stringify({ parentId: newParentId }),
           })
-          const json = await res.json<ApiClientErrorResponse>()
+          const json = await res.json<ApiErrorResponse>()
 
           expect(res.status).toBe(StatusCode.ClientErrorForbidden)
           expect(json.error).toBe(API_ERROR_FOLDER_ALREADY_EXISTS)
@@ -291,7 +291,7 @@ describe('folders', () => {
             method: HttpMethod.PATCH,
             body: JSON.stringify({ parentId: 1 }),
           })
-          const json = await res.json<ApiClientErrorResponse>()
+          const json = await res.json<ApiErrorResponse>()
 
           expect(res.status).toBe(StatusCode.ClientErrorForbidden)
           expect(json.error).toBe(API_ERROR_FOLDER_PARENT_DOES_NOT_EXIST)
@@ -316,7 +316,7 @@ describe('folders', () => {
             method: HttpMethod.PATCH,
             body: JSON.stringify({ parentId: newParentId }),
           })
-          const json = await res.json<ApiClientErrorResponse>()
+          const json = await res.json<ApiErrorResponse>()
 
           expect(res.status).toBe(StatusCode.ClientErrorForbidden)
           expect(json.error).toBe(API_ERROR_FOLDER_PARENT_DOES_NOT_EXIST)
@@ -341,7 +341,7 @@ describe('folders', () => {
             method: HttpMethod.PATCH,
             body: JSON.stringify({ parentId: newParentId }),
           })
-          const json = await res.json<ApiClientErrorResponse>()
+          const json = await res.json<ApiErrorResponse>()
 
           expect(res.status).toBe(StatusCode.ClientErrorForbidden)
           expect(json.error).toBe(API_ERROR_FOLDER_PARENT_INVALID_TYPE)
@@ -393,7 +393,7 @@ describe('folders', () => {
             method: HttpMethod.PATCH,
             body: JSON.stringify({ name: 'newName' }),
           })
-          const json = await res.json<ApiClientErrorResponse>()
+          const json = await res.json<ApiErrorResponse>()
 
           expect(res.status).toBe(StatusCode.ClientErrorForbidden)
           expect(json.error).toBe(API_ERROR_FOLDER_DOES_NOT_EXIST)
@@ -417,7 +417,7 @@ describe('folders', () => {
             method: HttpMethod.PATCH,
             body: JSON.stringify({ name: newName }),
           })
-          const json = await res.json<ApiClientErrorResponse>()
+          const json = await res.json<ApiErrorResponse>()
 
           expect(res.status).toBe(StatusCode.ClientErrorForbidden)
           expect(json.error).toBe(API_ERROR_FOLDER_DOES_NOT_EXIST)

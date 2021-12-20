@@ -2,7 +2,7 @@ import type { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
 import { StatusCode } from 'status-code-enum'
 
 import { HttpMethod } from 'libs/http'
-import { API_ERROR_UNKNOWN } from 'libs/api/routes/errors'
+import { type ApiErrorResponse, API_ERROR_UNKNOWN, ApiError } from 'libs/api/routes/errors'
 import { type ApiRequestValidationSchema, type ValidatedApiRequest } from 'libs/api/routes/middlewares'
 
 export function createApiRoute<Get = never, Post = never, Put = never, Delete = never, Patch = never>(
@@ -11,10 +11,7 @@ export function createApiRoute<Get = never, Post = never, Put = never, Delete = 
 ) {
   const orderedMiddlewares = middlewares?.reverse()
 
-  return async (
-    req: NextApiRequest,
-    res: NextApiResponse<Get | Post | Put | Delete | Patch | ApiClientErrorResponse>
-  ) => {
+  return async (req: NextApiRequest, res: NextApiResponse<Get | Post | Put | Delete | Patch | ApiErrorResponse>) => {
     let handler: NextApiHandler | undefined
 
     if (req.method === HttpMethod.GET && route.get) {
@@ -45,7 +42,7 @@ export function createApiRoute<Get = never, Post = never, Put = never, Delete = 
       let statusCode = StatusCode.ServerErrorInternal
       let message = API_ERROR_UNKNOWN
 
-      if (error instanceof ApiClientError) {
+      if (error instanceof ApiError) {
         statusCode = error.httpStatusCode
         message = error.message
       } else {
@@ -67,14 +64,6 @@ export function getApiRequestUser<Schema extends ApiRequestValidationSchema>(
   return { ...req.user, userId: req.user.id }
 }
 
-export class ApiClientError extends Error {
-  constructor(public message: string, public httpStatusCode: StatusCode = StatusCode.ClientErrorForbidden) {
-    super(message)
-
-    Object.setPrototypeOf(this, new.target.prototype)
-  }
-}
-
 interface ApiRoute<Get, Post, Put, Delete, Patch> {
   get?: NextApiHandler<Get>
   post?: NextApiHandler<Post>
@@ -84,7 +73,3 @@ interface ApiRoute<Get, Post, Put, Delete, Patch> {
 }
 
 type ApiMiddleware = (handler: NextApiHandler) => NextApiHandler
-
-export interface ApiClientErrorResponse {
-  error: string
-}

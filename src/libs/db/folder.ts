@@ -1,7 +1,7 @@
 import { type Folder, FolderType } from '@prisma/client'
 
-import { ApiClientError } from 'libs/api/routes'
 import {
+  ApiError,
   API_ERROR_FOLDER_ALREADY_EXISTS,
   API_ERROR_FOLDER_DOES_NOT_EXIST,
   API_ERROR_FOLDER_PARENT_DOES_NOT_EXIST,
@@ -43,7 +43,7 @@ export async function updateFolder(id: FolderData['id'], userId: UserId, data: U
     const folder = await getFolderById(id, userId)
 
     if (!folder) {
-      throw new ApiClientError(API_ERROR_FOLDER_DOES_NOT_EXIST)
+      throw new ApiError(API_ERROR_FOLDER_DOES_NOT_EXIST)
     }
 
     await validateParentFolder(data.parentId, userId, folder.type)
@@ -79,11 +79,11 @@ async function validateParentFolder(parentId: FolderData['parentId'] | undefined
     const parentFolder = await getFolderById(parentId, userId)
 
     if (!parentFolder) {
-      throw new ApiClientError(API_ERROR_FOLDER_PARENT_DOES_NOT_EXIST)
+      throw new ApiError(API_ERROR_FOLDER_PARENT_DOES_NOT_EXIST)
     }
 
     if (parentFolder.type !== type) {
-      throw new ApiClientError(API_ERROR_FOLDER_PARENT_INVALID_TYPE)
+      throw new ApiError(API_ERROR_FOLDER_PARENT_INVALID_TYPE)
     }
   }
 }

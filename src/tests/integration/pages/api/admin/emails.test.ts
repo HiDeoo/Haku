@@ -6,8 +6,11 @@ import deleteHandler from 'pages/api/admin/emails/[id]'
 import { testApiRoute } from 'tests/integration'
 import { HttpMethod } from 'libs/http'
 import { prisma } from 'libs/db'
-import { type ApiClientErrorResponse } from 'libs/api/routes'
-import { API_ERROR_EMAIL_ALREADY_EXISTS, API_ERROR_EMAIL_DOES_NOT_EXISTS } from 'libs/api/routes/errors'
+import {
+  type ApiErrorResponse,
+  API_ERROR_EMAIL_ALREADY_EXISTS,
+  API_ERROR_EMAIL_DOES_NOT_EXISTS,
+} from 'libs/api/routes/errors'
 
 describe('admin/emails', () => {
   describe('GET', () => {
@@ -73,7 +76,7 @@ describe('admin/emails', () => {
           headers: { 'Api-Key': process.env.ADMIN_API_KEY },
           body: JSON.stringify({ email }),
         })
-        const json = await res.json<ApiClientErrorResponse>()
+        const json = await res.json<ApiErrorResponse>()
 
         expect(res.status).toBe(StatusCode.ClientErrorForbidden)
         expect(json.error).toBe(API_ERROR_EMAIL_ALREADY_EXISTS)
@@ -106,7 +109,7 @@ describe('admin/emails', () => {
         deleteHandler,
         async ({ fetch }) => {
           const res = await fetch({ method: HttpMethod.DELETE, headers: { 'Api-Key': process.env.ADMIN_API_KEY } })
-          const json = await res.json<ApiClientErrorResponse>()
+          const json = await res.json<ApiErrorResponse>()
 
           expect(res.status).toBe(StatusCode.ClientErrorForbidden)
           expect(json.error).toBe(API_ERROR_EMAIL_DOES_NOT_EXISTS)

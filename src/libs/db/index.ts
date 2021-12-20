@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime'
 
-import { ApiClientError } from 'libs/api/routes'
+import { ApiError } from 'libs/api/routes/errors'
 
 declare global {
   var prisma: PrismaClient | undefined
@@ -47,7 +47,7 @@ export function handleDbError(error: unknown, options: DbErrorHandlerOptions): n
   }
 
   if (apiClientErrorMessage) {
-    throw new ApiClientError(apiClientErrorMessage)
+    throw new ApiError(apiClientErrorMessage)
   }
 
   throw error

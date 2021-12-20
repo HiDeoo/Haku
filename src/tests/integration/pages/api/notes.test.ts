@@ -8,8 +8,8 @@ import { prisma } from 'libs/db'
 import { type NoteTreeData } from 'libs/db/tree'
 import { type FolderData } from 'libs/db/folder'
 import { type NoteData } from 'libs/db/note'
-import { type ApiClientErrorResponse } from 'libs/api/routes'
 import {
+  type ApiErrorResponse,
   API_ERROR_FOLDER_DOES_NOT_EXIST,
   API_ERROR_FOLDER_INVALID_TYPE,
   API_ERROR_NOTE_ALREADY_EXISTS,
@@ -228,7 +228,7 @@ describe('notes', () => {
           method: HttpMethod.POST,
           body: JSON.stringify({ name, folderId }),
         })
-        const json = await res.json<ApiClientErrorResponse>()
+        const json = await res.json<ApiErrorResponse>()
 
         expect(res.status).toBe(StatusCode.ClientErrorForbidden)
         expect(json.error).toBe(API_ERROR_FOLDER_DOES_NOT_EXIST)
@@ -248,7 +248,7 @@ describe('notes', () => {
           method: HttpMethod.POST,
           body: JSON.stringify({ name, folderId }),
         })
-        const json = await res.json<ApiClientErrorResponse>()
+        const json = await res.json<ApiErrorResponse>()
 
         expect(res.status).toBe(StatusCode.ClientErrorForbidden)
         expect(json.error).toBe(API_ERROR_FOLDER_DOES_NOT_EXIST)
@@ -268,7 +268,7 @@ describe('notes', () => {
           method: HttpMethod.POST,
           body: JSON.stringify({ name, folderId }),
         })
-        const json = await res.json<ApiClientErrorResponse>()
+        const json = await res.json<ApiErrorResponse>()
 
         expect(res.status).toBe(StatusCode.ClientErrorForbidden)
         expect(json.error).toBe(API_ERROR_FOLDER_INVALID_TYPE)
@@ -286,7 +286,7 @@ describe('notes', () => {
           method: HttpMethod.POST,
           body: JSON.stringify({ name }),
         })
-        const json = await res.json<ApiClientErrorResponse>()
+        const json = await res.json<ApiErrorResponse>()
 
         expect(res.status).toBe(StatusCode.ClientErrorForbidden)
         expect(json.error).toBe(API_ERROR_NOTE_ALREADY_EXISTS)
@@ -305,7 +305,7 @@ describe('notes', () => {
           method: HttpMethod.POST,
           body: JSON.stringify({ name, folderId }),
         })
-        const json = await res.json<ApiClientErrorResponse>()
+        const json = await res.json<ApiErrorResponse>()
 
         expect(res.status).toBe(StatusCode.ClientErrorForbidden)
         expect(json.error).toBe(API_ERROR_NOTE_ALREADY_EXISTS)
