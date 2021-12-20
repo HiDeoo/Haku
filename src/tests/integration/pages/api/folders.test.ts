@@ -31,8 +31,7 @@ describe('folders', () => {
         const dbFolder = await getDbFolder(json.id)
 
         expect(dbFolder).toBeDefined()
-        expect(dbFolder?.id).toBe(json.id)
-        expect(dbFolder?.name).toBe(json.name)
+        expect(dbFolder?.name).toBe(name)
         expect(dbFolder?.parentId).toBeNull()
       }))
 
@@ -52,8 +51,7 @@ describe('folders', () => {
         const dbFolder = await getDbFolder(json.id)
 
         expect(dbFolder).toBeDefined()
-        expect(dbFolder?.id).toBe(json.id)
-        expect(dbFolder?.name).toBe(json.name)
+        expect(dbFolder?.name).toBe(name)
         expect(dbFolder?.parentId).toBe(parentId)
       }))
 
