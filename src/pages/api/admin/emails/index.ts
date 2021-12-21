@@ -1,19 +1,19 @@
 import { type EmailAllowList } from '@prisma/client'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import { ValidatedApiRequest, withAdmin, withValidation } from 'libs/api/routes/middlewares'
+import { type ValidatedApiRequest, withAdmin, withValidation } from 'libs/api/routes/middlewares'
 import { addAllowedEmail, getAllowedEmails } from 'libs/db/emailAllowList'
 import { createApiRoute } from 'libs/api/routes'
 import { z, zEmail } from 'libs/validation'
 
-const postSchema = z.object({
+const postBodySchema = z.object({
   email: zEmail,
 })
 
 const route = createApiRoute(
   {
     get: getHandler,
-    post: withValidation(postHandler, postSchema),
+    post: withValidation(postHandler, postBodySchema),
   },
   [withAdmin]
 )
@@ -27,7 +27,7 @@ async function getHandler(_req: NextApiRequest, res: NextApiResponse<EmailAllowL
 }
 
 async function postHandler(
-  req: ValidatedApiRequest<{ body: typeof postSchema }>,
+  req: ValidatedApiRequest<{ body: typeof postBodySchema }>,
   res: NextApiResponse<EmailAllowList>
 ) {
   const email = await addAllowedEmail(req.body.email)

@@ -42,5 +42,11 @@ function sendVerificationRequest({
   identifier: email,
   url,
 }: Parameters<EmailApiProviderUserOptions['sendVerificationRequest']>[0]) {
+  if (process.env.NODE_ENV === 'development' && email.endsWith('@example.com')) {
+    console.info(`Magic link for ${email}: ${url}`)
+
+    return
+  }
+
   return sendLoginEmail(email, url)
 }

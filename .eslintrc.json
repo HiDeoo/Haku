@@ -4,5 +4,13 @@
     "import/order": ["error", { "newlines-between": "always" }],
     "no-unused-vars": "off",
     "no-var": "off"
-  }
+  },
+  "overrides": [
+    {
+      "files": "*.js",
+      "rules": {
+        "@typescript-eslint/no-var-requires": "off"
+      }
+    }
+  ]
 }

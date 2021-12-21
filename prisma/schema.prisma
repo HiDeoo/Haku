@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["interactiveTransactions"]
 }
 
 datasource db {
@@ -18,15 +19,19 @@ model User {
   name          String?
   email         String?   @unique
   emailVerified DateTime?
-  sessions      Session[]
+
+  sessions Session[]
+  folders  Folder[]
+  notes    Note[]
 }
 
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
-  userId       String
   expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model VerificationToken {
@@ -35,4 +40,40 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Folder {
+  id   Int        @id @default(autoincrement())
+  name String
+  type FolderType
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  parentId Int?
+  parent   Folder?  @relation("FolderToFolder", fields: [parentId], references: [id])
+  children Folder[] @relation("FolderToFolder")
+
+  notes Note[]
+
+  @@unique([parentId, type, userId, name], map: "Folder_parentId_type_userId_name_unique_constraint")
+  @@index([parentId, type, userId], name: "Folder_parentId_type_userId_index")
+}
+
+enum FolderType {
+  NOTE
+  TODO
+}
+
+model Note {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  folderId Int?
+  folder   Folder? @relation(fields: [folderId], references: [id], onDelete: Cascade)
+
+  @@unique([folderId, userId, name], map: "Note_folderId_userId_name_unique_constraint")
 }
