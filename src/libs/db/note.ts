@@ -37,6 +37,19 @@ export async function addNote(
   })
 }
 
+export async function getNotesGroupedByFolder(userId: UserId): Promise<NotesGroupedByFolder> {
+  // TODO(HiDeoo) order
+  const notes = await prisma.note.findMany({ where: { userId }, select: noteDataSelect })
+
+  const notesGroupedByFolder: NotesGroupedByFolder = new Map()
+
+  notes.forEach((note) => {
+    notesGroupedByFolder.set(note.folderId, [...(notesGroupedByFolder.get(note.folderId) ?? []), note])
+  })
+
+  return notesGroupedByFolder
+}
+
 async function validateFolder(folderId: NoteData['folderId'] | undefined, userId: UserId) {
   if (folderId) {
     const folder = await getFolderById(folderId, userId)
@@ -50,3 +63,5 @@ async function validateFolder(folderId: NoteData['folderId'] | undefined, userId
     }
   }
 }
+
+type NotesGroupedByFolder = Map<NoteData['folderId'], NoteData[]>

@@ -2,18 +2,23 @@ import { FolderType } from '@prisma/client'
 
 import { prisma } from 'libs/db'
 import { type FolderData } from 'libs/db/folder'
+import { getNotesGroupedByFolder, type NoteData } from 'libs/db/note'
+import { type HierarchicalListFolder, type HierarchicalListItem, hierarchicalListToTree, type Tree } from 'libs/tree'
 
-export type NoteTreeData = Tree<NoteTreeItem>
+export type NoteTreeData = Tree<FolderData, NoteData>
 
 export async function getNoteTree(userId: UserId): Promise<NoteTreeData> {
-  return getTree(userId, FolderType.NOTE)
+  const notesGroupedByFolder = await getNotesGroupedByFolder(userId)
+
+  return getTree<FolderData, NoteData>(userId, FolderType.NOTE, notesGroupedByFolder)
 }
 
-async function getTree<Item extends HierarchicalListBaseItem>(
+async function getTree<Folder extends HierarchicalListFolder, Item extends HierarchicalListItem>(
   userId: UserId,
-  folderType: FolderType
-): Promise<Tree<Item>> {
-  const folders = await prisma.$queryRaw<Item[]>`
+  folderType: FolderType,
+  items: Map<Item['folderId'], Item[]>
+): Promise<Tree<Folder, Item>> {
+  const folders = await prisma.$queryRaw<Folder[]>`
 WITH RECURSIVE root_to_leaf AS (
   SELECT
     "id",
@@ -47,56 +52,5 @@ ORDER BY
   "level" ASC,
   "name" ASC`
 
-  return hierarchicalListToTree(folders)
+  return hierarchicalListToTree(folders, items)
 }
-
-// The list should be ordered in such a way that the parent of an item is always defined before its children.
-export function hierarchicalListToTree<Item extends HierarchicalListBaseItem>(
-  list: (Item | TreeItem<Item>)[]
-): Tree<Item> {
-  const hierarchyError = new Error('Unable to generate tree from an unordered hierarchical list')
-  const indexMap: Record<HierarchicalListItemId, number> = {}
-  const tree: TreeItem<Item>[] = []
-  let treeItem: TreeItem<Item>
-
-  const clonedList = [...list]
-
-  clonedList.forEach((item, index) => {
-    indexMap[item.id] = index
-    clonedList[index] = treeItem = { ...item, children: [] }
-
-    if (!treeItem.parentId) {
-      tree.push(treeItem)
-    } else {
-      const parentIndex = indexMap[treeItem.parentId]
-
-      if (typeof parentIndex === 'undefined') {
-        throw hierarchyError
-      }
-
-      const parent = clonedList[parentIndex]
-
-      if (!parent || !isHierarchicalTreeItem(parent)) {
-        throw hierarchyError
-      }
-
-      parent.children.push(treeItem)
-    }
-  })
-
-  return tree
-}
-
-function isHierarchicalTreeItem<Item extends HierarchicalListBaseItem>(
-  item: Item | TreeItem<Item>
-): item is TreeItem<Item> {
-  return typeof (item as TreeItem<Item>).children !== 'undefined'
-}
-
-type NoteTreeItem = FolderData & { level: number }
-
-type HierarchicalListItemId = string | number
-type HierarchicalListBaseItem = { id: HierarchicalListItemId; parentId: HierarchicalListItemId | null }
-
-type TreeItem<Item extends HierarchicalListBaseItem> = Item & { children: TreeItem<Item>[] }
-type Tree<Item extends HierarchicalListBaseItem> = TreeItem<Item>[]

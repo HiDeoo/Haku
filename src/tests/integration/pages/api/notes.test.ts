@@ -14,19 +14,41 @@ import {
   API_ERROR_FOLDER_INVALID_TYPE,
   API_ERROR_NOTE_ALREADY_EXISTS,
 } from 'libs/api/routes/errors'
+import { assertIsTreeFolder, assertIsTreeItem } from 'libs/tree'
 
 describe('notes', () => {
   describe('GET', () => {
     test('should return an empty tree', () =>
       testApiRoute(handler, async ({ fetch }) => {
         const res = await fetch({ method: HttpMethod.GET })
-        const json = await res.json()
+        const json = await res.json<NoteTreeData>()
 
-        expect(json).toEqual([])
+        expect(json.length).toBe(0)
+      }))
+
+    test('should return a tree with only root notes and no folder', () =>
+      testApiRoute(handler, async ({ fetch }) => {
+        const { name: note_0 } = await createDbNote({ name: 'note_0' })
+        const { name: note_1 } = await createDbNote({ name: 'note_1' })
+
+        const res = await fetch({ method: HttpMethod.GET })
+        const json = await res.json<NoteTreeData>()
+
+        expect(json.length).toBe(2)
+
+        assertIsTreeItem(json[0])
+        expect(json[0]?.name).toEqual(note_0)
+
+        assertIsTreeItem(json[1])
+        expect(json[1]?.name).toEqual(note_1)
       }))
 
     test('should return a tree with only root nodes', () =>
       testApiRoute(handler, async ({ fetch }) => {
+        const { name: note_0 } = await createDbNote({ name: 'note_0' })
+        const { name: note_1 } = await createDbNote({ name: 'note_1' })
+        const { name: note_2 } = await createDbNote({ name: 'note_2' })
+
         const { name: folder_0 } = await createDbFolder({ name: 'folder_0' })
         const { name: folder_1 } = await createDbFolder({ name: 'folder_1' })
         const { name: folder_2 } = await createDbFolder({ name: 'folder_2' })
@@ -34,30 +56,64 @@ describe('notes', () => {
         const res = await fetch({ method: HttpMethod.GET })
         const json = await res.json<NoteTreeData>()
 
-        expect(json.length).toEqual(3)
+        expect(json.length).toBe(6)
+
+        assertIsTreeFolder(json[0])
         expect(json[0]?.name).toEqual(folder_0)
+        expect(json[0]?.children.length).toBe(0)
+        expect(json[0]?.items.length).toBe(0)
+
+        assertIsTreeFolder(json[1])
         expect(json[1]?.name).toEqual(folder_1)
+        expect(json[1]?.children.length).toBe(0)
+        expect(json[1]?.items.length).toBe(0)
+
+        assertIsTreeFolder(json[2])
         expect(json[2]?.name).toEqual(folder_2)
+        expect(json[2]?.children.length).toBe(0)
+        expect(json[2]?.items.length).toBe(0)
+
+        assertIsTreeItem(json[3])
+        expect(json[3]?.name).toEqual(note_0)
+
+        assertIsTreeItem(json[4])
+        expect(json[4]?.name).toEqual(note_1)
+
+        assertIsTreeItem(json[5])
+        expect(json[5]?.name).toEqual(note_2)
       }))
 
     test('should return a tree with nested nodes', () =>
       testApiRoute(handler, async ({ fetch }) => {
         /**
-         * folder0
-         * |__ folder0_0
-         * |__ folder0_1
-         *     |__ folder0_1_0
-         *     |__ folder0_1_1
-         * folder1
-         * folder2
-         * |__ folder2_0
-         *     |__ folder2_0_0
-         *         |__ folder2_0_0_0
-         *         |__ folder2_0_0_1
-         * |__ folder2_1
+         * folder_0
+         * |__ folder_0_0
+         * |__ folder_0_1
+         *     |__ folder_0_1_0
+         *     |__ folder_0_1_1
+         *         |__ note_0_folder_0_1_1
+         *         |__ note_1_folder_0_1_1
+         *     |__ note_0_folder_0_1
+         * |__ note_0_folder_0
+         * folder_1
+         * folder_2
+         * |__ folder_2_0
+         *     |__ folder_2_0_0
+         *         |__ folder_2_0_0_0
+         *         |__ folder_2_0_0_1
+         *             |__ note_0_folder_2_0_0_1
+         *             |__ note_1_folder_2_0_0_1
+         * |__ folder_2_1
+         * note_0
+         * note_1
          */
 
+        const { name: note_0 } = await createDbNote({ name: 'note_0' })
+        const { name: note_1 } = await createDbNote({ name: 'note_1' })
+
         const { id: folder_0_id, name: folder_0 } = await createDbFolder({ name: 'folder_0' })
+
+        const { name: note_0_folder_0 } = await createDbNote({ name: 'note_0_folder_0', folderId: folder_0_id })
 
         const { name: folder_0_0 } = await createDbFolder({ name: 'folder_0_0', parentId: folder_0_id })
         const { id: folder_0_1_id, name: folder_0_1 } = await createDbFolder({
@@ -65,8 +121,22 @@ describe('notes', () => {
           parentId: folder_0_id,
         })
 
+        const { name: note_0_folder_0_1 } = await createDbNote({ name: 'note_0_folder_0_1', folderId: folder_0_1_id })
+
         const { name: folder_0_1_0 } = await createDbFolder({ name: 'folder_0_1_0', parentId: folder_0_1_id })
-        const { name: folder_0_1_1 } = await createDbFolder({ name: 'folder_0_1_1', parentId: folder_0_1_id })
+        const { id: folder_0_1_1_id, name: folder_0_1_1 } = await createDbFolder({
+          name: 'folder_0_1_1',
+          parentId: folder_0_1_id,
+        })
+
+        const { name: note_0_folder_0_1_1 } = await createDbNote({
+          name: 'note_0_folder_0_1_1',
+          folderId: folder_0_1_1_id,
+        })
+        const { name: note_1_folder_0_1_1 } = await createDbNote({
+          name: 'note_1_folder_0_1_1',
+          folderId: folder_0_1_1_id,
+        })
 
         const { name: folder_1 } = await createDbFolder({ name: 'folder_1' })
 
@@ -84,56 +154,101 @@ describe('notes', () => {
         })
 
         const { name: folder_2_0_0_0 } = await createDbFolder({ name: 'folder_2_0_0_0', parentId: folder_2_0_0_id })
-        const { name: folder_2_0_0_1 } = await createDbFolder({ name: 'folder_2_0_0_1', parentId: folder_2_0_0_id })
+        const { id: folder_2_0_0_1_id, name: folder_2_0_0_1 } = await createDbFolder({
+          name: 'folder_2_0_0_1',
+          parentId: folder_2_0_0_id,
+        })
+
+        const { name: note_0_folder_2_0_0_1 } = await createDbNote({
+          name: 'note_0_folder_2_0_0_1',
+          folderId: folder_2_0_0_1_id,
+        })
+        const { name: note_1_folder_2_0_0_1 } = await createDbNote({
+          name: 'note_1_folder_2_0_0_1',
+          folderId: folder_2_0_0_1_id,
+        })
 
         const res = await fetch({ method: HttpMethod.GET })
         const json = await res.json<NoteTreeData>()
 
-        expect(json.length).toBe(3)
+        expect(json.length).toBe(5)
 
+        assertIsTreeFolder(json[0])
         expect(json[0]?.name).toBe(folder_0)
         expect(json[0]?.children.length).toBe(2)
+        expect(json[0]?.items.length).toBe(1)
 
         expect(json[0]?.children[0]?.name).toBe(folder_0_0)
         expect(json[0]?.children[0]?.children.length).toBe(0)
+        expect(json[0]?.children[0]?.items.length).toBe(0)
 
         expect(json[0]?.children[1]?.name).toBe(folder_0_1)
         expect(json[0]?.children[1]?.children.length).toBe(2)
+        expect(json[0]?.children[1]?.items.length).toBe(1)
+
+        expect(json[0]?.items[0]?.name).toBe(note_0_folder_0)
+
+        expect(json[0]?.children[1]?.items[0]?.name).toBe(note_0_folder_0_1)
 
         expect(json[0]?.children[1]?.children[0]?.name).toBe(folder_0_1_0)
         expect(json[0]?.children[1]?.children[0]?.children.length).toBe(0)
+        expect(json[0]?.children[1]?.children[0]?.items.length).toBe(0)
 
         expect(json[0]?.children[1]?.children[1]?.name).toBe(folder_0_1_1)
         expect(json[0]?.children[1]?.children[1]?.children.length).toBe(0)
+        expect(json[0]?.children[1]?.children[1]?.items.length).toBe(2)
 
+        expect(json[0]?.children[1]?.children[1]?.items[0]?.name).toBe(note_0_folder_0_1_1)
+
+        expect(json[0]?.children[1]?.children[1]?.items[1]?.name).toBe(note_1_folder_0_1_1)
+
+        assertIsTreeFolder(json[1])
         expect(json[1]?.name).toBe(folder_1)
         expect(json[1]?.children.length).toBe(0)
+        expect(json[1]?.items.length).toBe(0)
 
+        assertIsTreeFolder(json[2])
         expect(json[2]?.name).toBe(folder_2)
         expect(json[2]?.children.length).toBe(2)
+        expect(json[2]?.items.length).toBe(0)
 
         expect(json[2]?.children[0]?.name).toBe(folder_2_0)
         expect(json[2]?.children[0]?.children.length).toBe(1)
+        expect(json[2]?.children[0]?.items.length).toBe(0)
 
         expect(json[2]?.children[0]?.children[0]?.name).toBe(folder_2_0_0)
         expect(json[2]?.children[0]?.children[0]?.children.length).toBe(2)
+        expect(json[2]?.children[0]?.children[0]?.items.length).toBe(0)
 
         expect(json[2]?.children[0]?.children[0]?.children[0]?.name).toBe(folder_2_0_0_0)
         expect(json[2]?.children[0]?.children[0]?.children[0]?.children.length).toBe(0)
+        expect(json[2]?.children[0]?.children[0]?.children[0]?.items.length).toBe(0)
 
         expect(json[2]?.children[0]?.children[0]?.children[1]?.name).toBe(folder_2_0_0_1)
         expect(json[2]?.children[0]?.children[0]?.children[1]?.children.length).toBe(0)
+        expect(json[2]?.children[0]?.children[0]?.children[1]?.items.length).toBe(2)
+
+        expect(json[2]?.children[0]?.children[0]?.children[1]?.items[0]?.name).toBe(note_0_folder_2_0_0_1)
+
+        expect(json[2]?.children[0]?.children[0]?.children[1]?.items[1]?.name).toBe(note_1_folder_2_0_0_1)
 
         expect(json[2]?.children[1]?.name).toBe(folder_2_1)
         expect(json[2]?.children[1]?.children.length).toBe(0)
+        expect(json[2]?.children[1]?.items.length).toBe(0)
+
+        assertIsTreeItem(json[3])
+        expect(json[3]?.name).toBe(note_0)
+
+        assertIsTreeItem(json[4])
+        expect(json[4]?.name).toBe(note_1)
       }))
 
-    test('should return only the content of the current user', () =>
+    test('should return only nodes owned by the current user', () =>
       testApiRoute(handler, async ({ fetch }) => {
         const { id: folder_0_user_0_id, name: folder_0_user_0 } = await createDbFolder({ name: 'folder_0_user_0' })
         const { name: folder_1_user_0 } = await createDbFolder({ name: 'folder_1_user_0' })
 
-        const { name: folder_0_0_user_0 } = await createDbFolder({
+        const { id: folder_0_0_user_0_id, name: folder_0_0_user_0 } = await createDbFolder({
           name: 'folder_0_0_user_0',
           parentId: folder_0_user_0_id,
         })
@@ -142,28 +257,50 @@ describe('notes', () => {
           parentId: folder_0_user_0_id,
         })
 
+        const { name: note_0_folder_0_user_0 } = await createDbNote({
+          name: 'note_0_folder_0_user_0',
+          folderId: folder_0_user_0_id,
+        })
+        const { name: note_0_folder_0_0_user_0 } = await createDbNote({
+          name: 'note_0_folder_0_0_user_0',
+          folderId: folder_0_0_user_0_id,
+        })
+
         const { userId: userId1 } = getTestUser('1')
 
         const { id: folder_0_user_1_id } = await createDbFolder({ name: 'folder_0_user_1', userId: userId1 })
 
         await createDbFolder({ name: 'folder_0_0_user_1', parentId: folder_0_user_1_id })
 
+        await createDbNote({ name: 'note_0_folder_0_user_1', folderId: folder_0_user_1_id, userId: userId1 })
+        await createDbNote({ name: 'note_0_folder_0_0_user_1', folderId: folder_0_0_user_0_id, userId: userId1 })
+
         const res = await fetch({ method: HttpMethod.GET })
         const json = await res.json<NoteTreeData>()
 
-        expect(json.length).toEqual(2)
+        expect(json.length).toBe(2)
 
+        assertIsTreeFolder(json[0])
         expect(json[0]?.name).toEqual(folder_0_user_0)
-        expect(json[0]?.children.length).toEqual(2)
+        expect(json[0]?.children.length).toBe(2)
+        expect(json[0]?.items.length).toBe(1)
+
+        expect(json[0]?.items[0]?.name).toBe(note_0_folder_0_user_0)
 
         expect(json[0]?.children[0]?.name).toEqual(folder_0_0_user_0)
-        expect(json[0]?.children[0]?.children.length).toEqual(0)
+        expect(json[0]?.children[0]?.children.length).toBe(0)
+        expect(json[0]?.children[0]?.items.length).toBe(1)
+
+        expect(json[0]?.children[0]?.items[0]?.name).toBe(note_0_folder_0_0_user_0)
 
         expect(json[0]?.children[1]?.name).toEqual(folder_0_1_user_0)
-        expect(json[0]?.children[1]?.children.length).toEqual(0)
+        expect(json[0]?.children[1]?.children.length).toBe(0)
+        expect(json[0]?.children[1]?.items.length).toBe(0)
 
+        assertIsTreeFolder(json[1])
         expect(json[1]?.name).toEqual(folder_1_user_0)
-        expect(json[1]?.children.length).toEqual(0)
+        expect(json[1]?.children.length).toBe(0)
+        expect(json[1]?.items.length).toBe(0)
       }))
 
     test('should return only the content of the proper type', () =>
@@ -175,14 +312,15 @@ describe('notes', () => {
         const res = await fetch({ method: HttpMethod.GET })
         const json = await res.json<NoteTreeData>()
 
-        expect(json.length).toEqual(1)
+        expect(json.length).toBe(1)
 
+        assertIsTreeFolder(json[0])
         expect(json[0]?.name).toEqual(folder_0_type_note)
-        expect(json[0]?.children.length).toEqual(0)
+        expect(json[0]?.children.length).toBe(0)
       }))
   })
 
-  describe.only('POST', () => {
+  describe('POST', () => {
     test('should add a new note at the root', () =>
       testApiRoute(handler, async ({ fetch }) => {
         const name = 'note'
