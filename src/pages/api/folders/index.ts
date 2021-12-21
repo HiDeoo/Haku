@@ -5,7 +5,7 @@ import { type ValidatedApiRequest, withAuth, withValidation } from 'libs/api/rou
 import { z, zFolderType } from 'libs/validation'
 import { addFolder, type FolderData } from 'libs/db/folder'
 
-const postSchema = z.object({
+const postBodySchema = z.object({
   name: z.string(),
   parentId: z.number().optional(),
   type: zFolderType,
@@ -13,14 +13,17 @@ const postSchema = z.object({
 
 const route = createApiRoute(
   {
-    post: withValidation(postHandler, postSchema),
+    post: withValidation(postHandler, postBodySchema),
   },
   [withAuth]
 )
 
 export default route
 
-async function postHandler(req: ValidatedApiRequest<{ body: typeof postSchema }>, res: NextApiResponse<FolderData>) {
+async function postHandler(
+  req: ValidatedApiRequest<{ body: typeof postBodySchema }>,
+  res: NextApiResponse<FolderData>
+) {
   const { userId } = getApiRequestUser(req)
   const folder = await addFolder(userId, req.body.type, req.body.name, req.body.parentId)
 

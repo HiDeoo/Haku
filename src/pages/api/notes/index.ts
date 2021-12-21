@@ -6,7 +6,7 @@ import { getNoteTree, type NoteTreeData } from 'libs/db/tree'
 import { z } from 'libs/validation'
 import { addNote, type NoteData } from 'libs/db/note'
 
-const postSchema = z.object({
+const postBodySchema = z.object({
   name: z.string(),
   folderId: z.number().optional(),
 })
@@ -14,7 +14,7 @@ const postSchema = z.object({
 const route = createApiRoute(
   {
     get: getHandler,
-    post: withValidation(postHandler, postSchema),
+    post: withValidation(postHandler, postBodySchema),
   },
   [withAuth]
 )
@@ -28,7 +28,7 @@ async function getHandler(req: NextApiRequest, res: NextApiResponse<NoteTreeData
   return res.status(200).json(content)
 }
 
-async function postHandler(req: ValidatedApiRequest<{ body: typeof postSchema }>, res: NextApiResponse<NoteData>) {
+async function postHandler(req: ValidatedApiRequest<{ body: typeof postBodySchema }>, res: NextApiResponse<NoteData>) {
   const { userId } = getApiRequestUser(req)
   const note = await addNote(userId, req.body.name, req.body.folderId)
 
