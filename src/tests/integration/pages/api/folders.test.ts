@@ -2,11 +2,11 @@ import { FolderType } from '@prisma/client'
 import StatusCode from 'status-code-enum'
 
 import { getTestUser, testApiRoute } from 'tests/integration'
+import { createTestFolder, createTestNote, getTestFolder, getTestFolders, getTestNotes } from 'tests/integration/db'
 import { HttpMethod } from 'libs/http'
 import postHandler from 'pages/api/folders'
-import patchHandler from 'pages/api/folders/[id]'
+import deleteAndPatchHandler from 'pages/api/folders/[id]'
 import { type FolderData } from 'libs/db/folder'
-import { prisma } from 'libs/db'
 import {
   type ApiErrorResponse,
   API_ERROR_FOLDER_ALREADY_EXISTS,
@@ -28,7 +28,7 @@ describe('folders', () => {
         })
         const json = await res.json<FolderData>()
 
-        const dbFolder = await getDbFolder(json.id)
+        const dbFolder = await getTestFolder(json.id)
 
         expect(dbFolder).toBeDefined()
         expect(dbFolder?.name).toBe(name)
@@ -37,7 +37,7 @@ describe('folders', () => {
 
     test('should add a new folder inside an existing folder', () =>
       testApiRoute(postHandler, async ({ fetch }) => {
-        const { id: parentId } = await createDbFolder({ name: 'parent' })
+        const { id: parentId } = await createTestFolder({ name: 'parent' })
 
         const name = 'folder'
         const type = FolderType.NOTE
@@ -48,7 +48,7 @@ describe('folders', () => {
         })
         const json = await res.json<FolderData>()
 
-        const dbFolder = await getDbFolder(json.id)
+        const dbFolder = await getTestFolder(json.id)
 
         expect(dbFolder).toBeDefined()
         expect(dbFolder?.name).toBe(name)
@@ -70,14 +70,14 @@ describe('folders', () => {
         expect(res.status).toBe(StatusCode.ClientErrorForbidden)
         expect(json.error).toBe(API_ERROR_FOLDER_PARENT_DOES_NOT_EXIST)
 
-        const dbFolders = await getDbFolders({ name, type, parentId })
+        const dbFolders = await getTestFolders({ name, type, parentId })
 
         expect(dbFolders.length).toBe(0)
       }))
 
     test('should not add a new folder inside an existing folder not owned by the current user', () =>
       testApiRoute(postHandler, async ({ fetch }) => {
-        const { id: parentId } = await createDbFolder({ name: 'parent', userId: getTestUser('1').userId })
+        const { id: parentId } = await createTestFolder({ name: 'parent', userId: getTestUser('1').userId })
 
         const name = 'folder'
         const type = FolderType.NOTE
@@ -91,14 +91,14 @@ describe('folders', () => {
         expect(res.status).toBe(StatusCode.ClientErrorForbidden)
         expect(json.error).toBe(API_ERROR_FOLDER_PARENT_DOES_NOT_EXIST)
 
-        const dbFolders = await getDbFolders({ name, type, parentId })
+        const dbFolders = await getTestFolders({ name, type, parentId })
 
         expect(dbFolders.length).toBe(0)
       }))
 
     test('should not add a new folder inside an existing folder of a different type', () =>
       testApiRoute(postHandler, async ({ fetch }) => {
-        const { id: parentId } = await createDbFolder({ name: 'parent', type: FolderType.TODO })
+        const { id: parentId } = await createTestFolder({ name: 'parent', type: FolderType.TODO })
 
         const name = 'folder'
         const type = FolderType.NOTE
@@ -112,15 +112,15 @@ describe('folders', () => {
         expect(res.status).toBe(StatusCode.ClientErrorForbidden)
         expect(json.error).toBe(API_ERROR_FOLDER_PARENT_INVALID_TYPE)
 
-        const dbFolders = await getDbFolders({ name, type, parentId })
+        const dbFolders = await getTestFolders({ name, type, parentId })
 
         expect(dbFolders.length).toBe(0)
       }))
 
     test('should not add a new duplicated folder at the root', () =>
       testApiRoute(postHandler, async ({ fetch }) => {
-        await createDbFolder({ name: 'parent', type: FolderType.TODO })
-        const { name, type } = await createDbFolder()
+        await createTestFolder({ name: 'parent', type: FolderType.TODO })
+        const { name, type } = await createTestFolder()
 
         const res = await fetch({
           method: HttpMethod.POST,
@@ -131,15 +131,15 @@ describe('folders', () => {
         expect(res.status).toBe(StatusCode.ClientErrorForbidden)
         expect(json.error).toBe(API_ERROR_FOLDER_ALREADY_EXISTS)
 
-        const dbFolders = await getDbFolders({ name, type })
+        const dbFolders = await getTestFolders({ name, type })
 
         expect(dbFolders.length).toBe(1)
       }))
 
     test('should not add a new duplicated folder inside an existing folder', () =>
       testApiRoute(postHandler, async ({ fetch }) => {
-        const { id: parentId } = await createDbFolder({ name: 'parent' })
-        const { name, type } = await createDbFolder({ parentId })
+        const { id: parentId } = await createTestFolder({ name: 'parent' })
+        const { name, type } = await createTestFolder({ parentId })
 
         const res = await fetch({
           method: HttpMethod.POST,
@@ -150,7 +150,7 @@ describe('folders', () => {
         expect(res.status).toBe(StatusCode.ClientErrorForbidden)
         expect(json.error).toBe(API_ERROR_FOLDER_ALREADY_EXISTS)
 
-        const dbFolders = await getDbFolders({ name, type, parentId })
+        const dbFolders = await getTestFolders({ name, type, parentId })
 
         expect(dbFolders.length).toBe(1)
       }))
@@ -158,13 +158,13 @@ describe('folders', () => {
 
   describe('PATCH', () => {
     test('should rename a folder', async () => {
-      const { id: parentId } = await createDbFolder({ name: 'parent' })
-      const { id } = await createDbFolder({ parentId })
+      const { id: parentId } = await createTestFolder({ name: 'parent' })
+      const { id } = await createTestFolder({ parentId })
 
       const newName = 'newName'
 
       return testApiRoute(
-        patchHandler,
+        deleteAndPatchHandler,
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
@@ -174,7 +174,7 @@ describe('folders', () => {
 
           expect(json.name).toBe(newName)
 
-          const dbFolder = await getDbFolder(id)
+          const dbFolder = await getTestFolder(id)
 
           expect(dbFolder?.name).toBe(newName)
         },
@@ -183,11 +183,11 @@ describe('folders', () => {
     })
 
     test('should not rename a folder if becoming duplicated', async () => {
-      const { id, name } = await createDbFolder()
-      const { name: newName } = await createDbFolder({ name: 'otherName' })
+      const { id, name } = await createTestFolder()
+      const { name: newName } = await createTestFolder({ name: 'otherName' })
 
       return testApiRoute(
-        patchHandler,
+        deleteAndPatchHandler,
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
@@ -198,7 +198,7 @@ describe('folders', () => {
           expect(res.status).toBe(StatusCode.ClientErrorForbidden)
           expect(json.error).toBe(API_ERROR_FOLDER_ALREADY_EXISTS)
 
-          const dbFolder = await getDbFolder(id)
+          const dbFolder = await getTestFolder(id)
 
           expect(dbFolder?.name).toBe(name)
         },
@@ -207,11 +207,11 @@ describe('folders', () => {
     })
 
     test('should move a folder inside another folder', async () => {
-      const { id: newParentId } = await createDbFolder({ name: 'parent' })
-      const { id } = await createDbFolder()
+      const { id: newParentId } = await createTestFolder({ name: 'parent' })
+      const { id } = await createTestFolder()
 
       return testApiRoute(
-        patchHandler,
+        deleteAndPatchHandler,
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
@@ -221,7 +221,7 @@ describe('folders', () => {
 
           expect(json.parentId).toBe(newParentId)
 
-          const dbFolder = await getDbFolder(id)
+          const dbFolder = await getTestFolder(id)
 
           expect(dbFolder).toBeDefined()
           expect(dbFolder?.parentId).toBe(newParentId)
@@ -231,11 +231,11 @@ describe('folders', () => {
     })
 
     test('should move a folder to the root', async () => {
-      const { id: parentId } = await createDbFolder({ name: 'parent' })
-      const { id } = await createDbFolder({ parentId })
+      const { id: parentId } = await createTestFolder({ name: 'parent' })
+      const { id } = await createTestFolder({ parentId })
 
       return testApiRoute(
-        patchHandler,
+        deleteAndPatchHandler,
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
@@ -245,7 +245,7 @@ describe('folders', () => {
 
           expect(json.parentId).toBeNull()
 
-          const dbFolder = await getDbFolder(id)
+          const dbFolder = await getTestFolder(id)
 
           expect(dbFolder).toBeDefined()
           expect(dbFolder?.parentId).toBeNull()
@@ -255,13 +255,13 @@ describe('folders', () => {
     })
 
     test('should not move a folder if becoming duplicated', async () => {
-      const { id: newParentId } = await createDbFolder({ name: 'parent' })
-      await createDbFolder({ parentId: newParentId })
+      const { id: newParentId } = await createTestFolder({ name: 'parent' })
+      await createTestFolder({ parentId: newParentId })
 
-      const { id, parentId } = await createDbFolder()
+      const { id, parentId } = await createTestFolder()
 
       return testApiRoute(
-        patchHandler,
+        deleteAndPatchHandler,
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
@@ -272,7 +272,7 @@ describe('folders', () => {
           expect(res.status).toBe(StatusCode.ClientErrorForbidden)
           expect(json.error).toBe(API_ERROR_FOLDER_ALREADY_EXISTS)
 
-          const dbFolder = await getDbFolder(id)
+          const dbFolder = await getTestFolder(id)
 
           expect(dbFolder).toBeDefined()
           expect(dbFolder?.parentId).toBe(parentId)
@@ -282,10 +282,10 @@ describe('folders', () => {
     })
 
     test('should not move a folder inside a nonexisting folder', async () => {
-      const { id, parentId } = await createDbFolder()
+      const { id, parentId } = await createTestFolder()
 
       return testApiRoute(
-        patchHandler,
+        deleteAndPatchHandler,
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
@@ -296,7 +296,7 @@ describe('folders', () => {
           expect(res.status).toBe(StatusCode.ClientErrorForbidden)
           expect(json.error).toBe(API_ERROR_FOLDER_PARENT_DOES_NOT_EXIST)
 
-          const dbFolder = await getDbFolder(id)
+          const dbFolder = await getTestFolder(id)
 
           expect(dbFolder).toBeDefined()
           expect(dbFolder?.parentId).toBe(parentId)
@@ -306,11 +306,11 @@ describe('folders', () => {
     })
 
     test('should not move a folder inside an existing folder not owned by the current user', async () => {
-      const { id: newParentId } = await createDbFolder({ name: 'parent', userId: getTestUser('1').userId })
-      const { id, parentId } = await createDbFolder()
+      const { id: newParentId } = await createTestFolder({ name: 'parent', userId: getTestUser('1').userId })
+      const { id, parentId } = await createTestFolder()
 
       return testApiRoute(
-        patchHandler,
+        deleteAndPatchHandler,
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
@@ -321,7 +321,7 @@ describe('folders', () => {
           expect(res.status).toBe(StatusCode.ClientErrorForbidden)
           expect(json.error).toBe(API_ERROR_FOLDER_PARENT_DOES_NOT_EXIST)
 
-          const dbFolder = await getDbFolder(id)
+          const dbFolder = await getTestFolder(id)
 
           expect(dbFolder).toBeDefined()
           expect(dbFolder?.parentId).toBe(parentId)
@@ -331,11 +331,11 @@ describe('folders', () => {
     })
 
     test('should not move a folder inside an existing folder of a different type', async () => {
-      const { id: newParentId } = await createDbFolder({ name: 'parent', type: FolderType.TODO })
-      const { id, parentId } = await createDbFolder()
+      const { id: newParentId } = await createTestFolder({ name: 'parent', type: FolderType.TODO })
+      const { id, parentId } = await createTestFolder()
 
       return testApiRoute(
-        patchHandler,
+        deleteAndPatchHandler,
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
@@ -346,7 +346,7 @@ describe('folders', () => {
           expect(res.status).toBe(StatusCode.ClientErrorForbidden)
           expect(json.error).toBe(API_ERROR_FOLDER_PARENT_INVALID_TYPE)
 
-          const dbFolder = await getDbFolder(id)
+          const dbFolder = await getTestFolder(id)
 
           expect(dbFolder).toBeDefined()
           expect(dbFolder?.parentId).toBe(parentId)
@@ -356,13 +356,13 @@ describe('folders', () => {
     })
 
     test('should move & rename a folder at the same time', async () => {
-      const { id: newParentId } = await createDbFolder({ name: 'parent' })
-      const { id } = await createDbFolder()
+      const { id: newParentId } = await createTestFolder({ name: 'parent' })
+      const { id } = await createTestFolder()
 
       const newName = 'newName'
 
       return testApiRoute(
-        patchHandler,
+        deleteAndPatchHandler,
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
@@ -373,7 +373,7 @@ describe('folders', () => {
           expect(json.name).toBe(newName)
           expect(json.parentId).toBe(newParentId)
 
-          const dbFolder = await getDbFolder(id)
+          const dbFolder = await getTestFolder(id)
 
           expect(dbFolder).toBeDefined()
           expect(dbFolder?.name).toBe(newName)
@@ -384,10 +384,10 @@ describe('folders', () => {
     })
 
     test('should not update a folder not owned by the current user', async () => {
-      const { id, name } = await createDbFolder({ userId: getTestUser('1').userId })
+      const { id, name } = await createTestFolder({ userId: getTestUser('1').userId })
 
       return testApiRoute(
-        patchHandler,
+        deleteAndPatchHandler,
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
@@ -398,7 +398,7 @@ describe('folders', () => {
           expect(res.status).toBe(StatusCode.ClientErrorForbidden)
           expect(json.error).toBe(API_ERROR_FOLDER_DOES_NOT_EXIST)
 
-          const dbFolder = await getDbFolder(id)
+          const dbFolder = await getTestFolder(id)
 
           expect(dbFolder).toBeDefined()
           expect(dbFolder?.name).toBe(name)
@@ -411,7 +411,7 @@ describe('folders', () => {
       const newName = 'newName'
 
       return testApiRoute(
-        patchHandler,
+        deleteAndPatchHandler,
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
@@ -422,7 +422,7 @@ describe('folders', () => {
           expect(res.status).toBe(StatusCode.ClientErrorForbidden)
           expect(json.error).toBe(API_ERROR_FOLDER_DOES_NOT_EXIST)
 
-          const dbFolders = await getDbFolders({ name: newName })
+          const dbFolders = await getTestFolders({ name: newName })
 
           expect(dbFolders.length).toBe(0)
         },
@@ -430,36 +430,128 @@ describe('folders', () => {
       )
     })
   })
+
+  describe('DELETE', () => {
+    test('should remove an empty folder', async () => {
+      const { id } = await createTestFolder()
+
+      return testApiRoute(
+        deleteAndPatchHandler,
+        async ({ fetch }) => {
+          await fetch({ method: HttpMethod.DELETE })
+
+          const dbFolder = await getTestFolder(id)
+
+          expect(dbFolder).toBeNull()
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should remove a folder containing nested nodes', async () => {
+      const { id } = await createTestFolder({ name: 'folder_0' })
+
+      return testApiRoute(
+        deleteAndPatchHandler,
+        async ({ fetch }) => {
+          /**
+           * folder_0
+           * |__ folder_0_0
+           * |__ folder_0_1
+           *     |__ folder_0_1_0
+           *     |__ folder_0_1_1
+           *         |__ note_0_folder_0_1_1
+           *     |__ note_0_folder_0_1
+           * |__ note_0_folder_0
+           * |__ note_1_folder_0
+           * folder_1
+           * |__ folder_1_0
+           *     |__ note_0_folder_1_0
+           * note_0
+           * note_1
+           */
+
+          await createTestNote({ name: 'note_0_folder_0', folderId: id })
+          await createTestNote({ name: 'note_1_folder_0', folderId: id })
+
+          await createTestFolder({ name: 'folder_0_0', parentId: id })
+          const { id: folder_0_1_id } = await createTestFolder({ name: 'folder_0_1', parentId: id })
+
+          await createTestNote({ name: 'note_0_folder_0_1', folderId: folder_0_1_id })
+
+          await createTestFolder({ name: 'folder_0_1_0', parentId: folder_0_1_id })
+          const { id: folder_0_1_1_id } = await createTestFolder({ name: 'folder_0_1_1', parentId: folder_0_1_id })
+
+          await createTestNote({ name: 'note_0_folder_0_1_1', folderId: folder_0_1_1_id })
+
+          const { id: folder_1_id } = await createTestFolder({ name: 'folder_1' })
+
+          const { id: folder_1_0_id } = await createTestFolder({ name: 'folder_1_0', parentId: folder_1_id })
+
+          const { id: note_0_folder_1_0_id } = await createTestNote({
+            name: 'note_0_folder_1_0',
+            folderId: folder_1_0_id,
+          })
+
+          const { id: note_0_id } = await createTestNote({ name: 'note_0' })
+          const { id: note_1_id } = await createTestNote({ name: 'note_1' })
+
+          await fetch({ method: HttpMethod.DELETE })
+
+          const remainingFolderIds = [folder_1_id, folder_1_0_id]
+          const dbFolders = await getTestFolders()
+
+          expect(dbFolders.length).toBe(remainingFolderIds.length)
+          expect(dbFolders.every((dbFolder) => remainingFolderIds.includes(dbFolder.id))).toBe(true)
+
+          const remainingNotesIds = [note_0_id, note_1_id, note_0_folder_1_0_id]
+          const dbNotes = await getTestNotes()
+
+          expect(dbNotes.length).toBe(remainingNotesIds.length)
+          expect(dbNotes.every((dbNote) => remainingNotesIds.includes(dbNote.id))).toBe(true)
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should not remove a folder not owned by the current user', async () => {
+      const { id } = await createTestFolder({ userId: getTestUser('1').userId })
+
+      return testApiRoute(
+        deleteAndPatchHandler,
+        async ({ fetch }) => {
+          const res = await fetch({ method: HttpMethod.DELETE })
+          const json = await res.json<ApiErrorResponse>()
+
+          expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+          expect(json.error).toBe(API_ERROR_FOLDER_DOES_NOT_EXIST)
+
+          const dbFolder = await getTestFolder(id)
+
+          expect(dbFolder).toBeDefined()
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should not remove a nonexisting folder', () => {
+      const id = 1
+
+      return testApiRoute(
+        deleteAndPatchHandler,
+        async ({ fetch }) => {
+          const res = await fetch({ method: HttpMethod.DELETE })
+          const json = await res.json<ApiErrorResponse>()
+
+          expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+          expect(json.error).toBe(API_ERROR_FOLDER_DOES_NOT_EXIST)
+
+          const dbFolder = await getTestFolder(id)
+
+          expect(dbFolder).toBeNull()
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+  })
 })
-
-function createDbFolder(options?: DbFolderOptions) {
-  return prisma.folder.create({
-    data: {
-      name: options?.name ?? 'folder',
-      parentId: options?.parentId,
-      type: options?.type ?? FolderType.NOTE,
-      userId: options?.userId ?? getTestUser().userId,
-    },
-  })
-}
-
-function getDbFolders(options: DbFolderOptions) {
-  return prisma.folder.findMany({
-    where: {
-      ...options,
-      type: options.type ?? FolderType.NOTE,
-      userId: options.userId ?? getTestUser().userId,
-    },
-  })
-}
-
-function getDbFolder(id: FolderData['id']) {
-  return prisma.folder.findUnique({ where: { id } })
-}
-
-interface DbFolderOptions {
-  name?: FolderData['name']
-  parentId?: FolderData['parentId']
-  type?: FolderType
-  userId?: UserId
-}

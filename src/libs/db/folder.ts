@@ -8,12 +8,13 @@ import {
   API_ERROR_FOLDER_PARENT_INVALID_TYPE,
 } from 'libs/api/routes/errors'
 import { handleDbError, prisma } from 'libs/db'
+import { getTreeChildrenFolderIds } from 'libs/db/tree'
 
 export type FolderData = Pick<Folder, 'id' | 'parentId' | 'name'>
 
 const folderDataSelect = { id: true, name: true, parentId: true }
 
-export async function addFolder(
+export function addFolder(
   userId: UserId,
   type: FolderType,
   name: FolderData['name'],
@@ -38,7 +39,7 @@ export async function addFolder(
   })
 }
 
-export async function updateFolder(id: FolderData['id'], userId: UserId, data: UpdateFolderData): Promise<FolderData> {
+export function updateFolder(id: FolderData['id'], userId: UserId, data: UpdateFolderData): Promise<FolderData> {
   return prisma.$transaction(async (prisma) => {
     const folder = await getFolderById(id, userId)
 
@@ -67,6 +68,20 @@ export async function updateFolder(id: FolderData['id'], userId: UserId, data: U
         },
       })
     }
+  })
+}
+
+export function removeFolder(id: FolderData['id'], userId: UserId) {
+  return prisma.$transaction(async (prisma) => {
+    const folder = await getFolderById(id, userId)
+
+    if (!folder) {
+      throw new ApiError(API_ERROR_FOLDER_DOES_NOT_EXIST)
+    }
+
+    const nestedFolders = await getTreeChildrenFolderIds(userId, folder.type, id)
+
+    return prisma.folder.deleteMany({ where: { id: { in: [id, ...nestedFolders] } } })
   })
 }
 

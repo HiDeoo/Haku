@@ -47,11 +47,11 @@ export function createTestNote(options?: TestNoteOptions) {
   })
 }
 
-export function getTestNotes(options: TestNoteOptions) {
+export function getTestNotes(options?: TestNoteOptions) {
   return prisma.note.findMany({
     where: {
       ...options,
-      userId: options.userId ?? getTestUser().userId,
+      userId: options?.userId ?? getTestUser().userId,
     },
   })
 }

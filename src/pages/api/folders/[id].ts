@@ -3,7 +3,7 @@ import type { NextApiResponse } from 'next'
 import { createApiRoute, getApiRequestUser } from 'libs/api/routes'
 import { type ValidatedApiRequest, withAuth, withValidation } from 'libs/api/routes/middlewares'
 import { z, zOneOf, zStringAsNumber } from 'libs/validation'
-import { type FolderData, updateFolder } from 'libs/db/folder'
+import { type FolderData, updateFolder, removeFolder } from 'libs/db/folder'
 
 const patchBodySchema = zOneOf(
   z.object({
@@ -16,14 +16,30 @@ const patchQuerySchema = z.object({
   id: zStringAsNumber,
 })
 
+const deleteQuerySchema = z.object({
+  id: zStringAsNumber,
+})
+
 const route = createApiRoute(
   {
+    delete: withValidation(deleteHandler, undefined, deleteQuerySchema),
     patch: withValidation(patchHandler, patchBodySchema, patchQuerySchema),
   },
   [withAuth]
 )
 
 export default route
+
+async function deleteHandler(
+  req: ValidatedApiRequest<{ query: typeof deleteQuerySchema }>,
+  res: NextApiResponse<void>
+) {
+  const { userId } = getApiRequestUser(req)
+
+  await removeFolder(req.query.id, userId)
+
+  return res.status(200).end()
+}
 
 async function patchHandler(
   req: ValidatedApiRequest<{ body: typeof patchBodySchema; query: typeof patchQuerySchema }>,

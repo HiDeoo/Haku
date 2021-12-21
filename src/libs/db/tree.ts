@@ -1,4 +1,4 @@
-import { FolderType } from '@prisma/client'
+import { FolderType, Prisma } from '@prisma/client'
 
 import { prisma } from 'libs/db'
 import { type FolderData } from 'libs/db/folder'
@@ -18,7 +18,27 @@ async function getTree<Folder extends HierarchicalListFolder, Item extends Hiera
   folderType: FolderType,
   items: Map<Item['folderId'], Item[]>
 ): Promise<Tree<Folder, Item>> {
-  const folders = await prisma.$queryRaw<Folder[]>`
+  const folders = await getTreeFolders<Folder>(userId, folderType)
+
+  return hierarchicalListToTree(folders, items)
+}
+
+export async function getTreeChildrenFolderIds(
+  userId: UserId,
+  folderType: FolderType,
+  folderId: number
+): Promise<FolderData['id'][]> {
+  const folders = await getTreeFolders(userId, folderType, folderId)
+
+  return folders.map(({ id }) => id)
+}
+
+function getTreeFolders<Folder extends HierarchicalListFolder>(
+  userId: UserId,
+  folderType: FolderType,
+  baseFolderId?: Folder['id']
+): Promise<Folder[]> {
+  return prisma.$queryRaw<Folder[]>`
 WITH RECURSIVE root_to_leaf AS (
   SELECT
     "id",
@@ -28,7 +48,7 @@ WITH RECURSIVE root_to_leaf AS (
   FROM
     "Folder"
   WHERE
-    "parentId" IS NULL
+    ${baseFolderId ? Prisma.sql`"parentId" = ${baseFolderId}` : Prisma.sql`"parentId" IS NULL`}
     AND "type" = ${folderType}
     AND "userId" = ${userId}
 
@@ -51,6 +71,4 @@ FROM
 ORDER BY
   "level" ASC,
   "name" ASC`
-
-  return hierarchicalListToTree(folders, items)
 }
