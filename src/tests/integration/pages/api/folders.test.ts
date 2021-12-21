@@ -28,11 +28,11 @@ describe('folders', () => {
         })
         const json = await res.json<FolderData>()
 
-        const dbFolder = await getTestFolder(json.id)
+        const testFolder = await getTestFolder(json.id)
 
-        expect(dbFolder).toBeDefined()
-        expect(dbFolder?.name).toBe(name)
-        expect(dbFolder?.parentId).toBeNull()
+        expect(testFolder).toBeDefined()
+        expect(testFolder?.name).toBe(name)
+        expect(testFolder?.parentId).toBeNull()
       }))
 
     test('should add a new folder inside an existing folder', () =>
@@ -48,11 +48,11 @@ describe('folders', () => {
         })
         const json = await res.json<FolderData>()
 
-        const dbFolder = await getTestFolder(json.id)
+        const testFolder = await getTestFolder(json.id)
 
-        expect(dbFolder).toBeDefined()
-        expect(dbFolder?.name).toBe(name)
-        expect(dbFolder?.parentId).toBe(parentId)
+        expect(testFolder).toBeDefined()
+        expect(testFolder?.name).toBe(name)
+        expect(testFolder?.parentId).toBe(parentId)
       }))
 
     test('should not add a new folder inside a nonexisting folder', () =>
@@ -70,9 +70,9 @@ describe('folders', () => {
         expect(res.status).toBe(StatusCode.ClientErrorForbidden)
         expect(json.error).toBe(API_ERROR_FOLDER_PARENT_DOES_NOT_EXIST)
 
-        const dbFolders = await getTestFolders({ name, type, parentId })
+        const testFolders = await getTestFolders({ name, type, parentId })
 
-        expect(dbFolders.length).toBe(0)
+        expect(testFolders.length).toBe(0)
       }))
 
     test('should not add a new folder inside an existing folder not owned by the current user', () =>
@@ -91,9 +91,9 @@ describe('folders', () => {
         expect(res.status).toBe(StatusCode.ClientErrorForbidden)
         expect(json.error).toBe(API_ERROR_FOLDER_PARENT_DOES_NOT_EXIST)
 
-        const dbFolders = await getTestFolders({ name, type, parentId })
+        const testFolders = await getTestFolders({ name, type, parentId })
 
-        expect(dbFolders.length).toBe(0)
+        expect(testFolders.length).toBe(0)
       }))
 
     test('should not add a new folder inside an existing folder of a different type', () =>
@@ -112,9 +112,9 @@ describe('folders', () => {
         expect(res.status).toBe(StatusCode.ClientErrorForbidden)
         expect(json.error).toBe(API_ERROR_FOLDER_PARENT_INVALID_TYPE)
 
-        const dbFolders = await getTestFolders({ name, type, parentId })
+        const testFolders = await getTestFolders({ name, type, parentId })
 
-        expect(dbFolders.length).toBe(0)
+        expect(testFolders.length).toBe(0)
       }))
 
     test('should not add a new duplicated folder at the root', () =>
@@ -131,9 +131,9 @@ describe('folders', () => {
         expect(res.status).toBe(StatusCode.ClientErrorForbidden)
         expect(json.error).toBe(API_ERROR_FOLDER_ALREADY_EXISTS)
 
-        const dbFolders = await getTestFolders({ name, type })
+        const testFolders = await getTestFolders({ name, type })
 
-        expect(dbFolders.length).toBe(1)
+        expect(testFolders.length).toBe(1)
       }))
 
     test('should not add a new duplicated folder inside an existing folder', () =>
@@ -150,9 +150,9 @@ describe('folders', () => {
         expect(res.status).toBe(StatusCode.ClientErrorForbidden)
         expect(json.error).toBe(API_ERROR_FOLDER_ALREADY_EXISTS)
 
-        const dbFolders = await getTestFolders({ name, type, parentId })
+        const testFolders = await getTestFolders({ name, type, parentId })
 
-        expect(dbFolders.length).toBe(1)
+        expect(testFolders.length).toBe(1)
       }))
   })
 
@@ -174,9 +174,9 @@ describe('folders', () => {
 
           expect(json.name).toBe(newName)
 
-          const dbFolder = await getTestFolder(id)
+          const testFolder = await getTestFolder(id)
 
-          expect(dbFolder?.name).toBe(newName)
+          expect(testFolder?.name).toBe(newName)
         },
         { dynamicRouteParams: { id } }
       )
@@ -198,9 +198,9 @@ describe('folders', () => {
           expect(res.status).toBe(StatusCode.ClientErrorForbidden)
           expect(json.error).toBe(API_ERROR_FOLDER_ALREADY_EXISTS)
 
-          const dbFolder = await getTestFolder(id)
+          const testFolder = await getTestFolder(id)
 
-          expect(dbFolder?.name).toBe(name)
+          expect(testFolder?.name).toBe(name)
         },
         { dynamicRouteParams: { id } }
       )
@@ -221,10 +221,10 @@ describe('folders', () => {
 
           expect(json.parentId).toBe(newParentId)
 
-          const dbFolder = await getTestFolder(id)
+          const testFolder = await getTestFolder(id)
 
-          expect(dbFolder).toBeDefined()
-          expect(dbFolder?.parentId).toBe(newParentId)
+          expect(testFolder).toBeDefined()
+          expect(testFolder?.parentId).toBe(newParentId)
         },
         { dynamicRouteParams: { id } }
       )
@@ -245,10 +245,10 @@ describe('folders', () => {
 
           expect(json.parentId).toBeNull()
 
-          const dbFolder = await getTestFolder(id)
+          const testFolder = await getTestFolder(id)
 
-          expect(dbFolder).toBeDefined()
-          expect(dbFolder?.parentId).toBeNull()
+          expect(testFolder).toBeDefined()
+          expect(testFolder?.parentId).toBeNull()
         },
         { dynamicRouteParams: { id } }
       )
@@ -272,10 +272,10 @@ describe('folders', () => {
           expect(res.status).toBe(StatusCode.ClientErrorForbidden)
           expect(json.error).toBe(API_ERROR_FOLDER_ALREADY_EXISTS)
 
-          const dbFolder = await getTestFolder(id)
+          const testFolder = await getTestFolder(id)
 
-          expect(dbFolder).toBeDefined()
-          expect(dbFolder?.parentId).toBe(parentId)
+          expect(testFolder).toBeDefined()
+          expect(testFolder?.parentId).toBe(parentId)
         },
         { dynamicRouteParams: { id } }
       )
@@ -296,10 +296,10 @@ describe('folders', () => {
           expect(res.status).toBe(StatusCode.ClientErrorForbidden)
           expect(json.error).toBe(API_ERROR_FOLDER_PARENT_DOES_NOT_EXIST)
 
-          const dbFolder = await getTestFolder(id)
+          const testFolder = await getTestFolder(id)
 
-          expect(dbFolder).toBeDefined()
-          expect(dbFolder?.parentId).toBe(parentId)
+          expect(testFolder).toBeDefined()
+          expect(testFolder?.parentId).toBe(parentId)
         },
         { dynamicRouteParams: { id } }
       )
@@ -321,10 +321,10 @@ describe('folders', () => {
           expect(res.status).toBe(StatusCode.ClientErrorForbidden)
           expect(json.error).toBe(API_ERROR_FOLDER_PARENT_DOES_NOT_EXIST)
 
-          const dbFolder = await getTestFolder(id)
+          const testFolder = await getTestFolder(id)
 
-          expect(dbFolder).toBeDefined()
-          expect(dbFolder?.parentId).toBe(parentId)
+          expect(testFolder).toBeDefined()
+          expect(testFolder?.parentId).toBe(parentId)
         },
         { dynamicRouteParams: { id } }
       )
@@ -346,10 +346,10 @@ describe('folders', () => {
           expect(res.status).toBe(StatusCode.ClientErrorForbidden)
           expect(json.error).toBe(API_ERROR_FOLDER_PARENT_INVALID_TYPE)
 
-          const dbFolder = await getTestFolder(id)
+          const testFolder = await getTestFolder(id)
 
-          expect(dbFolder).toBeDefined()
-          expect(dbFolder?.parentId).toBe(parentId)
+          expect(testFolder).toBeDefined()
+          expect(testFolder?.parentId).toBe(parentId)
         },
         { dynamicRouteParams: { id } }
       )
@@ -373,11 +373,11 @@ describe('folders', () => {
           expect(json.name).toBe(newName)
           expect(json.parentId).toBe(newParentId)
 
-          const dbFolder = await getTestFolder(id)
+          const testFolder = await getTestFolder(id)
 
-          expect(dbFolder).toBeDefined()
-          expect(dbFolder?.name).toBe(newName)
-          expect(dbFolder?.parentId).toBe(newParentId)
+          expect(testFolder).toBeDefined()
+          expect(testFolder?.name).toBe(newName)
+          expect(testFolder?.parentId).toBe(newParentId)
         },
         { dynamicRouteParams: { id } }
       )
@@ -398,10 +398,10 @@ describe('folders', () => {
           expect(res.status).toBe(StatusCode.ClientErrorForbidden)
           expect(json.error).toBe(API_ERROR_FOLDER_DOES_NOT_EXIST)
 
-          const dbFolder = await getTestFolder(id)
+          const testFolder = await getTestFolder(id)
 
-          expect(dbFolder).toBeDefined()
-          expect(dbFolder?.name).toBe(name)
+          expect(testFolder).toBeDefined()
+          expect(testFolder?.name).toBe(name)
         },
         { dynamicRouteParams: { id } }
       )
@@ -422,9 +422,9 @@ describe('folders', () => {
           expect(res.status).toBe(StatusCode.ClientErrorForbidden)
           expect(json.error).toBe(API_ERROR_FOLDER_DOES_NOT_EXIST)
 
-          const dbFolders = await getTestFolders({ name: newName })
+          const testFolders = await getTestFolders({ name: newName })
 
-          expect(dbFolders.length).toBe(0)
+          expect(testFolders.length).toBe(0)
         },
         { dynamicRouteParams: { id: 1 } }
       )
@@ -440,9 +440,9 @@ describe('folders', () => {
         async ({ fetch }) => {
           await fetch({ method: HttpMethod.DELETE })
 
-          const dbFolder = await getTestFolder(id)
+          const testFolder = await getTestFolder(id)
 
-          expect(dbFolder).toBeNull()
+          expect(testFolder).toBeNull()
         },
         { dynamicRouteParams: { id } }
       )
@@ -499,16 +499,16 @@ describe('folders', () => {
           await fetch({ method: HttpMethod.DELETE })
 
           const remainingFolderIds = [folder_1_id, folder_1_0_id]
-          const dbFolders = await getTestFolders()
+          const testFolders = await getTestFolders()
 
-          expect(dbFolders.length).toBe(remainingFolderIds.length)
-          expect(dbFolders.every((dbFolder) => remainingFolderIds.includes(dbFolder.id))).toBe(true)
+          expect(testFolders.length).toBe(remainingFolderIds.length)
+          expect(testFolders.every((testFolder) => remainingFolderIds.includes(testFolder.id))).toBe(true)
 
           const remainingNotesIds = [note_0_id, note_1_id, note_0_folder_1_0_id]
-          const dbNotes = await getTestNotes()
+          const testNotes = await getTestNotes()
 
-          expect(dbNotes.length).toBe(remainingNotesIds.length)
-          expect(dbNotes.every((dbNote) => remainingNotesIds.includes(dbNote.id))).toBe(true)
+          expect(testNotes.length).toBe(remainingNotesIds.length)
+          expect(testNotes.every((testNote) => remainingNotesIds.includes(testNote.id))).toBe(true)
         },
         { dynamicRouteParams: { id } }
       )
@@ -526,9 +526,9 @@ describe('folders', () => {
           expect(res.status).toBe(StatusCode.ClientErrorForbidden)
           expect(json.error).toBe(API_ERROR_FOLDER_DOES_NOT_EXIST)
 
-          const dbFolder = await getTestFolder(id)
+          const testFolder = await getTestFolder(id)
 
-          expect(dbFolder).toBeDefined()
+          expect(testFolder).toBeDefined()
         },
         { dynamicRouteParams: { id } }
       )
@@ -546,9 +546,9 @@ describe('folders', () => {
           expect(res.status).toBe(StatusCode.ClientErrorForbidden)
           expect(json.error).toBe(API_ERROR_FOLDER_DOES_NOT_EXIST)
 
-          const dbFolder = await getTestFolder(id)
+          const testFolder = await getTestFolder(id)
 
-          expect(dbFolder).toBeNull()
+          expect(testFolder).toBeNull()
         },
         { dynamicRouteParams: { id } }
       )

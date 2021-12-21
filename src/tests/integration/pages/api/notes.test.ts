@@ -370,11 +370,11 @@ describe('notes', () => {
         })
         const json = await res.json<NoteData>()
 
-        const dbNote = await getTestNote(json.id)
+        const testNote = await getTestNote(json.id)
 
-        expect(dbNote).toBeDefined()
-        expect(dbNote?.name).toBe(name)
-        expect(dbNote?.folderId).toBeNull()
+        expect(testNote).toBeDefined()
+        expect(testNote?.name).toBe(name)
+        expect(testNote?.folderId).toBeNull()
       }))
 
     test('should add a new note inside an existing folder', () =>
@@ -389,11 +389,11 @@ describe('notes', () => {
         })
         const json = await res.json<NoteData>()
 
-        const dbNote = await getTestNote(json.id)
+        const testNote = await getTestNote(json.id)
 
-        expect(dbNote).toBeDefined()
-        expect(dbNote?.name).toBe(name)
-        expect(dbNote?.folderId).toBe(folderId)
+        expect(testNote).toBeDefined()
+        expect(testNote?.name).toBe(name)
+        expect(testNote?.folderId).toBe(folderId)
       }))
 
     test('should not add a new note inside a nonexisting folder', () =>
@@ -410,9 +410,9 @@ describe('notes', () => {
         expect(res.status).toBe(StatusCode.ClientErrorForbidden)
         expect(json.error).toBe(API_ERROR_FOLDER_DOES_NOT_EXIST)
 
-        const dbNotes = await getTestNotes({ name, folderId })
+        const testNotes = await getTestNotes({ name, folderId })
 
-        expect(dbNotes.length).toBe(0)
+        expect(testNotes.length).toBe(0)
       }))
 
     test('should not add a new note inside an existing folder not owned by the current user', () =>
@@ -430,9 +430,9 @@ describe('notes', () => {
         expect(res.status).toBe(StatusCode.ClientErrorForbidden)
         expect(json.error).toBe(API_ERROR_FOLDER_DOES_NOT_EXIST)
 
-        const dbNotes = await getTestNotes({ name, folderId })
+        const testNotes = await getTestNotes({ name, folderId })
 
-        expect(dbNotes.length).toBe(0)
+        expect(testNotes.length).toBe(0)
       }))
 
     test('should not add a new note inside an existing folder of a different type', () =>
@@ -450,9 +450,9 @@ describe('notes', () => {
         expect(res.status).toBe(StatusCode.ClientErrorForbidden)
         expect(json.error).toBe(API_ERROR_FOLDER_INVALID_TYPE)
 
-        const dbNotes = await getTestNotes({ name, folderId })
+        const testNotes = await getTestNotes({ name, folderId })
 
-        expect(dbNotes.length).toBe(0)
+        expect(testNotes.length).toBe(0)
       }))
 
     test('should not add a new duplicated note at the root', () =>
@@ -468,9 +468,9 @@ describe('notes', () => {
         expect(res.status).toBe(StatusCode.ClientErrorForbidden)
         expect(json.error).toBe(API_ERROR_NOTE_ALREADY_EXISTS)
 
-        const dbNotes = await getTestNotes({ name })
+        const testNotes = await getTestNotes({ name })
 
-        expect(dbNotes.length).toBe(1)
+        expect(testNotes.length).toBe(1)
       }))
 
     test('should not add a new duplicated note inside an existing folder', () =>
@@ -487,9 +487,9 @@ describe('notes', () => {
         expect(res.status).toBe(StatusCode.ClientErrorForbidden)
         expect(json.error).toBe(API_ERROR_NOTE_ALREADY_EXISTS)
 
-        const dbNotes = await getTestNotes({ name, folderId })
+        const testNotes = await getTestNotes({ name, folderId })
 
-        expect(dbNotes.length).toBe(1)
+        expect(testNotes.length).toBe(1)
       }))
   })
 })

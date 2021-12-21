@@ -62,9 +62,9 @@ describe('admin/emails', () => {
         })
         const json = await res.json<EmailAllowList>()
 
-        const dbEmail = await getTestEmailAllowList(json.id)
+        const testEmail = await getTestEmailAllowList(json.id)
 
-        expect(dbEmail?.email).toBe(json.email)
+        expect(testEmail?.email).toBe(json.email)
       }))
 
     test('should not add a new duplicated email', () =>
@@ -81,9 +81,9 @@ describe('admin/emails', () => {
         expect(res.status).toBe(StatusCode.ClientErrorForbidden)
         expect(json.error).toBe(API_ERROR_EMAIL_ALREADY_EXISTS)
 
-        const dbEmails = await getTestEmailAllowLists({ email })
+        const testEmails = await getTestEmailAllowLists({ email })
 
-        expect(dbEmails.length).toBe(1)
+        expect(testEmails.length).toBe(1)
       }))
   })
 
@@ -96,9 +96,9 @@ describe('admin/emails', () => {
         async ({ fetch }) => {
           await fetch({ method: HttpMethod.DELETE, headers: { 'Api-Key': process.env.ADMIN_API_KEY } })
 
-          const dbEmail = await getTestEmailAllowList(id)
+          const testEmail = await getTestEmailAllowList(id)
 
-          expect(dbEmail).toBeNull()
+          expect(testEmail).toBeNull()
         },
         { dynamicRouteParams: { id } }
       )
