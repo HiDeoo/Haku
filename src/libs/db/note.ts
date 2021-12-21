@@ -38,8 +38,7 @@ export async function addNote(
 }
 
 export async function getNotesGroupedByFolder(userId: UserId): Promise<NotesGroupedByFolder> {
-  // TODO(HiDeoo) order
-  const notes = await prisma.note.findMany({ where: { userId }, select: noteDataSelect })
+  const notes = await prisma.note.findMany({ where: { userId }, select: noteDataSelect, orderBy: [{ name: 'asc' }] })
 
   const notesGroupedByFolder: NotesGroupedByFolder = new Map()
 

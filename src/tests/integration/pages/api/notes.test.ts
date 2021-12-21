@@ -37,10 +37,10 @@ describe('notes', () => {
         expect(json.length).toBe(2)
 
         assertIsTreeItem(json[0])
-        expect(json[0]?.name).toEqual(note_0)
+        expect(json[0]?.name).toBe(note_0)
 
         assertIsTreeItem(json[1])
-        expect(json[1]?.name).toEqual(note_1)
+        expect(json[1]?.name).toBe(note_1)
       }))
 
     test('should return a tree with only root nodes', () =>
@@ -59,28 +59,28 @@ describe('notes', () => {
         expect(json.length).toBe(6)
 
         assertIsTreeFolder(json[0])
-        expect(json[0]?.name).toEqual(folder_0)
+        expect(json[0]?.name).toBe(folder_0)
         expect(json[0]?.children.length).toBe(0)
         expect(json[0]?.items.length).toBe(0)
 
         assertIsTreeFolder(json[1])
-        expect(json[1]?.name).toEqual(folder_1)
+        expect(json[1]?.name).toBe(folder_1)
         expect(json[1]?.children.length).toBe(0)
         expect(json[1]?.items.length).toBe(0)
 
         assertIsTreeFolder(json[2])
-        expect(json[2]?.name).toEqual(folder_2)
+        expect(json[2]?.name).toBe(folder_2)
         expect(json[2]?.children.length).toBe(0)
         expect(json[2]?.items.length).toBe(0)
 
         assertIsTreeItem(json[3])
-        expect(json[3]?.name).toEqual(note_0)
+        expect(json[3]?.name).toBe(note_0)
 
         assertIsTreeItem(json[4])
-        expect(json[4]?.name).toEqual(note_1)
+        expect(json[4]?.name).toBe(note_1)
 
         assertIsTreeItem(json[5])
-        expect(json[5]?.name).toEqual(note_2)
+        expect(json[5]?.name).toBe(note_2)
       }))
 
     test('should return a tree with nested nodes', () =>
@@ -281,24 +281,24 @@ describe('notes', () => {
         expect(json.length).toBe(2)
 
         assertIsTreeFolder(json[0])
-        expect(json[0]?.name).toEqual(folder_0_user_0)
+        expect(json[0]?.name).toBe(folder_0_user_0)
         expect(json[0]?.children.length).toBe(2)
         expect(json[0]?.items.length).toBe(1)
 
         expect(json[0]?.items[0]?.name).toBe(note_0_folder_0_user_0)
 
-        expect(json[0]?.children[0]?.name).toEqual(folder_0_0_user_0)
+        expect(json[0]?.children[0]?.name).toBe(folder_0_0_user_0)
         expect(json[0]?.children[0]?.children.length).toBe(0)
         expect(json[0]?.children[0]?.items.length).toBe(1)
 
         expect(json[0]?.children[0]?.items[0]?.name).toBe(note_0_folder_0_0_user_0)
 
-        expect(json[0]?.children[1]?.name).toEqual(folder_0_1_user_0)
+        expect(json[0]?.children[1]?.name).toBe(folder_0_1_user_0)
         expect(json[0]?.children[1]?.children.length).toBe(0)
         expect(json[0]?.children[1]?.items.length).toBe(0)
 
         assertIsTreeFolder(json[1])
-        expect(json[1]?.name).toEqual(folder_1_user_0)
+        expect(json[1]?.name).toBe(folder_1_user_0)
         expect(json[1]?.children.length).toBe(0)
         expect(json[1]?.items.length).toBe(0)
       }))
@@ -315,8 +315,48 @@ describe('notes', () => {
         expect(json.length).toBe(1)
 
         assertIsTreeFolder(json[0])
-        expect(json[0]?.name).toEqual(folder_0_type_note)
+        expect(json[0]?.name).toBe(folder_0_type_note)
         expect(json[0]?.children.length).toBe(0)
+      }))
+
+    test('should return a tree with nodes ordered alphabetically', () =>
+      testApiRoute(handler, async ({ fetch }) => {
+        const { name: note_z } = await createDbNote({ name: 'note_z' })
+        const { name: note_a } = await createDbNote({ name: 'note_a' })
+
+        const { name: folder_z } = await createDbFolder({ name: 'folder_z' })
+        const { id: folder_a_id, name: folder_a } = await createDbFolder({ name: 'folder_a' })
+
+        const { name: note_z_folder_a } = await createDbNote({ name: 'note_z_folder_a', folderId: folder_a_id })
+        const { name: note_a_folder_a } = await createDbNote({ name: 'note_a_folder_a', folderId: folder_a_id })
+
+        const { name: folder_a_z } = await createDbFolder({ name: 'folder_a_z', parentId: folder_a_id })
+        const { name: folder_a_a } = await createDbFolder({ name: 'folder_a_a', parentId: folder_a_id })
+
+        const res = await fetch({ method: HttpMethod.GET })
+        const json = await res.json<NoteTreeData>()
+
+        expect(json.length).toBe(4)
+
+        assertIsTreeFolder(json[0])
+        expect(json[0]?.name).toBe(folder_a)
+
+        expect(json[0]?.children.length).toBe(2)
+        expect(json[0]?.children[0]?.name).toBe(folder_a_a)
+        expect(json[0]?.children[1]?.name).toBe(folder_a_z)
+
+        expect(json[0]?.items.length).toBe(2)
+        expect(json[0]?.items[0]?.name).toBe(note_a_folder_a)
+        expect(json[0]?.items[1]?.name).toBe(note_z_folder_a)
+
+        assertIsTreeFolder(json[1])
+        expect(json[1]?.name).toBe(folder_z)
+
+        assertIsTreeItem(json[2])
+        expect(json[2]?.name).toBe(note_a)
+
+        assertIsTreeItem(json[3])
+        expect(json[3]?.name).toBe(note_z)
       }))
   })
 

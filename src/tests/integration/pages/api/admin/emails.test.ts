@@ -31,9 +31,9 @@ describe('admin/emails', () => {
     test('should return an empty list of allowed emails', () =>
       testApiRoute(getAndPostHandler, async ({ fetch }) => {
         const res = await fetch({ method: HttpMethod.GET, headers: { 'Api-Key': process.env.ADMIN_API_KEY } })
-        const json = await res.json()
+        const json = await res.json<EmailAllowList[]>()
 
-        expect(json).toEqual([])
+        expect(json.length).toBe(0)
       }))
 
     test('should return allowed emails', () =>
@@ -44,9 +44,9 @@ describe('admin/emails', () => {
         const res = await fetch({ method: HttpMethod.GET, headers: { 'Api-Key': process.env.ADMIN_API_KEY } })
         const json = await res.json<EmailAllowList[]>()
 
-        expect(json.length).toEqual(2)
-        expect(json[0]?.email).toEqual(email0)
-        expect(json[1]?.email).toEqual(email1)
+        expect(json.length).toBe(2)
+        expect(json[0]?.email).toBe(email0)
+        expect(json[1]?.email).toBe(email1)
       }))
   })
 
