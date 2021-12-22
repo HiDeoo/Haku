@@ -1,10 +1,9 @@
-import { type NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { signIn } from 'next-auth/react'
 
 import { getAuthErrorMesssage } from 'libs/auth'
 
-const Error: NextPage = () => {
+const Error: Page = () => {
   const { query } = useRouter()
 
   function login() {
@@ -19,5 +18,7 @@ const Error: NextPage = () => {
     </>
   )
 }
+
+Error.sidebar = false
 
 export default Error

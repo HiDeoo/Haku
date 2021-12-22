@@ -11,7 +11,9 @@ import Layout from 'components/Layout'
 
 const queryClient = new QueryClient()
 
-function Haku({ Component, pageProps: { session, ...pageProps } }: AppProps) {
+function Haku({ Component, pageProps: { session, ...pageProps } }: AppPropsWithLayout) {
+  const sidebar = Component.sidebar ?? true
+
   return (
     <>
       <Head>
@@ -21,7 +23,7 @@ function Haku({ Component, pageProps: { session, ...pageProps } }: AppProps) {
         <SessionProvider session={session}>
           <TooltipProvider>
             <Route>
-              <Layout>
+              <Layout sidebar={sidebar}>
                 <Component {...pageProps} />
               </Layout>
             </Route>
@@ -33,3 +35,7 @@ function Haku({ Component, pageProps: { session, ...pageProps } }: AppProps) {
 }
 
 export default Haku
+
+type AppPropsWithLayout = AppProps & {
+  Component: Page
+}

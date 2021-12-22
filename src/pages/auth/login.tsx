@@ -1,11 +1,10 @@
-import { type NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { signIn } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
 
 import { getAuthErrorMesssage } from 'libs/auth'
 
-const Login: NextPage = () => {
+const Login: Page = () => {
   const { query } = useRouter()
   const {
     register,
@@ -26,6 +25,8 @@ const Login: NextPage = () => {
     </form>
   )
 }
+
+Login.sidebar = false
 
 export default Login
 

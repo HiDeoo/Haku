@@ -1,6 +1,4 @@
-import { type NextPage } from 'next'
-
-const Email: NextPage = () => {
+const Email: Page = () => {
   return (
     <>
       <div>Check your email</div>
@@ -9,5 +7,7 @@ const Email: NextPage = () => {
     </>
   )
 }
+
+Email.sidebar = false
 
 export default Email
