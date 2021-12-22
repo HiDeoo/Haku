@@ -6,6 +6,7 @@ import { SessionProvider } from 'next-auth/react'
 import { QueryClient, QueryClientProvider } from 'react-query'
 
 import Route from 'components/Route'
+import Layout from 'components/Layout'
 
 const queryClient = new QueryClient()
 
@@ -18,7 +19,9 @@ function Haku({ Component, pageProps: { session, ...pageProps } }: AppProps) {
       <QueryClientProvider client={queryClient}>
         <SessionProvider session={session}>
           <Route>
-            <Component {...pageProps} />
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
           </Route>
         </SessionProvider>
       </QueryClientProvider>
