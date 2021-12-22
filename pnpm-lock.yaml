@@ -4,12 +4,15 @@ specifiers:
   '@jcoreio/wait-for-postgres': 2.0.0
   '@next-auth/prisma-adapter': 0.5.2-next.19
   '@prisma/client': 3.6.0
+  '@radix-ui/react-icons': 1.0.3
+  '@react-aria/button': 3.3.4
   '@types/jest': 27.0.3
   '@types/node': 16.11.11
   '@types/react': 17.0.37
   '@types/react-dom': 17.0.11
   '@typescript-eslint/eslint-plugin': 5.5.0
   autoprefixer: 10.4.0
+  clsx: 1.1.1
   docker-compose: 0.23.14
   dotenv-cli: 4.1.1
   eslint: 8.4.0
@@ -41,6 +44,9 @@ specifiers:
 dependencies:
   '@next-auth/prisma-adapter': 0.5.2-next.19_f26fdcf87df296c1294e2c3d19a07668
   '@prisma/client': 3.6.0_prisma@3.6.0
+  '@radix-ui/react-icons': 1.0.3_react@17.0.2
+  '@react-aria/button': 3.3.4_react@17.0.2
+  clsx: 1.1.1
   ky: 0.28.7
   next: 12.0.7_react-dom@17.0.2+react@17.0.2
   next-auth: 4.0.2_react-dom@17.0.2+react@17.0.2
@@ -964,6 +970,121 @@ packages:
     resolution: {integrity: sha512-dRClHS7DsTVchDKzeG72OaEyeDskCv91pnZ72Fftn0mp4BkUvX2LvWup65hCNzwwQm5IDd6A88APldKDnMiEMA==}
     requiresBuild: true
     dev: true
+
+  /@radix-ui/react-icons/1.0.3_react@17.0.2:
+    resolution: {integrity: sha512-YbPAUZwTsvF/2H7IU35txaLUB+JNSV8GIhnswlqiFODP/P32t5op5keYUvQWsSj9TA0VLF367J24buUjIprn0w==}
+    peerDependencies:
+      react: ^16.x || ^17.x
+    dependencies:
+      react: 17.0.2
+    dev: false
+
+  /@react-aria/button/3.3.4_react@17.0.2:
+    resolution: {integrity: sha512-vebTcf9YpwaKCvsca2VWhn6eYPa15OJtMENwaGop72UrL35Oa7xDgU0RG22RAjRjt8HRVlAfLpHkJQW6GBGU3g==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0-rc.1
+    dependencies:
+      '@babel/runtime': 7.16.3
+      '@react-aria/focus': 3.5.0_react@17.0.2
+      '@react-aria/interactions': 3.7.0_react@17.0.2
+      '@react-aria/utils': 3.11.0_react@17.0.2
+      '@react-stately/toggle': 3.2.3_react@17.0.2
+      '@react-types/button': 3.4.1_react@17.0.2
+      react: 17.0.2
+    dev: false
+
+  /@react-aria/focus/3.5.0_react@17.0.2:
+    resolution: {integrity: sha512-Eib75Q6QgQdn8VVVByg5Vipaaj/C//8Bs++sQY7nkomRx4sdArOnXbDppul3YHP6mRfU9VRLvAigEUlReQF/Xw==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0-rc.1
+    dependencies:
+      '@babel/runtime': 7.16.3
+      '@react-aria/interactions': 3.7.0_react@17.0.2
+      '@react-aria/utils': 3.11.0_react@17.0.2
+      '@react-types/shared': 3.10.1_react@17.0.2
+      clsx: 1.1.1
+      react: 17.0.2
+    dev: false
+
+  /@react-aria/interactions/3.7.0_react@17.0.2:
+    resolution: {integrity: sha512-Xomchjb9bqvh3ocil+QCEYFSxsTy8PHEz43mNP6z2yuu3UqTpl2FsWfyKgF/Yy0WKVkyV2dO2uz758KJTCLZhw==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0-rc.1
+    dependencies:
+      '@babel/runtime': 7.16.3
+      '@react-aria/utils': 3.11.0_react@17.0.2
+      '@react-types/shared': 3.10.1_react@17.0.2
+      react: 17.0.2
+    dev: false
+
+  /@react-aria/ssr/3.1.0_react@17.0.2:
+    resolution: {integrity: sha512-RxqQKmE8sO7TGdrcSlHTcVzMP450hqowtBSd2bBS9oPlcokVkaGq28c3Rwa8ty5ctw4EBCjXqjP7xdcKMGDzug==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0-rc.1
+    dependencies:
+      '@babel/runtime': 7.16.3
+      react: 17.0.2
+    dev: false
+
+  /@react-aria/utils/3.11.0_react@17.0.2:
+    resolution: {integrity: sha512-4yFA8E9xqDCUlolYSsoyp/qxrkiQrnEqx1BQOrKDuicpW7MBJ39pJC23YFMpyK2a6xEptc6xJEeIEFJXp57jJw==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0-rc.1
+    dependencies:
+      '@babel/runtime': 7.16.3
+      '@react-aria/ssr': 3.1.0_react@17.0.2
+      '@react-stately/utils': 3.3.0_react@17.0.2
+      '@react-types/shared': 3.10.1_react@17.0.2
+      clsx: 1.1.1
+      react: 17.0.2
+    dev: false
+
+  /@react-stately/toggle/3.2.3_react@17.0.2:
+    resolution: {integrity: sha512-p5eVjXwNo4y4CeybxfjYmbTzNMNiI67uspbRAJnawWBVWw8X+yIvRfpjYAsqmvsJ+DsvwybSTlQDT6taGoWEsA==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0-rc.1
+    dependencies:
+      '@babel/runtime': 7.16.3
+      '@react-stately/utils': 3.3.0_react@17.0.2
+      '@react-types/checkbox': 3.2.3_react@17.0.2
+      '@react-types/shared': 3.10.1_react@17.0.2
+      react: 17.0.2
+    dev: false
+
+  /@react-stately/utils/3.3.0_react@17.0.2:
+    resolution: {integrity: sha512-f//Y8q0+FFcS04xvCNvbba7WWRLHzj2AegLgdgwTxsnk9Gb+AyuasdRrRY7bGQhdHuEJ7OIiQZ9EQWndDbrTcg==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0-rc.1
+    dependencies:
+      '@babel/runtime': 7.16.3
+      react: 17.0.2
+    dev: false
+
+  /@react-types/button/3.4.1_react@17.0.2:
+    resolution: {integrity: sha512-B54M84LxdEppwjXNlkBEJyMfe9fd+bvFV7R6+NJvupGrZm/LuFNYjFcHk7yjMKWTdWm6DbpIuQz54n5qTW7Vlg==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0-rc.1
+    dependencies:
+      '@react-types/shared': 3.10.1_react@17.0.2
+      react: 17.0.2
+    dev: false
+
+  /@react-types/checkbox/3.2.3_react@17.0.2:
+    resolution: {integrity: sha512-YqeAFyrpaxI/eW6zQ7tVkKIASgzpywRrc6C/rV6Mw0zzGGSSvmYvdOBx9yHOEvpts7dLgaGlmLK6CeG7s4yGKg==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0-rc.1
+    dependencies:
+      '@react-types/shared': 3.10.1_react@17.0.2
+      react: 17.0.2
+    dev: false
+
+  /@react-types/shared/3.10.1_react@17.0.2:
+    resolution: {integrity: sha512-U3dLJtstvOiZ8XLrWdNv9WXuruoDyfIfSXguTs9N0naDdO+M0MIbt/1Hg7Toe43ueAe56GM14IFL+S0/jhv8ow==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0-rc.1
+    dependencies:
+      react: 17.0.2
+    dev: false
 
   /@rushstack/eslint-patch/1.1.0:
     resolution: {integrity: sha512-JLo+Y592QzIE+q7Dl2pMUtt4q8SKYI5jDrZxrozEQxnGVOyYE+GWK9eLkwTaeN9DDctlaRAQ3TBmzZ1qdLE30A==}
@@ -1931,6 +2052,11 @@ packages:
     resolution: {integrity: sha1-2jCcwmPfFZlMaIypAheco8fNfH4=}
     engines: {node: '>=0.8'}
     dev: true
+
+  /clsx/1.1.1:
+    resolution: {integrity: sha512-6/bPho624p3S2pMyvP5kKBPXnI3ufHLObBFCfgx+LkeR5lg2XYy2hqZqUf45ypD8COn2bhgGJSUE+l5dhNBieA==}
+    engines: {node: '>=6'}
+    dev: false
 
   /co/4.6.0:
     resolution: {integrity: sha1-bqa989hTrlTMuOR7+gvz+QMfsYQ=}

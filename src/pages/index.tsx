@@ -1,10 +1,10 @@
 import { type NextPage } from 'next'
 import { signOut } from 'next-auth/react'
-import { useQuery } from 'react-query'
+// import { useQuery } from 'react-query'
 
 import useUser from 'hooks/useUser'
 import styles from 'styles/Home.module.css'
-import { getNoteTree } from 'libs/api/notes'
+// import { getNoteTree } from 'libs/api/notes'
 
 const Home: NextPage = () => {
   const user = useUser()
