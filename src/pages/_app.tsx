@@ -1,5 +1,6 @@
 import 'styles/globals.css'
 
+import { Provider as TooltipProvider } from '@radix-ui/react-tooltip'
 import { type AppProps } from 'next/app'
 import Head from 'next/head'
 import { SessionProvider } from 'next-auth/react'
@@ -18,11 +19,13 @@ function Haku({ Component, pageProps: { session, ...pageProps } }: AppProps) {
       </Head>
       <QueryClientProvider client={queryClient}>
         <SessionProvider session={session}>
-          <Route>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-          </Route>
+          <TooltipProvider>
+            <Route>
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            </Route>
+          </TooltipProvider>
         </SessionProvider>
       </QueryClientProvider>
     </>

@@ -49,7 +49,7 @@ const Sidebar: React.FC = () => {
       </div>
       <div className="flex-none px-4 pb-2">
         <div className="pt-2 border-t border-zinc-600/40 flex justify-center">
-          <IconButton onPress={logout}>
+          <IconButton onPress={logout} tooltip="Log Out">
             <ExitIcon />
           </IconButton>
         </div>
