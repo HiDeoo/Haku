@@ -5,3 +5,9 @@
 html {
   @apply scroll-smooth;
 }
+
+html,
+body,
+body > div:first-child {
+  @apply h-full;
+}
