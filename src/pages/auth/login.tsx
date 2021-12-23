@@ -25,6 +25,7 @@ const Login: Page = () => {
       {query.error ? <Callout intent="error" message={getAuthErrorMesssage(query.error)} /> : null}
       <form onSubmit={handleSubmit(onSubmit)}>
         <TextInput
+          autoFocus
           type="email"
           label="Email"
           placeholder="user@address.com"
