@@ -1,0 +1,13 @@
+.container {
+  @apply w-64 bg-zinc-900;
+}
+
+.navigation {
+  @apply overflow-y-auto;
+}
+
+.controls {
+  @apply px-4 pb-2 border-t border-zinc-600/40 pt-1.5;
+
+  box-shadow: 0px -1px 1px rgba(0, 0, 0, 0.75);
+}

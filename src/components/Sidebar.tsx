@@ -3,6 +3,7 @@ import { signOut } from 'next-auth/react'
 
 import Flex from 'components/Flex'
 import IconButton from 'components/IconButton'
+import styles from 'styles/Sidebar.module.css'
 
 const Sidebar: React.FC = () => {
   function logout() {
@@ -10,8 +11,8 @@ const Sidebar: React.FC = () => {
   }
 
   return (
-    <Flex direction="col" className="w-64 bg-zinc-900">
-      <Flex as="nav" flex className="overflow-y-auto">
+    <Flex direction="col" className={styles.container}>
+      <Flex as="nav" flex className={styles.navigation}>
         START
         <br />
         Lorem, ipsum dolor sit amet consectetur adipisicing elit. Impedit nostrum ea sapiente pariatur, debitis corrupti
@@ -48,13 +49,11 @@ const Sidebar: React.FC = () => {
         <br />
         END
       </Flex>
-      <div className="px-4 pb-2">
-        <Flex justifyContent="center" className="pt-2 border-t border-zinc-600/40">
-          <IconButton onPress={logout} tooltip="Log Out">
-            <ExitIcon />
-          </IconButton>
-        </Flex>
-      </div>
+      <Flex justifyContent="center" className={styles.controls}>
+        <IconButton onPress={logout} tooltip="Log Out">
+          <ExitIcon />
+        </IconButton>
+      </Flex>
     </Flex>
   )
 }
