@@ -8,6 +8,7 @@ specifiers:
   '@radix-ui/react-tooltip': 0.1.6
   '@react-aria/button': 3.3.4
   '@react-aria/utils': 3.11.0
+  '@types/faker': 5.5.9
   '@types/jest': 27.0.3
   '@types/node': 16.11.11
   '@types/react': 17.0.37
@@ -21,6 +22,7 @@ specifiers:
   eslint-config-next: 12.0.5
   eslint-config-prettier: 8.3.0
   execa: 5.1.1
+  faker: 5.5.3
   husky: 7.0.4
   jest: 27.4.5
   ky: 0.28.7
@@ -63,6 +65,7 @@ dependencies:
 
 devDependencies:
   '@jcoreio/wait-for-postgres': 2.0.0
+  '@types/faker': 5.5.9
   '@types/jest': 27.0.3
   '@types/node': 16.11.11
   '@types/react': 17.0.37
@@ -75,6 +78,7 @@ devDependencies:
   eslint-config-next: 12.0.5_3d8e4885d300537a04bacadd06e129a1
   eslint-config-prettier: 8.3.0_eslint@8.4.0
   execa: 5.1.1
+  faker: 5.5.3
   husky: 7.0.4
   jest: 27.4.5_ts-node@10.4.0
   lint-staged: 12.1.2
@@ -1377,6 +1381,10 @@ packages:
 
   /@types/cookie/0.4.1:
     resolution: {integrity: sha512-XW/Aa8APYr6jSVVA1y/DEIZX0/GMKLEVekNG727R8cs56ahETkRAy/3DR7+fJyh7oUgGwNQaRfXCun0+KbWY7Q==}
+    dev: true
+
+  /@types/faker/5.5.9:
+    resolution: {integrity: sha512-uCx6mP3UY5SIO14XlspxsGjgaemrxpssJI0Ol+GfhxtcKpv9pgRZYsS4eeKeHVLje6Qtc8lGszuBI461+gVZBA==}
     dev: true
 
   /@types/graceful-fs/4.1.5:
@@ -3123,6 +3131,10 @@ packages:
       chardet: 0.7.0
       iconv-lite: 0.4.24
       tmp: 0.0.33
+    dev: true
+
+  /faker/5.5.3:
+    resolution: {integrity: sha512-wLTv2a28wjUyWkbnX7u/ABZBkUkIF2fCd73V6P2oFqEGEktDfzWx4UxrSqtPRw0xPRAcjeAOIiJWqZm3pP4u3g==}
     dev: true
 
   /fast-deep-equal/3.1.3:

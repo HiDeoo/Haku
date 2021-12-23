@@ -1,4 +1,5 @@
 import { type EmailAllowList, FolderType } from '@prisma/client'
+import faker from 'faker'
 
 import { prisma } from 'libs/db'
 import { type FolderData } from 'libs/db/folder'
@@ -8,7 +9,7 @@ import { getTestUser } from 'tests/integration'
 export function createTestFolder(options?: TestFolderOptions) {
   return prisma.folder.create({
     data: {
-      name: options?.name ?? 'folder',
+      name: options?.name ?? faker.lorem.words(),
       parentId: options?.parentId,
       type: options?.type ?? FolderType.NOTE,
       userId: options?.userId ?? getTestUser().userId,
@@ -40,7 +41,7 @@ interface TestFolderOptions {
 export function createTestNote(options?: TestNoteOptions) {
   return prisma.note.create({
     data: {
-      name: options?.name ?? 'note',
+      name: options?.name ?? faker.lorem.words(),
       folderId: options?.folderId,
       userId: options?.userId ?? getTestUser().userId,
     },
@@ -66,10 +67,10 @@ interface TestNoteOptions {
   userId?: UserId
 }
 
-export function createTestEmailAllowList(options?: TestEmailAllowListOptions) {
+export function createTestEmailAllowList() {
   return prisma.emailAllowList.create({
     data: {
-      email: options?.email ?? 'test@example.com',
+      email: faker.internet.email(),
     },
   })
 }

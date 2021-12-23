@@ -31,6 +31,7 @@
   },
   "devDependencies": {
     "@jcoreio/wait-for-postgres": "2.0.0",
+    "@types/faker": "5.5.9",
     "@types/jest": "27.0.3",
     "@types/node": "16.11.11",
     "@types/react": "17.0.37",
@@ -43,6 +44,7 @@
     "eslint-config-next": "12.0.5",
     "eslint-config-prettier": "8.3.0",
     "execa": "5.1.1",
+    "faker": "5.5.3",
     "husky": "7.0.4",
     "jest": "27.4.5",
     "lint-staged": "12.1.2",
