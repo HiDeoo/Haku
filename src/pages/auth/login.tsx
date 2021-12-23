@@ -13,7 +13,7 @@ const Login: Page = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitted },
+    formState: { errors, isSubmitSuccessful },
   } = useForm<FormFields>()
 
   function onSubmit({ email }: FormFields) {
@@ -31,7 +31,7 @@ const Login: Page = () => {
           errorMessage={errors.email?.message}
           {...register('email', { required: 'required' })}
         />
-        <Button type="submit" primary className="w-full" disabled={isSubmitted} loading={isSubmitted}>
+        <Button type="submit" primary className="w-full" disabled={isSubmitSuccessful} loading={isSubmitSuccessful}>
           Login
         </Button>
       </form>
