@@ -7,6 +7,7 @@ specifiers:
   '@radix-ui/react-icons': 1.0.3
   '@radix-ui/react-tooltip': 0.1.6
   '@react-aria/button': 3.3.4
+  '@react-aria/textfield': 3.5.0
   '@react-aria/utils': 3.11.0
   '@types/faker': 5.5.9
   '@types/jest': 27.0.3
@@ -39,7 +40,7 @@ specifiers:
   react-hook-form: 7.21.0
   react-query: 3.34.2
   status-code-enum: 1.0.0
-  tailwindcss: 3.0.0
+  tailwindcss: 3.0.7
   ts-node: 10.4.0
   tsconfig-paths: 3.12.0
   typescript: 4.5.2
@@ -51,6 +52,7 @@ dependencies:
   '@radix-ui/react-icons': 1.0.3_react@17.0.2
   '@radix-ui/react-tooltip': 0.1.6_react-dom@17.0.2+react@17.0.2
   '@react-aria/button': 3.3.4_react@17.0.2
+  '@react-aria/textfield': 3.5.0_react@17.0.2
   '@react-aria/utils': 3.11.0_react@17.0.2
   clsx: 1.1.1
   ky: 0.28.7
@@ -87,7 +89,7 @@ devDependencies:
   postcss: 8.4.4
   prettier: 2.5.0
   prisma: 3.6.0
-  tailwindcss: 3.0.0_64e95eea492b78ba1be305e2672c4e19
+  tailwindcss: 3.0.7_64e95eea492b78ba1be305e2672c4e19
   ts-node: 10.4.0_68212d3c5f342a0c59715bbaaf1875e7
   tsconfig-paths: 3.12.0
   typescript: 4.5.2
@@ -1244,12 +1246,38 @@ packages:
       react: 17.0.2
     dev: false
 
+  /@react-aria/label/3.2.1_react@17.0.2:
+    resolution: {integrity: sha512-QZ5/dpJKRjB1JtFZfOVd5GUiCpA2yMgmNA6ky6jT5XNAo7H14QqGRFUGDTLAQYGd+Bc3s+NayOT3NKUYur/3Xw==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0-rc.1
+    dependencies:
+      '@babel/runtime': 7.16.3
+      '@react-aria/utils': 3.11.0_react@17.0.2
+      '@react-types/label': 3.5.0_react@17.0.2
+      '@react-types/shared': 3.10.1_react@17.0.2
+      react: 17.0.2
+    dev: false
+
   /@react-aria/ssr/3.1.0_react@17.0.2:
     resolution: {integrity: sha512-RxqQKmE8sO7TGdrcSlHTcVzMP450hqowtBSd2bBS9oPlcokVkaGq28c3Rwa8ty5ctw4EBCjXqjP7xdcKMGDzug==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0-rc.1
     dependencies:
       '@babel/runtime': 7.16.3
+      react: 17.0.2
+    dev: false
+
+  /@react-aria/textfield/3.5.0_react@17.0.2:
+    resolution: {integrity: sha512-EUsr5YCavNbp/nUoBCfiLiir0I0/NiZ2i/RPtOzzsGHMHw2xOME9PiRHYPrj7vOQQEfNgN1btr1psvLML4dk5w==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0-rc.1
+    dependencies:
+      '@babel/runtime': 7.16.3
+      '@react-aria/focus': 3.5.0_react@17.0.2
+      '@react-aria/label': 3.2.1_react@17.0.2
+      '@react-aria/utils': 3.11.0_react@17.0.2
+      '@react-types/shared': 3.10.1_react@17.0.2
+      '@react-types/textfield': 3.3.0_react@17.0.2
       react: 17.0.2
     dev: false
 
@@ -1305,11 +1333,29 @@ packages:
       react: 17.0.2
     dev: false
 
+  /@react-types/label/3.5.0_react@17.0.2:
+    resolution: {integrity: sha512-a9lpQUyV4XwsZv0gV1jPjPWicSSa+DRliuXLTwORirxNLF0kMk89DLYf0a9CZhiEniJYqoqR3laJDvLAFW1x/Q==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0-rc.1
+    dependencies:
+      '@react-types/shared': 3.10.1_react@17.0.2
+      react: 17.0.2
+    dev: false
+
   /@react-types/shared/3.10.1_react@17.0.2:
     resolution: {integrity: sha512-U3dLJtstvOiZ8XLrWdNv9WXuruoDyfIfSXguTs9N0naDdO+M0MIbt/1Hg7Toe43ueAe56GM14IFL+S0/jhv8ow==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0-rc.1
     dependencies:
+      react: 17.0.2
+    dev: false
+
+  /@react-types/textfield/3.3.0_react@17.0.2:
+    resolution: {integrity: sha512-lOf0tx3c3dVaomH/uvKpOKFVTXQ232kLnMhOJTtj97JDX7fTr3SNhDUV0G8Zf4M0vr+l+xkTrJkywYE23rzliw==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0-rc.1
+    dependencies:
+      '@react-types/shared': 3.10.1_react@17.0.2
       react: 17.0.2
     dev: false
 
@@ -6095,8 +6141,8 @@ packages:
     resolution: {integrity: sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==}
     dev: true
 
-  /tailwindcss/3.0.0_64e95eea492b78ba1be305e2672c4e19:
-    resolution: {integrity: sha512-UPAp2PS5vojAvGClJFIkdh2hfFyaSWo09Ma9j2vZYW+ANhTvpUHFjY85JgtrvvXXREtDvOXy2BxW1yHOz8apCg==}
+  /tailwindcss/3.0.7_64e95eea492b78ba1be305e2672c4e19:
+    resolution: {integrity: sha512-rZdKNHtC64jcQncLoWOuCzj4lQDTAgLtgK3WmQS88tTdpHh9OwLqULTQxI3tw9AMJsqSpCKlmcjW/8CSnni6zQ==}
     engines: {node: '>=12.13.0'}
     hasBin: true
     peerDependencies:

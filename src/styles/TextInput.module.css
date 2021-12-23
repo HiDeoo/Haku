@@ -1,5 +1,5 @@
 .container {
-  @apply mb-3;
+  @apply mb-3 last-of-type:mb-4;
 }
 
 .labelContainer {
@@ -11,6 +11,6 @@
 }
 
 .input {
-  @apply bg-zinc-600/75 rounded-md px-3 py-1.5 placeholder:text-blue-50/40;
+  @apply w-full bg-zinc-600/75 rounded-md px-3 py-1.5 placeholder:text-blue-50/40;
   @apply focus:outline-none focus:ring-2 focus:ring-offset-zinc-800 focus:ring-offset-2;
 }

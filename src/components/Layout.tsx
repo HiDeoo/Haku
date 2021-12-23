@@ -2,10 +2,12 @@ import Flex from 'components/Flex'
 import Sidebar from 'components/Sidebar'
 
 const Layout: React.FC<Props> = ({ children, sidebar }) => {
+  const centered = sidebar ? undefined : 'center'
+
   return (
     <Flex fullHeight fullWidth className="overflow-hidden bg-zinc-800 text-blue-50 text-sm">
       {sidebar ? <Sidebar /> : null}
-      <Flex flex className="overflow-y-auto">
+      <Flex justifyContent={centered} alignItems={centered} flex className="overflow-y-auto">
         {children}
       </Flex>
     </Flex>

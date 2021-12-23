@@ -6,7 +6,7 @@ const IconButton: React.FC<Props> = ({ children, tooltip, ...props }) => {
     <Tooltip content={tooltip}>
       <Button
         {...props}
-        className="bg-inherit hover:bg-blue-50/10 hover:text-blue-600 disabled:bg-inherit disabled:text-inherit px-2 mx-0.5"
+        className="bg-inherit hover:bg-zinc-700/75 hover:text-blue-600 disabled:bg-inherit disabled:text-inherit px-2 mx-0.5"
         pressedClassName="bg-blue-50/20 hover:bg-blue-50/20"
       >
         {children}
