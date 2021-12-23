@@ -50,7 +50,7 @@ const Sidebar: React.FC = () => {
         END
       </Flex>
       <Flex justifyContent="center" className={styles.controls}>
-        <IconButton onPress={logout} tooltip="Log Out">
+        <IconButton onPress={logout} tooltip="Logout">
           <ExitIcon />
         </IconButton>
       </Flex>

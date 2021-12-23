@@ -22,7 +22,7 @@ const Login: Page = () => {
 
   return (
     <Flex direction="col" className="w-60">
-      {query.error && <Callout intent="error" message={getAuthErrorMesssage(query.error)} />}
+      {query.error ? <Callout intent="error" message={getAuthErrorMesssage(query.error)} /> : null}
       <form onSubmit={handleSubmit(onSubmit)}>
         <TextInput
           type="email"
@@ -32,7 +32,7 @@ const Login: Page = () => {
           {...register('email', { required: 'required' })}
         />
         <Button type="submit" primary className="w-full" disabled={isSubmitted} loading={isSubmitted}>
-          Log In
+          Login
         </Button>
       </form>
     </Flex>

@@ -7,7 +7,7 @@ const Layout: React.FC<Props> = ({ children, sidebar }) => {
   return (
     <Flex fullHeight fullWidth className="overflow-hidden bg-zinc-800 text-blue-50 text-sm">
       {sidebar ? <Sidebar /> : null}
-      <Flex justifyContent={centered} alignItems={centered} flex className="overflow-y-auto">
+      <Flex justifyContent={centered} alignItems={centered} direction="col" flex className="overflow-y-auto">
         {children}
       </Flex>
     </Flex>
