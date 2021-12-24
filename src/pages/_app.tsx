@@ -22,11 +22,11 @@ function Haku({ Component, pageProps: { session, ...pageProps } }: AppPropsWithL
       <QueryClientProvider client={queryClient}>
         <SessionProvider session={session}>
           <TooltipProvider>
-            <Layout sidebar={sidebar}>
-              <Route>
+            <Route>
+              <Layout sidebar={sidebar}>
                 <Component {...pageProps} />
-              </Route>
-            </Layout>
+              </Layout>
+            </Route>
           </TooltipProvider>
         </SessionProvider>
       </QueryClientProvider>

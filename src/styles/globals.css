@@ -11,3 +11,7 @@ body,
 body > div:first-child {
   @apply h-full;
 }
+
+body > div:first-child {
+  @apply flex justify-center items-center overflow-hidden bg-zinc-800 text-blue-50 text-sm;
+}
