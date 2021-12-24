@@ -38,8 +38,8 @@ describe('admin/emails', () => {
 
     test('should return allowed emails', () =>
       testApiRoute(getAndPostHandler, async ({ fetch }) => {
-        const { email: email0 } = await createTestEmailAllowList({ email: 'test1@example.com' })
-        const { email: email1 } = await createTestEmailAllowList({ email: 'test2@example.com' })
+        const { email: email0 } = await createTestEmailAllowList()
+        const { email: email1 } = await createTestEmailAllowList()
 
         const res = await fetch({ method: HttpMethod.GET, headers: { 'Api-Key': process.env.ADMIN_API_KEY } })
         const json = await res.json<EmailAllowList[]>()

@@ -1,0 +1,16 @@
+.container {
+  @apply mb-3 last-of-type:mb-4;
+}
+
+.labelContainer {
+  @apply block mb-1;
+}
+
+.error {
+  @apply ml-1.5 text-xs relative -top-px text-red-400 italic;
+}
+
+.input {
+  @apply w-full bg-zinc-600/75 rounded-md px-3 py-1.5 placeholder:text-blue-50/40;
+  @apply focus:outline-none focus:ring-2 focus:ring-offset-zinc-800 focus:ring-offset-2;
+}

@@ -1,33 +1,14 @@
-import { type NextPage } from 'next'
-import { signOut } from 'next-auth/react'
-import { useQuery } from 'react-query'
+import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 
-import useUser from 'hooks/useUser'
-import styles from 'styles/Home.module.css'
-import { getNoteTree } from 'libs/api/notes'
+const Home: Page = () => {
+  const { replace } = useRouter()
 
-const Home: NextPage = () => {
-  const user = useUser()
+  useEffect(() => {
+    replace('/notes', undefined, { shallow: true })
+  }, [replace])
 
-  const query = useQuery('content', getNoteTree)
-
-  console.log('content ', query.data)
-
-  function logout() {
-    signOut({ callbackUrl: `/auth/login` })
-  }
-
-  return (
-    <>
-      <div className="bg-red-600">Hello2</div>
-      <div className="bg-green-500">Hello2</div>
-      <div className="bg-[#ff00ff]">Hello2</div>
-      <div className={styles.test}>Hello2</div>
-      <hr />
-      {user && <div>{JSON.stringify(user)}</div>}
-      <button onClick={logout}>Sign out</button>
-    </>
-  )
+  return null
 }
 
 export default Home

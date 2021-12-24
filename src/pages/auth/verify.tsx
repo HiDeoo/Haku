@@ -1,13 +1,11 @@
-import { type NextPage } from 'next'
+import Callout from 'components/Callout'
 
-const Email: NextPage = () => {
+const Email: Page = () => {
   return (
-    <>
-      <div>Check your email</div>
-      <div>A sign in link has been sent to your email address.</div>
-      <div>You can now close this window.</div>
-    </>
+    <Callout intent="success" title="Check your inbox" message="A login link has been sent to your email address." />
   )
 }
+
+Email.sidebar = false
 
 export default Email

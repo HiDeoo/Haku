@@ -379,7 +379,7 @@ describe('notes', () => {
 
     test('should add a new note inside an existing folder', () =>
       testApiRoute(handler, async ({ fetch }) => {
-        const { id: folderId } = await createTestFolder({ name: 'parent' })
+        const { id: folderId } = await createTestFolder()
 
         const name = 'note'
 
@@ -417,7 +417,7 @@ describe('notes', () => {
 
     test('should not add a new note inside an existing folder not owned by the current user', () =>
       testApiRoute(handler, async ({ fetch }) => {
-        const { id: folderId } = await createTestFolder({ name: 'parent', userId: getTestUser('1').userId })
+        const { id: folderId } = await createTestFolder({ userId: getTestUser('1').userId })
 
         const name = 'note'
 
@@ -437,7 +437,7 @@ describe('notes', () => {
 
     test('should not add a new note inside an existing folder of a different type', () =>
       testApiRoute(handler, async ({ fetch }) => {
-        const { id: folderId } = await createTestFolder({ name: 'parent', type: FolderType.TODO })
+        const { id: folderId } = await createTestFolder({ type: FolderType.TODO })
 
         const name = 'note'
 
@@ -475,7 +475,7 @@ describe('notes', () => {
 
     test('should not add a new duplicated note inside an existing folder', () =>
       testApiRoute(handler, async ({ fetch }) => {
-        const { id: folderId } = await createTestFolder({ name: 'parent' })
+        const { id: folderId } = await createTestFolder()
         const { name } = await createTestNote({ folderId })
 
         const res = await fetch({

@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html {
+  @apply scroll-smooth;
+}
+
+html,
+body,
+body > div:first-child {
+  @apply h-full;
+}

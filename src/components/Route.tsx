@@ -2,6 +2,8 @@ import { signIn, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
+import Spinner from 'components/Spinner'
+
 const unsecureRoutes = ['/auth/error', '/auth/login', '/auth/verify']
 
 const Route: React.FC = ({ children }) => {
@@ -25,7 +27,7 @@ const Route: React.FC = ({ children }) => {
     return <>{children}</>
   }
 
-  return <div>Loading…</div>
+  return <Spinner delay className="h-10 w-10" />
 }
 
 export default Route

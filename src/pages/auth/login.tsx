@@ -1,16 +1,19 @@
-import { type NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { signIn } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
 
 import { getAuthErrorMesssage } from 'libs/auth'
+import TextInput from 'components/TextInput'
+import Button from 'components/Button'
+import Flex from 'components/Flex'
+import Callout from 'components/Callout'
 
-const Login: NextPage = () => {
+const Login: Page = () => {
   const { query } = useRouter()
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitSuccessful },
   } = useForm<FormFields>()
 
   function onSubmit({ email }: FormFields) {
@@ -18,14 +21,26 @@ const Login: NextPage = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <input type="email" {...register('email', { required: true })} />
-      {errors.email && <div>This field is required</div>}
-      {query.error && <div>{getAuthErrorMesssage(query.error)}</div>}
-      <input type="submit" />
-    </form>
+    <Flex direction="col" className="w-60">
+      {query.error ? <Callout intent="error" message={getAuthErrorMesssage(query.error)} /> : null}
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <TextInput
+          autoFocus
+          type="email"
+          label="Email"
+          placeholder="user@address.com"
+          errorMessage={errors.email?.message}
+          {...register('email', { required: 'required' })}
+        />
+        <Button type="submit" primary className="w-full" disabled={isSubmitSuccessful} loading={isSubmitSuccessful}>
+          Login
+        </Button>
+      </form>
+    </Flex>
   )
 }
+
+Login.sidebar = false
 
 export default Login
 

@@ -20,7 +20,7 @@ export function EmailApiProvider(options: EmailApiProviderUserOptions): EmailCon
 export function getAuthErrorMesssage(queryStringErrorType: QueryStringErrorType): string {
   const errorType: ErrorType = isErrorType(queryStringErrorType) ? queryStringErrorType : 'Default'
 
-  return errorMessages[errorType] ?? 'Something went wrong'
+  return errorMessages[errorType] ?? 'Something went wrong!'
 }
 
 function isErrorType(error: string | string[] | undefined): error is ErrorType {
