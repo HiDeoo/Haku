@@ -7,7 +7,7 @@
 }
 
 .controls {
-  @apply px-4 pb-2 border-t border-zinc-600/40 pt-1.5;
+  @apply z-10 px-4 pb-2 border-t border-zinc-600/40 pt-1.5;
 
-  box-shadow: 0px -1px 1px rgba(0, 0, 0, 0.75);
+  box-shadow: 0px -1px 1px theme('colors.black');
 }
