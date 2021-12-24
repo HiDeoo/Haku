@@ -4,10 +4,10 @@
   transform-origin: var(--radix-tooltip-content-transform-origin);
 
   @media (prefers-reduced-motion: no-preference) {
-    animation: scaleIn 250ms ease-out;
+    animation: in 250ms ease-out;
 
     &[data-state='closed'] {
-      animation: scaleOut 150ms ease-out;
+      animation: out 150ms ease-out;
     }
   }
 }
@@ -16,7 +16,7 @@
   @apply fill-zinc-100;
 }
 
-@keyframes scaleIn {
+@keyframes in {
   0% {
     opacity: 0;
     transform: scale(0.8);
@@ -28,7 +28,7 @@
   }
 }
 
-@keyframes scaleOut {
+@keyframes out {
   0% {
     opacity: 1;
     transform: scale(1);

@@ -1,6 +1,6 @@
 declare module '@react-types/button' {
   interface ButtonProps {
-    preventFocusOnPress: boolean
+    preventFocusOnPress?: boolean
   }
 }
 

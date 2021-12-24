@@ -6,7 +6,7 @@ import { type UseFormRegisterReturn } from 'react-hook-form'
 
 import styles from 'styles/TextInput.module.css'
 
-const TextInput: React.FC<Props> = forwardRef<HTMLInputElement, PropsWithChildren<Props>>(
+const TextInput = forwardRef<HTMLInputElement, PropsWithChildren<Props>>(
   ({ onChange, type = 'text', ...props }, forwardedRef) => {
     const ref = useObjectRef(forwardedRef)
     const { labelProps, inputProps, errorMessageProps } = useTextField(props, ref)
