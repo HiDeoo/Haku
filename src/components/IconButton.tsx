@@ -1,10 +1,10 @@
 import clsx from 'clsx'
-import { forwardRef, type PropsWithChildren } from 'react'
+import { forwardRef } from 'react'
 
 import Button, { type ButtonProps } from 'components/Button'
 import Tooltip from 'components/Tooltip'
 
-const IconButton = forwardRef<HTMLButtonElement, PropsWithChildren<Props>>(
+const IconButton = forwardRef<HTMLButtonElement, React.PropsWithChildren<Props>>(
   ({ children, className, tooltip, ...props }, forwardedRef) => {
     const classes = clsx(
       '!bg-inherit hover:!bg-zinc-700/75 hover:text-blue-600 disabled:!bg-inherit disabled:text-inherit shadow-none',

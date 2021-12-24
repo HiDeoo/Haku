@@ -1,5 +1,4 @@
 import { Arrow, Content, Root, Trigger } from '@radix-ui/react-tooltip'
-import { type ReactNode } from 'react'
 
 import styles from 'styles/Tooltip.module.css'
 
@@ -18,5 +17,5 @@ const Tooltip: React.FC<Props> = ({ children, content }) => {
 export default Tooltip
 
 interface Props {
-  content: ReactNode
+  content: React.ReactNode
 }

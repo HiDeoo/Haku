@@ -1,12 +1,12 @@
 import { useButton } from '@react-aria/button'
 import { useObjectRef } from '@react-aria/utils'
 import clsx from 'clsx'
-import { forwardRef, type HTMLAttributes, type PropsWithChildren } from 'react'
+import { forwardRef } from 'react'
 
 import Flex from 'components/Flex'
 import Spinner from 'components/Spinner'
 
-const Button = forwardRef<HTMLButtonElement, PropsWithChildren<ButtonProps>>(
+const Button = forwardRef<HTMLButtonElement, React.PropsWithChildren<ButtonProps>>(
   (
     {
       children,
@@ -88,12 +88,12 @@ export interface ButtonProps {
   className?: string
   disabled?: UseButtonProps['isDisabled']
   loading?: boolean
-  onMouseEnter?: HTMLAttributes<HTMLButtonElement>['onMouseEnter']
-  onMouseLeave?: HTMLAttributes<HTMLButtonElement>['onMouseLeave']
+  onMouseEnter?: React.HTMLAttributes<HTMLButtonElement>['onMouseEnter']
+  onMouseLeave?: React.HTMLAttributes<HTMLButtonElement>['onMouseLeave']
   onPress?: UseButtonProps['onPress']
   pressedClassName?: string
   primary?: boolean
-  tabIndex?: HTMLAttributes<HTMLButtonElement>['tabIndex']
+  tabIndex?: React.HTMLAttributes<HTMLButtonElement>['tabIndex']
   type?: 'submit'
 }
 

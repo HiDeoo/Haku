@@ -1,7 +1,6 @@
 import clsx from 'clsx'
-import { type PropsWithChildren, type ElementType } from 'react'
 
-const Flex = <Element extends ElementType = 'div'>({
+const Flex = <Element extends React.ElementType = 'div'>({
   alignItems,
   as,
   children,
@@ -11,7 +10,7 @@ const Flex = <Element extends ElementType = 'div'>({
   fullHeight,
   fullWidth,
   justifyContent,
-}: PropsWithChildren<Props<Element>>) => {
+}: React.PropsWithChildren<Props<Element>>) => {
   const Element = as || 'div'
 
   const classes = clsx(
@@ -55,7 +54,7 @@ const Flex = <Element extends ElementType = 'div'>({
 
 export default Flex
 
-interface Props<Element extends ElementType> {
+interface Props<Element extends React.ElementType> {
   alignItems?: 'start' | 'end' | 'center' | 'baseline' | 'stretch'
   as?: Element
   className?: string

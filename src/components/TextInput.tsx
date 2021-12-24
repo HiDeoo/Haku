@@ -1,12 +1,12 @@
 import { useTextField } from '@react-aria/textfield'
 import { useObjectRef } from '@react-aria/utils'
 import clsx from 'clsx'
-import { forwardRef, type InputHTMLAttributes, type PropsWithChildren } from 'react'
+import { forwardRef } from 'react'
 import { type UseFormRegisterReturn } from 'react-hook-form'
 
 import styles from 'styles/TextInput.module.css'
 
-const TextInput = forwardRef<HTMLInputElement, PropsWithChildren<Props>>(
+const TextInput = forwardRef<HTMLInputElement, React.PropsWithChildren<Props>>(
   ({ onChange, type = 'text', ...props }, forwardedRef) => {
     const ref = useObjectRef(forwardedRef)
     const { labelProps, inputProps, errorMessageProps } = useTextField(props, ref)
@@ -36,7 +36,7 @@ TextInput.displayName = 'TextInput'
 export default TextInput
 
 interface Props extends Partial<Omit<UseFormRegisterReturn, 'ref'>> {
-  autoFocus?: InputHTMLAttributes<HTMLInputElement>['autoFocus']
+  autoFocus?: React.InputHTMLAttributes<HTMLInputElement>['autoFocus']
   errorMessage?: string
   label: string
   placeholder: string

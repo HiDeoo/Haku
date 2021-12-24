@@ -1,6 +1,5 @@
 import { Cross2Icon } from '@radix-ui/react-icons'
 import { Close, Content, Overlay, Portal, Root, Trigger } from '@radix-ui/react-dialog'
-import { type ReactNode } from 'react'
 
 import Flex from 'components/Flex'
 import Button from 'components/Button'
@@ -50,5 +49,5 @@ type ModalComponent = React.FC<Props> & {
 
 interface Props {
   title: string
-  trigger: ReactNode
+  trigger: React.ReactNode
 }
