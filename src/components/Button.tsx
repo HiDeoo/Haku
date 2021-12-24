@@ -40,7 +40,7 @@ const Button: React.FC<ButtonProps> = forwardRef<HTMLButtonElement, PropsWithChi
       >
         {loading ? (
           <Flex justifyContent="center">
-            <Spinner className="h-4 w-4 my-0.5" />
+            <Spinner className="h-4 w-4 my-0.5" color="text-blue-50/80" />
           </Flex>
         ) : (
           children
