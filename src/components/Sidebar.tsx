@@ -3,6 +3,7 @@ import { signOut } from 'next-auth/react'
 
 import Flex from 'components/Flex'
 import IconButton from 'components/IconButton'
+import NewFolderModal from 'components/NewFolderModal'
 import styles from 'styles/Sidebar.module.css'
 
 const Sidebar: React.FC = () => {
@@ -50,6 +51,7 @@ const Sidebar: React.FC = () => {
         END
       </Flex>
       <Flex justifyContent="center" className={styles.controls}>
+        <NewFolderModal />
         <IconButton onPress={logout} tooltip="Logout">
           <ExitIcon />
         </IconButton>

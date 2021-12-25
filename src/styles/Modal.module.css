@@ -39,7 +39,7 @@
 }
 
 .content {
-  @apply p-4 h-full overflow-y-auto;
+  @apply p-4 pt-3 h-full overflow-y-auto;
 }
 
 .footer {
