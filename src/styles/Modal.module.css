@@ -13,11 +13,12 @@
 }
 
 .contentContainer {
+  --modal-min-width: 400px;
   --timing-function-bounce: cubic-bezier(0.55, 1.15, 0.35, 1.15);
 
   @apply z-50 m-auto outline-none;
   @apply bg-zinc-800 rounded-md shadow shadow-black/75;
-  @apply min-w-[400px] max-w-[75%];
+  @apply min-w-[var(--modal-min-width)] max-w-[75%];
 
   @media (prefers-reduced-motion: no-preference) {
     &[data-state='open'] {
@@ -26,6 +27,13 @@
 
     &[data-state='closed'] {
       animation: contentOut 250ms var(--timing-function-bounce);
+    }
+  }
+
+  & .content {
+    & input,
+    & button {
+      max-width: calc(var(--modal-min-width) - theme('spacing[4]') * 2);
     }
   }
 }
