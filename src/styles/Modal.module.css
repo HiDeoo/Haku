@@ -1,5 +1,5 @@
 .overlay {
-  @apply z-40 fixed inset-0 bg-zinc-900/80;
+  @apply z-40 fixed inset-0 flex flex-col  p-10 overflow-y-auto bg-zinc-900/80;
 
   @media (prefers-reduced-motion: no-preference) {
     &[data-state='open'] {
@@ -15,9 +15,9 @@
 .contentContainer {
   --timing-function-bounce: cubic-bezier(0.55, 1.15, 0.35, 1.15);
 
-  @apply flex flex-col z-50 left-1/2 absolute top-1/2 -translate-x-1/2 -translate-y-1/2 origin-top-left outline-none;
-  @apply overflow-hidden bg-zinc-800 rounded-md shadow shadow-black/75;
-  @apply min-w-[400px] max-w-[75%] max-h-[85%];
+  @apply z-50 m-auto outline-none;
+  @apply bg-zinc-800 rounded-md shadow shadow-black/75;
+  @apply min-w-[400px] max-w-[75%];
 
   @media (prefers-reduced-motion: no-preference) {
     &[data-state='open'] {
@@ -39,7 +39,7 @@
 }
 
 .content {
-  @apply p-4 pt-3 h-full overflow-y-auto;
+  @apply p-4 pt-3;
 }
 
 .footer {
@@ -69,23 +69,23 @@
 @keyframes contentIn {
   0% {
     opacity: 0;
-    transform: scale(0.5) translateX(-50%) translateY(-50%);
+    transform: scale(0.5);
   }
 
   100% {
     opacity: 1;
-    transform: scale(1) translateX(-50%) translateY(-50%);
+    transform: scale(1);
   }
 }
 
 @keyframes contentOut {
   0% {
     opacity: 1;
-    transform: scale(1) translateX(-50%) translateY(-50%);
+    transform: scale(1);
   }
 
   100% {
     opacity: 0;
-    transform: scale(0.5) translateX(-50%) translateY(-50%);
+    transform: scale(0.5);
   }
 }

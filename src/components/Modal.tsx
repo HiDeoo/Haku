@@ -11,18 +11,19 @@ const Modal: ModalComponent = ({ children, title, trigger }) => {
     <Root>
       <Trigger asChild>{trigger}</Trigger>
       <Portal>
-        <Overlay className={styles.overlay} />
-        <Content className={styles.contentContainer}>
-          <Flex as="header" justifyContent="between" alignItems="center" className={styles.header}>
-            {title}
-            <Close asChild>
-              <IconButton className={styles.close} tabIndex={-1}>
-                <Cross2Icon />
-              </IconButton>
-            </Close>
-          </Flex>
-          <div className={styles.content}>{children}</div>
-        </Content>
+        <Overlay className={styles.overlay}>
+          <Content className={styles.contentContainer}>
+            <Flex as="header" justifyContent="between" alignItems="center" className={styles.header}>
+              {title}
+              <Close asChild>
+                <IconButton className={styles.close} tabIndex={-1}>
+                  <Cross2Icon />
+                </IconButton>
+              </Close>
+            </Flex>
+            <div className={styles.content}>{children}</div>
+          </Content>
+        </Overlay>
       </Portal>
     </Root>
   )
