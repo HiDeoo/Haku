@@ -2,11 +2,11 @@ const Label: React.FC<Props> = ({ children, errorMessage, errorMessageProps, ...
   return (
     <div className="mb-1">
       <label {...props}>{children}</label>
-      {errorMessage && (
+      {errorMessage ? (
         <span {...errorMessageProps} className="ml-1.5 text-xs relative -top-px text-red-400 italic">
           ({errorMessage})
         </span>
-      )}
+      ) : null}
     </div>
   )
 }
