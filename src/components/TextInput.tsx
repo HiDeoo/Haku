@@ -4,6 +4,7 @@ import clsx from 'clsx'
 import { forwardRef } from 'react'
 import { type UseFormRegisterReturn } from 'react-hook-form'
 
+import Label from 'components/Label'
 import styles from 'styles/TextInput.module.css'
 
 const TextInput = forwardRef<HTMLInputElement, React.PropsWithChildren<Props>>(
@@ -15,16 +16,9 @@ const TextInput = forwardRef<HTMLInputElement, React.PropsWithChildren<Props>>(
 
     return (
       <div className={styles.container}>
-        <div className={styles.labelContainer}>
-          <label {...labelProps} className={styles.label}>
-            {props.label}
-          </label>
-          {props.errorMessage && (
-            <span {...errorMessageProps} className={styles.error}>
-              ({props.errorMessage})
-            </span>
-          )}
-        </div>
+        <Label {...labelProps} errorMessage={props.errorMessage} errorMessageProps={errorMessageProps}>
+          {props.label}
+        </Label>
         <input {...inputProps} type={type} onChange={onChange} ref={ref} className={inputClasses} />
       </div>
     )
