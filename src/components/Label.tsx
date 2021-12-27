@@ -7,12 +7,12 @@ const Label: React.FC<Props> = ({ children, disabled, errorMessage, errorMessage
     <div className={containerClasses}>
       <label {...props} className="inline-block w-full">
         {children}
+        {errorMessage ? (
+          <span {...errorMessageProps} className="ml-1.5 text-xs relative -top-px text-red-400 italic">
+            ({errorMessage})
+          </span>
+        ) : null}
       </label>
-      {errorMessage ? (
-        <span {...errorMessageProps} className="ml-1.5 text-xs relative -top-px text-red-400 italic">
-          ({errorMessage})
-        </span>
-      ) : null}
     </div>
   )
 }
