@@ -1,8 +1,14 @@
 import { Presence } from '@radix-ui/react-presence'
 import { ChevronDownIcon } from '@radix-ui/react-icons'
 import clsx from 'clsx'
-import { useCombobox, UseComboboxStateChange } from 'downshift'
-import { useLayoutEffect, useRef, useState } from 'react'
+import fuzzaldrin from 'fuzzaldrin-plus'
+import {
+  useCombobox,
+  type UseComboboxStateChangeOptions,
+  type UseComboboxState,
+  type UseComboboxStateChange,
+} from 'downshift'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import {
   type Control,
   useController,
@@ -11,6 +17,7 @@ import {
   type UnpackNestedValue,
   type PathValue,
   type Path,
+  type ValidateResult,
 } from 'react-hook-form'
 
 import Button from 'components/Button'
@@ -20,7 +27,7 @@ import TextInput from 'components/TextInput'
 const menuWindowBottomOffsetInPixels = 20
 const menuMaxHeightInPixels = 210
 
-const Select = <ItemType, FormFields extends FieldValues>({
+const Select = <Item, FormFields extends FieldValues>({
   control,
   defaultItem,
   disabled,
@@ -29,11 +36,23 @@ const Select = <ItemType, FormFields extends FieldValues>({
   itemToString,
   label,
   name,
-}: Props<ItemType, FormFields>) => {
+}: Props<Item, FormFields>) => {
   const container = useRef<HTMLDivElement>(null)
 
   const [filteredItems, setFilteredItems] = useState(items)
+  const [disableMenuAnimation, setDisableMenuAnimation] = useState(false)
   const [maxHeight, setMaxHeight] = useState<number | undefined>(undefined)
+
+  const renderItem = useCallback(
+    (item: Item | null): string => {
+      if (!item || !itemToString) {
+        return item ? String(item) : ''
+      }
+
+      return itemToString(item)
+    },
+    [itemToString]
+  )
 
   const {
     field: { onChange, value },
@@ -41,7 +60,7 @@ const Select = <ItemType, FormFields extends FieldValues>({
     control,
     defaultValue: defaultItem,
     name,
-    rules: { required: `required` },
+    rules: { validate },
   })
 
   const {
@@ -53,6 +72,7 @@ const Select = <ItemType, FormFields extends FieldValues>({
     getToggleButtonProps,
     highlightedIndex,
     isOpen,
+    selectedItem,
   } = useCombobox({
     circularNavigation: true,
     initialSelectedItem: value,
@@ -60,7 +80,16 @@ const Select = <ItemType, FormFields extends FieldValues>({
     itemToString: renderItem,
     onInputValueChange,
     onSelectedItemChange,
+    stateReducer,
   })
+
+  const searchableItems = useMemo(
+    () =>
+      items.map((item) => {
+        return { item, str: renderItem(item) }
+      }),
+    [items, renderItem]
+  )
 
   useLayoutEffect(() => {
     function calculateMaxHeight() {
@@ -82,28 +111,72 @@ const Select = <ItemType, FormFields extends FieldValues>({
     }
   }, [])
 
-  function renderItem(item: ItemType | null): string {
-    if (!item || !itemToString) {
-      return item ? String(item) : ''
+  useEffect(() => {
+    let animationFrame: ReturnType<typeof requestAnimationFrame>
+
+    if (disableMenuAnimation) {
+      animationFrame = requestAnimationFrame(() => {
+        setDisableMenuAnimation(false)
+      })
     }
 
-    return itemToString(item)
+    return () => {
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame)
+      }
+    }
+  }, [disableMenuAnimation])
+
+  function stateReducer(_: UseComboboxState<Item>, { type, changes }: UseComboboxStateChangeOptions<Item>) {
+    switch (type) {
+      case useCombobox.stateChangeTypes.InputChange: {
+        const results = changes.inputValue
+          ? fuzzaldrin
+              .filter(searchableItems, changes.inputValue.toLowerCase() ?? '', { key: 'str' })
+              .map((result) => result.item)
+          : items
+
+        setFilteredItems(results)
+
+        return changes
+      }
+      case useCombobox.stateChangeTypes.InputKeyDownEscape:
+      case useCombobox.stateChangeTypes.ToggleButtonClick:
+      case useCombobox.stateChangeTypes.InputBlur: {
+        if (type === useCombobox.stateChangeTypes.ToggleButtonClick && !isOpen) {
+          return changes
+        }
+
+        setDisableMenuAnimation(true)
+
+        return {
+          ...changes,
+          inputValue: renderItem(changes.selectedItem ?? null),
+          isOpen: false,
+        }
+      }
+      default: {
+        return changes
+      }
+    }
   }
 
-  function onSelectedItemChange(changes: UseComboboxStateChange<ItemType>) {
+  function validate(): ValidateResult {
+    return !isOpen || 'required'
+  }
+
+  function onSelectedItemChange(changes: UseComboboxStateChange<Item>) {
     onChange(changes.selectedItem)
   }
 
-  function onInputValueChange({ inputValue }: UseComboboxStateChange<ItemType>) {
-    // TODO(HiDeoo)
-    const newFilteredItems = inputValue
-      ? items.filter((item) => renderItem(item).toLowerCase().startsWith(inputValue.toLowerCase()))
-      : items
-
-    setFilteredItems(newFilteredItems)
+  function onInputValueChange() {
+    onChange(selectedItem)
   }
 
   const triggerIconClasses = clsx('motion-safe:transition-transform motion-safe:duration-200', { 'rotate-180': isOpen })
+  const menuClasses = clsx('rounded-md bg-zinc-700 shadow-sm shadow-zinc-900/50 overflow-auto origin-top', {
+    'animate-combobox': !disableMenuAnimation,
+  })
 
   return (
     <div className="relative mb-3" ref={container}>
@@ -111,7 +184,7 @@ const Select = <ItemType, FormFields extends FieldValues>({
         {label}
       </Label>
       <div {...getComboboxProps()} className="flex">
-        <TextInput {...getInputProps()} className="mr-1.5" disabled={disabled} />
+        <TextInput {...getInputProps()} className="mr-1.5" errorMessage={errorMessage} disabled={disabled} />
         <Button
           {...getToggleButtonProps()}
           aria-label="Toggle Menu"
@@ -124,9 +197,9 @@ const Select = <ItemType, FormFields extends FieldValues>({
       <div {...getMenuProps()} className="absolute top-full inset-x-0 mt-0.5 mr-10 outline-none">
         <Presence present={isOpen}>
           <ul
+            className={menuClasses}
             data-state={isOpen ? 'open' : 'closed'}
             style={{ maxHeight: maxHeight ? `${maxHeight}px` : 'initial' }}
-            className="rounded-md bg-zinc-700 shadow-sm shadow-zinc-900/50 overflow-auto origin-top animate-combobox"
           >
             {filteredItems.map((item, index) => {
               const menuItemClasses = clsx('px-3 py-1.5 cursor-pointer text-ellipsis overflow-hidden', {
@@ -148,13 +221,13 @@ const Select = <ItemType, FormFields extends FieldValues>({
 
 export default Select
 
-interface Props<ItemType, FormFields extends FieldValues> {
+interface Props<Item, FormFields extends FieldValues> {
   control: Control<FormFields>
   defaultItem: UnpackNestedValue<PathValue<FormFields, Path<FormFields>>>
   disabled?: boolean
   errorMessage?: string
-  items: ItemType[]
-  itemToString?: (item: ItemType | null) => string
+  items: Item[]
+  itemToString?: (item: Item | null) => string
   label: string
   name: FieldPath<FormFields>
 }

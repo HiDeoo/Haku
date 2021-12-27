@@ -12,6 +12,7 @@ specifiers:
   '@react-aria/textfield': 3.5.0
   '@react-aria/utils': 3.11.0
   '@types/faker': 5.5.9
+  '@types/fuzzaldrin-plus': 0.6.2
   '@types/jest': 27.0.3
   '@types/node': 16.11.11
   '@types/react': 17.0.37
@@ -27,6 +28,7 @@ specifiers:
   eslint-config-prettier: 8.3.0
   execa: 5.1.1
   faker: 5.5.3
+  fuzzaldrin-plus: 0.6.0
   husky: 7.0.4
   jest: 27.4.5
   ky: 0.28.7
@@ -61,6 +63,7 @@ dependencies:
   '@react-aria/utils': 3.11.0_react@17.0.2
   clsx: 1.1.1
   downshift: 6.1.7_react@17.0.2
+  fuzzaldrin-plus: 0.6.0
   ky: 0.28.7
   next: 12.0.7_react-dom@17.0.2+react@17.0.2
   next-auth: 4.0.2_react-dom@17.0.2+react@17.0.2
@@ -74,6 +77,7 @@ dependencies:
 devDependencies:
   '@jcoreio/wait-for-postgres': 2.0.0
   '@types/faker': 5.5.9
+  '@types/fuzzaldrin-plus': 0.6.2
   '@types/jest': 27.0.3
   '@types/node': 16.11.11
   '@types/react': 17.0.37
@@ -1510,6 +1514,10 @@ packages:
 
   /@types/faker/5.5.9:
     resolution: {integrity: sha512-uCx6mP3UY5SIO14XlspxsGjgaemrxpssJI0Ol+GfhxtcKpv9pgRZYsS4eeKeHVLje6Qtc8lGszuBI461+gVZBA==}
+    dev: true
+
+  /@types/fuzzaldrin-plus/0.6.2:
+    resolution: {integrity: sha512-f9QkOre3T9YI1+Pd6CVgt0rY/KiPFlYHhbKXmjDYZVbIgOLDls1k22nuIq7skIGz/tS4f5gRRWW6wR2B2dWEqQ==}
     dev: true
 
   /@types/graceful-fs/4.1.5:
@@ -3413,6 +3421,10 @@ packages:
   /functional-red-black-tree/1.0.1:
     resolution: {integrity: sha1-GwqzvVU7Kg1jmdKcDj6gslIHgyc=}
     dev: true
+
+  /fuzzaldrin-plus/0.6.0:
+    resolution: {integrity: sha1-gy9kifvodnaUWVmckUpnDsIpR+4=}
+    dev: false
 
   /gensync/1.0.0-beta.2:
     resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}
