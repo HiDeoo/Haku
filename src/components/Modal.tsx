@@ -4,24 +4,28 @@ import { Close, Content, Overlay, Portal, Root, Trigger } from '@radix-ui/react-
 import Flex from 'components/Flex'
 import Button from 'components/Button'
 import IconButton from 'components/IconButton'
-import styles from 'styles/Modal.module.css'
 
 const Modal: ModalComponent = ({ children, title, trigger }) => {
   return (
     <Root>
       <Trigger asChild>{trigger}</Trigger>
       <Portal>
-        <Overlay className={styles.overlay}>
-          <Content className={styles.contentContainer}>
-            <Flex as="header" justifyContent="between" alignItems="center" className={styles.header}>
+        <Overlay className="z-40 fixed inset-0 flex flex-col  p-10 animate-modal-overlay overflow-y-auto bg-zinc-900/80">
+          <Content className="z-50 m-auto outline-none min-w-[400px] max-w-[75%] animate-modal-content bg-zinc-800 rounded-md shadow shadow-black/75">
+            <Flex
+              as="header"
+              alignItems="center"
+              justifyContent="between"
+              className="p-0 pl-4 pr-2 py-2.5 bg-zinc-900 border-b border-black/10 font-bold"
+            >
               {title}
               <Close asChild>
-                <IconButton className={styles.close} tabIndex={-1}>
+                <IconButton className="rounded-full !p-1" tabIndex={-1}>
                   <Cross2Icon />
                 </IconButton>
               </Close>
             </Flex>
-            <div className={styles.content}>{children}</div>
+            <div className="p-4 pt-3">{children}</div>
           </Content>
         </Overlay>
       </Portal>
@@ -31,7 +35,7 @@ const Modal: ModalComponent = ({ children, title, trigger }) => {
 
 const Footer: React.FC = ({ children }) => {
   return (
-    <Flex justifyContent="end" className={styles.footer}>
+    <Flex justifyContent="end" className="pt-4">
       <Close asChild>
         <Button>Close</Button>
       </Close>

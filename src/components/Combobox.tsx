@@ -16,7 +16,6 @@ import {
 import Button from 'components/Button'
 import Label from 'components/Label'
 import TextInput from 'components/TextInput'
-import styles from 'styles/Combobox.module.css'
 
 const menuWindowBottomOffsetInPixels = 20
 const menuMaxHeightInPixels = 210
@@ -104,28 +103,35 @@ const Select = <ItemType, FormFields extends FieldValues>({
     setFilteredItems(newFilteredItems)
   }
 
-  const triggerIconClasses = clsx(styles.triggerIcon, isOpen && styles.triggerIconOpened)
+  const triggerIconClasses = clsx('motion-safe:transition-transform motion-safe:duration-200', { 'rotate-180': isOpen })
 
   return (
-    <div className={styles.container} ref={container}>
+    <div className="relative mb-3" ref={container}>
       <Label {...getLabelProps()} errorMessage={errorMessage} disabled={disabled}>
         {label}
       </Label>
       <div {...getComboboxProps()} className="flex">
-        <TextInput {...getInputProps()} className={styles.input} disabled={disabled} />
-        <Button {...getToggleButtonProps()} aria-label="Toggle Menu" className={styles.trigger} disabled={disabled}>
+        <TextInput {...getInputProps()} className="mr-1.5" disabled={disabled} />
+        <Button
+          {...getToggleButtonProps()}
+          aria-label="Toggle Menu"
+          className="min-w-0 px-2.5 disabled:bg-zinc-600"
+          disabled={disabled}
+        >
           <ChevronDownIcon className={triggerIconClasses} />
         </Button>
       </div>
-      <div {...getMenuProps()} className={styles.menuContainer}>
+      <div {...getMenuProps()} className="absolute top-full inset-x-0 mt-0.5 mr-10 outline-none">
         <Presence present={isOpen}>
           <ul
-            className={styles.menu}
             data-state={isOpen ? 'open' : 'closed'}
             style={{ maxHeight: maxHeight ? `${maxHeight}px` : 'initial' }}
+            className="rounded-md bg-zinc-700 shadow-sm shadow-zinc-900/50 overflow-auto origin-top animate-combobox"
           >
             {filteredItems.map((item, index) => {
-              const menuItemClasses = clsx(styles.menuItem, highlightedIndex === index && styles.menuItemHighlighted)
+              const menuItemClasses = clsx('px-3 py-1.5 cursor-pointer text-ellipsis overflow-hidden', {
+                'bg-blue-600': highlightedIndex === index,
+              })
 
               return (
                 <li {...getItemProps({ item, index })} key={`${renderItem(item)}-${index}`} className={menuItemClasses}>

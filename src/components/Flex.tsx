@@ -13,7 +13,7 @@ const Flex = <Element extends React.ElementType = 'div'>({
 }: React.PropsWithChildren<Props<Element>>) => {
   const Element = as || 'div'
 
-  const classes = clsx(
+  const elementClasses = clsx(
     'flex',
     {
       'flex-row': direction === 'row',
@@ -49,7 +49,7 @@ const Flex = <Element extends React.ElementType = 'div'>({
     className
   )
 
-  return <Element className={classes}>{children}</Element>
+  return <Element className={elementClasses}>{children}</Element>
 }
 
 export default Flex

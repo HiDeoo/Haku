@@ -1,8 +1,6 @@
 import clsx from 'clsx'
 import { useEffect, useState } from 'react'
 
-import styles from 'styles/Spinner.module.css'
-
 const Spinner: React.FC<Props> = ({ className, color, delay }) => {
   const [pastDelay, setPastDelay] = useState(false)
 
@@ -27,11 +25,18 @@ const Spinner: React.FC<Props> = ({ className, color, delay }) => {
     return null
   }
 
-  const spinnerClasses = clsx(styles.spinner, color ?? styles.spinnerColor, className)
+  const spinnerClasses = clsx('animate-spin-slow', color ?? 'text-blue-50/40', className)
 
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" className={spinnerClasses}>
-      <circle cx="25" cy="25" r="20" fill="none" strokeWidth="5" className={styles.circle}></circle>
+      <circle
+        cx="25"
+        cy="25"
+        r="20"
+        fill="none"
+        strokeWidth="5"
+        className="stroke-current motion-safe:animate-dash [stroke-linecap:round]"
+      ></circle>
     </svg>
   )
 }

@@ -1,10 +1,10 @@
 import clsx from 'clsx'
 
 const Label: React.FC<Props> = ({ children, disabled, errorMessage, errorMessageProps, ...props }) => {
-  const classes = clsx('mb-1', disabled && 'opacity-50')
+  const containerClasses = clsx('mb-1', { 'opacity-50': disabled })
 
   return (
-    <div className={classes}>
+    <div className={containerClasses}>
       <label {...props} className="inline-block w-full">
         {children}
       </label>

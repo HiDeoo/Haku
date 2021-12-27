@@ -3,7 +3,108 @@ module.exports = {
   theme: {
     extend: {
       animation: {
+        'bounce-in': 'bounceIn 300ms cubic-bezier(0.55, 1.15, 0.35, 1.15)',
+        'bounce-out': 'bounceOut 250ms cubic-bezier(0.55, 1.15, 0.35, 1.15)',
+        dash: 'dash 1.5s ease-in-out infinite',
+        'fade-in': 'fadeIn 200ms ease-out',
+        'fade-out': 'fadeOut 200ms ease-in',
         'spin-slow': 'spin 2s linear infinite',
+        'scale-in': 'scaleIn 250ms ease-out',
+        'scale-out': 'scaleOut 150ms ease-in',
+        'slide-in': 'slideIn 250ms ease-out',
+        'slide-out': 'slideOut 200ms ease-in',
+      },
+      keyframes: {
+        bounceIn: {
+          '0%': {
+            opacity: '0',
+            transform: 'scale(0.5)',
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'scale(1)',
+          },
+        },
+        bounceOut: {
+          '0%': {
+            opacity: '1',
+            transform: 'scale(1)',
+          },
+          '100%': {
+            opacity: '0',
+            transform: 'scale(0.5)',
+          },
+        },
+        dash: {
+          '0%': {
+            'stroke-dasharray': '1, 150',
+            'stroke-dashoffset': '0',
+          },
+          '50%': {
+            'stroke-dasharray': '90, 150',
+            'stroke-dashoffset': '-35',
+          },
+          '100%': {
+            'stroke-dasharray': '90, 150',
+            'stroke-dashoffset': '-124',
+          },
+        },
+        fadeIn: {
+          '0%': {
+            opacity: '0',
+          },
+          '100%': {
+            opacity: '1',
+          },
+        },
+        fadeOut: {
+          '0%': {
+            opacity: '1',
+          },
+          '100%': {
+            opacity: '0',
+          },
+        },
+        scaleIn: {
+          '0%': {
+            opacity: '0',
+            transform: 'scale(0.8)',
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'scale(1)',
+          },
+        },
+        scaleOut: {
+          '0%': {
+            opacity: '1',
+            transform: 'scale(1)',
+          },
+          '100%': {
+            opacity: '0',
+            transform: 'scale(0.8)',
+          },
+        },
+        slideIn: {
+          '0%': {
+            opacity: '0',
+            transform: 'scaleY(0)',
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'scaleY(1)',
+          },
+        },
+        slideOut: {
+          '0%': {
+            opacity: '1',
+            transform: 'scaleY(1)',
+          },
+          '100%': {
+            opacity: '0',
+            transform: 'scaleY(0)',
+          },
+        },
       },
     },
   },
