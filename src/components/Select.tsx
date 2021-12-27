@@ -23,6 +23,7 @@ const menuMaxHeightInPixels = 210
 const Select = <ItemType, FormFields extends FieldValues>({
   control,
   defaultItem,
+  disabled,
   errorMessage,
   items,
   itemToString,
@@ -50,6 +51,7 @@ const Select = <ItemType, FormFields extends FieldValues>({
       onSelectedItemChange,
     })
 
+  const containerClasses = clsx(styles.container, disabled && styles.containerDisabled)
   const triggerIconClasses = clsx(styles.triggerIcon, isOpen && styles.triggerIconOpened)
 
   useLayoutEffect(() => {
@@ -85,11 +87,16 @@ const Select = <ItemType, FormFields extends FieldValues>({
   }
 
   return (
-    <div className={styles.container} ref={container}>
+    <div className={containerClasses} ref={container}>
       <Label {...getLabelProps()} errorMessage={errorMessage}>
         {label}
       </Label>
-      <Button {...getToggleButtonProps()} className={styles.trigger} pressedClassName={styles.triggerPressed}>
+      <Button
+        {...getToggleButtonProps()}
+        disabled={disabled}
+        className={styles.trigger}
+        pressedClassName={styles.triggerPressed}
+      >
         <div className={styles.triggerValue}>{renderItem(selectedItem)}</div>
         <ChevronDownIcon className={triggerIconClasses} />
       </Button>
@@ -121,6 +128,7 @@ export default Select
 interface Props<ItemType, FormFields extends FieldValues> {
   control: Control<FormFields>
   defaultItem: UnpackNestedValue<PathValue<FormFields, Path<FormFields>>>
+  disabled?: boolean
   errorMessage?: string
   items: ItemType[]
   itemToString?: (item: ItemType | null) => string

@@ -12,14 +12,22 @@ const TextInput = forwardRef<HTMLInputElement, React.PropsWithChildren<Props>>(
     const ref = useObjectRef(forwardedRef)
     const { labelProps, inputProps, errorMessageProps } = useTextField(props, ref)
 
+    const containerClasses = clsx(styles.container, props.disabled && styles.containerDisabled)
     const inputClasses = clsx(styles.input, props.errorMessage ? 'focus:ring-red-400' : 'focus:ring-blue-600')
 
     return (
-      <div className={styles.container}>
+      <div className={containerClasses}>
         <Label {...labelProps} errorMessage={props.errorMessage} errorMessageProps={errorMessageProps}>
           {props.label}
         </Label>
-        <input {...inputProps} type={type} onChange={onChange} ref={ref} className={inputClasses} />
+        <input
+          {...inputProps}
+          ref={ref}
+          type={type}
+          onChange={onChange}
+          className={inputClasses}
+          disabled={props.disabled}
+        />
       </div>
     )
   }
@@ -31,6 +39,7 @@ export default TextInput
 
 interface Props extends Partial<Omit<UseFormRegisterReturn, 'ref'>> {
   autoFocus?: React.InputHTMLAttributes<HTMLInputElement>['autoFocus']
+  disabled?: boolean
   errorMessage?: string
   label: string
   placeholder: string

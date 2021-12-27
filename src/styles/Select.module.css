@@ -2,8 +2,13 @@
   @apply relative mb-3;
 }
 
+.containerDisabled {
+  @apply opacity-50;
+}
+
 .trigger {
-  @apply w-full bg-zinc-600/75 hover:bg-zinc-500/75 shadow-none flex justify-between items-center;
+  @apply w-full bg-zinc-600/75 hover:bg-zinc-500/75 disabled:opacity-100 disabled:bg-zinc-600/75;
+  @apply shadow-none flex justify-between items-center;
 }
 
 .triggerPressed {
