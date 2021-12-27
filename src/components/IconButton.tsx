@@ -13,7 +13,13 @@ const IconButton = forwardRef<HTMLButtonElement, React.PropsWithChildren<Props>>
     )
 
     const content = (
-      <Button {...props} ref={forwardedRef} className={classes} pressedClassName="bg-blue-50/20 hover:!bg-blue-50/20">
+      <Button
+        {...props}
+        ref={forwardedRef}
+        className={classes}
+        aria-label={tooltip}
+        pressedClassName="bg-blue-50/20 hover:!bg-blue-50/20"
+      >
         {children}
       </Button>
     )

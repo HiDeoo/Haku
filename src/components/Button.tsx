@@ -41,7 +41,7 @@ const Button = forwardRef<HTMLButtonElement, React.PropsWithChildren<ButtonProps
       },
       pressedClassName && { [pressedClassName]: isPressed },
       'shadow-sm shadow-zinc-900/50 disabled:shadow-none',
-      'disabled:cursor-not-allowed disabled:opacity-75',
+      'disabled:cursor-not-allowed disabled:opacity-50',
       'focus:outline-none',
       'focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-zinc-800 focus-visible:ring-offset-2',
       'min-w-[70px] px-3.5 py-1.5 mx-1.5 first-of-type:ml-0 last-of-type:mr-0',
@@ -63,6 +63,7 @@ const Button = forwardRef<HTMLButtonElement, React.PropsWithChildren<ButtonProps
         className={buttonClasses}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
+        aria-label={props['aria-label']}
       >
         {loading ? (
           <Flex justifyContent="center">
@@ -85,6 +86,7 @@ function isButtonPropsWithOnClickHandler(props: ButtonProps): props is ButtonPro
 }
 
 export interface ButtonProps {
+  'aria-label'?: React.HTMLAttributes<HTMLButtonElement>['aria-label']
   className?: string
   disabled?: UseButtonProps['isDisabled']
   loading?: boolean
