@@ -1,7 +1,7 @@
 import { Presence } from '@radix-ui/react-presence'
 import { ChevronDownIcon } from '@radix-ui/react-icons'
 import clsx from 'clsx'
-import { useSelect, type UseSelectStateChange } from 'downshift'
+import { useCombobox, UseComboboxStateChange } from 'downshift'
 import { useLayoutEffect, useRef, useState } from 'react'
 import {
   type Control,
@@ -15,7 +15,8 @@ import {
 
 import Button from 'components/Button'
 import Label from 'components/Label'
-import styles from 'styles/Select.module.css'
+import TextInput from 'components/TextInput'
+import styles from 'styles/Combobox.module.css'
 
 const menuWindowBottomOffsetInPixels = 20
 const menuMaxHeightInPixels = 210
@@ -31,6 +32,8 @@ const Select = <ItemType, FormFields extends FieldValues>({
   name,
 }: Props<ItemType, FormFields>) => {
   const container = useRef<HTMLDivElement>(null)
+
+  const [filteredItems, setFilteredItems] = useState(items)
   const [maxHeight, setMaxHeight] = useState<number | undefined>(undefined)
 
   const {
@@ -42,16 +45,24 @@ const Select = <ItemType, FormFields extends FieldValues>({
     rules: { required: `required` },
   })
 
-  const { getItemProps, getLabelProps, getMenuProps, getToggleButtonProps, highlightedIndex, isOpen, selectedItem } =
-    useSelect({
-      circularNavigation: true,
-      initialSelectedItem: value,
-      items,
-      itemToString: renderItem,
-      onSelectedItemChange,
-    })
+  const {
+    getComboboxProps,
+    getInputProps,
+    getItemProps,
+    getLabelProps,
+    getMenuProps,
+    getToggleButtonProps,
+    highlightedIndex,
+    isOpen,
+  } = useCombobox({
+    circularNavigation: true,
+    initialSelectedItem: value,
+    items: filteredItems,
+    itemToString: renderItem,
+    onInputValueChange,
+    onSelectedItemChange,
+  })
 
-  const containerClasses = clsx(styles.container, disabled && styles.containerDisabled)
   const triggerIconClasses = clsx(styles.triggerIcon, isOpen && styles.triggerIconOpened)
 
   useLayoutEffect(() => {
@@ -82,24 +93,30 @@ const Select = <ItemType, FormFields extends FieldValues>({
     return itemToString(item)
   }
 
-  function onSelectedItemChange(changes: UseSelectStateChange<ItemType>) {
+  function onSelectedItemChange(changes: UseComboboxStateChange<ItemType>) {
     onChange(changes.selectedItem)
   }
 
+  function onInputValueChange({ inputValue }: UseComboboxStateChange<ItemType>) {
+    // TODO(HiDeoo)
+    const newFilteredItems = inputValue
+      ? items.filter((item) => renderItem(item).toLowerCase().startsWith(inputValue.toLowerCase()))
+      : items
+
+    setFilteredItems(newFilteredItems)
+  }
+
   return (
-    <div className={containerClasses} ref={container}>
-      <Label {...getLabelProps()} errorMessage={errorMessage}>
+    <div className={styles.container} ref={container}>
+      <Label {...getLabelProps()} errorMessage={errorMessage} disabled={disabled}>
         {label}
       </Label>
-      <Button
-        {...getToggleButtonProps()}
-        disabled={disabled}
-        className={styles.trigger}
-        pressedClassName={styles.triggerPressed}
-      >
-        <div className={styles.triggerValue}>{renderItem(selectedItem)}</div>
-        <ChevronDownIcon className={triggerIconClasses} />
-      </Button>
+      <div {...getComboboxProps()} className="flex">
+        <TextInput {...getInputProps()} className={styles.input} disabled={disabled} />
+        <Button {...getToggleButtonProps()} aria-label="Toggle Menu" className={styles.trigger} disabled={disabled}>
+          <ChevronDownIcon className={triggerIconClasses} />
+        </Button>
+      </div>
       <div {...getMenuProps()} className={styles.menuContainer}>
         <Presence present={isOpen}>
           <ul
@@ -107,7 +124,7 @@ const Select = <ItemType, FormFields extends FieldValues>({
             data-state={isOpen ? 'open' : 'closed'}
             style={{ maxHeight: maxHeight ? `${maxHeight}px` : 'initial' }}
           >
-            {items.map((item, index) => {
+            {filteredItems.map((item, index) => {
               const menuItemClasses = clsx(styles.menuItem, highlightedIndex === index && styles.menuItemHighlighted)
 
               return (
