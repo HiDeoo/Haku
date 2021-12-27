@@ -32,6 +32,12 @@ const Button = forwardRef<HTMLButtonElement, React.PropsWithChildren<ButtonProps
       ref
     )
 
+    function onDeprecatedOnClick(event: PressEvent) {
+      if (isButtonPropsWithOnClickHandler(props)) {
+        props.onClick(event)
+      }
+    }
+
     const buttonClasses = clsx(
       {
         'bg-zinc-600 hover:bg-zinc-500 disabled:bg-zinc-600/50': !primary && !isPressed,
@@ -48,12 +54,6 @@ const Button = forwardRef<HTMLButtonElement, React.PropsWithChildren<ButtonProps
       'rounded-md',
       className
     )
-
-    function onDeprecatedOnClick(event: PressEvent) {
-      if (isButtonPropsWithOnClickHandler(props)) {
-        props.onClick(event)
-      }
-    }
 
     return (
       <button

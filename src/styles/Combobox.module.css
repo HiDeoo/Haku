@@ -6,24 +6,9 @@
   @apply mr-1.5;
 }
 
-/* mb-3 last-of-type:mb-4 **/
-
 .trigger {
   @apply min-w-0 px-2.5;
 }
-
-/* .trigger {
-  @apply w-full bg-zinc-600/75 hover:bg-zinc-500/75 disabled:opacity-100 disabled:bg-zinc-600/75;
-  @apply shadow-none flex justify-between items-center;
-}
-
-.triggerPressed {
-  @apply hover:bg-zinc-400/75;
-} */
-
-/* .triggerValue {
-  @apply text-ellipsis overflow-hidden;
-} */
 
 .triggerIcon {
   @media (prefers-reduced-motion: no-preference) {

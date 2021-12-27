@@ -63,8 +63,6 @@ const Select = <ItemType, FormFields extends FieldValues>({
     onSelectedItemChange,
   })
 
-  const triggerIconClasses = clsx(styles.triggerIcon, isOpen && styles.triggerIconOpened)
-
   useLayoutEffect(() => {
     function calculateMaxHeight() {
       const rect = container.current?.getBoundingClientRect()
@@ -105,6 +103,8 @@ const Select = <ItemType, FormFields extends FieldValues>({
 
     setFilteredItems(newFilteredItems)
   }
+
+  const triggerIconClasses = clsx(styles.triggerIcon, isOpen && styles.triggerIconOpened)
 
   return (
     <div className={styles.container} ref={container}>

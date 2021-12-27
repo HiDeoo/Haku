@@ -12,7 +12,7 @@ const TextInput = forwardRef<HTMLInputElement, React.PropsWithChildren<Props>>(
     const ref = useObjectRef(forwardedRef)
     const { labelProps, inputProps, errorMessageProps } = useTextField(props, ref)
 
-    const inputClasses = clsx(
+    const classes = clsx(
       styles.input,
       props.errorMessage ? 'focus:ring-red-400' : 'focus:ring-blue-600',
       props.disabled && 'opacity-50',
@@ -20,14 +20,7 @@ const TextInput = forwardRef<HTMLInputElement, React.PropsWithChildren<Props>>(
     )
 
     const input = (
-      <input
-        {...inputProps}
-        ref={ref}
-        type={type}
-        onChange={onChange}
-        className={inputClasses}
-        disabled={props.disabled}
-      />
+      <input {...inputProps} ref={ref} type={type} onChange={onChange} className={classes} disabled={props.disabled} />
     )
 
     return props.label ? (

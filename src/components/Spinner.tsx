@@ -4,8 +4,6 @@ import { useEffect, useState } from 'react'
 import styles from 'styles/Spinner.module.css'
 
 const Spinner: React.FC<Props> = ({ className, color, delay }) => {
-  const spinnerClasses = clsx(styles.spinner, color ?? styles.spinnerColor, className)
-
   const [pastDelay, setPastDelay] = useState(false)
 
   useEffect(() => {
@@ -28,6 +26,8 @@ const Spinner: React.FC<Props> = ({ className, color, delay }) => {
   if (delay && !pastDelay) {
     return null
   }
+
+  const spinnerClasses = clsx(styles.spinner, color ?? styles.spinnerColor, className)
 
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" className={spinnerClasses}>
