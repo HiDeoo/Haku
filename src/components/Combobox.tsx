@@ -27,7 +27,7 @@ import TextInput from 'components/TextInput'
 const menuWindowBottomOffsetInPixels = 20
 const menuMaxHeightInPixels = 210
 
-const Select = <Item, FormFields extends FieldValues>({
+const Combobox = <Item, FormFields extends FieldValues>({
   control,
   defaultItem,
   disabled,
@@ -37,6 +37,7 @@ const Select = <Item, FormFields extends FieldValues>({
   label,
   name,
 }: Props<Item, FormFields>) => {
+  const isMenuOpened = useRef(false)
   const container = useRef<HTMLDivElement>(null)
 
   const [filteredItems, setFilteredItems] = useState(items)
@@ -56,9 +57,10 @@ const Select = <Item, FormFields extends FieldValues>({
 
   const {
     field: { onChange, value },
-  } = useController({
+  } = useController<FormFields>({
     control,
-    defaultValue: defaultItem,
+    // https://github.com/react-hook-form/react-hook-form/issues/2978#issuecomment-1001992272
+    defaultValue: defaultItem as UnpackNestedValue<PathValue<FormFields, Path<FormFields>>>,
     name,
     rules: { validate },
   })
@@ -83,6 +85,8 @@ const Select = <Item, FormFields extends FieldValues>({
     onSelectedItemChange,
     stateReducer,
   })
+
+  isMenuOpened.current = isOpen
 
   const searchableItems = useMemo(
     () =>
@@ -171,7 +175,9 @@ const Select = <Item, FormFields extends FieldValues>({
   }
 
   function onInputValueChange() {
-    onChange(selectedItem)
+    if (isMenuOpened.current) {
+      onChange(selectedItem)
+    }
   }
 
   function renderFilteredItem(item: Item, isHighlighted: boolean) {
@@ -243,11 +249,11 @@ const Select = <Item, FormFields extends FieldValues>({
   )
 }
 
-export default Select
+export default Combobox
 
 interface Props<Item, FormFields extends FieldValues> {
   control: Control<FormFields>
-  defaultItem: UnpackNestedValue<PathValue<FormFields, Path<FormFields>>>
+  defaultItem: Item
   disabled?: boolean
   errorMessage?: string
   items: Item[]
