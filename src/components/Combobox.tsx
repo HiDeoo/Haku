@@ -197,7 +197,13 @@ const Select = <Item, FormFields extends FieldValues>({
         {label}
       </Label>
       <div {...getComboboxProps()} className="flex">
-        <TextInput {...getInputProps()} className="mr-1.5" errorMessage={errorMessage} disabled={disabled} />
+        <TextInput
+          {...getInputProps()}
+          className="mr-1.5"
+          spellCheck={false}
+          disabled={disabled}
+          errorMessage={errorMessage}
+        />
         <Button
           {...getToggleButtonProps()}
           aria-label="Toggle Menu"

@@ -27,6 +27,7 @@ const TextInput = forwardRef<HTMLInputElement, React.PropsWithChildren<Props>>(
         onChange={onChange}
         className={inputClasses}
         disabled={props.disabled}
+        spellCheck={props.spellCheck}
       />
     )
 
@@ -59,5 +60,6 @@ interface Props extends Partial<Omit<UseFormRegisterReturn, 'ref'>> {
   errorMessage?: string
   label?: string
   placeholder: string
+  spellCheck?: React.InputHTMLAttributes<HTMLInputElement>['spellCheck']
   type?: 'text' | 'email'
 }
