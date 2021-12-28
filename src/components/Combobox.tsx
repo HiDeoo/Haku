@@ -71,6 +71,7 @@ const Select = <Item, FormFields extends FieldValues>({
     getMenuProps,
     getToggleButtonProps,
     highlightedIndex,
+    inputValue,
     isOpen,
     selectedItem,
   } = useCombobox({
@@ -173,6 +174,18 @@ const Select = <Item, FormFields extends FieldValues>({
     onChange(selectedItem)
   }
 
+  function renderFilteredItem(item: Item, isHighlighted: boolean) {
+    const itemStr = renderItem(item)
+
+    if (inputValue.length === 0) {
+      return itemStr
+    }
+
+    return fuzzaldrin.wrap(itemStr, inputValue, {
+      wrap: { tagClass: isHighlighted ? 'text-blue-300' : 'text-blue-400' },
+    })
+  }
+
   const triggerIconClasses = clsx('motion-safe:transition-transform motion-safe:duration-200', { 'rotate-180': isOpen })
   const menuClasses = clsx('rounded-md bg-zinc-700 shadow-sm shadow-zinc-900/50 overflow-auto origin-top', {
     'animate-combobox': !disableMenuAnimation,
@@ -202,14 +215,19 @@ const Select = <Item, FormFields extends FieldValues>({
             style={{ maxHeight: maxHeight ? `${maxHeight}px` : 'initial' }}
           >
             {filteredItems.map((item, index) => {
+              const isHighlighted = highlightedIndex === index
+
               const menuItemClasses = clsx('px-3 py-1.5 cursor-pointer text-ellipsis overflow-hidden', {
-                'bg-blue-600': highlightedIndex === index,
+                'bg-blue-600': isHighlighted,
               })
 
               return (
-                <li {...getItemProps({ item, index })} key={`${renderItem(item)}-${index}`} className={menuItemClasses}>
-                  {renderItem(item)}
-                </li>
+                <li
+                  {...getItemProps({ item, index })}
+                  key={`${renderItem(item)}-${index}`}
+                  className={menuItemClasses}
+                  dangerouslySetInnerHTML={{ __html: renderFilteredItem(item, isHighlighted) }}
+                />
               )
             })}
           </ul>
