@@ -22,6 +22,7 @@ import {
 
 import Button from 'components/Button'
 import Label from 'components/Label'
+import Spinner from 'components/Spinner'
 import TextInput from 'components/TextInput'
 
 const menuWindowBottomOffsetInPixels = 20
@@ -35,6 +36,7 @@ const Combobox = <Item, FormFields extends FieldValues>({
   items,
   itemToString,
   label,
+  loading,
   name,
 }: Props<Item, FormFields>) => {
   const isMenuOpened = useRef(false)
@@ -87,6 +89,8 @@ const Combobox = <Item, FormFields extends FieldValues>({
   })
 
   isMenuOpened.current = isOpen
+
+  const inputProps = getInputProps()
 
   const searchableItems = useMemo(
     () =>
@@ -192,6 +196,14 @@ const Combobox = <Item, FormFields extends FieldValues>({
     })
   }
 
+  function isDisabled() {
+    return disabled || loading
+  }
+
+  function getInputValue() {
+    return loading ? 'Loading…' : inputProps.value
+  }
+
   const triggerIconClasses = clsx('motion-safe:transition-transform motion-safe:duration-200', { 'rotate-180': isOpen })
   const menuClasses = clsx('rounded-md bg-zinc-700 shadow-sm shadow-zinc-900/50 overflow-auto origin-top', {
     'animate-combobox': !disableMenuAnimation,
@@ -199,22 +211,24 @@ const Combobox = <Item, FormFields extends FieldValues>({
 
   return (
     <div className="relative mb-3" ref={container}>
-      <Label {...getLabelProps()} errorMessage={errorMessage} disabled={disabled}>
+      <Label {...getLabelProps()} errorMessage={errorMessage} disabled={isDisabled()}>
         {label}
       </Label>
-      <div {...getComboboxProps()} className="flex">
+      <div {...getComboboxProps()} className="flex relative">
+        {loading ? <Spinner className="absolute top-1.5 right-12 h-5 w-5 text-blue-500" /> : null}
         <TextInput
-          {...getInputProps()}
+          {...inputProps}
           className="mr-1.5"
           spellCheck={false}
-          disabled={disabled}
+          disabled={isDisabled()}
+          value={getInputValue()}
           errorMessage={errorMessage}
         />
         <Button
           {...getToggleButtonProps()}
           aria-label="Toggle Menu"
           className="min-w-0 px-2.5 disabled:bg-zinc-600"
-          disabled={disabled}
+          disabled={isDisabled()}
         >
           <ChevronDownIcon className={triggerIconClasses} />
         </Button>
@@ -259,5 +273,6 @@ interface Props<Item, FormFields extends FieldValues> {
   items: Item[]
   itemToString?: (item: Item | null) => string
   label: string
+  loading?: boolean
   name: FieldPath<FormFields>
 }

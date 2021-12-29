@@ -9,13 +9,13 @@ export const ROOT_FOLDER_ID = -1
 const rootFolder: FolderData = { id: ROOT_FOLDER_ID, parentId: null, name: '/' }
 
 const FolderPicker = <FormFields extends FieldValues>({ control, errorMessage, label, name }: Props<FormFields>) => {
-  // TODO(HiDeoo)
-  useTree()
+  const { isLoading } = useTree()
 
   return (
     <Combobox
       name={name}
       control={control}
+      loading={isLoading}
       items={[rootFolder]}
       defaultItem={rootFolder}
       label={label ?? 'Folder'}
