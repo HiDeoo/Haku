@@ -1,11 +1,13 @@
 import { CardStackPlusIcon } from '@radix-ui/react-icons'
-import { useForm } from 'react-hook-form'
+import { type NestedValue, useForm } from 'react-hook-form'
 
 import Button from 'components/Button'
+import FolderPicker, { ROOT_FOLDER_ID } from 'components/FolderPicker'
 import IconButton from 'components/IconButton'
 import Modal from 'components/Modal'
-import Combobox from 'components/Combobox'
 import TextInput from 'components/TextInput'
+import useAddFolder from 'hooks/useAddFolder'
+import { type FolderData } from 'libs/db/folder'
 
 const NewFolderModal: React.FC = () => {
   const {
@@ -13,13 +15,13 @@ const NewFolderModal: React.FC = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormFields>()
+  } = useForm<FormFields>({ mode: 'onChange' })
 
-  function onSubmit(t: FormFields) {
-    // TODO(HiDeoo)
-    console.log('t ', t)
-    console.log('name ', t.name)
-  }
+  const mutation = useAddFolder()
+
+  const onSubmit = handleSubmit(({ parentFolder, ...data }) => {
+    mutation.mutate({ ...data, parentId: parentFolder.id === ROOT_FOLDER_ID ? undefined : parentFolder.id })
+  })
 
   return (
     <Modal
@@ -30,7 +32,7 @@ const NewFolderModal: React.FC = () => {
         </IconButton>
       }
     >
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={onSubmit}>
         <TextInput
           type="text"
           label="Name"
@@ -38,24 +40,7 @@ const NewFolderModal: React.FC = () => {
           errorMessage={errors.name?.message}
           {...register('name', { required: 'required' })}
         />
-        <Combobox
-          items={[
-            '11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111',
-            '22222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222',
-            '33333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333',
-            '44444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444',
-            '55555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555',
-            '66666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666',
-            '77777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777',
-            '88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888',
-            '99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999',
-          ]}
-          label="pick it"
-          control={control}
-          defaultItem={1}
-          name="prout"
-          errorMessage={errors.prout?.message}
-        />
+        <FolderPicker control={control} errorMessage={errors.parentFolder?.message} name="parentFolder" />
         <Modal.Footer>
           <Button type="submit" primary>
             Create
@@ -70,5 +55,5 @@ export default NewFolderModal
 
 type FormFields = {
   name: string
-  prout: number
+  parentFolder: NestedValue<FolderData>
 }
