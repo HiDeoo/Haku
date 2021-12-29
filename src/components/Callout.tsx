@@ -6,7 +6,7 @@ import Flex from 'components/Flex'
 const Callout: React.FC<Props> = ({ intent, message, title }) => {
   const Icon = intent === 'success' ? CheckIcon : ExclamationTriangleIcon
 
-  const containerClasses = clsx('rounded-md mb-3 pl-3 pr-4 py-2.5 border', {
+  const containerClasses = clsx('rounded-md mt-1 mb-3 pl-3 pr-4 py-2.5 border', {
     'bg-green-400/30 text-green-100 border-green-300/30': intent === 'success',
     'bg-red-400/50 text-red-100 border-red-200/30': intent === 'error',
   })

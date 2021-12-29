@@ -1,6 +1,6 @@
 import { useMutation } from 'react-query'
 
-import client, { type QueryError } from 'libs/api/client'
+import client, { handleApiError } from 'libs/api/client'
 import { type FolderData } from 'libs/db/folder'
 import { type AddFolderBody } from 'pages/api/folders'
 import useContentType, { type ContentType } from 'hooks/useContentType'
@@ -8,13 +8,15 @@ import useContentType, { type ContentType } from 'hooks/useContentType'
 export default function useAddFolder() {
   const type = useContentType()
 
-  const mutation = useMutation<FolderData, QueryError, AddFolderData>((data) => {
+  const mutation = useMutation<FolderData, unknown, AddFolderData>((data) => {
     if (!type) {
       throw new Error('Missing content type to add a folder.')
     }
 
     return addFolder(data, type)
   })
+
+  handleApiError(mutation)
 
   return mutation
 }

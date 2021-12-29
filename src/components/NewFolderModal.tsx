@@ -3,6 +3,7 @@ import { type NestedValue, useForm } from 'react-hook-form'
 
 import Button from 'components/Button'
 import FolderPicker, { ROOT_FOLDER_ID } from 'components/FolderPicker'
+import Form from 'components/Form'
 import IconButton from 'components/IconButton'
 import Modal from 'components/Modal'
 import TextInput from 'components/TextInput'
@@ -17,10 +18,10 @@ const NewFolderModal: React.FC = () => {
     formState: { errors },
   } = useForm<FormFields>({ mode: 'onChange' })
 
-  const mutation = useAddFolder()
+  const { error, mutate } = useAddFolder()
 
   const onSubmit = handleSubmit(({ parentFolder, ...data }) => {
-    mutation.mutate({ ...data, parentId: parentFolder.id === ROOT_FOLDER_ID ? undefined : parentFolder.id })
+    mutate({ ...data, parentId: parentFolder.id === ROOT_FOLDER_ID ? undefined : parentFolder.id })
   })
 
   return (
@@ -32,7 +33,7 @@ const NewFolderModal: React.FC = () => {
         </IconButton>
       }
     >
-      <form onSubmit={onSubmit}>
+      <Form onSubmit={onSubmit} error={error}>
         <TextInput
           type="text"
           label="Name"
@@ -40,13 +41,18 @@ const NewFolderModal: React.FC = () => {
           errorMessage={errors.name?.message}
           {...register('name', { required: 'required' })}
         />
-        <FolderPicker control={control} errorMessage={errors.parentFolder?.message} name="parentFolder" />
+        <FolderPicker
+          control={control}
+          name="parentFolder"
+          label="Parent Folder"
+          errorMessage={errors.parentFolder?.message}
+        />
         <Modal.Footer>
           <Button type="submit" primary>
             Create
           </Button>
         </Modal.Footer>
-      </form>
+      </Form>
     </Modal>
   )
 }
