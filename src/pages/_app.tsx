@@ -8,6 +8,7 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 
 import Route from 'components/Route'
 import Layout from 'components/Layout'
+import ErrorBoundary from 'components/ErrorBoundary'
 
 const queryClient = new QueryClient()
 
@@ -15,7 +16,7 @@ function Haku({ Component, pageProps: { session, ...pageProps } }: AppPropsWithL
   const sidebar = Component.sidebar ?? true
 
   return (
-    <>
+    <ErrorBoundary>
       <Head>
         <title>Haku</title>
       </Head>
@@ -30,7 +31,7 @@ function Haku({ Component, pageProps: { session, ...pageProps } }: AppPropsWithL
           </TooltipProvider>
         </SessionProvider>
       </QueryClientProvider>
-    </>
+    </ErrorBoundary>
   )
 }
 
