@@ -27,10 +27,12 @@ async function getHandler(_req: NextApiRequest, res: NextApiResponse<EmailAllowL
 }
 
 async function postHandler(
-  req: ValidatedApiRequest<{ body: typeof postBodySchema }>,
+  req: ValidatedApiRequest<{ body: AddAllowedEmailBody }>,
   res: NextApiResponse<EmailAllowList>
 ) {
   const email = await addAllowedEmail(req.body.email)
 
   return res.status(200).json(email)
 }
+
+type AddAllowedEmailBody = z.infer<typeof postBodySchema>
