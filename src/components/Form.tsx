@@ -4,10 +4,10 @@ import { useEffect, useState } from 'react'
 import Callout from 'components/Callout'
 import { type ApiErrorResponse } from 'libs/api/routes/errors'
 
-const Form: React.FC<Props> = ({ children, error, onSubmit }) => {
+const Form: React.FC<Props> = ({ children, error, errorMessage, onSubmit }) => {
   return (
     <form onSubmit={onSubmit}>
-      <FormError error={error} />
+      {error || errorMessage ? <FormError error={error} errorMessage={errorMessage} /> : null}
       {children}
     </form>
   )
@@ -15,32 +15,32 @@ const Form: React.FC<Props> = ({ children, error, onSubmit }) => {
 
 export default Form
 
-const FormError: React.FC<Pick<Props, 'error'>> = ({ error }) => {
+const FormError: React.FC<Omit<Props, 'onSubmit'>> = ({ error, errorMessage }) => {
   const [message, setMessage] = useState<string | null>(null)
 
   useEffect(() => {
     async function getErrorMessage() {
-      let errorMessage = 'Something went wrong!'
+      let msg = errorMessage ?? 'Something went wrong!'
 
       if (error instanceof HTTPError) {
         try {
           const json = await error.response.clone().json()
 
           if (isApiErrorResponse(json)) {
-            errorMessage = json.error
+            msg = json.error
           }
         } catch (e) {
           // We do not care about parsing related errors.
         }
       }
 
-      setMessage(errorMessage)
+      setMessage(msg)
     }
 
     getErrorMessage()
-  }, [error])
+  }, [error, errorMessage])
 
-  if (!error || !message) {
+  if (!message) {
     return null
   }
 
@@ -53,5 +53,6 @@ function isApiErrorResponse(json: unknown): json is ApiErrorResponse {
 
 interface Props {
   error?: unknown
+  errorMessage?: string
   onSubmit: NonNullable<React.DOMAttributes<HTMLFormElement>['onSubmit']>
 }
