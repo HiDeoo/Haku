@@ -19,6 +19,7 @@ const NewFolderModal: React.FC = () => {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<FormFields>()
 
   const { error, isLoading, mutate } = useAddFolder()
@@ -29,6 +30,7 @@ const NewFolderModal: React.FC = () => {
       {
         onSuccess: () => {
           setOpened(false)
+          reset()
         },
       }
     )
