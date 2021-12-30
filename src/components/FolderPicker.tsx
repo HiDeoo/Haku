@@ -11,7 +11,13 @@ export const ROOT_FOLDER_ID = -1
 
 const rootFolder: FolderWithPath = { id: ROOT_FOLDER_ID, name: '/', parentId: null, path: '' }
 
-const FolderPicker = <FormFields extends FieldValues>({ control, errorMessage, label, name }: Props<FormFields>) => {
+const FolderPicker = <FormFields extends FieldValues>({
+  control,
+  disabled,
+  errorMessage,
+  label,
+  name,
+}: Props<FormFields>) => {
   const { data, isLoading } = useContentTree()
 
   const folders: Folders = useMemo(() => {
@@ -28,6 +34,7 @@ const FolderPicker = <FormFields extends FieldValues>({ control, errorMessage, l
       items={folders}
       control={control}
       loading={isLoading}
+      disabled={disabled}
       defaultItem={folders[0]}
       label={label ?? 'Folder'}
       errorMessage={errorMessage}
@@ -55,6 +62,7 @@ function getFolderList(treeFolders: TreeFolders, parentPath = ''): Folders {
 
 interface Props<FormFields extends FieldValues> {
   control: Control<FormFields>
+  disabled?: boolean
   errorMessage?: string
   label?: string
   name: FieldPath<FormFields>

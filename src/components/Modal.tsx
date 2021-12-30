@@ -5,13 +5,24 @@ import Flex from 'components/Flex'
 import Button from 'components/Button'
 import IconButton from 'components/IconButton'
 
-const Modal: ModalComponent = ({ children, title, trigger }) => {
+const Modal: ModalComponent = ({ children, disabled, title, trigger }) => {
+  function onCloseInteraction(event: KeyboardEvent | CustomEvent) {
+    if (disabled) {
+      event.preventDefault()
+    }
+  }
+
   return (
     <Root>
       <Trigger asChild>{trigger}</Trigger>
       <Portal>
         <Overlay className="z-40 fixed inset-0 flex flex-col  p-10 animate-modal-overlay overflow-y-auto bg-zinc-900/80">
-          <Content className="z-50 m-auto outline-none min-w-[400px] max-w-[75%] animate-modal-content bg-zinc-800 rounded-md shadow shadow-black/75">
+          <Content
+            onEscapeKeyDown={onCloseInteraction}
+            onInteractOutside={onCloseInteraction}
+            onPointerDownOutside={onCloseInteraction}
+            className="z-50 m-auto outline-none min-w-[400px] max-w-[75%] animate-modal-content bg-zinc-800 rounded-md shadow shadow-black/75"
+          >
             <Flex
               as="header"
               alignItems="center"
@@ -20,7 +31,7 @@ const Modal: ModalComponent = ({ children, title, trigger }) => {
             >
               {title}
               <Close asChild>
-                <IconButton className="rounded-full !p-1" tabIndex={-1}>
+                <IconButton className="rounded-full !p-1" tabIndex={-1} disabled={disabled}>
                   <Cross2Icon />
                 </IconButton>
               </Close>
@@ -33,11 +44,11 @@ const Modal: ModalComponent = ({ children, title, trigger }) => {
   )
 }
 
-const Footer: React.FC = ({ children }) => {
+const Footer: React.FC<Pick<Props, 'disabled'>> = ({ children, disabled }) => {
   return (
     <Flex justifyContent="end" className="pt-4">
       <Close asChild>
-        <Button>Close</Button>
+        <Button disabled={disabled}>Close</Button>
       </Close>
       {children}
     </Flex>
@@ -53,6 +64,7 @@ type ModalComponent = React.FC<Props> & {
 }
 
 interface Props {
+  disabled?: boolean
   title: string
   trigger: React.ReactNode
 }

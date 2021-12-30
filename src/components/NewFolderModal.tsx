@@ -18,7 +18,7 @@ const NewFolderModal: React.FC = () => {
     formState: { errors },
   } = useForm<FormFields>()
 
-  const { error, mutate } = useAddFolder()
+  const { error, isLoading, mutate } = useAddFolder()
 
   const onSubmit = handleSubmit(({ parentFolder, ...data }) => {
     mutate({ ...data, parentId: parentFolder.id === ROOT_FOLDER_ID ? undefined : parentFolder.id })
@@ -27,6 +27,7 @@ const NewFolderModal: React.FC = () => {
   return (
     <Modal
       title="New Folder"
+      disabled={isLoading}
       trigger={
         <IconButton tooltip="New Folder">
           <CardStackPlusIcon />
@@ -37,6 +38,7 @@ const NewFolderModal: React.FC = () => {
         <TextInput
           type="text"
           label="Name"
+          disabled={isLoading}
           placeholder="Recipes"
           errorMessage={errors.name?.message}
           {...register('name', { required: 'required' })}
@@ -44,11 +46,12 @@ const NewFolderModal: React.FC = () => {
         <FolderPicker
           control={control}
           name="parentFolder"
+          disabled={isLoading}
           label="Parent Folder"
           errorMessage={errors.parentFolder?.message}
         />
-        <Modal.Footer>
-          <Button type="submit" primary>
+        <Modal.Footer disabled={isLoading}>
+          <Button type="submit" primary disabled={isLoading} loading={isLoading}>
             Create
           </Button>
         </Modal.Footer>

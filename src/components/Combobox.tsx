@@ -224,7 +224,7 @@ const Combobox = <Item, FormFields extends FieldValues>({
         <Button
           {...getToggleButtonProps()}
           aria-label="Toggle Menu"
-          className="min-w-0 px-2.5 disabled:bg-zinc-600"
+          className="!min-w-0 px-2.5 disabled:bg-zinc-600"
           disabled={isDisabled()}
         >
           <ChevronDownIcon className={triggerIconClasses} />
