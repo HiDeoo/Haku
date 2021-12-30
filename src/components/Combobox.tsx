@@ -39,7 +39,6 @@ const Combobox = <Item, FormFields extends FieldValues>({
   loading,
   name,
 }: Props<Item, FormFields>) => {
-  const isMenuOpened = useRef(false)
   const container = useRef<HTMLDivElement>(null)
 
   const [filteredItems, setFilteredItems] = useState(items)
@@ -77,18 +76,15 @@ const Combobox = <Item, FormFields extends FieldValues>({
     highlightedIndex,
     inputValue,
     isOpen,
-    selectedItem,
   } = useCombobox({
     circularNavigation: true,
     initialSelectedItem: value,
     items: filteredItems,
     itemToString: renderItem,
-    onInputValueChange,
+    // onInputValueChange,
     onSelectedItemChange,
     stateReducer,
   })
-
-  isMenuOpened.current = isOpen
 
   const inputProps = getInputProps()
 
@@ -121,6 +117,10 @@ const Combobox = <Item, FormFields extends FieldValues>({
   }, [])
 
   useEffect(() => {
+    setFilteredItems(items)
+  }, [items])
+
+  useEffect(() => {
     let animationFrame: ReturnType<typeof requestAnimationFrame>
 
     if (disableMenuAnimation) {
@@ -136,7 +136,7 @@ const Combobox = <Item, FormFields extends FieldValues>({
     }
   }, [disableMenuAnimation])
 
-  function stateReducer(_: UseComboboxState<Item>, { type, changes }: UseComboboxStateChangeOptions<Item>) {
+  function stateReducer(state: UseComboboxState<Item>, { type, changes }: UseComboboxStateChangeOptions<Item>) {
     switch (type) {
       case useCombobox.stateChangeTypes.InputChange: {
         const results = changes.inputValue
@@ -157,11 +157,13 @@ const Combobox = <Item, FormFields extends FieldValues>({
         }
 
         setDisableMenuAnimation(true)
+        onChange(state.selectedItem)
 
         return {
           ...changes,
-          inputValue: renderItem(changes.selectedItem ?? null),
+          inputValue: renderItem(state.selectedItem ?? null),
           isOpen: false,
+          selectedItem: state.selectedItem,
         }
       }
       default: {
@@ -176,12 +178,6 @@ const Combobox = <Item, FormFields extends FieldValues>({
 
   function onSelectedItemChange(changes: UseComboboxStateChange<Item>) {
     onChange(changes.selectedItem)
-  }
-
-  function onInputValueChange() {
-    if (isMenuOpened.current) {
-      onChange(selectedItem)
-    }
   }
 
   function renderFilteredItem(item: Item, isHighlighted: boolean) {
