@@ -1,4 +1,5 @@
 import { CardStackPlusIcon } from '@radix-ui/react-icons'
+import { useState } from 'react'
 import { type NestedValue, useForm } from 'react-hook-form'
 
 import Button from 'components/Button'
@@ -11,6 +12,8 @@ import useAddFolder from 'hooks/useAddFolder'
 import { type FolderData } from 'libs/db/folder'
 
 const NewFolderModal: React.FC = () => {
+  const [opened, setOpened] = useState(false)
+
   const {
     control,
     register,
@@ -21,12 +24,21 @@ const NewFolderModal: React.FC = () => {
   const { error, isLoading, mutate } = useAddFolder()
 
   const onSubmit = handleSubmit(({ parentFolder, ...data }) => {
-    mutate({ ...data, parentId: parentFolder.id === ROOT_FOLDER_ID ? undefined : parentFolder.id })
+    mutate(
+      { ...data, parentId: parentFolder.id === ROOT_FOLDER_ID ? undefined : parentFolder.id },
+      {
+        onSuccess: () => {
+          setOpened(false)
+        },
+      }
+    )
   })
 
   return (
     <Modal
+      opened={opened}
       title="New Folder"
+      onToggle={setOpened}
       disabled={isLoading}
       trigger={
         <IconButton tooltip="New Folder">

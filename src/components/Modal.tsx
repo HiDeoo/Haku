@@ -5,7 +5,7 @@ import Flex from 'components/Flex'
 import Button from 'components/Button'
 import IconButton from 'components/IconButton'
 
-const Modal: ModalComponent = ({ children, disabled, title, trigger }) => {
+const Modal: ModalComponent = ({ children, disabled, onToggle, opened, title, trigger }) => {
   function onCloseInteraction(event: KeyboardEvent | CustomEvent) {
     if (disabled) {
       event.preventDefault()
@@ -13,7 +13,7 @@ const Modal: ModalComponent = ({ children, disabled, title, trigger }) => {
   }
 
   return (
-    <Root>
+    <Root open={opened} onOpenChange={onToggle}>
       <Trigger asChild>{trigger}</Trigger>
       <Portal>
         <Overlay className="z-40 fixed inset-0 flex flex-col  p-10 animate-modal-overlay overflow-y-auto bg-zinc-900/80">
@@ -64,6 +64,8 @@ type ModalComponent = React.FC<Props> & {
 }
 
 interface Props {
+  opened?: boolean
+  onToggle?: (open: boolean) => void
   disabled?: boolean
   title: string
   trigger: React.ReactNode
