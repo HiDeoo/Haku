@@ -16,7 +16,7 @@ const NewFolderModal: React.FC = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormFields>({ mode: 'onChange' })
+  } = useForm<FormFields>()
 
   const { error, mutate } = useAddFolder()
 

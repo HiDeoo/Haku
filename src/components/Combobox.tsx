@@ -8,7 +8,7 @@ import {
   type UseComboboxState,
   type UseComboboxStateChange,
 } from 'downshift'
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import {
   type Control,
   useController,
@@ -34,6 +34,7 @@ const Combobox = <Item, FormFields extends FieldValues>({
   disabled,
   errorMessage,
   items,
+  itemToMenuItem,
   itemToString,
   label,
   loading,
@@ -76,12 +77,12 @@ const Combobox = <Item, FormFields extends FieldValues>({
     highlightedIndex,
     inputValue,
     isOpen,
+    selectItem,
   } = useCombobox({
     circularNavigation: true,
     initialSelectedItem: value,
     items: filteredItems,
     itemToString: renderItem,
-    // onInputValueChange,
     onSelectedItemChange,
     stateReducer,
   })
@@ -89,11 +90,8 @@ const Combobox = <Item, FormFields extends FieldValues>({
   const inputProps = getInputProps()
 
   const searchableItems = useMemo(
-    () =>
-      items.map((item) => {
-        return { item, str: renderItem(item) }
-      }),
-    [items, renderItem]
+    () => items.map((item) => ({ item, str: itemToMenuItem ? itemToMenuItem(item) : renderItem(item) })),
+    [items, itemToMenuItem, renderItem]
   )
 
   useLayoutEffect(() => {
@@ -121,6 +119,10 @@ const Combobox = <Item, FormFields extends FieldValues>({
   }, [items])
 
   useEffect(() => {
+    selectItem(defaultItem)
+  }, [defaultItem, selectItem])
+
+  useEffect(() => {
     let animationFrame: ReturnType<typeof requestAnimationFrame>
 
     if (disableMenuAnimation) {
@@ -139,10 +141,9 @@ const Combobox = <Item, FormFields extends FieldValues>({
   function stateReducer(state: UseComboboxState<Item>, { type, changes }: UseComboboxStateChangeOptions<Item>) {
     switch (type) {
       case useCombobox.stateChangeTypes.InputChange: {
+        const needle = changes.inputValue?.toLowerCase() ?? ''
         const results = changes.inputValue
-          ? fuzzaldrin
-              .filter(searchableItems, changes.inputValue.toLowerCase() ?? '', { key: 'str' })
-              .map((result) => result.item)
+          ? fuzzaldrin.filter(searchableItems, needle, { key: 'str' }).map((result) => result.item)
           : items
 
         setFilteredItems(results)
@@ -181,7 +182,7 @@ const Combobox = <Item, FormFields extends FieldValues>({
   }
 
   function renderFilteredItem(item: Item, isHighlighted: boolean) {
-    const itemStr = renderItem(item)
+    const itemStr = itemToMenuItem ? itemToMenuItem(item) : renderItem(item)
 
     if (inputValue.length === 0) {
       return itemStr
@@ -246,8 +247,8 @@ const Combobox = <Item, FormFields extends FieldValues>({
               return (
                 <li
                   {...getItemProps({ item, index })}
-                  key={`${renderItem(item)}-${index}`}
                   className={menuItemClasses}
+                  key={`${renderItem(item)}-${index}`}
                   dangerouslySetInnerHTML={{ __html: renderFilteredItem(item, isHighlighted) }}
                 />
               )
@@ -267,6 +268,7 @@ interface Props<Item, FormFields extends FieldValues> {
   disabled?: boolean
   errorMessage?: string
   items: Item[]
+  itemToMenuItem?: (item: Item | null) => string
   itemToString?: (item: Item | null) => string
   label: string
   loading?: boolean
