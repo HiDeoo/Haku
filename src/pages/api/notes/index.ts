@@ -35,4 +35,4 @@ async function postHandler(req: ValidatedApiRequest<{ body: AddNoteBody }>, res:
   return res.status(200).json(note)
 }
 
-type AddNoteBody = z.infer<typeof postBodySchema>
+export type AddNoteBody = z.infer<typeof postBodySchema>

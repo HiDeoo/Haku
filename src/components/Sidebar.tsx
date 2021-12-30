@@ -4,6 +4,7 @@ import { signOut } from 'next-auth/react'
 import Flex from 'components/Flex'
 import IconButton from 'components/IconButton'
 import NewFolderModal from 'components/NewFolderModal'
+import NewContentModal from 'components/NewContentModal'
 
 const Sidebar: React.FC = () => {
   function logout() {
@@ -53,6 +54,7 @@ const Sidebar: React.FC = () => {
         justifyContent="center"
         className="z-10 px-4 pb-2 border-t border-zinc-600/40 pt-1.5 shadow-[0_-1px_1px_0_rgba(0,0,0,1)]"
       >
+        <NewContentModal />
         <NewFolderModal />
         <IconButton onPress={logout} tooltip="Logout">
           <ExitIcon />
