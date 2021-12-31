@@ -1,5 +1,7 @@
 import { Link as Roving, Root } from '@radix-ui/react-toolbar'
+import clsx from 'clsx'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { forwardRef } from 'react'
 
 import Flex from 'components/Flex'
@@ -10,6 +12,13 @@ import { type TodoData } from 'libs/db/todo'
 import { isTreeFolder, type TreeFolder } from 'libs/tree'
 import useContentType, { type ContentType } from 'hooks/useContentType'
 
+const treeDepthOffset = '1.25rem'
+
+const nodeClasses = clsx(
+  'px-3 py-1.5 text-zinc-400',
+  'focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-inset'
+)
+
 const ContentTree: React.FC = () => {
   const type = useContentType()
 
@@ -17,7 +26,10 @@ const ContentTree: React.FC = () => {
     throw new Error('Missing content type to render the content tree.')
   }
 
+  const { query } = useRouter()
   const { data, isLoading } = useContentTree()
+
+  const selectedId = query.id && typeof query.id === 'string' ? parseInt(query.id, 10) : undefined
 
   // TODO(HiDeoo)
   if (isLoading) {
@@ -25,55 +37,74 @@ const ContentTree: React.FC = () => {
   }
 
   return (
-    <Flex as="nav" flex className="overflow-y-auto">
-      <Root orientation="vertical">
+    <Root orientation="vertical" asChild>
+      <Flex as="nav" direction="col" flex className="overflow-y-auto relative">
+        <div className="absolute inset-0 pointer-events-none shadow-[inset_-1px_0_1px_0_rgba(0,0,0,0.4)]" />
         {data?.map((item) => {
-          const key = getKey(item)
+          const key = getNodeKey(item)
 
           return isTreeFolder(item) ? (
-            <Folder key={key} folder={item} type={type} />
+            <Folder key={key} folder={item} type={type} selectedId={selectedId} />
           ) : (
-            <Content key={key} content={item} type={type} />
+            <Content key={key} content={item} type={type} selectedId={selectedId} />
           )
         })}
-      </Root>
-    </Flex>
+      </Flex>
+    </Root>
   )
 }
 
 export default ContentTree
 
-const Folder: React.FC<FolderProps> = ({ folder, type }) => {
+const Folder: React.FC<FolderProps> = ({ folder, depth = 1, selectedId, style, type }) => {
   return (
-    <div>
+    <>
       <Roving asChild>
-        <div>FOLDER: {folder.name}</div>
+        <div style={style} className={nodeClasses}>
+          Folder: {folder.id} - {folder.level}
+        </div>
       </Roving>
-      <div style={{ paddingLeft: 20 }}>
-        {folder.children.map((child) => (
-          <Folder key={getKey(child)} folder={child} type={type} />
-        ))}
-        {folder.items.map((content) => (
-          <Content key={getKey(content)} content={content} type={type} />
-        ))}
-      </div>
-    </div>
+      {folder.children.map((child) => (
+        <Folder
+          type={type}
+          folder={child}
+          depth={depth + 1}
+          selectedId={selectedId}
+          key={getNodeKey(child)}
+          style={getNodeStyle(depth)}
+        />
+      ))}
+      {folder.items.map((content) => (
+        <Content key={getNodeKey(content)} content={content} type={type} depth={depth} selectedId={selectedId} />
+      ))}
+    </>
   )
 }
 
-const Content: React.FC<ContentProps> = ({ content, type }) => {
+const Content: React.FC<ContentProps> = ({ content, depth = 0, selectedId, type }) => {
   return (
     <Roving asChild>
-      <ContentLink href={`/${type.toLowerCase()}s/${content.id}`}>FILE: {content.name}</ContentLink>
+      <ContentLink
+        href={`/${type.toLowerCase()}s/${content.id}`}
+        style={getNodeStyle(depth)}
+        selected={selectedId === content.id}
+      >
+        File: {content.name} - {content.folderId}
+      </ContentLink>
     </Roving>
   )
 }
 
 const ContentLink = forwardRef<HTMLAnchorElement, React.PropsWithChildren<ContentLinkProps>>(
-  ({ children, href, ...props }, ref) => {
+  ({ children, href, selected, style, ...props }, ref) => {
+    const anchorClasses = clsx('block', nodeClasses, {
+      'hover:bg-blue-600 hover:text-blue-50': !selected,
+      'bg-zinc-700/60 !text-blue-50': selected,
+    })
+
     return (
       <Link href={href} prefetch={false}>
-        <a ref={ref} {...props}>
+        <a ref={ref} {...props} style={style} className={anchorClasses}>
           {children}
         </a>
       </Link>
@@ -83,22 +114,33 @@ const ContentLink = forwardRef<HTMLAnchorElement, React.PropsWithChildren<Conten
 
 ContentLink.displayName = 'ContentLink'
 
-function getKey(item: FolderType | DataType): string {
+function getNodeKey(item: FolderType | DataType): string {
   return `${isTreeFolder(item) ? 'folder' : 'content'}-${item.id}`
 }
 
-interface FolderProps {
-  folder: FolderType
+function getNodeStyle(depth: number): NonNullable<React.HtmlHTMLAttributes<HTMLElement>['style']> {
+  return { paddingLeft: `calc(0.75rem + ${treeDepthOffset} * ${depth})` }
+}
+
+interface NodeProps {
+  depth?: number
+  selectedId?: number
+  style?: React.HtmlHTMLAttributes<HTMLElement>['style']
   type: ContentType
 }
 
-interface ContentProps {
+interface FolderProps extends NodeProps {
+  folder: FolderType
+}
+
+interface ContentProps extends NodeProps {
   content: DataType
-  type: ContentType
 }
 
 interface ContentLinkProps {
   href: string
+  selected: boolean
+  style?: React.HtmlHTMLAttributes<HTMLElement>['style']
 }
 
 type DataType = NoteData | TodoData

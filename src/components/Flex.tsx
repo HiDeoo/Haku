@@ -1,16 +1,21 @@
 import clsx from 'clsx'
+import { forwardRef } from 'react'
 
-const Flex = <Element extends React.ElementType = 'div'>({
-  alignItems,
-  as,
-  children,
-  className,
-  direction = 'row',
-  flex,
-  fullHeight,
-  fullWidth,
-  justifyContent,
-}: React.PropsWithChildren<Props<Element>>) => {
+const Flex = <Element extends React.ElementType = 'div'>(
+  {
+    alignItems,
+    as,
+    children,
+    className,
+    direction = 'row',
+    flex,
+    fullHeight,
+    fullWidth,
+    justifyContent,
+    ...props
+  }: React.PropsWithChildren<Props<Element>>,
+  ref: React.ForwardedRef<HTMLDivElement>
+) => {
   const Element = as || 'div'
 
   const elementClasses = clsx(
@@ -49,10 +54,16 @@ const Flex = <Element extends React.ElementType = 'div'>({
     className
   )
 
-  return <Element className={elementClasses}>{children}</Element>
+  return (
+    <Element ref={ref} className={elementClasses} {...props}>
+      {children}
+    </Element>
+  )
 }
 
-export default Flex
+export default forwardRef(Flex) as <Element extends React.ElementType = 'div'>(
+  props: React.PropsWithChildren<Props<Element>> & { ref?: React.ForwardedRef<HTMLDivElement> }
+) => ReturnType<typeof Flex>
 
 interface Props<Element extends React.ElementType> {
   alignItems?: 'start' | 'end' | 'center' | 'baseline' | 'stretch'
