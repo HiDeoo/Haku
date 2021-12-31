@@ -7,6 +7,7 @@ specifiers:
   '@radix-ui/react-dialog': 0.1.5
   '@radix-ui/react-icons': 1.0.3
   '@radix-ui/react-presence': 0.1.1
+  '@radix-ui/react-toolbar': 0.1.4
   '@radix-ui/react-tooltip': 0.1.6
   '@react-aria/button': 3.3.4
   '@react-aria/textfield': 3.5.0
@@ -58,6 +59,7 @@ dependencies:
   '@radix-ui/react-dialog': 0.1.5_5539cae010396b202b015f3568914e95
   '@radix-ui/react-icons': 1.0.3_react@17.0.2
   '@radix-ui/react-presence': 0.1.1_react@17.0.2
+  '@radix-ui/react-toolbar': 0.1.4_react@17.0.2
   '@radix-ui/react-tooltip': 0.1.6_react-dom@17.0.2+react@17.0.2
   '@react-aria/button': 3.3.4_react@17.0.2
   '@react-aria/textfield': 3.5.0_react@17.0.2
@@ -1016,6 +1018,19 @@ packages:
       react: 17.0.2
     dev: false
 
+  /@radix-ui/react-collection/0.1.3_react@17.0.2:
+    resolution: {integrity: sha512-tMBY65l87tj77fMX44EBjm5p8clR6swkcNFr0/dDVdEPC0Vf3fwkv62dezCnZyrRBpkOgZPDOp2kO73hYlCfXw==}
+    peerDependencies:
+      react: ^16.8 || ^17.0
+    dependencies:
+      '@babel/runtime': 7.16.3
+      '@radix-ui/react-compose-refs': 0.1.0_react@17.0.2
+      '@radix-ui/react-context': 0.1.1_react@17.0.2
+      '@radix-ui/react-primitive': 0.1.3_react@17.0.2
+      '@radix-ui/react-slot': 0.1.2_react@17.0.2
+      react: 17.0.2
+    dev: false
+
   /@radix-ui/react-compose-refs/0.1.0_react@17.0.2:
     resolution: {integrity: sha512-eyclbh+b77k+69Dk72q3694OHrn9B3QsoIRx7ywX341U9RK1ThgQjMFZoPtmZNQTksXHLNEiefR8hGVeFyInGg==}
     peerDependencies:
@@ -1166,6 +1181,33 @@ packages:
       react: 17.0.2
     dev: false
 
+  /@radix-ui/react-roving-focus/0.1.4_react@17.0.2:
+    resolution: {integrity: sha512-zaixcAxRcWQliUSx6l9rdfJhvcbuY7Tb4Emb7H4DWCTx1kenXH8+n9mwa8gaSIJLLSSSMzBpQATlpFw9xv/bJQ==}
+    peerDependencies:
+      react: ^16.8 || ^17.0
+    dependencies:
+      '@babel/runtime': 7.16.3
+      '@radix-ui/primitive': 0.1.0
+      '@radix-ui/react-collection': 0.1.3_react@17.0.2
+      '@radix-ui/react-compose-refs': 0.1.0_react@17.0.2
+      '@radix-ui/react-context': 0.1.1_react@17.0.2
+      '@radix-ui/react-id': 0.1.4_react@17.0.2
+      '@radix-ui/react-primitive': 0.1.3_react@17.0.2
+      '@radix-ui/react-use-callback-ref': 0.1.0_react@17.0.2
+      '@radix-ui/react-use-controllable-state': 0.1.0_react@17.0.2
+      react: 17.0.2
+    dev: false
+
+  /@radix-ui/react-separator/0.1.3_react@17.0.2:
+    resolution: {integrity: sha512-4T19/TwF/fp/5x8H2KjNre1htv5iJkXcXzr4QJnqEYiE/wkPwWlW/vcuTWKIY8AXDp+tAgGw0UPrajV7loU+TA==}
+    peerDependencies:
+      react: ^16.8 || ^17.0
+    dependencies:
+      '@babel/runtime': 7.16.3
+      '@radix-ui/react-primitive': 0.1.3_react@17.0.2
+      react: 17.0.2
+    dev: false
+
   /@radix-ui/react-slot/0.1.2_react@17.0.2:
     resolution: {integrity: sha512-ADkqfL+agEzEguU3yS26jfB50hRrwf7U4VTwAOZEmi/g+ITcBWe12yM46ueS/UCIMI9Py+gFUaAdxgxafFvY2Q==}
     peerDependencies:
@@ -1173,6 +1215,48 @@ packages:
     dependencies:
       '@babel/runtime': 7.16.3
       '@radix-ui/react-compose-refs': 0.1.0_react@17.0.2
+      react: 17.0.2
+    dev: false
+
+  /@radix-ui/react-toggle-group/0.1.4_react@17.0.2:
+    resolution: {integrity: sha512-pzs3Cc5I9JKnBdCBCB4xfhbQpWNKY9dYwKVxcYLzGmaUsVPUiAq2AYr/Ht3LebhIxWYHkggjX8EOTeO6ExMr8Q==}
+    peerDependencies:
+      react: ^16.8 || ^17.0
+    dependencies:
+      '@babel/runtime': 7.16.3
+      '@radix-ui/primitive': 0.1.0
+      '@radix-ui/react-context': 0.1.1_react@17.0.2
+      '@radix-ui/react-primitive': 0.1.3_react@17.0.2
+      '@radix-ui/react-roving-focus': 0.1.4_react@17.0.2
+      '@radix-ui/react-toggle': 0.1.3_react@17.0.2
+      '@radix-ui/react-use-controllable-state': 0.1.0_react@17.0.2
+      react: 17.0.2
+    dev: false
+
+  /@radix-ui/react-toggle/0.1.3_react@17.0.2:
+    resolution: {integrity: sha512-ig2LsivpVOxbPoBpNy/6dgB5WNm0mkPMaBBgwo7yufDhlUExdp+bRCqkcWkN9EV42SEbd4etNEIrLAqppfgq3g==}
+    peerDependencies:
+      react: ^16.8 || ^17.0
+    dependencies:
+      '@babel/runtime': 7.16.3
+      '@radix-ui/primitive': 0.1.0
+      '@radix-ui/react-primitive': 0.1.3_react@17.0.2
+      '@radix-ui/react-use-controllable-state': 0.1.0_react@17.0.2
+      react: 17.0.2
+    dev: false
+
+  /@radix-ui/react-toolbar/0.1.4_react@17.0.2:
+    resolution: {integrity: sha512-0+Qoq/dkQCwNGvOXAopWDz1HGR85HdkFrNGK2WOAQ5goktgeqRgd0QBixOOsLP+vorBBMZSGxkNocSZpZg8yoA==}
+    peerDependencies:
+      react: ^16.8 || ^17.0
+    dependencies:
+      '@babel/runtime': 7.16.3
+      '@radix-ui/primitive': 0.1.0
+      '@radix-ui/react-context': 0.1.1_react@17.0.2
+      '@radix-ui/react-primitive': 0.1.3_react@17.0.2
+      '@radix-ui/react-roving-focus': 0.1.4_react@17.0.2
+      '@radix-ui/react-separator': 0.1.3_react@17.0.2
+      '@radix-ui/react-toggle-group': 0.1.4_react@17.0.2
       react: 17.0.2
     dev: false
 
