@@ -1,4 +1,4 @@
-import { ExitIcon } from '@radix-ui/react-icons'
+import { RiLogoutCircleRLine } from 'react-icons/ri'
 import { signOut } from 'next-auth/react'
 
 import ContentTree from 'components/ContentTree'
@@ -21,9 +21,7 @@ const Sidebar: React.FC = () => {
       >
         <NewContentModal />
         <NewFolderModal />
-        <IconButton onPress={logout} tooltip="Logout">
-          <ExitIcon />
-        </IconButton>
+        <IconButton icon={RiLogoutCircleRLine} onPress={logout} tooltip="Logout" />
       </Flex>
     </Flex>
   )

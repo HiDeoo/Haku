@@ -1,4 +1,4 @@
-import { Cross2Icon } from '@radix-ui/react-icons'
+import { RiCloseLine } from 'react-icons/ri'
 import { Close, Content, Overlay, Portal, Root, Trigger } from '@radix-ui/react-dialog'
 
 import Flex from 'components/Flex'
@@ -31,9 +31,13 @@ const Modal: ModalComponent = ({ children, disabled, onToggle, opened, title, tr
             >
               {title}
               <Close asChild>
-                <IconButton className="rounded-full !p-1" tabIndex={-1} disabled={disabled}>
-                  <Cross2Icon />
-                </IconButton>
+                <IconButton
+                  tabIndex={-1}
+                  tooltip="Close"
+                  icon={RiCloseLine}
+                  disabled={disabled}
+                  className="rounded-full !p-1"
+                />
               </Close>
             </Flex>
             <div className="p-4 pt-3">{children}</div>

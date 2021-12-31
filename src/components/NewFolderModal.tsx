@@ -1,4 +1,4 @@
-import { CardStackPlusIcon } from '@radix-ui/react-icons'
+import { RiFolderAddLine } from 'react-icons/ri'
 import { useState } from 'react'
 import { type NestedValue, useForm } from 'react-hook-form'
 
@@ -42,11 +42,7 @@ const NewFolderModal: React.FC = () => {
       title="New Folder"
       onToggle={setOpened}
       disabled={isLoading}
-      trigger={
-        <IconButton tooltip="New Folder">
-          <CardStackPlusIcon />
-        </IconButton>
-      }
+      trigger={<IconButton icon={RiFolderAddLine} tooltip="New Folder" />}
     >
       <Form onSubmit={onSubmit} error={error}>
         <TextInput

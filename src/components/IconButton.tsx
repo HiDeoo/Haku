@@ -2,13 +2,14 @@ import clsx from 'clsx'
 import { forwardRef } from 'react'
 
 import Button, { type ButtonProps } from 'components/Button'
+import Icon, { type IconProps } from 'components/Icon'
 import Tooltip from 'components/Tooltip'
 
 const IconButton = forwardRef<HTMLButtonElement, React.PropsWithChildren<Props>>(
-  ({ children, className, tooltip, ...props }, forwardedRef) => {
+  ({ className, icon, tooltip, ...props }, forwardedRef) => {
     const buttonClasses = clsx(
       '!bg-inherit hover:!bg-zinc-700/75 hover:text-blue-600 disabled:!bg-inherit disabled:text-inherit shadow-none',
-      'px-2 mx-0.5 !min-w-0',
+      'px-1.5 mx-0.5 !min-w-0',
       className
     )
 
@@ -20,7 +21,7 @@ const IconButton = forwardRef<HTMLButtonElement, React.PropsWithChildren<Props>>
         aria-label={tooltip}
         pressedClassName="bg-blue-50/20 hover:!bg-blue-50/20"
       >
-        {children}
+        <Icon icon={icon} />
       </Button>
     )
 
@@ -34,6 +35,7 @@ export default IconButton
 
 interface Props extends Omit<ButtonProps, 'primary'> {
   className?: string
+  icon: IconProps['icon']
   tabIndex?: ButtonProps['tabIndex']
-  tooltip?: string
+  tooltip: string
 }

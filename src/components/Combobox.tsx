@@ -1,5 +1,5 @@
 import { Presence } from '@radix-ui/react-presence'
-import { ChevronDownIcon } from '@radix-ui/react-icons'
+import { RiArrowDownSLine } from 'react-icons/ri'
 import clsx from 'clsx'
 import fuzzaldrin from 'fuzzaldrin-plus'
 import {
@@ -21,6 +21,7 @@ import {
 } from 'react-hook-form'
 
 import Button from 'components/Button'
+import Icon from 'components/Icon'
 import Label from 'components/Label'
 import Spinner from 'components/Spinner'
 import TextInput from 'components/TextInput'
@@ -223,11 +224,11 @@ const Combobox = <Item, FormFields extends FieldValues>({
         />
         <Button
           {...getToggleButtonProps()}
-          aria-label="Toggle Menu"
-          className="!min-w-0 px-2.5 disabled:bg-zinc-600"
           disabled={isDisabled()}
+          aria-label="Toggle Menu"
+          className="!min-w-0 px-2 disabled:bg-zinc-600"
         >
-          <ChevronDownIcon className={triggerIconClasses} />
+          <Icon icon={RiArrowDownSLine} className={triggerIconClasses} />
         </Button>
       </div>
       <div {...getMenuProps()} className="absolute top-full inset-x-0 mt-0.5 mr-10 outline-none">

@@ -1,4 +1,4 @@
-import { FilePlusIcon } from '@radix-ui/react-icons'
+import { RiFileAddLine } from 'react-icons/ri'
 import { useState } from 'react'
 import { type NestedValue, useForm } from 'react-hook-form'
 
@@ -48,11 +48,7 @@ const NewContentModal: React.FC = () => {
       opened={opened}
       onToggle={setOpened}
       disabled={isLoading}
-      trigger={
-        <IconButton tooltip={title}>
-          <FilePlusIcon />
-        </IconButton>
-      }
+      trigger={<IconButton icon={RiFileAddLine} tooltip={title} />}
     >
       <Form onSubmit={onSubmit} error={error}>
         <TextInput
