@@ -86,7 +86,7 @@ function addItemsToFolder<Folder extends HierarchicalListFolder, Item extends Hi
 export type HierarchicalListItem = { id: number; folderId: number | null }
 export type HierarchicalListFolder = { id: number; parentId: number | null }
 
-type TreeFolder<Folder extends HierarchicalListFolder, Item extends HierarchicalListItem> = Folder & {
+export type TreeFolder<Folder extends HierarchicalListFolder, Item extends HierarchicalListItem> = Folder & {
   children: TreeFolder<Folder, Item>[]
   items: Item[]
 }

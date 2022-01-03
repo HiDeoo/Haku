@@ -2,12 +2,70 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .animate-combobox {
+    @media (prefers-reduced-motion: no-preference) {
+      &[data-state='open'] {
+        @apply animate-slide-in;
+      }
+
+      &[data-state='closed'] {
+        @apply animate-slide-out;
+      }
+    }
+  }
+
+  .animate-modal-content {
+    @media (prefers-reduced-motion: no-preference) {
+      &[data-state='open'] {
+        @apply animate-bounce-in;
+      }
+
+      &[data-state='closed'] {
+        @apply animate-bounce-out;
+      }
+    }
+  }
+
+  .animate-modal-overlay {
+    @media (prefers-reduced-motion: no-preference) {
+      &[data-state='open'] {
+        @apply animate-fade-in;
+      }
+
+      &[data-state='closed'] {
+        @apply animate-fade-out;
+      }
+    }
+  }
+
+  .animate-tooltip {
+    @media (prefers-reduced-motion: no-preference) {
+      transform-origin: var(--radix-tooltip-content-transform-origin);
+
+      @apply animate-scale-in;
+
+      &[data-state='closed'] {
+        @apply animate-scale-out;
+      }
+    }
+  }
+}
+
 html {
   @apply scroll-smooth;
 }
 
 html,
 body,
-body > div:first-child {
+div#__next {
   @apply h-full;
+}
+
+body {
+  @apply bg-zinc-800 text-blue-50 text-sm;
+}
+
+div#__next {
+  @apply flex justify-center items-center overflow-hidden;
 }

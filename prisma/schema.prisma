@@ -44,7 +44,7 @@ model VerificationToken {
 
 model Folder {
   id   Int        @id @default(autoincrement())
-  name String
+  name String     @db.Citext
   type FolderType
 
   userId String
@@ -67,7 +67,7 @@ enum FolderType {
 
 model Note {
   id   Int    @id @default(autoincrement())
-  name String
+  name String @db.Citext
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)

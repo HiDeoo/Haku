@@ -28,9 +28,11 @@ async function getHandler(req: NextApiRequest, res: NextApiResponse<NoteTreeData
   return res.status(200).json(content)
 }
 
-async function postHandler(req: ValidatedApiRequest<{ body: typeof postBodySchema }>, res: NextApiResponse<NoteData>) {
+async function postHandler(req: ValidatedApiRequest<{ body: AddNoteBody }>, res: NextApiResponse<NoteData>) {
   const { userId } = getApiRequestUser(req)
   const note = await addNote(userId, req.body.name, req.body.folderId)
 
   return res.status(200).json(note)
 }
+
+export type AddNoteBody = z.infer<typeof postBodySchema>

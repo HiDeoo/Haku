@@ -30,11 +30,11 @@ export function withAuth(handler: NextApiHandler) {
   }
 }
 
-export function withValidation<Schema extends ApiRequestValidationSchema, ResponseType>(
-  handler: ApiHandlerWithValidation<Schema, ResponseType>,
-  bodySchema?: Schema['body'],
-  querySchema?: Schema['query']
-) {
+export function withValidation<
+  Data extends ApiRequestValidationData,
+  Schema extends ApiRequestValidationSchema,
+  ResponseType
+>(handler: ApiHandlerWithValidation<Data, ResponseType>, bodySchema?: Schema['body'], querySchema?: Schema['query']) {
   return (req: NextApiRequest, res: NextApiResponse<ResponseType>) => {
     try {
       req.body = bodySchema?.parse(parseJson(req.body))
@@ -52,14 +52,15 @@ function parseJson(json: unknown) {
 }
 
 type ValidationSchema = z.ZodType<unknown>
-export type ApiRequestValidationSchema = { body?: ValidationSchema; query?: ValidationSchema }
+type ApiRequestValidationSchema = { body?: ValidationSchema; query?: ValidationSchema }
+export type ApiRequestValidationData = { body?: unknown; query?: unknown }
 
-export type ValidatedApiRequest<Schema extends ApiRequestValidationSchema> = Omit<NextApiRequest, 'body' | 'query'> & {
-  body: Schema['body'] extends ValidationSchema ? z.infer<Schema['body']> : NextApiRequest['body']
-  query: Schema['query'] extends ValidationSchema ? z.infer<Schema['query']> : NextApiRequest['query']
+export type ValidatedApiRequest<Schema extends ApiRequestValidationData> = Omit<NextApiRequest, 'body' | 'query'> & {
+  body: Schema['body']
+  query: Schema['query']
 }
 
-type ApiHandlerWithValidation<Schema extends ApiRequestValidationSchema, ResponseType> = (
+type ApiHandlerWithValidation<Schema extends ApiRequestValidationData, ResponseType> = (
   req: ValidatedApiRequest<Schema>,
   res: NextApiResponse<ResponseType>
 ) => void | Promise<void>

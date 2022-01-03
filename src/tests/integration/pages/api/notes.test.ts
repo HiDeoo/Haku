@@ -318,12 +318,12 @@ describe('notes', () => {
         expect(json[0]?.children.length).toBe(0)
       }))
 
-    test('should return a tree with nodes ordered alphabetically', () =>
+    test('should return a tree with nodes ordered alphabetically ignoring letter case', () =>
       testApiRoute(handler, async ({ fetch }) => {
-        const { name: note_z } = await createTestNote({ name: 'note_z' })
+        const { name: note_z } = await createTestNote({ name: 'note_Z' })
         const { name: note_a } = await createTestNote({ name: 'note_a' })
 
-        const { name: folder_z } = await createTestFolder({ name: 'folder_z' })
+        const { name: folder_z } = await createTestFolder({ name: 'folder_Z' })
         const { id: folder_a_id, name: folder_a } = await createTestFolder({ name: 'folder_a' })
 
         const { name: note_z_folder_a } = await createTestNote({ name: 'note_z_folder_a', folderId: folder_a_id })

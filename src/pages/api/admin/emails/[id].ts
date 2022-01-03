@@ -18,11 +18,10 @@ const route = createApiRoute(
 
 export default route
 
-async function deleteHandler(
-  req: ValidatedApiRequest<{ query: typeof deleteQuerySchema }>,
-  res: NextApiResponse<void>
-) {
+async function deleteHandler(req: ValidatedApiRequest<{ query: RemoveAllowedEmailQuery }>, res: NextApiResponse<void>) {
   await removeAllowedEmail(req.query.id)
 
   return res.status(200).end()
 }
+
+type RemoveAllowedEmailQuery = z.infer<typeof deleteQuerySchema>

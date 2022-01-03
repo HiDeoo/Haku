@@ -30,10 +30,7 @@ const route = createApiRoute(
 
 export default route
 
-async function deleteHandler(
-  req: ValidatedApiRequest<{ query: typeof deleteQuerySchema }>,
-  res: NextApiResponse<void>
-) {
+async function deleteHandler(req: ValidatedApiRequest<{ query: RemoveFolderQuery }>, res: NextApiResponse<void>) {
   const { userId } = getApiRequestUser(req)
 
   await removeFolder(req.query.id, userId)
@@ -42,7 +39,7 @@ async function deleteHandler(
 }
 
 async function patchHandler(
-  req: ValidatedApiRequest<{ body: typeof patchBodySchema; query: typeof patchQuerySchema }>,
+  req: ValidatedApiRequest<{ body: UpdateFolderBody; query: UpdateFolderQuery }>,
   res: NextApiResponse<FolderData>
 ) {
   const { userId } = getApiRequestUser(req)
@@ -51,3 +48,7 @@ async function patchHandler(
 
   return res.status(200).json(folder)
 }
+
+type RemoveFolderQuery = z.infer<typeof deleteQuerySchema>
+type UpdateFolderBody = z.infer<typeof patchBodySchema>
+type UpdateFolderQuery = z.infer<typeof patchQuerySchema>

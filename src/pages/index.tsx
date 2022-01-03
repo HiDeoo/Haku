@@ -11,4 +11,6 @@ const Home: Page = () => {
   return null
 }
 
+Home.sidebar = false
+
 export default Home

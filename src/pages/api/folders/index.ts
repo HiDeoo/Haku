@@ -20,12 +20,11 @@ const route = createApiRoute(
 
 export default route
 
-async function postHandler(
-  req: ValidatedApiRequest<{ body: typeof postBodySchema }>,
-  res: NextApiResponse<FolderData>
-) {
+async function postHandler(req: ValidatedApiRequest<{ body: AddFolderBody }>, res: NextApiResponse<FolderData>) {
   const { userId } = getApiRequestUser(req)
   const folder = await addFolder(userId, req.body.type, req.body.name, req.body.parentId)
 
   return res.status(200).json(folder)
 }
+
+export type AddFolderBody = z.infer<typeof postBodySchema>

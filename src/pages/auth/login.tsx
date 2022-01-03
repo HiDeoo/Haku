@@ -6,7 +6,7 @@ import { getAuthErrorMesssage } from 'libs/auth'
 import TextInput from 'components/TextInput'
 import Button from 'components/Button'
 import Flex from 'components/Flex'
-import Callout from 'components/Callout'
+import Form from 'components/Form'
 
 const Login: Page = () => {
   const { query } = useRouter()
@@ -22,8 +22,7 @@ const Login: Page = () => {
 
   return (
     <Flex direction="col" className="w-60">
-      {query.error ? <Callout intent="error" message={getAuthErrorMesssage(query.error)} /> : null}
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <Form onSubmit={handleSubmit(onSubmit)} errorMessage={query.error && getAuthErrorMesssage(query.error)}>
         <TextInput
           autoFocus
           type="email"
@@ -35,7 +34,7 @@ const Login: Page = () => {
         <Button type="submit" primary className="w-full" disabled={isSubmitSuccessful} loading={isSubmitSuccessful}>
           Login
         </Button>
-      </form>
+      </Form>
     </Flex>
   )
 }
