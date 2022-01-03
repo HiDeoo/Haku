@@ -104,7 +104,7 @@ const ContentLink = forwardRef<HTMLAnchorElement, React.PropsWithChildren<Conten
 
     return (
       <Link href={href} prefetch={false}>
-        <a ref={ref} {...props} style={style} className={anchorClasses}>
+        <a ref={ref} {...props} style={style} className={anchorClasses} aria-current={selected ? 'page' : undefined}>
           <Flex alignItems="center">{children}</Flex>
         </a>
       </Link>
