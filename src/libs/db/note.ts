@@ -8,6 +8,7 @@ import {
   API_ERROR_FOLDER_DOES_NOT_EXIST,
   API_ERROR_FOLDER_INVALID_TYPE,
   API_ERROR_NOTE_ALREADY_EXISTS,
+  API_ERROR_NOTE_DOES_NOT_EXIST,
 } from 'libs/api/routes/errors'
 
 export type NoteData = Pick<Note, 'id' | 'folderId' | 'name' | 'slug'>
@@ -50,6 +51,46 @@ export async function getNotesGroupedByFolder(userId: UserId): Promise<NotesGrou
   return notesGroupedByFolder
 }
 
+export function updateNote(id: NoteData['id'], userId: UserId, data: UpdateNoteData): Promise<NoteData> {
+  return prisma.$transaction(async (prisma) => {
+    const note = await getNoteById(id, userId)
+
+    if (!note) {
+      throw new ApiError(API_ERROR_NOTE_DOES_NOT_EXIST)
+    }
+
+    await validateFolder(data.folderId, userId)
+
+    const name = data.name ?? note.name
+    const folderId = typeof data.folderId !== 'undefined' ? data.folderId : note.folderId
+
+    try {
+      return await prisma.note.update({
+        where: {
+          id,
+        },
+        data: {
+          folderId,
+          name,
+          slug: slug(name),
+        },
+        select: noteDataSelect,
+      })
+    } catch (error) {
+      handleDbError(error, {
+        unique: {
+          userId_name: API_ERROR_NOTE_ALREADY_EXISTS,
+          folderId_userId_name: API_ERROR_NOTE_ALREADY_EXISTS,
+        },
+      })
+    }
+  })
+}
+
+function getNoteById(id: number, userId: UserId): Promise<Note | null> {
+  return prisma.note.findFirst({ where: { id, userId } })
+}
+
 async function validateFolder(folderId: NoteData['folderId'] | undefined, userId: UserId) {
   if (folderId) {
     const folder = await getFolderById(folderId, userId)
@@ -65,3 +106,5 @@ async function validateFolder(folderId: NoteData['folderId'] | undefined, userId
 }
 
 type NotesGroupedByFolder = Map<NoteData['folderId'], NoteData[]>
+
+type UpdateNoteData = Partial<Pick<NoteData, 'name' | 'folderId'>>
