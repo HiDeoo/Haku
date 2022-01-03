@@ -7,6 +7,7 @@ import { forwardRef } from 'react'
 
 import Flex from 'components/Flex'
 import Icon, { type IconProps } from 'components/Icon'
+import Shimmer from 'components/Shimmer'
 import useContentTree from 'hooks/useContentTree'
 import { type FolderData } from 'libs/db/folder'
 import { type NoteData } from 'libs/db/note'
@@ -33,9 +34,22 @@ const ContentTree: React.FC = () => {
 
   const selectedId = query.id && typeof query.id === 'string' ? parseInt(query.id, 10) : undefined
 
-  // TODO(HiDeoo)
   if (isLoading) {
-    return <>Loading…</>
+    return (
+      <Shimmer>
+        <ShimmerContentTreeNode depth={0} />
+        <ShimmerContentTreeNode depth={1} />
+        <ShimmerContentTreeNode depth={2} />
+        <ShimmerContentTreeNode depth={2} />
+        <ShimmerContentTreeNode depth={3} />
+        <ShimmerContentTreeNode depth={0} />
+        <ShimmerContentTreeNode depth={1} />
+        <ShimmerContentTreeNode depth={1} />
+        <ShimmerContentTreeNode depth={1} />
+        <ShimmerContentTreeNode depth={1} />
+        <ShimmerContentTreeNode depth={2} />
+      </Shimmer>
+    )
   }
 
   return (
@@ -123,12 +137,19 @@ const ContentTreeNode: React.FC<ContentTreeNodeProps> = ({ icon, iconLabel, text
   )
 }
 
+const ShimmerContentTreeNode: React.FC<ShimmerContentTreeNodeProps> = ({ depth }) => {
+  return <Shimmer.Line style={getNodeStyle(depth, false)} />
+}
+
 function getNodeKey(item: FolderType | DataType): string {
   return `${isTreeFolder(item) ? 'folder' : 'content'}-${item.id}`
 }
 
-function getNodeStyle(depth: number): NonNullable<React.HtmlHTMLAttributes<HTMLElement>['style']> {
-  return { paddingLeft: `calc(0.75rem + ${treeDepthOffset} * ${depth})` }
+function getNodeStyle(
+  depth: number,
+  includeDefaultPadding = true
+): NonNullable<React.HtmlHTMLAttributes<HTMLElement>['style']> {
+  return { paddingLeft: `calc(${includeDefaultPadding ? '0.75rem + ' : ''}${treeDepthOffset} * ${depth})` }
 }
 
 interface NodeProps {
@@ -156,6 +177,10 @@ interface ContentTreeNodeProps {
   icon: IconProps['icon']
   iconLabel: IconProps['label']
   text: string
+}
+
+interface ShimmerContentTreeNodeProps {
+  depth: number
 }
 
 type DataType = NoteData | TodoData
