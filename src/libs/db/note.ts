@@ -1,4 +1,5 @@
 import { FolderType, Note } from '@prisma/client'
+import slug from 'url-slug'
 
 import { handleDbError, prisma } from 'libs/db'
 import { getFolderById } from 'libs/db/folder'
@@ -9,9 +10,9 @@ import {
   API_ERROR_NOTE_ALREADY_EXISTS,
 } from 'libs/api/routes/errors'
 
-export type NoteData = Pick<Note, 'id' | 'folderId' | 'name'>
+export type NoteData = Pick<Note, 'id' | 'folderId' | 'name' | 'slug'>
 
-const noteDataSelect = { id: true, name: true, folderId: true }
+const noteDataSelect = { id: true, name: true, folderId: true, slug: true }
 
 export async function addNote(
   userId: UserId,
@@ -23,7 +24,7 @@ export async function addNote(
 
     try {
       return await prisma.note.create({
-        data: { userId, name, folderId },
+        data: { userId, name, folderId, slug: slug(name) },
         select: noteDataSelect,
       })
     } catch (error) {

@@ -1,5 +1,6 @@
 import { FolderType } from '@prisma/client'
 import StatusCode from 'status-code-enum'
+import slug from 'url-slug'
 
 import { getTestUser, testApiRoute } from 'tests/integration'
 import { createTestFolder, createTestNote, getTestNote, getTestNotes } from 'tests/integration/db'
@@ -375,6 +376,7 @@ describe('notes', () => {
         expect(testNote).toBeDefined()
         expect(testNote?.name).toBe(name)
         expect(testNote?.folderId).toBeNull()
+        expect(testNote?.slug).toBe(slug(name))
       }))
 
     test('should add a new note inside an existing folder', () =>
@@ -394,6 +396,25 @@ describe('notes', () => {
         expect(testNote).toBeDefined()
         expect(testNote?.name).toBe(name)
         expect(testNote?.folderId).toBe(folderId)
+        expect(testNote?.slug).toBe(slug(name))
+      }))
+
+    test('should add a new note and attach to it a valid URL slug', () =>
+      testApiRoute(handler, async ({ fetch }) => {
+        const name = 'note Note 1/10 ½ 🤔'
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: JSON.stringify({ name }),
+        })
+        const json = await res.json<NoteData>()
+
+        const testNote = await getTestNote(json.id)
+
+        expect(testNote).toBeDefined()
+        expect(testNote?.name).toBe(name)
+        expect(testNote?.folderId).toBeNull()
+        expect(testNote?.slug).toBe('note-note-1-10-1-2')
       }))
 
     test('should not add a new note inside a nonexisting folder', () =>

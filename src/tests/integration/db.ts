@@ -1,5 +1,6 @@
 import { type EmailAllowList, FolderType } from '@prisma/client'
 import faker from 'faker'
+import slug from 'url-slug'
 
 import { prisma } from 'libs/db'
 import { type FolderData } from 'libs/db/folder'
@@ -39,10 +40,13 @@ interface TestFolderOptions {
 }
 
 export function createTestNote(options?: TestNoteOptions) {
+  const name = options?.name ?? faker.lorem.words()
+
   return prisma.note.create({
     data: {
-      name: options?.name ?? faker.lorem.words(),
+      name,
       folderId: options?.folderId,
+      slug: slug(name),
       userId: options?.userId ?? getTestUser().userId,
     },
   })

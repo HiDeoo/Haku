@@ -129,7 +129,7 @@ const Content: React.FC<ContentProps> = ({ content, contentType, depth = 0, sele
     <Roving asChild>
       <ContentLink
         style={getNodeStyle(depth)}
-        href={`/${contentType.hrType}s/${content.id}`}
+        href={`/${contentType.hrType}s/${content.id}/${content.slug}`}
         selected={selectedId === content.id}
       >
         <ContentTreeNode text={content.name} icon={RiFileTextLine} iconLabel={contentType.hrType} />

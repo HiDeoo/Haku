@@ -52,6 +52,7 @@ specifiers:
   ts-node: 10.4.0
   tsconfig-paths: 3.12.0
   typescript: 4.5.2
+  url-slug: 3.0.2
   zod: 3.11.6
 
 dependencies:
@@ -78,6 +79,7 @@ dependencies:
   react-icons: 4.3.1_react@17.0.2
   react-query: 3.34.2_react-dom@17.0.2+react@17.0.2
   status-code-enum: 1.0.0
+  url-slug: 3.0.2
   zod: 3.11.6
 
 devDependencies:
@@ -6708,6 +6710,10 @@ packages:
     dependencies:
       punycode: 2.1.1
     dev: true
+
+  /url-slug/3.0.2:
+    resolution: {integrity: sha512-puioWUGY+esk4kKW8L6fCZWb+xK1+0L/KH2miV6GEJdlCJRJ2lfRlvHkUikyEU1e1v4j1C1HBQKvuljFOxmnEA==}
+    dev: false
 
   /use-callback-ref/1.2.5_cfedea9b3ed0faf0dded75c187406c5e:
     resolution: {integrity: sha512-gN3vgMISAgacF7sqsLPByqoePooY3n2emTH59Ur5d/M8eg4WTWu1xp8i8DHjohftIyEx0S08RiYxbffr4j8Peg==}
