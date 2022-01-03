@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router'
 import { useMutation, useQueryClient } from 'react-query'
 
 import client, { handleApiError } from 'libs/api/client'
@@ -9,7 +10,8 @@ import { CONTENT_TREE_QUERY_KEY } from 'hooks/useContentTree'
 import { TodoData } from 'libs/db/todo'
 
 export default function useAddContent() {
-  const { type } = useContentType()
+  const { push } = useRouter()
+  const { hrType, type } = useContentType()
   const queryClient = useQueryClient()
 
   const mutation = useMutation<NoteData | TodoData, unknown, AddContentData>(
@@ -21,8 +23,10 @@ export default function useAddContent() {
       return type === ContentType.NOTE ? addNote(data) : addTodo(data)
     },
     {
-      onSuccess: () => {
+      onSuccess: (newContentData) => {
         queryClient.invalidateQueries(CONTENT_TREE_QUERY_KEY)
+
+        push(`/${hrType}s/${newContentData.id}`)
       },
     }
   )
