@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { forwardRef } from 'react'
 
+import Button from 'components/Button'
 import Flex from 'components/Flex'
 import Icon, { type IconProps } from 'components/Icon'
 import Shimmer from 'components/Shimmer'
@@ -22,7 +23,7 @@ const nodeClasses = clsx(
   'focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-inset'
 )
 
-const ContentTree: React.FC = () => {
+const ContentTree: React.FC<Props> = ({ setNewContentModalOpened }) => {
   const type = useContentType()
 
   if (!type) {
@@ -33,6 +34,10 @@ const ContentTree: React.FC = () => {
   const { data, isLoading } = useContentTree()
 
   const selectedId = query.id && typeof query.id === 'string' ? parseInt(query.id, 10) : undefined
+
+  function openNewContentModal() {
+    setNewContentModalOpened(true)
+  }
 
   if (isLoading) {
     return (
@@ -56,15 +61,31 @@ const ContentTree: React.FC = () => {
     <Root orientation="vertical" asChild>
       <Flex as="nav" direction="col" flex className="overflow-y-auto relative">
         <div className="absolute inset-0 pointer-events-none shadow-[inset_-1px_0_1px_0_rgba(0,0,0,0.4)]" />
-        {data?.map((item) => {
-          const key = getNodeKey(item)
+        {data?.length === 0 ? (
+          <Flex
+            fullWidth
+            fullHeight
+            direction="col"
+            alignItems="center"
+            justifyContent="center"
+            className="text-center gap-6 p-3"
+          >
+            <span>Start by creating a new {type.toLocaleLowerCase()}.</span>
+            <Button onPress={openNewContentModal} primary>
+              Create
+            </Button>
+          </Flex>
+        ) : (
+          data?.map((item) => {
+            const key = getNodeKey(item)
 
-          return isTreeFolder(item) ? (
-            <Folder key={key} folder={item} type={type} selectedId={selectedId} />
-          ) : (
-            <Content key={key} content={item} type={type} selectedId={selectedId} />
-          )
-        })}
+            return isTreeFolder(item) ? (
+              <Folder key={key} folder={item} type={type} selectedId={selectedId} />
+            ) : (
+              <Content key={key} content={item} type={type} selectedId={selectedId} />
+            )
+          })
+        )}
       </Flex>
     </Root>
   )
@@ -132,7 +153,7 @@ const ContentTreeNode: React.FC<ContentTreeNodeProps> = ({ icon, iconLabel, text
   return (
     <>
       <Icon icon={icon} label={iconLabel} className="mr-1.5 shrink-0" />
-      <span className="truncate">{text.repeat(10)}</span>
+      <span className="truncate">{text}</span>
     </>
   )
 }
@@ -150,6 +171,10 @@ function getNodeStyle(
   includeDefaultPadding = true
 ): NonNullable<React.HtmlHTMLAttributes<HTMLElement>['style']> {
   return { paddingLeft: `calc(${includeDefaultPadding ? '0.75rem + ' : ''}${treeDepthOffset} * ${depth})` }
+}
+
+interface Props {
+  setNewContentModalOpened: (opened: boolean) => void
 }
 
 interface NodeProps {

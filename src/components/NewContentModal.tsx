@@ -1,5 +1,4 @@
 import { RiFileAddLine } from 'react-icons/ri'
-import { useState } from 'react'
 import { type NestedValue, useForm } from 'react-hook-form'
 
 import Button from 'components/Button'
@@ -13,9 +12,7 @@ import { type FolderData } from 'libs/db/folder'
 import useContentType from 'hooks/useContentType'
 import { capitalize } from 'libs/string'
 
-const NewContentModal: React.FC = () => {
-  const [opened, setOpened] = useState(false)
-
+const NewContentModal: React.FC<Props> = ({ opened, setOpened }) => {
   const type = useContentType()
 
   const {
@@ -71,6 +68,11 @@ const NewContentModal: React.FC = () => {
 }
 
 export default NewContentModal
+
+interface Props {
+  opened: boolean
+  setOpened: (opened: boolean) => void
+}
 
 type FormFields = {
   name: string
