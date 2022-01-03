@@ -516,9 +516,10 @@ describe('notes', () => {
       }))
   })
 
-  describe.only('PATCH', () => {
+  describe('PATCH', () => {
     test('should rename a note and update its slug', async () => {
-      const { id } = await createTestNote()
+      const { id: folderId } = await createTestFolder()
+      const { id } = await createTestNote({ folderId })
 
       const newName = 'newName'
 
@@ -537,6 +538,7 @@ describe('notes', () => {
 
           expect(testNote?.name).toBe(newName)
           expect(testNote?.slug).toBe(slug(newName))
+          expect(testNote?.folderId).toBe(folderId)
         },
         { dynamicRouteParams: { id } }
       )

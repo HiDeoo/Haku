@@ -2,10 +2,10 @@ import { type NextApiResponse } from 'next'
 
 import { createApiRoute, getApiRequestUser } from 'libs/api/routes'
 import { type ValidatedApiRequest, withAuth, withValidation } from 'libs/api/routes/middlewares'
-import { z, zOneOf, zStringAsNumber } from 'libs/validation'
+import { z, zAtLeastOneOf, zStringAsNumber } from 'libs/validation'
 import { type NoteData, updateNote } from 'libs/db/note'
 
-const patchBodySchema = zOneOf(
+const patchBodySchema = zAtLeastOneOf(
   z.object({
     name: z.string(),
     folderId: z.number().nullable(),

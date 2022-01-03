@@ -61,18 +61,15 @@ export function updateNote(id: NoteData['id'], userId: UserId, data: UpdateNoteD
 
     await validateFolder(data.folderId, userId)
 
-    const name = data.name ?? note.name
-    const folderId = typeof data.folderId !== 'undefined' ? data.folderId : note.folderId
-
     try {
       return await prisma.note.update({
         where: {
           id,
         },
         data: {
-          folderId,
-          name,
-          slug: slug(name),
+          folderId: data.folderId,
+          name: data.name,
+          slug: data.name ? slug(data.name) : undefined,
         },
         select: noteDataSelect,
       })
