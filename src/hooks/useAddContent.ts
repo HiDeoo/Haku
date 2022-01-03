@@ -8,7 +8,7 @@ import useContentType, { ContentType } from 'hooks/useContentType'
 import { TodoData } from 'libs/db/todo'
 
 export default function useAddContent() {
-  const type = useContentType()
+  const { type } = useContentType()
 
   const mutation = useMutation<NoteData | TodoData, unknown, AddContentData>((data) => {
     if (!type) {

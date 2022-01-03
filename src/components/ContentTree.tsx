@@ -14,7 +14,7 @@ import { type FolderData } from 'libs/db/folder'
 import { type NoteData } from 'libs/db/note'
 import { type TodoData } from 'libs/db/todo'
 import { isTreeFolder, type TreeFolder } from 'libs/tree'
-import useContentType, { type ContentType } from 'hooks/useContentType'
+import useContentType, { type UseContentTypeReturnValue } from 'hooks/useContentType'
 
 const treeDepthOffset = '1.25rem'
 
@@ -24,9 +24,9 @@ const nodeClasses = clsx(
 )
 
 const ContentTree: React.FC<Props> = ({ setNewContentModalOpened }) => {
-  const type = useContentType()
+  const contentType = useContentType()
 
-  if (!type) {
+  if (!contentType.type) {
     throw new Error('Missing content type to render the content tree.')
   }
 
@@ -70,7 +70,7 @@ const ContentTree: React.FC<Props> = ({ setNewContentModalOpened }) => {
             justifyContent="center"
             className="text-center gap-6 p-3"
           >
-            <span>Start by creating a new {type.toLocaleLowerCase()}.</span>
+            <span>Start by creating a new {contentType.hrType}.</span>
             <Button onPress={openNewContentModal} primary>
               Create
             </Button>
@@ -80,9 +80,9 @@ const ContentTree: React.FC<Props> = ({ setNewContentModalOpened }) => {
             const key = getNodeKey(item)
 
             return isTreeFolder(item) ? (
-              <Folder key={key} folder={item} type={type} selectedId={selectedId} />
+              <Folder key={key} folder={item} contentType={contentType} selectedId={selectedId} />
             ) : (
-              <Content key={key} content={item} type={type} selectedId={selectedId} />
+              <Content key={key} content={item} contentType={contentType} selectedId={selectedId} />
             )
           })
         )}
@@ -93,7 +93,7 @@ const ContentTree: React.FC<Props> = ({ setNewContentModalOpened }) => {
 
 export default ContentTree
 
-const Folder: React.FC<FolderProps> = ({ folder, depth = 1, selectedId, style, type }) => {
+const Folder: React.FC<FolderProps> = ({ contentType, depth = 1, folder, selectedId, style }) => {
   return (
     <>
       <Roving asChild>
@@ -103,28 +103,36 @@ const Folder: React.FC<FolderProps> = ({ folder, depth = 1, selectedId, style, t
       </Roving>
       {folder.children.map((child) => (
         <Folder
-          type={type}
           folder={child}
           depth={depth + 1}
           selectedId={selectedId}
           key={getNodeKey(child)}
+          contentType={contentType}
           style={getNodeStyle(depth)}
         />
       ))}
       {folder.items.map((content) => (
-        <Content key={getNodeKey(content)} content={content} type={type} depth={depth} selectedId={selectedId} />
+        <Content
+          depth={depth}
+          content={content}
+          selectedId={selectedId}
+          contentType={contentType}
+          key={getNodeKey(content)}
+        />
       ))}
     </>
   )
 }
 
-const Content: React.FC<ContentProps> = ({ content, depth = 0, selectedId, type }) => {
-  const urlType = type.toLowerCase()
-
+const Content: React.FC<ContentProps> = ({ content, contentType, depth = 0, selectedId }) => {
   return (
     <Roving asChild>
-      <ContentLink style={getNodeStyle(depth)} href={`/${urlType}s/${content.id}`} selected={selectedId === content.id}>
-        <ContentTreeNode text={content.name} icon={RiFileTextLine} iconLabel={urlType} />
+      <ContentLink
+        style={getNodeStyle(depth)}
+        href={`/${contentType.hrType}s/${content.id}`}
+        selected={selectedId === content.id}
+      >
+        <ContentTreeNode text={content.name} icon={RiFileTextLine} iconLabel={contentType.hrType} />
       </ContentLink>
     </Roving>
   )
@@ -178,10 +186,10 @@ interface Props {
 }
 
 interface NodeProps {
+  contentType: UseContentTypeReturnValue
   depth?: number
   selectedId?: number
   style?: React.HtmlHTMLAttributes<HTMLElement>['style']
-  type: ContentType
 }
 
 interface FolderProps extends NodeProps {

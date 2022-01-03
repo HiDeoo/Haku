@@ -6,7 +6,7 @@ import { type AddFolderBody } from 'pages/api/folders'
 import useContentType, { type ContentType } from 'hooks/useContentType'
 
 export default function useAddFolder() {
-  const type = useContentType()
+  const { type } = useContentType()
 
   const mutation = useMutation<FolderData, unknown, AddFolderData>((data) => {
     if (!type) {

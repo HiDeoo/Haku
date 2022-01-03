@@ -13,7 +13,7 @@ import useContentType from 'hooks/useContentType'
 import { capitalize } from 'libs/string'
 
 const NewContentModal: React.FC<Props> = ({ opened, setOpened }) => {
-  const type = useContentType()
+  const { hrType } = useContentType()
 
   const {
     control,
@@ -37,7 +37,7 @@ const NewContentModal: React.FC<Props> = ({ opened, setOpened }) => {
     )
   })
 
-  const title = `New ${capitalize(type ?? '')}`
+  const title = `New ${capitalize(hrType ?? '')}`
 
   return (
     <Modal
