@@ -74,4 +74,5 @@ interface Props<Element extends React.ElementType> {
   fullHeight?: boolean
   fullWidth?: boolean
   justifyContent?: 'start' | 'end' | 'center' | 'between' | 'around' | 'evenly'
+  style?: React.HtmlHTMLAttributes<HTMLElement>['style']
 }

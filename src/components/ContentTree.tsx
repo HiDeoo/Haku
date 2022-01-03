@@ -1,3 +1,4 @@
+import { RiFileTextLine, RiFolderLine } from 'react-icons/ri'
 import { Link as Roving, Root } from '@radix-ui/react-toolbar'
 import clsx from 'clsx'
 import Link from 'next/link'
@@ -5,6 +6,7 @@ import { useRouter } from 'next/router'
 import { forwardRef } from 'react'
 
 import Flex from 'components/Flex'
+import Icon, { type IconProps } from 'components/Icon'
 import useContentTree from 'hooks/useContentTree'
 import { type FolderData } from 'libs/db/folder'
 import { type NoteData } from 'libs/db/note'
@@ -60,9 +62,9 @@ const Folder: React.FC<FolderProps> = ({ folder, depth = 1, selectedId, style, t
   return (
     <>
       <Roving asChild>
-        <div style={style} className={nodeClasses}>
-          Folder: {folder.id} - {folder.level}
-        </div>
+        <Flex alignItems="center" style={style} className={nodeClasses}>
+          <ContentTreeNode text={folder.name} icon={RiFolderLine} iconLabel="folder" />
+        </Flex>
       </Roving>
       {folder.children.map((child) => (
         <Folder
@@ -82,14 +84,12 @@ const Folder: React.FC<FolderProps> = ({ folder, depth = 1, selectedId, style, t
 }
 
 const Content: React.FC<ContentProps> = ({ content, depth = 0, selectedId, type }) => {
+  const urlType = type.toLowerCase()
+
   return (
     <Roving asChild>
-      <ContentLink
-        href={`/${type.toLowerCase()}s/${content.id}`}
-        style={getNodeStyle(depth)}
-        selected={selectedId === content.id}
-      >
-        File: {content.name} - {content.folderId}
+      <ContentLink style={getNodeStyle(depth)} href={`/${urlType}s/${content.id}`} selected={selectedId === content.id}>
+        <ContentTreeNode text={content.name} icon={RiFileTextLine} iconLabel={urlType} />
       </ContentLink>
     </Roving>
   )
@@ -105,7 +105,7 @@ const ContentLink = forwardRef<HTMLAnchorElement, React.PropsWithChildren<Conten
     return (
       <Link href={href} prefetch={false}>
         <a ref={ref} {...props} style={style} className={anchorClasses}>
-          {children}
+          <Flex alignItems="center">{children}</Flex>
         </a>
       </Link>
     )
@@ -113,6 +113,15 @@ const ContentLink = forwardRef<HTMLAnchorElement, React.PropsWithChildren<Conten
 )
 
 ContentLink.displayName = 'ContentLink'
+
+const ContentTreeNode: React.FC<ContentTreeNodeProps> = ({ icon, iconLabel, text }) => {
+  return (
+    <>
+      <Icon icon={icon} label={iconLabel} className="mr-1.5 shrink-0" />
+      <span className="truncate">{text.repeat(10)}</span>
+    </>
+  )
+}
 
 function getNodeKey(item: FolderType | DataType): string {
   return `${isTreeFolder(item) ? 'folder' : 'content'}-${item.id}`
@@ -141,6 +150,12 @@ interface ContentLinkProps {
   href: string
   selected: boolean
   style?: React.HtmlHTMLAttributes<HTMLElement>['style']
+}
+
+interface ContentTreeNodeProps {
+  icon: IconProps['icon']
+  iconLabel: IconProps['label']
+  text: string
 }
 
 type DataType = NoteData | TodoData
