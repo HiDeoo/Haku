@@ -1,11 +1,14 @@
 import clsx from 'clsx'
 
 import Flex from 'components/Flex'
+import useDelay from 'hooks/useDelay'
 
 const Shimmer: ShimmerComponent = ({ children }) => {
+  const pastDelay = useDelay()
+
   return (
     <Flex direction="col" className="h-full w-full p-2.5 gap-3">
-      {children}
+      {pastDelay ? children : null}
     </Flex>
   )
 }

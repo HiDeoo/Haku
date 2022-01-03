@@ -1,24 +1,9 @@
 import clsx from 'clsx'
-import { useEffect, useState } from 'react'
+
+import useDelay from 'hooks/useDelay'
 
 const Spinner: React.FC<Props> = ({ className, color, delay }) => {
-  const [pastDelay, setPastDelay] = useState(false)
-
-  useEffect(() => {
-    let timeout: ReturnType<typeof setTimeout>
-
-    if (delay) {
-      timeout = setTimeout(() => {
-        setPastDelay(true)
-      }, 250)
-    }
-
-    return () => {
-      if (timeout) {
-        clearTimeout(timeout)
-      }
-    }
-  }, [delay])
+  const pastDelay = useDelay(delay)
 
   // Avoid a flash of the spinner if a component / route loads really quickly (<250ms).
   if (delay && !pastDelay) {
