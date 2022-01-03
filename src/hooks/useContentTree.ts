@@ -4,10 +4,12 @@ import useContentType, { ContentType } from 'hooks/useContentType'
 import client, { handleApiError } from 'libs/api/client'
 import { type NoteTreeData, type TodoTreeData } from 'libs/db/tree'
 
+export const CONTENT_TREE_QUERY_KEY = 'content-tree'
+
 export default function useContentTree() {
   const { type } = useContentType()
 
-  const query = useQuery<NoteTreeData | TodoTreeData>('tree', () => {
+  const query = useQuery<NoteTreeData | TodoTreeData>(CONTENT_TREE_QUERY_KEY, () => {
     if (!type) {
       throw new Error('Missing content type to fetch the content tree.')
     }
