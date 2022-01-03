@@ -5,6 +5,7 @@
     "dev": "next dev",
     "dev:migrate": "dotenv -c -- ts-node prisma/migrate.ts",
     "build": "next build",
+    "build:analyze": "ANALYZE=true pnpm build",
     "start": "next start",
     "lint": "next lint -d . --max-warnings=0 && tsc --noEmit",
     "test:integration": "TEST_TYPE=integration jest -i",
@@ -40,6 +41,7 @@
   },
   "devDependencies": {
     "@jcoreio/wait-for-postgres": "2.0.0",
+    "@next/bundle-analyzer": "12.0.7",
     "@types/faker": "5.5.9",
     "@types/fuzzaldrin-plus": "0.6.2",
     "@types/jest": "27.0.3",
