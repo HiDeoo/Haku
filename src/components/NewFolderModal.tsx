@@ -1,6 +1,6 @@
-import { RiFolderAddLine } from 'react-icons/ri'
 import { useState } from 'react'
 import { type NestedValue, useForm } from 'react-hook-form'
+import { RiFolderAddLine } from 'react-icons/ri'
 
 import Button from 'components/Button'
 import FolderPicker, { ROOT_FOLDER_ID } from 'components/FolderPicker'

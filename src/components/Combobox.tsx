@@ -1,5 +1,4 @@
 import { Presence } from '@radix-ui/react-presence'
-import { RiArrowDownSLine } from 'react-icons/ri'
 import clsx from 'clsx'
 import fuzzaldrin from 'fuzzaldrin-plus'
 import {
@@ -19,6 +18,7 @@ import {
   type Path,
   type ValidateResult,
 } from 'react-hook-form'
+import { RiArrowDownSLine } from 'react-icons/ri'
 
 import Button from 'components/Button'
 import Icon from 'components/Icon'

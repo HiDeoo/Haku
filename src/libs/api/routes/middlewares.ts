@@ -1,4 +1,4 @@
-import type { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
+import { type NextApiHandler, type NextApiRequest, type NextApiResponse } from 'next'
 import { getSession } from 'next-auth/react'
 import StatusCode from 'status-code-enum'
 

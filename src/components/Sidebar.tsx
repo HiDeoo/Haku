@@ -1,6 +1,6 @@
-import { RiLogoutCircleRLine } from 'react-icons/ri'
 import { signOut } from 'next-auth/react'
 import { useState } from 'react'
+import { RiLogoutCircleRLine } from 'react-icons/ri'
 
 import ContentTree from 'components/ContentTree'
 import Flex from 'components/Flex'

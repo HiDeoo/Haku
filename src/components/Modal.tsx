@@ -1,5 +1,5 @@
-import { RiCloseLine } from 'react-icons/ri'
 import { Close, Content, Overlay, Portal, Root, Trigger } from '@radix-ui/react-dialog'
+import { RiCloseLine } from 'react-icons/ri'
 
 import Flex from 'components/Flex'
 import Button from 'components/Button'

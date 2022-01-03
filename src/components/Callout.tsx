@@ -1,5 +1,5 @@
-import { RiCheckLine, RiErrorWarningLine } from 'react-icons/ri'
 import clsx from 'clsx'
+import { RiCheckLine, RiErrorWarningLine } from 'react-icons/ri'
 
 import Icon from 'components/Icon'
 import Flex from 'components/Flex'
