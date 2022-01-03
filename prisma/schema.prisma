@@ -68,6 +68,7 @@ enum FolderType {
 model Note {
   id   Int    @id @default(autoincrement())
   name String @db.Citext
+  slug String
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
