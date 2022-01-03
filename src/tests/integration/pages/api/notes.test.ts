@@ -802,4 +802,62 @@ describe('notes', () => {
       )
     })
   })
+
+  describe('DELETE', () => {
+    test('should remove a note', async () => {
+      const { id } = await createTestNote()
+
+      return testApiRoute(
+        deleteAndPatchHandler,
+        async ({ fetch }) => {
+          await fetch({ method: HttpMethod.DELETE })
+
+          const testNote = await getTestNote(id)
+
+          expect(testNote).toBeNull()
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should not remove a note not owned by the current user', async () => {
+      const { id } = await createTestNote({ userId: getTestUser('1').userId })
+
+      return testApiRoute(
+        deleteAndPatchHandler,
+        async ({ fetch }) => {
+          const res = await fetch({ method: HttpMethod.DELETE })
+          const json = await res.json<ApiErrorResponse>()
+
+          expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+          expect(json.error).toBe(API_ERROR_NOTE_DOES_NOT_EXIST)
+
+          const testFolder = await getTestNote(id)
+
+          expect(testFolder).toBeDefined()
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should not remove a nonexisting note', () => {
+      const id = 1
+
+      return testApiRoute(
+        deleteAndPatchHandler,
+        async ({ fetch }) => {
+          const res = await fetch({ method: HttpMethod.DELETE })
+          const json = await res.json<ApiErrorResponse>()
+
+          expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+          expect(json.error).toBe(API_ERROR_NOTE_DOES_NOT_EXIST)
+
+          const testFolder = await getTestNote(id)
+
+          expect(testFolder).toBeNull()
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+  })
 })

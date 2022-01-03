@@ -84,6 +84,18 @@ export function updateNote(id: NoteData['id'], userId: UserId, data: UpdateNoteD
   })
 }
 
+export function removeNote(id: NoteData['id'], userId: UserId) {
+  return prisma.$transaction(async (prisma) => {
+    const note = await getNoteById(id, userId)
+
+    if (!note) {
+      throw new ApiError(API_ERROR_NOTE_DOES_NOT_EXIST)
+    }
+
+    return prisma.note.delete({ where: { id } })
+  })
+}
+
 function getNoteById(id: number, userId: UserId): Promise<Note | null> {
   return prisma.note.findFirst({ where: { id, userId } })
 }

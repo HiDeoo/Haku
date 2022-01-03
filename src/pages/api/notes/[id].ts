@@ -3,7 +3,7 @@ import { type NextApiResponse } from 'next'
 import { createApiRoute, getApiRequestUser } from 'libs/api/routes'
 import { type ValidatedApiRequest, withAuth, withValidation } from 'libs/api/routes/middlewares'
 import { z, zAtLeastOneOf, zStringAsNumber } from 'libs/validation'
-import { type NoteData, updateNote } from 'libs/db/note'
+import { type NoteData, removeNote, updateNote } from 'libs/db/note'
 
 const patchBodySchema = zAtLeastOneOf(
   z.object({
@@ -16,14 +16,27 @@ const patchQuerySchema = z.object({
   id: zStringAsNumber,
 })
 
+const deleteQuerySchema = z.object({
+  id: zStringAsNumber,
+})
+
 const route = createApiRoute(
   {
+    delete: withValidation(deleteHandler, undefined, deleteQuerySchema),
     patch: withValidation(patchHandler, patchBodySchema, patchQuerySchema),
   },
   [withAuth]
 )
 
 export default route
+
+async function deleteHandler(req: ValidatedApiRequest<{ query: RemoveNoteQuery }>, res: NextApiResponse<void>) {
+  const { userId } = getApiRequestUser(req)
+
+  await removeNote(req.query.id, userId)
+
+  return res.status(200).end()
+}
 
 async function patchHandler(
   req: ValidatedApiRequest<{ body: UpdateNoteBody; query: UpdateNoteQuery }>,
@@ -36,5 +49,6 @@ async function patchHandler(
   return res.status(200).json(note)
 }
 
+type RemoveNoteQuery = z.infer<typeof deleteQuerySchema>
 type UpdateNoteBody = z.infer<typeof patchBodySchema>
 type UpdateNoteQuery = z.infer<typeof patchQuerySchema>
