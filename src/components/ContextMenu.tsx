@@ -56,13 +56,13 @@ ContextMenu.Separator = Separator
 
 export default ContextMenu
 
-type ContextMenuComponent = React.FC<Props> & {
+type ContextMenuComponent = React.FC<ContextMenuProps> & {
   Item: typeof Item
   Label: typeof Label
   Separator: typeof Separator
 }
 
-interface Props {
+interface ContextMenuProps {
   trigger: React.ReactNode
 }
 

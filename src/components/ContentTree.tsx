@@ -25,7 +25,7 @@ const initialContentTreeState: ContentTreeState = {
   editFolderModalOpened: false,
 }
 
-const ContentTree: React.FC<Props> = ({ setNewContentModalOpened }) => {
+const ContentTree: React.FC<ContentTreeProps> = ({ setNewContentModalOpened }) => {
   const contentType = useContentType()
 
   if (!contentType.type) {
@@ -183,7 +183,7 @@ function getNodeStyle(
   return { paddingLeft: `calc(${includeDefaultPadding ? '0.75rem + ' : ''}${depthOffset} * ${depth})` }
 }
 
-interface Props {
+interface ContentTreeProps {
   setNewContentModalOpened: ControlledModalProps['setOpened']
 }
 

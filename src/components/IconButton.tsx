@@ -5,7 +5,7 @@ import Button, { type ButtonProps } from 'components/Button'
 import Icon, { type IconProps } from 'components/Icon'
 import Tooltip from 'components/Tooltip'
 
-const IconButton = forwardRef<HTMLButtonElement, React.PropsWithChildren<Props>>(
+const IconButton = forwardRef<HTMLButtonElement, React.PropsWithChildren<IconButtonProps>>(
   ({ className, icon, tooltip, ...props }, forwardedRef) => {
     const buttonClasses = clsx(
       '!bg-inherit hover:!bg-zinc-700/75 hover:text-blue-600 disabled:!bg-inherit disabled:text-inherit shadow-none',
@@ -33,7 +33,7 @@ IconButton.displayName = 'IconButton'
 
 export default IconButton
 
-interface Props extends Omit<ButtonProps, 'primary'> {
+interface IconButtonProps extends Omit<ButtonProps, 'primary'> {
   className?: string
   icon: IconProps['icon']
   tabIndex?: ButtonProps['tabIndex']

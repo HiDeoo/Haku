@@ -6,7 +6,7 @@ import { type UseFormRegisterReturn } from 'react-hook-form'
 
 import Label from 'components/Label'
 
-const TextInput = forwardRef<HTMLInputElement, React.PropsWithChildren<Props>>(
+const TextInput = forwardRef<HTMLInputElement, React.PropsWithChildren<TextInputProps>>(
   ({ className, onChange, type = 'text', ...props }, forwardedRef) => {
     const ref = useObjectRef(forwardedRef)
     const { labelProps, inputProps, errorMessageProps } = useTextField(props, ref)
@@ -53,7 +53,7 @@ TextInput.displayName = 'TextInput'
 
 export default TextInput
 
-interface Props extends Partial<Omit<UseFormRegisterReturn, 'ref'>> {
+interface TextInputProps extends Partial<Omit<UseFormRegisterReturn, 'ref'>> {
   autoFocus?: React.InputHTMLAttributes<HTMLInputElement>['autoFocus']
   className?: string
   disabled?: boolean

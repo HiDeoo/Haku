@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import Callout from 'components/Callout'
 import { type ApiErrorResponse } from 'libs/api/routes/errors'
 
-const Form: React.FC<Props> = ({ children, error, errorMessage, onSubmit }) => {
+const Form: React.FC<FormProps> = ({ children, error, errorMessage, onSubmit }) => {
   return (
     <form onSubmit={onSubmit}>
       {error || errorMessage ? <FormError error={error} errorMessage={errorMessage} /> : null}
@@ -15,7 +15,7 @@ const Form: React.FC<Props> = ({ children, error, errorMessage, onSubmit }) => {
 
 export default Form
 
-const FormError: React.FC<Omit<Props, 'onSubmit'>> = ({ error, errorMessage }) => {
+const FormError: React.FC<Omit<FormProps, 'onSubmit'>> = ({ error, errorMessage }) => {
   const [message, setMessage] = useState<string | null>(null)
 
   useEffect(() => {
@@ -51,7 +51,7 @@ function isApiErrorResponse(json: unknown): json is ApiErrorResponse {
   return typeof json === 'object' && typeof (json as Record<string, unknown>).error === 'string'
 }
 
-interface Props {
+interface FormProps {
   error?: unknown
   errorMessage?: string
   onSubmit: NonNullable<React.DOMAttributes<HTMLFormElement>['onSubmit']>

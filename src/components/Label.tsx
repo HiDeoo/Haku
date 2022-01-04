@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 
-const Label: React.FC<Props> = ({ children, disabled, errorMessage, errorMessageProps, ...props }) => {
+const Label: React.FC<LabelProps> = ({ children, disabled, errorMessage, errorMessageProps, ...props }) => {
   const containerClasses = clsx('mb-1', { 'opacity-50': disabled })
 
   return (
@@ -19,7 +19,7 @@ const Label: React.FC<Props> = ({ children, disabled, errorMessage, errorMessage
 
 export default Label
 
-interface Props extends React.LabelHTMLAttributes<HTMLLabelElement> {
+interface LabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
   disabled?: boolean
   errorMessage?: string
   errorMessageProps?: React.HTMLAttributes<HTMLElement>

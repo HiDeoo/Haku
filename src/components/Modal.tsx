@@ -48,7 +48,7 @@ const Modal: ModalComponent = ({ children, disabled, opened, setOpened, title, t
   )
 }
 
-const Footer: React.FC<Pick<Props, 'disabled'>> = ({ children, disabled }) => {
+const Footer: React.FC<Pick<ModalProps, 'disabled'>> = ({ children, disabled }) => {
   return (
     <Flex justifyContent="end" className="pt-4">
       <Close asChild>
@@ -63,7 +63,7 @@ Modal.Footer = Footer
 
 export default Modal
 
-type ModalComponent = React.FC<Props> & {
+type ModalComponent = React.FC<ModalProps> & {
   Footer: typeof Footer
 }
 
@@ -72,7 +72,7 @@ export interface ControlledModalProps {
   setOpened: (open: boolean) => void
 }
 
-interface Props extends Partial<ControlledModalProps> {
+interface ModalProps extends Partial<ControlledModalProps> {
   disabled?: boolean
   title: string
   trigger?: React.ReactNode

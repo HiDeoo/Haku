@@ -1,6 +1,6 @@
 import { Arrow, Content, Root, Trigger } from '@radix-ui/react-tooltip'
 
-const Tooltip: React.FC<Props> = ({ children, content }) => {
+const Tooltip: React.FC<TooltipProps> = ({ children, content }) => {
   return (
     <Root>
       <Trigger asChild>{children}</Trigger>
@@ -14,6 +14,6 @@ const Tooltip: React.FC<Props> = ({ children, content }) => {
 
 export default Tooltip
 
-interface Props {
+interface TooltipProps {
   content: React.ReactNode
 }

@@ -40,7 +40,7 @@ const Combobox = <Item, FormFields extends FieldValues>({
   label,
   loading,
   name,
-}: Props<Item, FormFields>) => {
+}: ComboboxProps<Item, FormFields>) => {
   const container = useRef<HTMLDivElement>(null)
 
   const [filteredItems, setFilteredItems] = useState(items)
@@ -263,7 +263,7 @@ const Combobox = <Item, FormFields extends FieldValues>({
 
 export default Combobox
 
-interface Props<Item, FormFields extends FieldValues> {
+interface ComboboxProps<Item, FormFields extends FieldValues> {
   control: Control<FormFields>
   defaultItem: Item
   disabled?: boolean

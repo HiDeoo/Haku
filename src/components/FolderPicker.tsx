@@ -17,7 +17,7 @@ const FolderPicker = <FormFields extends FieldValues>({
   errorMessage,
   label,
   name,
-}: Props<FormFields>) => {
+}: FolderPickerProps<FormFields>) => {
   const { data, isLoading } = useContentTree()
 
   const folders: Folders = useMemo(() => {
@@ -60,7 +60,7 @@ function getFolderList(treeFolders: TreeFolders, parentPath = ''): Folders {
   return folders
 }
 
-interface Props<FormFields extends FieldValues> {
+interface FolderPickerProps<FormFields extends FieldValues> {
   control: Control<FormFields>
   disabled?: boolean
   errorMessage?: string
