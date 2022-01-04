@@ -5,14 +5,14 @@ import Button from 'components/Button'
 import FolderPicker, { ROOT_FOLDER_ID } from 'components/FolderPicker'
 import Form from 'components/Form'
 import IconButton from 'components/IconButton'
-import Modal from 'components/Modal'
+import Modal, { type ControlledModalProps } from 'components/Modal'
 import TextInput from 'components/TextInput'
 import useAddContent from 'hooks/useAddContent'
 import { type FolderData } from 'libs/db/folder'
 import useContentType from 'hooks/useContentType'
 import { capitalize } from 'libs/string'
 
-const NewContentModal: React.FC<Props> = ({ opened, setOpened }) => {
+const NewContentModal: React.FC<ControlledModalProps> = ({ opened, setOpened }) => {
   const { hrType } = useContentType()
 
   const {
@@ -43,8 +43,8 @@ const NewContentModal: React.FC<Props> = ({ opened, setOpened }) => {
     <Modal
       title={title}
       opened={opened}
-      onToggle={setOpened}
       disabled={isLoading}
+      setOpened={setOpened}
       trigger={<IconButton icon={RiFileAddLine} tooltip={title} />}
     >
       <Form onSubmit={onSubmit} error={error}>
@@ -68,11 +68,6 @@ const NewContentModal: React.FC<Props> = ({ opened, setOpened }) => {
 }
 
 export default NewContentModal
-
-interface Props {
-  opened: boolean
-  setOpened: (opened: boolean) => void
-}
 
 type FormFields = {
   name: string

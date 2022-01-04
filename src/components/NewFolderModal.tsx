@@ -40,8 +40,8 @@ const NewFolderModal: React.FC = () => {
     <Modal
       opened={opened}
       title="New Folder"
-      onToggle={setOpened}
       disabled={isLoading}
+      setOpened={setOpened}
       trigger={<IconButton icon={RiFolderAddLine} tooltip="New Folder" />}
     >
       <Form onSubmit={onSubmit} error={error}>
