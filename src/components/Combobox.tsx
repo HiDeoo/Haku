@@ -7,7 +7,7 @@ import {
   type UseComboboxState,
   type UseComboboxStateChange,
 } from 'downshift'
-import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import {
   type Control,
   useController,

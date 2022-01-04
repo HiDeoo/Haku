@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { FieldPath, type Control, type FieldValues } from 'react-hook-form'
 
 import Combobox from 'components/Combobox'
