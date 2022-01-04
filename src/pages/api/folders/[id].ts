@@ -50,5 +50,5 @@ async function patchHandler(
 }
 
 type RemoveFolderQuery = z.infer<typeof deleteQuerySchema>
-type UpdateFolderBody = z.infer<typeof patchBodySchema>
+export type UpdateFolderBody = z.infer<typeof patchBodySchema>
 type UpdateFolderQuery = z.infer<typeof patchQuerySchema>

@@ -56,6 +56,7 @@ specifiers:
   typescript: 4.5.2
   url-slug: 3.0.2
   zod: 3.11.6
+  zustand: 3.6.8
 
 dependencies:
   '@next-auth/prisma-adapter': 0.5.2-next.19_f26fdcf87df296c1294e2c3d19a07668
@@ -84,6 +85,7 @@ dependencies:
   status-code-enum: 1.0.0
   url-slug: 3.0.2
   zod: 3.11.6
+  zustand: 3.6.8_react@17.0.2
 
 devDependencies:
   '@jcoreio/wait-for-postgres': 2.0.0
@@ -7142,4 +7144,16 @@ packages:
 
   /zod/3.11.6:
     resolution: {integrity: sha512-daZ80A81I3/9lIydI44motWe6n59kRBfNzTuS2bfzVh1nAXi667TOTWWtatxyG+fwgNUiagSj/CWZwRRbevJIg==}
+    dev: false
+
+  /zustand/3.6.8_react@17.0.2:
+    resolution: {integrity: sha512-8dqxig1l/o/N4M3DGxhweLVyCvNsd40oU3fXuY4MfqX1notavmjljCnSeTN3FGfYzbo963w4un2ChYsPB/0gKA==}
+    engines: {node: '>=12.7.0'}
+    peerDependencies:
+      react: '>=16.8'
+    peerDependenciesMeta:
+      react:
+        optional: true
+    dependencies:
+      react: 17.0.2
     dev: false

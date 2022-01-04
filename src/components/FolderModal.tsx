@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect } from 'react'
 import { type NestedValue, useForm } from 'react-hook-form'
 import { RiFolderAddLine } from 'react-icons/ri'
 
@@ -8,12 +8,14 @@ import Form from 'components/Form'
 import IconButton from 'components/IconButton'
 import Modal from 'components/Modal'
 import TextInput from 'components/TextInput'
-import useAddFolder from 'hooks/useAddFolder'
+import useFolderMutation, { type FolderMutation } from 'hooks/useFolderMutation'
 import { type FolderData } from 'libs/db/folder'
+import { useStore, type StoreState } from 'stores'
+
+const storeSelector = (state: StoreState) =>
+  [state.folderModalOpened, state.setFolderModalOpened, state.folder] as const
 
 const NewFolderModal: React.FC = () => {
-  const [opened, setOpened] = useState(false)
-
   const {
     control,
     register,
@@ -22,26 +24,36 @@ const NewFolderModal: React.FC = () => {
     reset,
   } = useForm<FormFields>()
 
-  const { error, isLoading, mutate } = useAddFolder()
+  const { error, isLoading, mutate } = useFolderMutation()
+  const [opened, setOpened, folder] = useStore(storeSelector)
+
+  const isUpdating = typeof folder !== 'undefined'
+
+  useEffect(() => {
+    reset()
+  }, [opened, reset])
 
   const onSubmit = handleSubmit(({ parentFolder, ...data }) => {
-    mutate(
-      { ...data, parentId: parentFolder.id === ROOT_FOLDER_ID ? undefined : parentFolder.id },
-      {
-        onSuccess: () => {
-          setOpened(false)
-          reset()
-        },
-      }
-    )
+    const parentId = parentFolder.id === ROOT_FOLDER_ID ? null : parentFolder.id
+
+    const mutationData: FolderMutation = isUpdating
+      ? { ...data, mutationType: 'update', id: folder.id, parentId }
+      : { ...data, mutationType: 'add', parentId }
+
+    mutate(mutationData, {
+      onSuccess: () => {
+        setOpened(false)
+        reset()
+      },
+    })
   })
 
   return (
     <Modal
       opened={opened}
-      title="New Folder"
       disabled={isLoading}
-      setOpened={setOpened}
+      onOpenChange={setOpened}
+      title={`${isUpdating ? 'Edit' : 'New'} Folder`}
       trigger={<IconButton icon={RiFolderAddLine} tooltip="New Folder" />}
     >
       <Form onSubmit={onSubmit} error={error}>
@@ -50,6 +62,7 @@ const NewFolderModal: React.FC = () => {
           label="Name"
           disabled={isLoading}
           placeholder="Recipes"
+          defaultValue={folder?.name ?? ''}
           errorMessage={errors.name?.message}
           {...register('name', { required: 'required' })}
         />
@@ -58,6 +71,7 @@ const NewFolderModal: React.FC = () => {
           name="parentFolder"
           disabled={isLoading}
           label="Parent Folder"
+          defaultFolderId={folder?.parentId}
           errorMessage={errors.parentFolder?.message}
         />
         <Modal.Footer disabled={isLoading}>
