@@ -49,6 +49,6 @@ async function patchHandler(
   return res.status(200).json(note)
 }
 
-type RemoveNoteQuery = z.infer<typeof deleteQuerySchema>
+export type RemoveNoteQuery = z.infer<typeof deleteQuerySchema>
 export type UpdateNoteBody = z.infer<typeof patchBodySchema>
 export type UpdateNoteQuery = z.infer<typeof patchQuerySchema>

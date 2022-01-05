@@ -141,6 +141,10 @@ const Content: React.FC<ContentProps> = ({ content, contentType, depth = 0, sele
     setContentModalOpened(true, 'update', content)
   }
 
+  function openDeleteModal() {
+    setContentModalOpened(true, 'remove', content)
+  }
+
   return (
     <Roving asChild>
       <ContentTreeNode
@@ -154,6 +158,7 @@ const Content: React.FC<ContentProps> = ({ content, contentType, depth = 0, sele
         <ContextMenu.Label text={`${capitalize(contentType.hrType ?? '')}: ${content.name}`} />
         <ContextMenu.Separator />
         <ContextMenu.Item text="Edit" onClick={openEditModal} />
+        <ContextMenu.Item intent="error" text="Delete" onClick={openDeleteModal} />
       </ContentTreeNode>
     </Roving>
   )

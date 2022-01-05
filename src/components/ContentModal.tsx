@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { type NestedValue, useForm } from 'react-hook-form'
 import { RiFileAddLine } from 'react-icons/ri'
 
+import Alert from 'components/Alert'
 import Button from 'components/Button'
 import FolderPicker, { ROOT_FOLDER_ID } from 'components/FolderPicker'
 import Form from 'components/Form'
@@ -31,6 +32,7 @@ const NewContentModal: React.FC = () => {
   const [{ data: content, mutationType, opened }, setOpened] = useStore(storeSelector)
 
   const isUpdating = mutationType === 'update' && typeof content !== 'undefined'
+  const isRemoving = mutationType === 'remove' && typeof content !== 'undefined'
 
   useEffect(() => {
     reset()
@@ -46,45 +48,63 @@ const NewContentModal: React.FC = () => {
     mutate(mutationData, { onSuccess: onSuccessfulMutation })
   })
 
+  function onConfirmDelete() {
+    if (isRemoving) {
+      mutate({ mutationType: 'remove', id: content.id }, { onSuccess: onSuccessfulMutation })
+    }
+  }
+
   function onSuccessfulMutation() {
     setOpened(false)
     reset()
   }
 
-  const title = `${isUpdating ? 'Edit' : 'New'} ${capitalize(hrType ?? '')}`
+  const capitalizedType = capitalize(hrType ?? '')
+  const title = `${isUpdating ? 'Edit' : 'New'} ${capitalizedType}`
 
   return (
-    <Modal
-      title={title}
-      opened={opened}
-      disabled={isLoading}
-      onOpenChange={setOpened}
-      trigger={<IconButton icon={RiFileAddLine} tooltip={title} />}
-    >
-      <Form onSubmit={onSubmit} error={error}>
-        <TextInput
-          type="text"
-          label="Name"
-          disabled={isLoading}
-          placeholder="Beef Bourguignon"
-          defaultValue={content?.name ?? ''}
-          errorMessage={errors.name?.message}
-          {...register('name', { required: 'required' })}
-        />
-        <FolderPicker
-          name="folder"
-          control={control}
-          disabled={isLoading}
-          defaultFolderId={content?.folderId}
-          errorMessage={errors.folder?.message}
-        />
-        <Modal.Footer disabled={isLoading}>
-          <Button type="submit" primary disabled={isLoading} loading={isLoading}>
-            Create
-          </Button>
-        </Modal.Footer>
-      </Form>
-    </Modal>
+    <>
+      <Alert
+        disabled={isLoading}
+        onOpenChange={setOpened}
+        onConfirm={onConfirmDelete}
+        opened={opened && isRemoving}
+        title={`Delete ${capitalizedType}`}
+      >
+        Are you sure you want to delete the {hrType} <strong>&ldquo;{content?.name}&rdquo;</strong>?
+      </Alert>
+      <Modal
+        title={title}
+        disabled={isLoading}
+        onOpenChange={setOpened}
+        opened={opened && !isRemoving}
+        trigger={<IconButton icon={RiFileAddLine} tooltip={title} />}
+      >
+        <Form onSubmit={onSubmit} error={error}>
+          <TextInput
+            type="text"
+            label="Name"
+            disabled={isLoading}
+            placeholder="Beef Bourguignon"
+            defaultValue={content?.name ?? ''}
+            errorMessage={errors.name?.message}
+            {...register('name', { required: 'required' })}
+          />
+          <FolderPicker
+            name="folder"
+            control={control}
+            disabled={isLoading}
+            defaultFolderId={content?.folderId}
+            errorMessage={errors.folder?.message}
+          />
+          <Modal.Footer disabled={isLoading}>
+            <Button type="submit" primary disabled={isLoading} loading={isLoading}>
+              Create
+            </Button>
+          </Modal.Footer>
+        </Form>
+      </Modal>
+    </>
   )
 }
 

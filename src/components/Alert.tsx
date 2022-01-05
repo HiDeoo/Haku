@@ -34,8 +34,8 @@ const Alert: React.FC<AlertProps> = ({
   }, [opened])
 
   const confirmButtonClasses = clsx(
-    'bg-red-600 hover:bg-red-500 disabled:bg-red-500/60 focus:ring-2',
-    'focus-visible:ring-red-600 focus:ring-red-600 focus:ring-offset-zinc-800 focus:ring-offset-2'
+    '!bg-red-600 hover:!bg-red-500 disabled:!bg-red-500/60 focus:ring-2',
+    'focus-visible:!ring-red-600 focus:ring-red-600 focus:ring-offset-zinc-800 focus:ring-offset-2'
   )
 
   return (
@@ -55,7 +55,7 @@ const Alert: React.FC<AlertProps> = ({
           disabled={disabled}
           onPress={onConfirm}
           className={confirmButtonClasses}
-          pressedClassName="bg-red-400 hover:bg-red-400"
+          pressedClassName="!bg-red-400 hover:!bg-red-400"
         >
           {confirmText}
         </Button>
