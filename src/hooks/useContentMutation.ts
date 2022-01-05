@@ -5,6 +5,7 @@ import client, { handleApiError, type Mutation } from 'libs/api/client'
 import { type AddNoteBody } from 'pages/api/notes'
 import { type AddTodoBody } from 'pages/api/todos'
 import { type NoteMetaData } from 'libs/db/note'
+import useContentId from 'hooks/useContentId'
 import useContentType, { ContentType } from 'hooks/useContentType'
 import { CONTENT_TREE_QUERY_KEY } from 'hooks/useContentTree'
 import { type TodoMetaData } from 'libs/db/todo'
@@ -12,8 +13,9 @@ import { type RemoveNoteQuery, type UpdateNoteBody, type UpdateNoteQuery } from 
 import { type RemoveTodoQuery } from 'pages/api/todos/[id]'
 
 export default function useContentMutation() {
-  const { push, query } = useRouter()
-  const { hrType, type, urlPath } = useContentType()
+  const { push } = useRouter()
+  const contentId = useContentId()
+  const { lcType, type, urlPath } = useContentType()
   const queryClient = useQueryClient()
 
   const mutation = useMutation<NoteMetaData | TodoMetaData | void, unknown, ContentMutation>(
@@ -37,7 +39,7 @@ export default function useContentMutation() {
           return removeFn({ id: data.id })
         }
         default: {
-          throw new Error(`Unsupported ${hrType} mutation type.`)
+          throw new Error(`Unsupported ${lcType} mutation type.`)
         }
       }
     },
@@ -45,15 +47,12 @@ export default function useContentMutation() {
       onSuccess: (newContentData, variables) => {
         queryClient.invalidateQueries(CONTENT_TREE_QUERY_KEY)
 
-        const currentContentId = typeof query.id === 'string' ? parseInt(query.id, 10) : undefined
-
         if (
           newContentData &&
-          (variables.mutationType === 'add' ||
-            (variables.mutationType === 'update' && variables.id === currentContentId))
+          (variables.mutationType === 'add' || (variables.mutationType === 'update' && variables.id === contentId))
         ) {
           push(`${urlPath}/${newContentData.id}/${newContentData.slug}`)
-        } else if (variables.mutationType === 'remove' && variables.id === currentContentId && urlPath) {
+        } else if (variables.mutationType === 'remove' && variables.id === contentId) {
           push(urlPath)
         }
       },

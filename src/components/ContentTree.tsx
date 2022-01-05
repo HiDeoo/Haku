@@ -1,5 +1,4 @@
 import { Link as Roving, Root } from '@radix-ui/react-toolbar'
-import { useRouter } from 'next/router'
 import { RiFileTextLine, RiFolderLine } from 'react-icons/ri'
 
 import Button from 'components/Button'
@@ -14,7 +13,7 @@ import { type TodoMetaData } from 'libs/db/todo'
 import { isTreeFolder, type TreeFolder } from 'libs/tree'
 import useContentType, { type UseContentTypeReturnValue } from 'hooks/useContentType'
 import { type StoreState, useStore } from 'stores'
-import { capitalize } from 'libs/string'
+import useContentId from 'hooks/useContentId'
 
 const depthOffset = '1.25rem'
 
@@ -30,11 +29,9 @@ const ContentTree: React.FC = () => {
     throw new Error('Missing content type to render the content tree.')
   }
 
-  const { query } = useRouter()
+  const contentId = useContentId()
   const { data, isLoading } = useContentTree()
   const setContentModal = useStore(contentModalStoreSelector)
-
-  const selectedId = query.id && typeof query.id === 'string' ? parseInt(query.id, 10) : undefined
 
   function openNewContentModal() {
     setContentModal(true)
@@ -63,7 +60,7 @@ const ContentTree: React.FC = () => {
             justifyContent="center"
             className="text-center gap-6 p-3"
           >
-            <span>Start by creating a new {contentType.hrType}.</span>
+            <span>Start by creating a new {contentType.lcType}.</span>
             <Button onPress={openNewContentModal} primary>
               Create
             </Button>
@@ -73,9 +70,9 @@ const ContentTree: React.FC = () => {
             const key = getNodeKey(item)
 
             return isTreeFolder(item) ? (
-              <Folder key={key} folder={item} selectedId={selectedId} contentType={contentType} />
+              <Folder key={key} folder={item} selectedId={contentId} contentType={contentType} />
             ) : (
-              <Content key={key} content={item} selectedId={selectedId} contentType={contentType} />
+              <Content key={key} content={item} selectedId={contentId} contentType={contentType} />
             )
           })
         )}
@@ -151,11 +148,11 @@ const Content: React.FC<ContentProps> = ({ content, contentType, depth = 0, sele
         text={content.name}
         icon={RiFileTextLine}
         style={getNodeStyle(depth)}
-        iconLabel={contentType.hrType}
+        iconLabel={contentType.lcType}
         selected={selectedId === content.id}
         href={`${contentType.urlPath}/${content.id}/${content.slug}`}
       >
-        <ContextMenu.Label text={`${capitalize(contentType.hrType ?? '')}: ${content.name}`} />
+        <ContextMenu.Label text={`${contentType.cType}: ${content.name}`} />
         <ContextMenu.Separator />
         <ContextMenu.Item text="Edit" onClick={openEditModal} />
         <ContextMenu.Item intent="error" text="Delete" onClick={openDeleteModal} />

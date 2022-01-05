@@ -44,7 +44,7 @@ const Alert: React.FC<AlertProps> = ({
       opened={opened}
       disabled={disabled}
       onOpenChange={onOpenChange}
-      contentClassName="max-w-[400px]"
+      contentClassName="!max-w-[400px]"
     >
       {children}
       <Modal.Footer disabled={disabled} closeText={cancelText}>

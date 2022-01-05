@@ -12,13 +12,12 @@ import TextInput from 'components/TextInput'
 import useContentMutation, { type ContentMutation } from 'hooks/useContentMutation'
 import { type FolderData } from 'libs/db/folder'
 import useContentType from 'hooks/useContentType'
-import { capitalize } from 'libs/string'
 import { type StoreState, useStore } from 'stores'
 
 const storeSelector = (state: StoreState) => [state.content, state.setContentModal] as const
 
 const NewContentModal: React.FC = () => {
-  const { hrType } = useContentType()
+  const { cType, lcType } = useContentType()
 
   const {
     control,
@@ -59,19 +58,18 @@ const NewContentModal: React.FC = () => {
     reset()
   }
 
-  const capitalizedType = capitalize(hrType ?? '')
-  const title = `${isUpdating ? 'Edit' : 'New'} ${capitalizedType}`
+  const title = `${isUpdating ? 'Edit' : 'New'} ${cType}`
 
   return (
     <>
       <Alert
         disabled={isLoading}
         onOpenChange={setOpened}
+        title={`Delete ${cType}`}
         onConfirm={onConfirmDelete}
         opened={opened && isRemoving}
-        title={`Delete ${capitalizedType}`}
       >
-        Are you sure you want to delete the {hrType} <strong>&ldquo;{content?.name}&rdquo;</strong>?
+        Are you sure you want to delete the {lcType} <strong>&ldquo;{content?.name}&rdquo;</strong>?
       </Alert>
       <Modal
         title={title}

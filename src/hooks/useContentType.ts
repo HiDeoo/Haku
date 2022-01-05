@@ -1,22 +1,28 @@
 import { useRouter } from 'next/router'
+import { useMemo } from 'react'
+
+import { capitalize } from 'libs/string'
 
 export default function useContentType(): UseContentTypeReturnValue {
   const { route } = useRouter()
 
-  const contentType: UseContentTypeReturnValue = { hrType: undefined, type: undefined, urlPath: undefined }
+  return useMemo(() => {
+    const contentType: UseContentTypeReturnValue = { cType: '', lcType: '', type: undefined, urlPath: '' }
 
-  if (route.startsWith('/notes')) {
-    contentType.type = ContentType.NOTE
-  } else if (route.startsWith('/todos')) {
-    contentType.type = ContentType.TODO
-  }
+    if (route.startsWith('/notes')) {
+      contentType.type = ContentType.NOTE
+    } else if (route.startsWith('/todos')) {
+      contentType.type = ContentType.TODO
+    }
 
-  if (contentType.type) {
-    contentType.hrType = contentType.type.toLowerCase()
-    contentType.urlPath = `/${contentType.hrType}s`
-  }
+    if (contentType.type) {
+      contentType.cType = capitalize(contentType.type)
+      contentType.lcType = contentType.type.toLowerCase()
+      contentType.urlPath = `/${contentType.lcType}s`
+    }
 
-  return contentType
+    return contentType
+  }, [route])
 }
 
 export enum ContentType {
@@ -25,9 +31,10 @@ export enum ContentType {
 }
 
 export interface UseContentTypeReturnValue {
-  // The lowercase human readable version of the content type.
-  hrType: string | undefined
+  // The capitalized version of the content type.
+  cType: string
+  // The lowercase version of the content type.
+  lcType: string
   type: ContentType | undefined
-  // /notes or /todos
-  urlPath: string | undefined
+  urlPath: string
 }

@@ -38,7 +38,7 @@ export default function useFolderMutation() {
       onSuccess: (_, variables) => {
         queryClient.invalidateQueries(CONTENT_TREE_QUERY_KEY)
 
-        if (variables.mutationType === 'remove' && urlPath) {
+        if (variables.mutationType === 'remove') {
           push(urlPath)
         }
       },
