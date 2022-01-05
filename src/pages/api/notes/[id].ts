@@ -50,5 +50,5 @@ async function patchHandler(
 }
 
 type RemoveNoteQuery = z.infer<typeof deleteQuerySchema>
-type UpdateNoteBody = z.infer<typeof patchBodySchema>
-type UpdateNoteQuery = z.infer<typeof patchQuerySchema>
+export type UpdateNoteBody = z.infer<typeof patchBodySchema>
+export type UpdateNoteQuery = z.infer<typeof patchQuerySchema>

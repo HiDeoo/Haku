@@ -14,6 +14,7 @@ import { type TodoMetaData } from 'libs/db/todo'
 import { isTreeFolder, type TreeFolder } from 'libs/tree'
 import useContentType, { type UseContentTypeReturnValue } from 'hooks/useContentType'
 import { type StoreState, useStore } from 'stores'
+import { capitalize } from 'libs/string'
 
 const depthOffset = '1.25rem'
 
@@ -134,6 +135,12 @@ const Folder: React.FC<FolderProps> = ({ contentType, depth = 1, folder, selecte
 }
 
 const Content: React.FC<ContentProps> = ({ content, contentType, depth = 0, selectedId }) => {
+  const setContentModalOpened = useStore(contentModalStoreSelector)
+
+  function openEditModal() {
+    setContentModalOpened(true, 'update', content)
+  }
+
   return (
     <Roving asChild>
       <ContentTreeNode
@@ -143,7 +150,11 @@ const Content: React.FC<ContentProps> = ({ content, contentType, depth = 0, sele
         iconLabel={contentType.hrType}
         selected={selectedId === content.id}
         href={`${contentType.urlPath}/${content.id}/${content.slug}`}
-      />
+      >
+        <ContextMenu.Label text={`${capitalize(contentType.hrType ?? '')}: ${content.name}`} />
+        <ContextMenu.Separator />
+        <ContextMenu.Item text="Edit" onClick={openEditModal} />
+      </ContentTreeNode>
     </Roving>
   )
 }

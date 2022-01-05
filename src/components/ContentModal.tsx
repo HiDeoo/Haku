@@ -8,7 +8,7 @@ import Form from 'components/Form'
 import IconButton from 'components/IconButton'
 import Modal from 'components/Modal'
 import TextInput from 'components/TextInput'
-import useAddContent from 'hooks/useAddContent'
+import useContentMutation, { type ContentMutation } from 'hooks/useContentMutation'
 import { type FolderData } from 'libs/db/folder'
 import useContentType from 'hooks/useContentType'
 import { capitalize } from 'libs/string'
@@ -27,28 +27,31 @@ const NewContentModal: React.FC = () => {
     reset,
   } = useForm<FormFields>()
 
-  const { error, isLoading, mutate } = useAddContent()
-  const [{ opened }, setOpened] = useStore(storeSelector)
+  const { error, isLoading, mutate } = useContentMutation()
+  const [{ data: content, mutationType, opened }, setOpened] = useStore(storeSelector)
+
+  const isUpdating = mutationType === 'update' && typeof content !== 'undefined'
 
   useEffect(() => {
-    if (!opened) {
-      reset()
-    }
+    reset()
   }, [opened, reset])
 
   const onSubmit = handleSubmit(({ folder, ...data }) => {
-    mutate(
-      { ...data, folderId: folder.id === ROOT_FOLDER_ID ? undefined : folder.id },
-      {
-        onSuccess: () => {
-          setOpened(false)
-          reset()
-        },
-      }
-    )
+    const folderId = folder.id === ROOT_FOLDER_ID ? undefined : folder.id
+
+    const mutationData: ContentMutation = isUpdating
+      ? { ...data, mutationType: 'update', folderId, id: content.id }
+      : { ...data, mutationType: 'add', folderId }
+
+    mutate(mutationData, { onSuccess: onSuccessfulMutation })
   })
 
-  const title = `New ${capitalize(hrType ?? '')}`
+  function onSuccessfulMutation() {
+    setOpened(false)
+    reset()
+  }
+
+  const title = `${isUpdating ? 'Edit' : 'New'} ${capitalize(hrType ?? '')}`
 
   return (
     <Modal
@@ -64,10 +67,17 @@ const NewContentModal: React.FC = () => {
           label="Name"
           disabled={isLoading}
           placeholder="Beef Bourguignon"
+          defaultValue={content?.name ?? ''}
           errorMessage={errors.name?.message}
           {...register('name', { required: 'required' })}
         />
-        <FolderPicker control={control} name="folder" disabled={isLoading} errorMessage={errors.folder?.message} />
+        <FolderPicker
+          name="folder"
+          control={control}
+          disabled={isLoading}
+          defaultFolderId={content?.folderId}
+          errorMessage={errors.folder?.message}
+        />
         <Modal.Footer disabled={isLoading}>
           <Button type="submit" primary disabled={isLoading} loading={isLoading}>
             Create
