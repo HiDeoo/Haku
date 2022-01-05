@@ -1,10 +1,10 @@
-import { RiCheckLine, RiErrorWarningLine } from 'react-icons/ri'
 import clsx from 'clsx'
+import { RiCheckLine, RiErrorWarningLine } from 'react-icons/ri'
 
 import Icon from 'components/Icon'
 import Flex from 'components/Flex'
 
-const Callout: React.FC<Props> = ({ intent, message, title }) => {
+const Callout: React.FC<CalloutProps> = ({ intent, message, title }) => {
   const isSuccess = intent === 'success'
   const isError = intent === 'error'
 
@@ -37,7 +37,7 @@ const Callout: React.FC<Props> = ({ intent, message, title }) => {
 
 export default Callout
 
-interface Props {
+interface CalloutProps {
   intent: 'success' | 'error'
   message: string
   title?: string

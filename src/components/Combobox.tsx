@@ -1,5 +1,4 @@
 import { Presence } from '@radix-ui/react-presence'
-import { RiArrowDownSLine } from 'react-icons/ri'
 import clsx from 'clsx'
 import fuzzaldrin from 'fuzzaldrin-plus'
 import {
@@ -8,7 +7,7 @@ import {
   type UseComboboxState,
   type UseComboboxStateChange,
 } from 'downshift'
-import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import {
   type Control,
   useController,
@@ -19,6 +18,7 @@ import {
   type Path,
   type ValidateResult,
 } from 'react-hook-form'
+import { RiArrowDownSLine } from 'react-icons/ri'
 
 import Button from 'components/Button'
 import Icon from 'components/Icon'
@@ -40,7 +40,7 @@ const Combobox = <Item, FormFields extends FieldValues>({
   label,
   loading,
   name,
-}: Props<Item, FormFields>) => {
+}: ComboboxProps<Item, FormFields>) => {
   const container = useRef<HTMLDivElement>(null)
 
   const [filteredItems, setFilteredItems] = useState(items)
@@ -263,7 +263,7 @@ const Combobox = <Item, FormFields extends FieldValues>({
 
 export default Combobox
 
-interface Props<Item, FormFields extends FieldValues> {
+interface ComboboxProps<Item, FormFields extends FieldValues> {
   control: Control<FormFields>
   defaultItem: Item
   disabled?: boolean

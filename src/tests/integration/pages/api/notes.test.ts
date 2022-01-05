@@ -5,21 +5,23 @@ import slug from 'url-slug'
 import { getTestUser, testApiRoute } from 'tests/integration'
 import { createTestFolder, createTestNote, getTestNote, getTestNotes } from 'tests/integration/db'
 import { HttpMethod } from 'libs/http'
-import handler from 'pages/api/notes'
+import getAndPostHandler from 'pages/api/notes'
+import deleteAndPatchHandler from 'pages/api/notes/[id]'
 import { type NoteTreeData } from 'libs/db/tree'
-import { type NoteData } from 'libs/db/note'
+import { type NoteMetaData } from 'libs/db/note'
 import { assertIsTreeFolder, assertIsTreeItem } from 'libs/tree'
 import {
   type ApiErrorResponse,
   API_ERROR_FOLDER_DOES_NOT_EXIST,
   API_ERROR_FOLDER_INVALID_TYPE,
   API_ERROR_NOTE_ALREADY_EXISTS,
+  API_ERROR_NOTE_DOES_NOT_EXIST,
 } from 'libs/api/routes/errors'
 
 describe('notes', () => {
   describe('GET', () => {
     test('should return an empty tree', () =>
-      testApiRoute(handler, async ({ fetch }) => {
+      testApiRoute(getAndPostHandler, async ({ fetch }) => {
         const res = await fetch({ method: HttpMethod.GET })
         const json = await res.json<NoteTreeData>()
 
@@ -27,7 +29,7 @@ describe('notes', () => {
       }))
 
     test('should return a tree with only root notes and no folder', () =>
-      testApiRoute(handler, async ({ fetch }) => {
+      testApiRoute(getAndPostHandler, async ({ fetch }) => {
         const { name: note_0 } = await createTestNote({ name: 'note_0' })
         const { name: note_1 } = await createTestNote({ name: 'note_1' })
 
@@ -44,7 +46,7 @@ describe('notes', () => {
       }))
 
     test('should return a tree with only root nodes', () =>
-      testApiRoute(handler, async ({ fetch }) => {
+      testApiRoute(getAndPostHandler, async ({ fetch }) => {
         const { name: note_0 } = await createTestNote({ name: 'note_0' })
         const { name: note_1 } = await createTestNote({ name: 'note_1' })
         const { name: note_2 } = await createTestNote({ name: 'note_2' })
@@ -84,7 +86,7 @@ describe('notes', () => {
       }))
 
     test('should return a tree with nested nodes', () =>
-      testApiRoute(handler, async ({ fetch }) => {
+      testApiRoute(getAndPostHandler, async ({ fetch }) => {
         /**
          * folder_0
          * |__ folder_0_0
@@ -244,7 +246,7 @@ describe('notes', () => {
       }))
 
     test('should return only nodes owned by the current user', () =>
-      testApiRoute(handler, async ({ fetch }) => {
+      testApiRoute(getAndPostHandler, async ({ fetch }) => {
         const { id: folder_0_user_0_id, name: folder_0_user_0 } = await createTestFolder({ name: 'folder_0_user_0' })
         const { name: folder_1_user_0 } = await createTestFolder({ name: 'folder_1_user_0' })
 
@@ -304,7 +306,7 @@ describe('notes', () => {
       }))
 
     test('should return only the content of the proper type', () =>
-      testApiRoute(handler, async ({ fetch }) => {
+      testApiRoute(getAndPostHandler, async ({ fetch }) => {
         const { name: folder_0_type_note } = await createTestFolder({ name: 'folder_0_type_note' })
 
         await createTestFolder({ name: 'folder_0_type_todo', type: FolderType.TODO })
@@ -320,7 +322,7 @@ describe('notes', () => {
       }))
 
     test('should return a tree with nodes ordered alphabetically ignoring letter case', () =>
-      testApiRoute(handler, async ({ fetch }) => {
+      testApiRoute(getAndPostHandler, async ({ fetch }) => {
         const { name: note_z } = await createTestNote({ name: 'note_Z' })
         const { name: note_a } = await createTestNote({ name: 'note_a' })
 
@@ -362,14 +364,14 @@ describe('notes', () => {
 
   describe('POST', () => {
     test('should add a new note at the root', () =>
-      testApiRoute(handler, async ({ fetch }) => {
+      testApiRoute(getAndPostHandler, async ({ fetch }) => {
         const name = 'note'
 
         const res = await fetch({
           method: HttpMethod.POST,
           body: JSON.stringify({ name }),
         })
-        const json = await res.json<NoteData>()
+        const json = await res.json<NoteMetaData>()
 
         const testNote = await getTestNote(json.id)
 
@@ -380,7 +382,7 @@ describe('notes', () => {
       }))
 
     test('should add a new note inside an existing folder', () =>
-      testApiRoute(handler, async ({ fetch }) => {
+      testApiRoute(getAndPostHandler, async ({ fetch }) => {
         const { id: folderId } = await createTestFolder()
 
         const name = 'note'
@@ -389,7 +391,7 @@ describe('notes', () => {
           method: HttpMethod.POST,
           body: JSON.stringify({ name, folderId }),
         })
-        const json = await res.json<NoteData>()
+        const json = await res.json<NoteMetaData>()
 
         const testNote = await getTestNote(json.id)
 
@@ -400,14 +402,14 @@ describe('notes', () => {
       }))
 
     test('should add a new note and attach to it a valid URL slug', () =>
-      testApiRoute(handler, async ({ fetch }) => {
+      testApiRoute(getAndPostHandler, async ({ fetch }) => {
         const name = 'note Note 1/10 ½ 🤔'
 
         const res = await fetch({
           method: HttpMethod.POST,
           body: JSON.stringify({ name }),
         })
-        const json = await res.json<NoteData>()
+        const json = await res.json<NoteMetaData>()
 
         const testNote = await getTestNote(json.id)
 
@@ -418,7 +420,7 @@ describe('notes', () => {
       }))
 
     test('should not add a new note inside a nonexisting folder', () =>
-      testApiRoute(handler, async ({ fetch }) => {
+      testApiRoute(getAndPostHandler, async ({ fetch }) => {
         const name = 'note'
         const folderId = 1
 
@@ -437,7 +439,7 @@ describe('notes', () => {
       }))
 
     test('should not add a new note inside an existing folder not owned by the current user', () =>
-      testApiRoute(handler, async ({ fetch }) => {
+      testApiRoute(getAndPostHandler, async ({ fetch }) => {
         const { id: folderId } = await createTestFolder({ userId: getTestUser('1').userId })
 
         const name = 'note'
@@ -457,7 +459,7 @@ describe('notes', () => {
       }))
 
     test('should not add a new note inside an existing folder of a different type', () =>
-      testApiRoute(handler, async ({ fetch }) => {
+      testApiRoute(getAndPostHandler, async ({ fetch }) => {
         const { id: folderId } = await createTestFolder({ type: FolderType.TODO })
 
         const name = 'note'
@@ -477,7 +479,7 @@ describe('notes', () => {
       }))
 
     test('should not add a new duplicated note at the root', () =>
-      testApiRoute(handler, async ({ fetch }) => {
+      testApiRoute(getAndPostHandler, async ({ fetch }) => {
         const { name } = await createTestNote()
 
         const res = await fetch({
@@ -495,7 +497,7 @@ describe('notes', () => {
       }))
 
     test('should not add a new duplicated note inside an existing folder', () =>
-      testApiRoute(handler, async ({ fetch }) => {
+      testApiRoute(getAndPostHandler, async ({ fetch }) => {
         const { id: folderId } = await createTestFolder()
         const { name } = await createTestNote({ folderId })
 
@@ -512,5 +514,350 @@ describe('notes', () => {
 
         expect(testNotes.length).toBe(1)
       }))
+  })
+
+  describe('PATCH', () => {
+    test('should rename a note and update its slug', async () => {
+      const { id: folderId } = await createTestFolder()
+      const { id } = await createTestNote({ folderId })
+
+      const newName = 'newName'
+
+      return testApiRoute(
+        deleteAndPatchHandler,
+        async ({ fetch }) => {
+          const res = await fetch({
+            method: HttpMethod.PATCH,
+            body: JSON.stringify({ name: newName }),
+          })
+          const json = await res.json<NoteMetaData>()
+
+          expect(json.name).toBe(newName)
+
+          const testNote = await getTestNote(id)
+
+          expect(testNote?.name).toBe(newName)
+          expect(testNote?.slug).toBe(slug(newName))
+          expect(testNote?.folderId).toBe(folderId)
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should not rename a note if becoming duplicated', async () => {
+      const { id, name } = await createTestNote()
+      const { name: newName } = await createTestNote()
+
+      return testApiRoute(
+        deleteAndPatchHandler,
+        async ({ fetch }) => {
+          const res = await fetch({
+            method: HttpMethod.PATCH,
+            body: JSON.stringify({ name: newName }),
+          })
+          const json = await res.json<ApiErrorResponse>()
+
+          expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+          expect(json.error).toBe(API_ERROR_NOTE_ALREADY_EXISTS)
+
+          const testNote = await getTestNote(id)
+
+          expect(testNote?.name).toBe(name)
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should move a note inside another folder', async () => {
+      const { id: folderId } = await createTestFolder()
+      const { id: newFolderId } = await createTestFolder()
+
+      const { id, slug } = await createTestNote({ folderId })
+
+      return testApiRoute(
+        deleteAndPatchHandler,
+        async ({ fetch }) => {
+          const res = await fetch({
+            method: HttpMethod.PATCH,
+            body: JSON.stringify({ folderId: newFolderId }),
+          })
+          const json = await res.json<NoteMetaData>()
+
+          expect(json.folderId).toBe(newFolderId)
+
+          const testNote = await getTestNote(id)
+
+          expect(testNote).toBeDefined()
+          expect(testNote?.folderId).toBe(newFolderId)
+          expect(testNote?.slug).toBe(slug)
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should move a note to the root', async () => {
+      const { id: folderId } = await createTestFolder()
+
+      const { id, slug } = await createTestNote({ folderId })
+
+      return testApiRoute(
+        deleteAndPatchHandler,
+        async ({ fetch }) => {
+          const res = await fetch({
+            method: HttpMethod.PATCH,
+            body: JSON.stringify({ folderId: null }),
+          })
+          const json = await res.json<NoteMetaData>()
+
+          expect(json.folderId).toBeNull()
+
+          const testNote = await getTestNote(id)
+
+          expect(testNote).toBeDefined()
+          expect(testNote?.folderId).toBeNull()
+          expect(testNote?.slug).toBe(slug)
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should not move a folder if becoming duplicated', async () => {
+      const { id: folderId } = await createTestFolder()
+      const { id: newFolderId } = await createTestFolder()
+
+      const { id } = await createTestNote({ folderId, name: 'note' })
+      await createTestNote({ folderId: newFolderId, name: 'note' })
+
+      return testApiRoute(
+        deleteAndPatchHandler,
+        async ({ fetch }) => {
+          const res = await fetch({
+            method: HttpMethod.PATCH,
+            body: JSON.stringify({ folderId: newFolderId }),
+          })
+          const json = await res.json<ApiErrorResponse>()
+
+          expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+          expect(json.error).toBe(API_ERROR_NOTE_ALREADY_EXISTS)
+
+          const testNote = await getTestNote(id)
+
+          expect(testNote).toBeDefined()
+          expect(testNote?.folderId).toBe(folderId)
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should not move a note inside a nonexisting folder', async () => {
+      const { id, folderId } = await createTestNote()
+
+      return testApiRoute(
+        deleteAndPatchHandler,
+        async ({ fetch }) => {
+          const res = await fetch({
+            method: HttpMethod.PATCH,
+            body: JSON.stringify({ folderId: 1 }),
+          })
+          const json = await res.json<ApiErrorResponse>()
+
+          expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+          expect(json.error).toBe(API_ERROR_FOLDER_DOES_NOT_EXIST)
+
+          const testNote = await getTestNote(id)
+
+          expect(testNote).toBeDefined()
+          expect(testNote?.folderId).toBe(folderId)
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should not move a note inside an existing folder not owned by the current user', async () => {
+      const { id: newFolderId } = await createTestFolder({ userId: getTestUser('1').userId })
+
+      const { id, folderId } = await createTestNote()
+
+      return testApiRoute(
+        deleteAndPatchHandler,
+        async ({ fetch }) => {
+          const res = await fetch({
+            method: HttpMethod.PATCH,
+            body: JSON.stringify({ folderId: newFolderId }),
+          })
+          const json = await res.json<ApiErrorResponse>()
+
+          expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+          expect(json.error).toBe(API_ERROR_FOLDER_DOES_NOT_EXIST)
+
+          const testNote = await getTestNote(id)
+
+          expect(testNote).toBeDefined()
+          expect(testNote?.folderId).toBe(folderId)
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should not move a note inside an existing folder of a different type', async () => {
+      const { id: newFolderId } = await createTestFolder({ type: FolderType.TODO })
+
+      const { id, folderId } = await createTestNote()
+
+      return testApiRoute(
+        deleteAndPatchHandler,
+        async ({ fetch }) => {
+          const res = await fetch({
+            method: HttpMethod.PATCH,
+            body: JSON.stringify({ folderId: newFolderId }),
+          })
+          const json = await res.json<ApiErrorResponse>()
+
+          expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+          expect(json.error).toBe(API_ERROR_FOLDER_INVALID_TYPE)
+
+          const testNote = await getTestNote(id)
+
+          expect(testNote).toBeDefined()
+          expect(testNote?.folderId).toBe(folderId)
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should move & rename a note at the same time', async () => {
+      const { id: newFolderId } = await createTestFolder()
+
+      const { id } = await createTestNote()
+
+      const newName = 'newName'
+
+      return testApiRoute(
+        deleteAndPatchHandler,
+        async ({ fetch }) => {
+          const res = await fetch({
+            method: HttpMethod.PATCH,
+            body: JSON.stringify({ name: newName, folderId: newFolderId }),
+          })
+          const json = await res.json<NoteMetaData>()
+
+          expect(json.name).toBe(newName)
+          expect(json.folderId).toBe(newFolderId)
+
+          const testNote = await getTestNote(id)
+
+          expect(testNote).toBeDefined()
+          expect(testNote?.name).toBe(newName)
+          expect(testNote?.folderId).toBe(newFolderId)
+          expect(testNote?.slug).toBe(slug(newName))
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should not update a note not owned by the current user', async () => {
+      const { id, name } = await createTestNote({ userId: getTestUser('1').userId })
+
+      return testApiRoute(
+        deleteAndPatchHandler,
+        async ({ fetch }) => {
+          const res = await fetch({
+            method: HttpMethod.PATCH,
+            body: JSON.stringify({ name: 'newName' }),
+          })
+          const json = await res.json<ApiErrorResponse>()
+
+          expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+          expect(json.error).toBe(API_ERROR_NOTE_DOES_NOT_EXIST)
+
+          const testNote = await getTestNote(id)
+
+          expect(testNote).toBeDefined()
+          expect(testNote?.name).toBe(name)
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should not update a nonexisting folder', async () => {
+      const newName = 'newName'
+
+      return testApiRoute(
+        deleteAndPatchHandler,
+        async ({ fetch }) => {
+          const res = await fetch({
+            method: HttpMethod.PATCH,
+            body: JSON.stringify({ name: newName }),
+          })
+          const json = await res.json<ApiErrorResponse>()
+
+          expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+          expect(json.error).toBe(API_ERROR_NOTE_DOES_NOT_EXIST)
+
+          const testNotes = await getTestNotes({ name: newName })
+
+          expect(testNotes.length).toBe(0)
+        },
+        { dynamicRouteParams: { id: 1 } }
+      )
+    })
+  })
+
+  describe('DELETE', () => {
+    test('should remove a note', async () => {
+      const { id } = await createTestNote()
+
+      return testApiRoute(
+        deleteAndPatchHandler,
+        async ({ fetch }) => {
+          await fetch({ method: HttpMethod.DELETE })
+
+          const testNote = await getTestNote(id)
+
+          expect(testNote).toBeNull()
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should not remove a note not owned by the current user', async () => {
+      const { id } = await createTestNote({ userId: getTestUser('1').userId })
+
+      return testApiRoute(
+        deleteAndPatchHandler,
+        async ({ fetch }) => {
+          const res = await fetch({ method: HttpMethod.DELETE })
+          const json = await res.json<ApiErrorResponse>()
+
+          expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+          expect(json.error).toBe(API_ERROR_NOTE_DOES_NOT_EXIST)
+
+          const testFolder = await getTestNote(id)
+
+          expect(testFolder).toBeDefined()
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should not remove a nonexisting note', () => {
+      const id = 1
+
+      return testApiRoute(
+        deleteAndPatchHandler,
+        async ({ fetch }) => {
+          const res = await fetch({ method: HttpMethod.DELETE })
+          const json = await res.json<ApiErrorResponse>()
+
+          expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+          expect(json.error).toBe(API_ERROR_NOTE_DOES_NOT_EXIST)
+
+          const testFolder = await getTestNote(id)
+
+          expect(testFolder).toBeNull()
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
   })
 })

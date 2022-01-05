@@ -1,5 +1,5 @@
 import { type EmailAllowList } from '@prisma/client'
-import type { NextApiRequest, NextApiResponse } from 'next'
+import { type NextApiRequest, type NextApiResponse } from 'next'
 
 import { type ValidatedApiRequest, withAdmin, withValidation } from 'libs/api/routes/middlewares'
 import { addAllowedEmail, getAllowedEmails } from 'libs/db/emailAllowList'

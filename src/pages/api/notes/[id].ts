@@ -3,12 +3,12 @@ import { type NextApiResponse } from 'next'
 import { createApiRoute, getApiRequestUser } from 'libs/api/routes'
 import { type ValidatedApiRequest, withAuth, withValidation } from 'libs/api/routes/middlewares'
 import { z, zAtLeastOneOf, zStringAsNumber } from 'libs/validation'
-import { type FolderData, updateFolder, removeFolder } from 'libs/db/folder'
+import { type NoteMetaData, removeNote, updateNote } from 'libs/db/note'
 
 const patchBodySchema = zAtLeastOneOf(
   z.object({
     name: z.string(),
-    parentId: z.number().nullable(),
+    folderId: z.number().nullable(),
   })
 )
 
@@ -30,25 +30,25 @@ const route = createApiRoute(
 
 export default route
 
-async function deleteHandler(req: ValidatedApiRequest<{ query: RemoveFolderQuery }>, res: NextApiResponse<void>) {
+async function deleteHandler(req: ValidatedApiRequest<{ query: RemoveNoteQuery }>, res: NextApiResponse<void>) {
   const { userId } = getApiRequestUser(req)
 
-  await removeFolder(req.query.id, userId)
+  await removeNote(req.query.id, userId)
 
   return res.status(200).end()
 }
 
 async function patchHandler(
-  req: ValidatedApiRequest<{ body: UpdateFolderBody; query: UpdateFolderQuery }>,
-  res: NextApiResponse<FolderData>
+  req: ValidatedApiRequest<{ body: UpdateNoteBody; query: UpdateNoteQuery }>,
+  res: NextApiResponse<NoteMetaData>
 ) {
   const { userId } = getApiRequestUser(req)
 
-  const folder = await updateFolder(req.query.id, userId, req.body)
+  const note = await updateNote(req.query.id, userId, req.body)
 
-  return res.status(200).json(folder)
+  return res.status(200).json(note)
 }
 
-export type RemoveFolderQuery = z.infer<typeof deleteQuerySchema>
-export type UpdateFolderBody = z.infer<typeof patchBodySchema>
-export type UpdateFolderQuery = z.infer<typeof patchQuerySchema>
+export type RemoveNoteQuery = z.infer<typeof deleteQuerySchema>
+export type UpdateNoteBody = z.infer<typeof patchBodySchema>
+export type UpdateNoteQuery = z.infer<typeof patchQuerySchema>

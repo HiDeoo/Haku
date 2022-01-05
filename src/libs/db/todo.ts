@@ -1,5 +1,5 @@
 // FIXME(HiDeoo)
-export type TodoData = {
+export type TodoMetaData = {
   id: number
   folderId: number | null
   name: string

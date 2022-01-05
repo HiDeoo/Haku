@@ -177,6 +177,7 @@ describe('folders', () => {
           const testFolder = await getTestFolder(id)
 
           expect(testFolder?.name).toBe(newName)
+          expect(testFolder?.parentId).toBe(parentId)
         },
         { dynamicRouteParams: { id } }
       )
@@ -208,7 +209,7 @@ describe('folders', () => {
 
     test('should move a folder inside another folder', async () => {
       const { id: newParentId } = await createTestFolder()
-      const { id } = await createTestFolder()
+      const { id, name } = await createTestFolder()
 
       return testApiRoute(
         deleteAndPatchHandler,
@@ -224,6 +225,7 @@ describe('folders', () => {
           const testFolder = await getTestFolder(id)
 
           expect(testFolder).toBeDefined()
+          expect(testFolder?.name).toBe(name)
           expect(testFolder?.parentId).toBe(newParentId)
         },
         { dynamicRouteParams: { id } }
@@ -232,7 +234,7 @@ describe('folders', () => {
 
     test('should move a folder to the root', async () => {
       const { id: parentId } = await createTestFolder()
-      const { id } = await createTestFolder({ parentId })
+      const { id, name } = await createTestFolder({ parentId })
 
       return testApiRoute(
         deleteAndPatchHandler,
@@ -248,6 +250,7 @@ describe('folders', () => {
           const testFolder = await getTestFolder(id)
 
           expect(testFolder).toBeDefined()
+          expect(testFolder?.name).toBe(name)
           expect(testFolder?.parentId).toBeNull()
         },
         { dynamicRouteParams: { id } }

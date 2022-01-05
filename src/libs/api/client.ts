@@ -27,3 +27,6 @@ function isNetworkError(error: unknown) {
     (error instanceof TypeError && error.message === 'Failed to fetch')
   )
 }
+
+export type MutationType = 'add' | 'update' | 'remove'
+export type Mutation<Data, Type extends MutationType> = Data & { mutationType: Type }

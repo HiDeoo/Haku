@@ -13,7 +13,7 @@ const Flex = <Element extends React.ElementType = 'div'>(
     fullWidth,
     justifyContent,
     ...props
-  }: React.PropsWithChildren<Props<Element>>,
+  }: React.PropsWithChildren<FlexProps<Element>>,
   ref: React.ForwardedRef<HTMLDivElement>
 ) => {
   const Element = as || 'div'
@@ -62,10 +62,10 @@ const Flex = <Element extends React.ElementType = 'div'>(
 }
 
 export default forwardRef(Flex) as <Element extends React.ElementType = 'div'>(
-  props: React.PropsWithChildren<Props<Element>> & { ref?: React.ForwardedRef<HTMLDivElement> }
+  props: React.PropsWithChildren<FlexProps<Element>> & { ref?: React.ForwardedRef<HTMLDivElement> }
 ) => ReturnType<typeof Flex>
 
-interface Props<Element extends React.ElementType> {
+interface FlexProps<Element extends React.ElementType> {
   alignItems?: 'start' | 'end' | 'center' | 'baseline' | 'stretch'
   as?: Element
   className?: string

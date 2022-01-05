@@ -1,0 +1,77 @@
+import {
+  Content,
+  Item as MenuItem,
+  Label as MenuLabel,
+  Root,
+  Separator as MenuSeparator,
+  Trigger,
+} from '@radix-ui/react-context-menu'
+import clsx from 'clsx'
+import { forwardRef } from 'react'
+
+const itemClasses = 'block w-full text-left focus:outline-none px-2 py-1 rounded'
+
+const ContextMenu: ContextMenuComponent = ({ children, trigger }) => {
+  return (
+    <Root>
+      <Trigger asChild>{trigger}</Trigger>
+      <Content className="bg-zinc-700 shadow shadow-black/75 rounded-md overflow-hidden min-w-[8rem] p-1.5">
+        {children}
+      </Content>
+    </Root>
+  )
+}
+
+const Item = forwardRef<HTMLButtonElement, React.PropsWithChildren<ItemProps>>(
+  ({ intent, onClick, text }, forwardedRef) => {
+    const buttonClasses = clsx(itemClasses, 'font-medium', {
+      'focus:bg-blue-600': !intent,
+      'text-red-400 focus:bg-red-500 focus:text-red-50': intent === 'error',
+    })
+
+    return (
+      <MenuItem asChild>
+        <button ref={forwardedRef} onClick={onClick} className={buttonClasses}>
+          {text}
+        </button>
+      </MenuItem>
+    )
+  }
+)
+
+Item.displayName = 'Item'
+ContextMenu.Item = Item
+
+const Label: React.FC<LabelProps> = ({ text }) => {
+  return <MenuLabel className={itemClasses}>{text}</MenuLabel>
+}
+
+ContextMenu.Label = Label
+
+const Separator: React.FC = () => {
+  return <MenuSeparator className="h-px my-1 bg-blue-50/25" />
+}
+
+ContextMenu.Separator = Separator
+
+export default ContextMenu
+
+type ContextMenuComponent = React.FC<ContextMenuProps> & {
+  Item: typeof Item
+  Label: typeof Label
+  Separator: typeof Separator
+}
+
+interface ContextMenuProps {
+  trigger: React.ReactNode
+}
+
+interface ItemProps {
+  intent?: undefined | 'error'
+  onClick: () => void
+  text: string
+}
+
+interface LabelProps {
+  text: string
+}

@@ -1,58 +1,48 @@
-import { RiFileTextLine, RiFolderLine } from 'react-icons/ri'
 import { Link as Roving, Root } from '@radix-ui/react-toolbar'
-import clsx from 'clsx'
-import Link from 'next/link'
-import { useRouter } from 'next/router'
-import { forwardRef } from 'react'
+import { RiFileTextLine, RiFolderLine } from 'react-icons/ri'
 
 import Button from 'components/Button'
+import ContentTreeNode from 'components/ContentTreeNode'
+import ContextMenu from 'components/ContextMenu'
 import Flex from 'components/Flex'
-import Icon, { type IconProps } from 'components/Icon'
 import Shimmer from 'components/Shimmer'
 import useContentTree from 'hooks/useContentTree'
 import { type FolderData } from 'libs/db/folder'
-import { type NoteData } from 'libs/db/note'
-import { type TodoData } from 'libs/db/todo'
+import { type NoteMetaData } from 'libs/db/note'
+import { type TodoMetaData } from 'libs/db/todo'
 import { isTreeFolder, type TreeFolder } from 'libs/tree'
 import useContentType, { type UseContentTypeReturnValue } from 'hooks/useContentType'
+import { type StoreState, useStore } from 'stores'
+import useContentId from 'hooks/useContentId'
 
-const treeDepthOffset = '1.25rem'
+const depthOffset = '1.25rem'
 
-const nodeClasses = clsx(
-  'px-3 py-1.5 text-zinc-400',
-  'focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-inset'
-)
+const shimmerDepths = [0, 1, 2, 2, 3, 0, 1, 1, 1, 1, 2]
 
-const ContentTree: React.FC<Props> = ({ setNewContentModalOpened }) => {
+const contentModalStoreSelector = (state: StoreState) => state.setContentModal
+const folderModalStoreSelector = (state: StoreState) => state.setFolderModal
+
+const ContentTree: React.FC = () => {
   const contentType = useContentType()
 
   if (!contentType.type) {
     throw new Error('Missing content type to render the content tree.')
   }
 
-  const { query } = useRouter()
+  const contentId = useContentId()
   const { data, isLoading } = useContentTree()
-
-  const selectedId = query.id && typeof query.id === 'string' ? parseInt(query.id, 10) : undefined
+  const setContentModal = useStore(contentModalStoreSelector)
 
   function openNewContentModal() {
-    setNewContentModalOpened(true)
+    setContentModal(true)
   }
 
   if (isLoading) {
     return (
       <Shimmer>
-        <ShimmerContentTreeNode depth={0} />
-        <ShimmerContentTreeNode depth={1} />
-        <ShimmerContentTreeNode depth={2} />
-        <ShimmerContentTreeNode depth={2} />
-        <ShimmerContentTreeNode depth={3} />
-        <ShimmerContentTreeNode depth={0} />
-        <ShimmerContentTreeNode depth={1} />
-        <ShimmerContentTreeNode depth={1} />
-        <ShimmerContentTreeNode depth={1} />
-        <ShimmerContentTreeNode depth={1} />
-        <ShimmerContentTreeNode depth={2} />
+        {shimmerDepths.map((depth, index) => (
+          <ShimmerNode key={index} depth={depth} />
+        ))}
       </Shimmer>
     )
   }
@@ -61,7 +51,7 @@ const ContentTree: React.FC<Props> = ({ setNewContentModalOpened }) => {
     <Root orientation="vertical" asChild>
       <Flex as="nav" direction="col" flex className="overflow-y-auto relative">
         <div className="absolute inset-0 pointer-events-none shadow-[inset_-1px_0_1px_0_rgba(0,0,0,0.4)]" />
-        {data?.length === 0 ? (
+        {data?.length == 0 ? (
           <Flex
             fullWidth
             fullHeight
@@ -70,7 +60,7 @@ const ContentTree: React.FC<Props> = ({ setNewContentModalOpened }) => {
             justifyContent="center"
             className="text-center gap-6 p-3"
           >
-            <span>Start by creating a new {contentType.hrType}.</span>
+            <span>Start by creating a new {contentType.lcType}.</span>
             <Button onPress={openNewContentModal} primary>
               Create
             </Button>
@@ -80,9 +70,9 @@ const ContentTree: React.FC<Props> = ({ setNewContentModalOpened }) => {
             const key = getNodeKey(item)
 
             return isTreeFolder(item) ? (
-              <Folder key={key} folder={item} contentType={contentType} selectedId={selectedId} />
+              <Folder key={key} folder={item} selectedId={contentId} contentType={contentType} />
             ) : (
-              <Content key={key} content={item} contentType={contentType} selectedId={selectedId} />
+              <Content key={key} content={item} selectedId={contentId} contentType={contentType} />
             )
           })
         )}
@@ -93,13 +83,30 @@ const ContentTree: React.FC<Props> = ({ setNewContentModalOpened }) => {
 
 export default ContentTree
 
+const ShimmerNode: React.FC<ShimmerNodeProps> = ({ depth }) => {
+  return <Shimmer.Line style={getNodeStyle(depth, false)} />
+}
+
 const Folder: React.FC<FolderProps> = ({ contentType, depth = 1, folder, selectedId, style }) => {
+  const setFolderModalOpened = useStore(folderModalStoreSelector)
+
+  function openEditModal() {
+    setFolderModalOpened(true, 'update', folder)
+  }
+
+  function openDeleteModal() {
+    setFolderModalOpened(true, 'remove', folder)
+  }
+
   return (
     <>
       <Roving asChild>
-        <Flex alignItems="center" style={style} className={nodeClasses}>
-          <ContentTreeNode text={folder.name} icon={RiFolderLine} iconLabel="folder" />
-        </Flex>
+        <ContentTreeNode style={style} text={folder.name} iconLabel="folder" icon={RiFolderLine}>
+          <ContextMenu.Label text={`Folder: ${folder.name}`} />
+          <ContextMenu.Separator />
+          <ContextMenu.Item text="Edit" onClick={openEditModal} />
+          <ContextMenu.Item intent="error" text="Delete" onClick={openDeleteModal} />
+        </ContentTreeNode>
       </Roving>
       {folder.children.map((child) => (
         <Folder
@@ -116,8 +123,8 @@ const Folder: React.FC<FolderProps> = ({ contentType, depth = 1, folder, selecte
           depth={depth}
           content={content}
           selectedId={selectedId}
-          contentType={contentType}
           key={getNodeKey(content)}
+          contentType={contentType}
         />
       ))}
     </>
@@ -125,49 +132,33 @@ const Folder: React.FC<FolderProps> = ({ contentType, depth = 1, folder, selecte
 }
 
 const Content: React.FC<ContentProps> = ({ content, contentType, depth = 0, selectedId }) => {
+  const setContentModalOpened = useStore(contentModalStoreSelector)
+
+  function openEditModal() {
+    setContentModalOpened(true, 'update', content)
+  }
+
+  function openDeleteModal() {
+    setContentModalOpened(true, 'remove', content)
+  }
+
   return (
     <Roving asChild>
-      <ContentLink
+      <ContentTreeNode
+        text={content.name}
+        icon={RiFileTextLine}
         style={getNodeStyle(depth)}
-        href={`/${contentType.hrType}s/${content.id}/${content.slug}`}
+        iconLabel={contentType.lcType}
         selected={selectedId === content.id}
+        href={`${contentType.urlPath}/${content.id}/${content.slug}`}
       >
-        <ContentTreeNode text={content.name} icon={RiFileTextLine} iconLabel={contentType.hrType} />
-      </ContentLink>
+        <ContextMenu.Label text={`${contentType.cType}: ${content.name}`} />
+        <ContextMenu.Separator />
+        <ContextMenu.Item text="Edit" onClick={openEditModal} />
+        <ContextMenu.Item intent="error" text="Delete" onClick={openDeleteModal} />
+      </ContentTreeNode>
     </Roving>
   )
-}
-
-const ContentLink = forwardRef<HTMLAnchorElement, React.PropsWithChildren<ContentLinkProps>>(
-  ({ children, href, selected, style, ...props }, ref) => {
-    const anchorClasses = clsx('block', nodeClasses, {
-      'hover:bg-blue-600 hover:text-blue-50': !selected,
-      'bg-zinc-700/60 !text-blue-50': selected,
-    })
-
-    return (
-      <Link href={href} prefetch={false}>
-        <a ref={ref} {...props} style={style} className={anchorClasses} aria-current={selected ? 'page' : undefined}>
-          <Flex alignItems="center">{children}</Flex>
-        </a>
-      </Link>
-    )
-  }
-)
-
-ContentLink.displayName = 'ContentLink'
-
-const ContentTreeNode: React.FC<ContentTreeNodeProps> = ({ icon, iconLabel, text }) => {
-  return (
-    <>
-      <Icon icon={icon} label={iconLabel} className="mr-1.5 shrink-0" />
-      <span className="truncate">{text}</span>
-    </>
-  )
-}
-
-const ShimmerContentTreeNode: React.FC<ShimmerContentTreeNodeProps> = ({ depth }) => {
-  return <Shimmer.Line style={getNodeStyle(depth, false)} />
 }
 
 function getNodeKey(item: FolderType | DataType): string {
@@ -178,11 +169,11 @@ function getNodeStyle(
   depth: number,
   includeDefaultPadding = true
 ): NonNullable<React.HtmlHTMLAttributes<HTMLElement>['style']> {
-  return { paddingLeft: `calc(${includeDefaultPadding ? '0.75rem + ' : ''}${treeDepthOffset} * ${depth})` }
+  return { paddingLeft: `calc(${includeDefaultPadding ? '0.75rem + ' : ''}${depthOffset} * ${depth})` }
 }
 
-interface Props {
-  setNewContentModalOpened: (opened: boolean) => void
+interface ShimmerNodeProps {
+  depth: number
 }
 
 interface NodeProps {
@@ -200,21 +191,5 @@ interface ContentProps extends NodeProps {
   content: DataType
 }
 
-interface ContentLinkProps {
-  href: string
-  selected: boolean
-  style?: React.HtmlHTMLAttributes<HTMLElement>['style']
-}
-
-interface ContentTreeNodeProps {
-  icon: IconProps['icon']
-  iconLabel: IconProps['label']
-  text: string
-}
-
-interface ShimmerContentTreeNodeProps {
-  depth: number
-}
-
-type DataType = NoteData | TodoData
+type DataType = NoteMetaData | TodoMetaData
 type FolderType = TreeFolder<FolderData, DataType>

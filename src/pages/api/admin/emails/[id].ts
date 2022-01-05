@@ -1,4 +1,4 @@
-import type { NextApiResponse } from 'next'
+import { type NextApiResponse } from 'next'
 
 import { createApiRoute } from 'libs/api/routes'
 import { type ValidatedApiRequest, withAdmin, withValidation } from 'libs/api/routes/middlewares'

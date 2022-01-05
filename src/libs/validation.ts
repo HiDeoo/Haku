@@ -16,7 +16,7 @@ export const zStringAsNumber = z
 
 export const zFolderType = z.nativeEnum(FolderType)
 
-export function zOneOf<Shape extends z.ZodRawShape>(objectSchema: z.ZodObject<Shape>) {
+export function zAtLeastOneOf<Shape extends z.ZodRawShape>(objectSchema: z.ZodObject<Shape>) {
   const keys = Object.keys(objectSchema._def.shape())
 
   return objectSchema.partial().refine((data) => {

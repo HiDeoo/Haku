@@ -2,17 +2,17 @@ import { FolderType, Prisma } from '@prisma/client'
 
 import { prisma } from 'libs/db'
 import { type FolderData } from 'libs/db/folder'
-import { getNotesGroupedByFolder, type NoteData } from 'libs/db/note'
-import { type TodoData } from 'libs/db/todo'
+import { getNotesMetaDataGroupedByFolder, type NoteMetaData } from 'libs/db/note'
+import { type TodoMetaData } from 'libs/db/todo'
 import { type HierarchicalListFolder, type HierarchicalListItem, hierarchicalListToTree, type Tree } from 'libs/tree'
 
-export type NoteTreeData = Tree<FolderData, NoteData>
-export type TodoTreeData = Tree<FolderData, TodoData>
+export type NoteTreeData = Tree<FolderData, NoteMetaData>
+export type TodoTreeData = Tree<FolderData, TodoMetaData>
 
 export async function getNoteTree(userId: UserId): Promise<NoteTreeData> {
-  const notesGroupedByFolder = await getNotesGroupedByFolder(userId)
+  const notesGroupedByFolder = await getNotesMetaDataGroupedByFolder(userId)
 
-  return getTree<FolderData, NoteData>(userId, FolderType.NOTE, notesGroupedByFolder)
+  return getTree<FolderData, NoteMetaData>(userId, FolderType.NOTE, notesGroupedByFolder)
 }
 
 async function getTree<Folder extends HierarchicalListFolder, Item extends HierarchicalListItem>(

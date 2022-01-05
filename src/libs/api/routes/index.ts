@@ -1,4 +1,4 @@
-import type { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
+import { type NextApiHandler, type NextApiRequest, type NextApiResponse } from 'next'
 import { StatusCode } from 'status-code-enum'
 
 import { HttpMethod } from 'libs/http'
