@@ -1,6 +1,6 @@
 import { type FolderData } from 'libs/db/folder'
-import { type NoteData } from 'libs/db/note'
-import { type TodoData } from 'libs/db/todo'
+import { type NoteMetaData } from 'libs/db/note'
+import { type TodoMetaData } from 'libs/db/todo'
 import { type StoreSlice } from 'stores'
 
 export const createModalSlice: StoreSlice<ModalState> = (set) => ({
@@ -25,4 +25,4 @@ export interface ModalState {
   setFolderModalOpened: (opened: boolean, folder?: FolderData) => void
 }
 
-type ContentData = NoteData | TodoData
+type ContentData = NoteMetaData | TodoMetaData

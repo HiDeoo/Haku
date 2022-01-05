@@ -3,7 +3,7 @@ import { type NextApiResponse } from 'next'
 import { createApiRoute, getApiRequestUser } from 'libs/api/routes'
 import { type ValidatedApiRequest, withAuth, withValidation } from 'libs/api/routes/middlewares'
 import { z, zAtLeastOneOf, zStringAsNumber } from 'libs/validation'
-import { type NoteData, removeNote, updateNote } from 'libs/db/note'
+import { type NoteMetaData, removeNote, updateNote } from 'libs/db/note'
 
 const patchBodySchema = zAtLeastOneOf(
   z.object({
@@ -40,7 +40,7 @@ async function deleteHandler(req: ValidatedApiRequest<{ query: RemoveNoteQuery }
 
 async function patchHandler(
   req: ValidatedApiRequest<{ body: UpdateNoteBody; query: UpdateNoteQuery }>,
-  res: NextApiResponse<NoteData>
+  res: NextApiResponse<NoteMetaData>
 ) {
   const { userId } = getApiRequestUser(req)
 

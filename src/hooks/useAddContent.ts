@@ -4,17 +4,17 @@ import { useMutation, useQueryClient } from 'react-query'
 import client, { handleApiError } from 'libs/api/client'
 import { type AddNoteBody } from 'pages/api/notes'
 import { type AddTodoBody } from 'pages/api/todos'
-import { type NoteData } from 'libs/db/note'
+import { type NoteMetaData } from 'libs/db/note'
 import useContentType, { ContentType } from 'hooks/useContentType'
 import { CONTENT_TREE_QUERY_KEY } from 'hooks/useContentTree'
-import { TodoData } from 'libs/db/todo'
+import { TodoMetaData } from 'libs/db/todo'
 
 export default function useAddContent() {
   const { push } = useRouter()
   const { hrType, type } = useContentType()
   const queryClient = useQueryClient()
 
-  const mutation = useMutation<NoteData | TodoData, unknown, AddContentData>(
+  const mutation = useMutation<NoteMetaData | TodoMetaData, unknown, AddContentData>(
     (data) => {
       if (!type) {
         throw new Error('Missing content type to add content.')
@@ -37,11 +37,11 @@ export default function useAddContent() {
 }
 
 function addNote(data: AddNoteBody) {
-  return client.post('notes', { json: data }).json<NoteData>()
+  return client.post('notes', { json: data }).json<NoteMetaData>()
 }
 
 function addTodo(data: AddTodoBody) {
-  return client.post('notes', { json: data }).json<TodoData>()
+  return client.post('notes', { json: data }).json<TodoMetaData>()
 }
 
 type AddContentData = AddNoteBody | AddTodoBody

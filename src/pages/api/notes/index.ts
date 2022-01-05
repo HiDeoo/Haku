@@ -4,7 +4,7 @@ import { createApiRoute, getApiRequestUser } from 'libs/api/routes'
 import { type ValidatedApiRequest, withAuth, withValidation } from 'libs/api/routes/middlewares'
 import { getNoteTree, type NoteTreeData } from 'libs/db/tree'
 import { z } from 'libs/validation'
-import { addNote, type NoteData } from 'libs/db/note'
+import { addNote, type NoteMetaData } from 'libs/db/note'
 
 const postBodySchema = z.object({
   name: z.string(),
@@ -28,7 +28,7 @@ async function getHandler(req: NextApiRequest, res: NextApiResponse<NoteTreeData
   return res.status(200).json(content)
 }
 
-async function postHandler(req: ValidatedApiRequest<{ body: AddNoteBody }>, res: NextApiResponse<NoteData>) {
+async function postHandler(req: ValidatedApiRequest<{ body: AddNoteBody }>, res: NextApiResponse<NoteMetaData>) {
   const { userId } = getApiRequestUser(req)
   const note = await addNote(userId, req.body.name, req.body.folderId)
 
