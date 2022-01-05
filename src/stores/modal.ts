@@ -1,28 +1,39 @@
+import { type MutationType } from 'libs/api/client'
 import { type FolderData } from 'libs/db/folder'
 import { type NoteMetaData } from 'libs/db/note'
 import { type TodoMetaData } from 'libs/db/todo'
 import { type StoreSlice } from 'stores'
 
 export const createModalSlice: StoreSlice<ModalState> = (set) => ({
-  content: undefined,
-  contentModalOpened: false,
-  folder: undefined,
-  folderModalOpened: false,
-  setContentModalOpened: (opened: boolean, content?: ContentData) => {
-    return set(() => ({ content, contentModalOpened: opened }))
+  content: {
+    data: undefined,
+    mutationType: undefined,
+    opened: false,
   },
-  setFolderModalOpened: (opened: boolean, folder?: FolderData) => {
-    return set(() => ({ folder, folderModalOpened: opened }))
+  folder: {
+    data: undefined,
+    mutationType: undefined,
+    opened: false,
+  },
+  setContentModal: (opened: boolean, mutationType = 'add', content?: ContentMetaData) => {
+    return set(() => ({ content: { data: content, mutationType, opened } }))
+  },
+  setFolderModal: (opened: boolean, mutationType = 'add', folder?: FolderData) => {
+    return set(() => ({ folder: { data: folder, mutationType, opened } }))
   },
 })
 
 export interface ModalState {
-  content: ContentData | undefined
-  contentModalOpened: boolean
-  folder: FolderData | undefined
-  folderModalOpened: boolean
-  setContentModalOpened: (opened: boolean, content?: ContentData) => void
-  setFolderModalOpened: (opened: boolean, folder?: FolderData) => void
+  content: MutationModal<ContentMetaData>
+  folder: MutationModal<FolderData>
+  setContentModal: (opened: boolean, mutationType?: MutationType, content?: ContentMetaData) => void
+  setFolderModal: (opened: boolean, mutationType?: MutationType, folder?: FolderData) => void
 }
 
-type ContentData = NoteMetaData | TodoMetaData
+interface MutationModal<Data> {
+  data: Data | undefined
+  mutationType: MutationType | undefined
+  opened: boolean
+}
+
+type ContentMetaData = NoteMetaData | TodoMetaData

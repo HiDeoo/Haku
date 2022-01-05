@@ -14,7 +14,7 @@ import useContentType from 'hooks/useContentType'
 import { capitalize } from 'libs/string'
 import { type StoreState, useStore } from 'stores'
 
-const storeSelector = (state: StoreState) => [state.contentModalOpened, state.setContentModalOpened] as const
+const storeSelector = (state: StoreState) => [state.content, state.setContentModal] as const
 
 const NewContentModal: React.FC = () => {
   const { hrType } = useContentType()
@@ -28,7 +28,7 @@ const NewContentModal: React.FC = () => {
   } = useForm<FormFields>()
 
   const { error, isLoading, mutate } = useAddContent()
-  const [opened, setOpened] = useStore(storeSelector)
+  const [{ opened }, setOpened] = useStore(storeSelector)
 
   useEffect(() => {
     if (!opened) {

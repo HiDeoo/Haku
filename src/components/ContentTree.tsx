@@ -19,8 +19,8 @@ const depthOffset = '1.25rem'
 
 const shimmerDepths = [0, 1, 2, 2, 3, 0, 1, 1, 1, 1, 2]
 
-const contentModalStoreSelector = (state: StoreState) => state.setContentModalOpened
-const folderModalStoreSelector = (state: StoreState) => state.setFolderModalOpened
+const contentModalStoreSelector = (state: StoreState) => state.setContentModal
+const folderModalStoreSelector = (state: StoreState) => state.setFolderModal
 
 const ContentTree: React.FC = () => {
   const contentType = useContentType()
@@ -31,12 +31,12 @@ const ContentTree: React.FC = () => {
 
   const { query } = useRouter()
   const { data, isLoading } = useContentTree()
-  const setContentModalOpened = useStore(contentModalStoreSelector)
+  const setContentModal = useStore(contentModalStoreSelector)
 
   const selectedId = query.id && typeof query.id === 'string' ? parseInt(query.id, 10) : undefined
 
   function openNewContentModal() {
-    setContentModalOpened(true)
+    setContentModal(true)
   }
 
   if (isLoading) {
@@ -93,7 +93,7 @@ const Folder: React.FC<FolderProps> = ({ contentType, depth = 1, folder, selecte
   const setFolderModalOpened = useStore(folderModalStoreSelector)
 
   function openEditModal() {
-    setFolderModalOpened(true, folder)
+    setFolderModalOpened(true, 'update', folder)
   }
 
   return (

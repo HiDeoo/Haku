@@ -12,8 +12,7 @@ import useFolderMutation, { type FolderMutation } from 'hooks/useFolderMutation'
 import { type FolderData } from 'libs/db/folder'
 import { useStore, type StoreState } from 'stores'
 
-const storeSelector = (state: StoreState) =>
-  [state.folderModalOpened, state.setFolderModalOpened, state.folder] as const
+const storeSelector = (state: StoreState) => [state.folder, state.setFolderModal] as const
 
 const NewFolderModal: React.FC = () => {
   const {
@@ -25,9 +24,9 @@ const NewFolderModal: React.FC = () => {
   } = useForm<FormFields>()
 
   const { error, isLoading, mutate } = useFolderMutation()
-  const [opened, setOpened, folder] = useStore(storeSelector)
+  const [{ data: folder, mutationType, opened }, setOpened] = useStore(storeSelector)
 
-  const isUpdating = typeof folder !== 'undefined'
+  const isUpdating = mutationType === 'update' && typeof folder !== 'undefined'
 
   useEffect(() => {
     reset()

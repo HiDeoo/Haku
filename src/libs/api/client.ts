@@ -28,5 +28,5 @@ function isNetworkError(error: unknown) {
   )
 }
 
-type MutationType = 'add' | 'update' | 'remove'
+export type MutationType = 'add' | 'update' | 'remove'
 export type Mutation<Data, Type extends MutationType> = Data & { mutationType: Type }
