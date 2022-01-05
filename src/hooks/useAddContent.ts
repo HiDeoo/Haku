@@ -11,7 +11,7 @@ import { TodoMetaData } from 'libs/db/todo'
 
 export default function useAddContent() {
   const { push } = useRouter()
-  const { hrType, type } = useContentType()
+  const { type, urlPath } = useContentType()
   const queryClient = useQueryClient()
 
   const mutation = useMutation<NoteMetaData | TodoMetaData, unknown, AddContentData>(
@@ -26,7 +26,7 @@ export default function useAddContent() {
       onSuccess: (newContentData) => {
         queryClient.invalidateQueries(CONTENT_TREE_QUERY_KEY)
 
-        push(`/${hrType}s/${newContentData.id}`)
+        push(`${urlPath}/${newContentData.id}`)
       },
     }
   )

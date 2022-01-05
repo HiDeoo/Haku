@@ -96,6 +96,10 @@ const Folder: React.FC<FolderProps> = ({ contentType, depth = 1, folder, selecte
     setFolderModalOpened(true, 'update', folder)
   }
 
+  function openDeleteModal() {
+    setFolderModalOpened(true, 'remove', folder)
+  }
+
   return (
     <>
       <Roving asChild>
@@ -103,7 +107,7 @@ const Folder: React.FC<FolderProps> = ({ contentType, depth = 1, folder, selecte
           <ContextMenu.Label text={`Folder: ${folder.name}`} />
           <ContextMenu.Separator />
           <ContextMenu.Item text="Edit" onClick={openEditModal} />
-          <ContextMenu.Item intent="error" text="Delete" onClick={() => undefined} />
+          <ContextMenu.Item intent="error" text="Delete" onClick={openDeleteModal} />
         </ContentTreeNode>
       </Roving>
       {folder.children.map((child) => (
@@ -138,7 +142,7 @@ const Content: React.FC<ContentProps> = ({ content, contentType, depth = 0, sele
         style={getNodeStyle(depth)}
         iconLabel={contentType.hrType}
         selected={selectedId === content.id}
-        href={`/${contentType.hrType}s/${content.id}/${content.slug}`}
+        href={`${contentType.urlPath}/${content.id}/${content.slug}`}
       />
     </Roving>
   )

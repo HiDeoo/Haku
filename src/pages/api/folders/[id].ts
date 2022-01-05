@@ -49,6 +49,6 @@ async function patchHandler(
   return res.status(200).json(folder)
 }
 
-type RemoveFolderQuery = z.infer<typeof deleteQuerySchema>
+export type RemoveFolderQuery = z.infer<typeof deleteQuerySchema>
 export type UpdateFolderBody = z.infer<typeof patchBodySchema>
-type UpdateFolderQuery = z.infer<typeof patchQuerySchema>
+export type UpdateFolderQuery = z.infer<typeof patchQuerySchema>
