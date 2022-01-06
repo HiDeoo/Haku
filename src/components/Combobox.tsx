@@ -231,7 +231,7 @@ const Combobox = <Item, FormFields extends FieldValues>({
           <Icon icon={RiArrowDownSLine} className={triggerIconClasses} />
         </Button>
       </div>
-      <div {...getMenuProps()} className="absolute top-full inset-x-0 mt-0.5 mr-10 outline-none">
+      <div {...getMenuProps()} className="absolute top-full inset-x-0 mt-0.5 mr-9 outline-none">
         <Presence present={isOpen}>
           <ul
             className={menuClasses}
