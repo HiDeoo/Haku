@@ -1,33 +1,30 @@
-import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 
 import { capitalize } from 'libs/string'
+import { ContentType } from 'stores/contentType'
+import { useStore, type StoreState } from 'stores'
+
+export { ContentType } from 'stores/contentType'
+
+const contentTypeStoreSelector = (state: StoreState) => state.contentType
 
 export default function useContentType(): UseContentTypeReturnValue {
-  const { route } = useRouter()
+  const contentType = useStore(contentTypeStoreSelector)
 
   return useMemo(() => {
-    const contentType: UseContentTypeReturnValue = { cType: '', lcType: '', type: undefined, urlPath: '' }
+    const value: UseContentTypeReturnValue = { cType: '', lcType: '', type: undefined, urlPath: '' }
 
-    if (route.startsWith('/notes')) {
-      contentType.type = ContentType.NOTE
-    } else if (route.startsWith('/todos')) {
-      contentType.type = ContentType.TODO
+    if (contentType) {
+      value.type = contentType
     }
 
-    if (contentType.type) {
-      contentType.cType = capitalize(contentType.type)
-      contentType.lcType = contentType.type.toLowerCase()
-      contentType.urlPath = `/${contentType.lcType}s`
+    if (value.type) {
+      value.cType = capitalize(value.type)
+      value.lcType = value.type.toLowerCase()
+      value.urlPath = `/${value.lcType}s`
     }
-
-    return contentType
-  }, [route])
-}
-
-export enum ContentType {
-  NOTE = 'NOTE',
-  TODO = 'TODO',
+    return value
+  }, [contentType])
 }
 
 export interface UseContentTypeReturnValue {
