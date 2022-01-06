@@ -1,10 +1,10 @@
 import { useButton } from '@react-aria/button'
 import { useObjectRef } from '@react-aria/utils'
-import clsx from 'clsx'
 import { forwardRef } from 'react'
 
 import Flex from 'components/Flex'
 import Spinner from 'components/Spinner'
+import clst from 'styles/clst'
 
 const Button = forwardRef<HTMLButtonElement, React.PropsWithChildren<ButtonProps>>(
   (
@@ -38,7 +38,7 @@ const Button = forwardRef<HTMLButtonElement, React.PropsWithChildren<ButtonProps
       }
     }
 
-    const buttonClasses = clsx(
+    const buttonClasses = clst(
       {
         'bg-zinc-600 hover:bg-zinc-500 disabled:bg-zinc-600/50': !primary && !isPressed,
         'bg-blue-600 hover:bg-blue-500 disabled:bg-blue-500/60': primary && !isPressed,

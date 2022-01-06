@@ -1,12 +1,12 @@
-import clsx from 'clsx'
 import Link from 'next/link'
 import { forwardRef } from 'react'
 
 import ContextMenu from 'components/ContextMenu'
 import Flex from 'components/Flex'
 import Icon, { type IconProps } from 'components/Icon'
+import clst from 'styles/clst'
 
-const nodeClasses = clsx(
+const nodeClasses = clst(
   'px-3 py-1.5 text-zinc-400',
   'focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-inset'
 )
@@ -14,9 +14,9 @@ const nodeClasses = clsx(
 const ContentTreeNode = forwardRef<HTMLDivElement | HTMLAnchorElement, React.PropsWithChildren<ContentTreeNodeProps>>(
   ({ children, href, icon, iconLabel, selected, style, text, ...props }, forwardedRef) => {
     const anchorClasses = href
-      ? clsx('flex w-full items-center', nodeClasses, {
+      ? clst('flex w-full items-center', nodeClasses, {
           'hover:bg-blue-600 hover:text-blue-50': !selected,
-          'bg-zinc-700/60 !text-blue-50': selected,
+          'bg-zinc-700/60 text-blue-50': selected,
         })
       : undefined
 
