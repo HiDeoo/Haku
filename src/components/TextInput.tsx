@@ -1,17 +1,17 @@
 import { useTextField } from '@react-aria/textfield'
 import { useObjectRef } from '@react-aria/utils'
-import clsx from 'clsx'
 import { forwardRef } from 'react'
 import { type UseFormRegisterReturn } from 'react-hook-form'
 
 import Label from 'components/Label'
+import clst from 'styles/clst'
 
 const TextInput = forwardRef<HTMLInputElement, React.PropsWithChildren<TextInputProps>>(
   ({ className, defaultValue, onChange, type = 'text', ...props }, forwardedRef) => {
     const ref = useObjectRef(forwardedRef)
     const { labelProps, inputProps, errorMessageProps } = useTextField(props, ref)
 
-    const inputClasses = clsx(
+    const inputClasses = clst(
       'w-full bg-zinc-600 rounded-md px-3 py-1.5 placeholder:text-blue-50/40 disabled:cursor-not-allowed',
       'focus:outline-none focus:ring-2 focus:ring-offset-zinc-800 focus:ring-offset-2',
       props.errorMessage ? 'focus:ring-red-400' : 'focus:ring-blue-600',

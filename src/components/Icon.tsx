@@ -1,10 +1,11 @@
 import { Root } from '@radix-ui/react-accessible-icon'
-import clsx from 'clsx'
+
+import clst from 'styles/clst'
 
 const Icon: React.FC<IconProps> = ({ className, icon, label }) => {
   const Component = icon
 
-  const iconClasses = clsx('h-4 w-4', className)
+  const iconClasses = clst('h-4 w-4', className)
 
   const content = <Component className={iconClasses} />
 

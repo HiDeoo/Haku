@@ -6,8 +6,9 @@ import {
   Separator as MenuSeparator,
   Trigger,
 } from '@radix-ui/react-context-menu'
-import clsx from 'clsx'
 import { forwardRef } from 'react'
+
+import clst from 'styles/clst'
 
 const itemClasses = 'block w-full text-left focus:outline-none px-2 py-1 rounded'
 
@@ -24,7 +25,7 @@ const ContextMenu: ContextMenuComponent = ({ children, trigger }) => {
 
 const Item = forwardRef<HTMLButtonElement, React.PropsWithChildren<ItemProps>>(
   ({ intent, onClick, text }, forwardedRef) => {
-    const buttonClasses = clsx(itemClasses, 'font-medium', {
+    const buttonClasses = clst(itemClasses, 'font-medium', {
       'focus:bg-blue-600': !intent,
       'text-red-400 focus:bg-red-500 focus:text-red-50': intent === 'error',
     })

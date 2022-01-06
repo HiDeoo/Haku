@@ -1,5 +1,4 @@
 import { Presence } from '@radix-ui/react-presence'
-import clsx from 'clsx'
 import fuzzaldrin from 'fuzzaldrin-plus'
 import {
   useCombobox,
@@ -25,6 +24,7 @@ import Icon from 'components/Icon'
 import Label from 'components/Label'
 import Spinner from 'components/Spinner'
 import TextInput from 'components/TextInput'
+import clst from 'styles/clst'
 
 const menuWindowBottomOffsetInPixels = 20
 const menuMaxHeightInPixels = 210
@@ -202,8 +202,8 @@ const Combobox = <Item, FormFields extends FieldValues>({
     return loading ? 'Loading…' : inputProps.value
   }
 
-  const triggerIconClasses = clsx('motion-safe:transition-transform motion-safe:duration-200', { 'rotate-180': isOpen })
-  const menuClasses = clsx('rounded-md bg-zinc-700 shadow-sm shadow-zinc-900/50 overflow-auto origin-top', {
+  const triggerIconClasses = clst('motion-safe:transition-transform motion-safe:duration-200', { 'rotate-180': isOpen })
+  const menuClasses = clst('rounded-md bg-zinc-700 shadow-sm shadow-zinc-900/50 overflow-auto origin-top', {
     'animate-combobox': !disableMenuAnimation,
   })
 
@@ -226,7 +226,7 @@ const Combobox = <Item, FormFields extends FieldValues>({
           {...getToggleButtonProps()}
           disabled={isDisabled()}
           aria-label="Toggle Menu"
-          className="!min-w-0 px-2 disabled:bg-zinc-600"
+          className="min-w-0 px-2 disabled:bg-zinc-600"
         >
           <Icon icon={RiArrowDownSLine} className={triggerIconClasses} />
         </Button>
@@ -241,7 +241,7 @@ const Combobox = <Item, FormFields extends FieldValues>({
             {filteredItems.map((item, index) => {
               const isHighlighted = highlightedIndex === index
 
-              const menuItemClasses = clsx('px-3 py-1.5 cursor-pointer text-ellipsis overflow-hidden', {
+              const menuItemClasses = clst('px-3 py-1.5 cursor-pointer text-ellipsis overflow-hidden', {
                 'bg-blue-600': isHighlighted,
               })
 

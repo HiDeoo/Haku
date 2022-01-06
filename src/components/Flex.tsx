@@ -1,5 +1,6 @@
-import clsx from 'clsx'
 import { forwardRef } from 'react'
+
+import clst from 'styles/clst'
 
 const Flex = <Element extends React.ElementType = 'div'>(
   {
@@ -18,7 +19,7 @@ const Flex = <Element extends React.ElementType = 'div'>(
 ) => {
   const Element = as || 'div'
 
-  const elementClasses = clsx(
+  const elementClasses = clst(
     'flex',
     {
       'flex-row': direction === 'row',

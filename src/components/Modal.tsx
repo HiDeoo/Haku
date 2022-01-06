@@ -1,10 +1,10 @@
 import { Close, Content, Overlay, Portal, Root, Trigger } from '@radix-ui/react-dialog'
-import clsx from 'clsx'
 import { RiCloseLine } from 'react-icons/ri'
 
 import Flex from 'components/Flex'
 import Button from 'components/Button'
 import IconButton from 'components/IconButton'
+import clst from 'styles/clst'
 
 const Modal: ModalComponent = ({ children, contentClassName, disabled, onOpenChange, opened, title, trigger }) => {
   function onCloseInteraction(event: KeyboardEvent | CustomEvent) {
@@ -13,7 +13,7 @@ const Modal: ModalComponent = ({ children, contentClassName, disabled, onOpenCha
     }
   }
 
-  const contentClasses = clsx(
+  const contentClasses = clst(
     'z-50 m-auto outline-none min-w-[400px] max-w-[75%] animate-modal-content bg-zinc-800 rounded-md shadow shadow-black/75',
     contentClassName
   )
@@ -42,7 +42,7 @@ const Modal: ModalComponent = ({ children, contentClassName, disabled, onOpenCha
                   tooltip="Close"
                   icon={RiCloseLine}
                   disabled={disabled}
-                  className="rounded-full !p-1 !ml-2.5"
+                  className="rounded-full p-1 ml-2.5"
                 />
               </Close>
             </Flex>

@@ -1,7 +1,7 @@
-import clsx from 'clsx'
+import clst from 'styles/clst'
 
 const Label: React.FC<LabelProps> = ({ children, disabled, errorMessage, errorMessageProps, ...props }) => {
-  const containerClasses = clsx('mb-1', { 'opacity-50': disabled })
+  const containerClasses = clst('mb-1', { 'opacity-50': disabled })
 
   return (
     <div className={containerClasses}>
