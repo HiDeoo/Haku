@@ -1,0 +1,94 @@
+.editor {
+  &:global(.ProseMirror) {
+    overflow-wrap: anywhere;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply my-4 text-blue-200;
+  }
+
+  h1 {
+    @apply text-4xl font-bold mt-0;
+  }
+
+  h2 {
+    @apply text-3xl font-bold;
+  }
+
+  h3 {
+    @apply text-2xl font-bold;
+  }
+
+  h4 {
+    @apply text-xl font-bold;
+  }
+
+  h5 {
+    @apply text-lg font-semibold;
+  }
+
+  h6 {
+    @apply text-base font-semibold;
+  }
+
+  p {
+    @apply my-4;
+  }
+
+  hr {
+    @apply border-t-zinc-600;
+  }
+
+  blockquote {
+    @apply pl-3 border-l-[3px] border-l-zinc-600 italic;
+  }
+
+  ol {
+    counter-reset: li;
+  }
+
+  ol,
+  ul {
+    @apply pl-5;
+  }
+
+  ol > li,
+  ul > li {
+    @apply relative;
+
+    &::before {
+      @apply align-top absolute text-zinc-500;
+    }
+  }
+
+  ol > li {
+    counter-increment: li;
+
+    &::before {
+      @apply -left-9 -top-0 text-right w-8;
+
+      content: '.' counter(li);
+      direction: rtl;
+    }
+  }
+
+  ul > li::before {
+    @apply -left-4 -top-[5px] text-xl content-['\2022'];
+  }
+
+  & > ol,
+  & > ul {
+    & > li p {
+      @apply my-2;
+    }
+  }
+
+  code {
+    @apply bg-red-600 rounded px-[0.2rem] py-px bg-zinc-600;
+  }
+}

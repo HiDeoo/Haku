@@ -1,13 +1,7 @@
-import { useRouter } from 'next/router'
+import Note from 'components/Note'
 
-const Note: Page = () => {
-  const { query } = useRouter()
-
-  return (
-    <>
-      <div>note - {query.id}</div>
-    </>
-  )
+const NotePage: Page = () => {
+  return <Note />
 }
 
-export default Note
+export default NotePage

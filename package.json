@@ -25,6 +25,8 @@
     "@react-aria/button": "3.3.4",
     "@react-aria/textfield": "3.5.0",
     "@react-aria/utils": "3.11.0",
+    "@tiptap/react": "2.0.0-beta.104",
+    "@tiptap/starter-kit": "2.0.0-beta.168",
     "clsx": "1.1.1",
     "downshift": "6.1.7",
     "fuzzaldrin-plus": "0.6.0",
