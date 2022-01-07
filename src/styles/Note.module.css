@@ -91,4 +91,8 @@
   code {
     @apply bg-red-600 rounded px-[0.2rem] py-px bg-zinc-600;
   }
+
+  mark {
+    @apply bg-red-600 rounded px-[0.2rem] py-px bg-yellow-400 text-zinc-900;
+  }
 }
