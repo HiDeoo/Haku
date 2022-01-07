@@ -6,7 +6,7 @@ import { type FolderData } from 'libs/db/folder'
 import { type AddFolderBody } from 'pages/api/folders'
 import { type UpdateFolderQuery, type UpdateFolderBody, type RemoveFolderQuery } from 'pages/api/folders/[id]'
 import useContentType, { type ContentType } from 'hooks/useContentType'
-import { CONTENT_TREE_QUERY_KEY } from 'hooks/useContentTree'
+import { getContentTreeQueryKey } from 'hooks/useContentTree'
 
 export default function useFolderMutation() {
   const { push } = useRouter()
@@ -36,7 +36,7 @@ export default function useFolderMutation() {
     },
     {
       onSuccess: (_, variables) => {
-        queryClient.invalidateQueries(CONTENT_TREE_QUERY_KEY)
+        queryClient.invalidateQueries(getContentTreeQueryKey(type))
 
         if (variables.mutationType === 'remove') {
           push(urlPath)

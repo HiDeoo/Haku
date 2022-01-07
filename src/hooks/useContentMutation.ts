@@ -7,7 +7,7 @@ import { type AddTodoBody } from 'pages/api/todos'
 import { type NoteMetaData } from 'libs/db/note'
 import useContentId from 'hooks/useContentId'
 import useContentType, { ContentType } from 'hooks/useContentType'
-import { CONTENT_TREE_QUERY_KEY } from 'hooks/useContentTree'
+import { getContentTreeQueryKey } from 'hooks/useContentTree'
 import { type TodoMetaData } from 'libs/db/todo'
 import { type RemoveNoteQuery, type UpdateNoteBody, type UpdateNoteQuery } from 'pages/api/notes/[id]'
 import { type RemoveTodoQuery } from 'pages/api/todos/[id]'
@@ -45,7 +45,7 @@ export default function useContentMutation() {
     },
     {
       onSuccess: (newContentData, variables) => {
-        queryClient.invalidateQueries(CONTENT_TREE_QUERY_KEY)
+        queryClient.invalidateQueries(getContentTreeQueryKey(type))
 
         if (
           newContentData &&
