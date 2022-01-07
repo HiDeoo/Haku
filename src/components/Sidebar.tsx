@@ -6,6 +6,7 @@ import Flex from 'components/Flex'
 import IconButton from 'components/IconButton'
 import FolderModal from 'components/FolderModal'
 import ContentModal from 'components/ContentModal'
+import ContentTypeSwitch from 'components/ContentTypeSwitch'
 
 const Sidebar: React.FC = () => {
   function logout() {
@@ -17,8 +18,9 @@ const Sidebar: React.FC = () => {
       <ContentTree />
       <Flex
         justifyContent="center"
-        className="z-10 px-4 pb-2 border-t border-zinc-600/40 pt-1.5 shadow-[0_-1px_1px_0_rgba(0,0,0,1)]"
+        className="z-10 px-4 pb-2 border-t border-zinc-600/40 pt-2 shadow-[0_-1px_1px_0_rgba(0,0,0,1)]"
       >
+        <ContentTypeSwitch />
         <ContentModal />
         <FolderModal />
         <IconButton icon={RiLogoutCircleRLine} onPress={logout} tooltip="Logout" />

@@ -12,19 +12,24 @@ export default function useContentType(): UseContentTypeReturnValue {
   const contentType = useStore(contentTypeStoreSelector)
 
   return useMemo(() => {
-    const value: UseContentTypeReturnValue = { cType: '', lcType: '', type: undefined, urlPath: '' }
-
-    if (contentType) {
-      value.type = contentType
-    }
-
-    if (value.type) {
-      value.cType = capitalize(value.type)
-      value.lcType = value.type.toLowerCase()
-      value.urlPath = `/${value.lcType}s`
-    }
-    return value
+    return getContentType(contentType)
   }, [contentType])
+}
+
+export function getContentType(type: ContentType | undefined): UseContentTypeReturnValue {
+  const value: UseContentTypeReturnValue = { cType: '', lcType: '', type: undefined, urlPath: '' }
+
+  if (type) {
+    value.type = type
+  }
+
+  if (value.type) {
+    value.cType = capitalize(value.type)
+    value.lcType = value.type.toLowerCase()
+    value.urlPath = `/${value.lcType}s`
+  }
+
+  return value
 }
 
 export interface UseContentTypeReturnValue {
