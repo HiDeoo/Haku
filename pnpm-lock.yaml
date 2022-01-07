@@ -15,6 +15,7 @@ specifiers:
   '@react-aria/button': 3.3.4
   '@react-aria/textfield': 3.5.0
   '@react-aria/utils': 3.11.0
+  '@tiptap/extension-strike': 2.0.0-beta.27
   '@tiptap/react': 2.0.0-beta.104
   '@tiptap/starter-kit': 2.0.0-beta.168
   '@types/faker': 5.5.9
@@ -75,6 +76,7 @@ dependencies:
   '@react-aria/button': 3.3.4_react@17.0.2
   '@react-aria/textfield': 3.5.0_react@17.0.2
   '@react-aria/utils': 3.11.0_react@17.0.2
+  '@tiptap/extension-strike': 2.0.0-beta.27
   '@tiptap/react': 2.0.0-beta.104_react-dom@17.0.2+react@17.0.2
   '@tiptap/starter-kit': 2.0.0-beta.168
   clsx: 1.1.1
@@ -1841,6 +1843,12 @@ packages:
       '@tiptap/core': ^2.0.0-beta.1
     dependencies:
       '@tiptap/core': 2.0.0-beta.160
+    dev: false
+
+  /@tiptap/extension-strike/2.0.0-beta.27:
+    resolution: {integrity: sha512-2dmCgtesuDdivM/54Q+Y6Tc3JbGz1SkHP6c62piuqBiYLWg3xa16zChZOhfN8szbbQlBgLT6XRTDt3c2Ux+Dug==}
+    peerDependencies:
+      '@tiptap/core': ^2.0.0-beta.1
     dev: false
 
   /@tiptap/extension-strike/2.0.0-beta.27_@tiptap+core@2.0.0-beta.160:
