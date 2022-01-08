@@ -45,13 +45,13 @@ const Button = forwardRef<HTMLButtonElement, React.PropsWithChildren<ButtonProps
         'bg-zinc-400': !primary && isPressed,
         'bg-blue-400': primary && isPressed,
       },
-      pressedClassName && { [pressedClassName]: isPressed },
       'rounded-md shadow-sm shadow-zinc-900/50 disabled:shadow-none',
       'disabled:cursor-not-allowed disabled:opacity-50',
       'focus:outline-none',
       'focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-zinc-800 focus-visible:ring-offset-2',
       'min-w-[75px] px-3.5 py-1.5 mx-1.5 first-of-type:ml-0 last-of-type:mr-0',
-      className
+      className,
+      pressedClassName && { [pressedClassName]: isPressed }
     )
 
     return (

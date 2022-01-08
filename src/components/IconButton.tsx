@@ -6,20 +6,21 @@ import Tooltip from 'components/Tooltip'
 import clst from 'styles/clst'
 
 const IconButton = forwardRef<HTMLButtonElement, React.PropsWithChildren<IconButtonProps>>(
-  ({ className, icon, tooltip, ...props }, forwardedRef) => {
+  ({ className, icon, pressedClassName, tooltip, ...props }, forwardedRef) => {
     const buttonClasses = clst(
       'bg-inherit hover:bg-zinc-700/75 hover:text-blue-600 disabled:bg-inherit disabled:text-inherit shadow-none',
       'px-1.5 mx-0.5 min-w-0',
       className
     )
+    const pressedButtonClasses = clst('bg-blue-50/20 hover:bg-blue-50/20', pressedClassName)
 
     const content = (
       <Button
         {...props}
         ref={forwardedRef}
-        className={buttonClasses}
         aria-label={tooltip}
-        pressedClassName="bg-blue-50/20 hover:bg-blue-50/20"
+        className={buttonClasses}
+        pressedClassName={pressedButtonClasses}
       >
         <Icon icon={icon} />
       </Button>
@@ -36,6 +37,8 @@ export default IconButton
 interface IconButtonProps extends Omit<ButtonProps, 'primary'> {
   className?: string
   icon: IconProps['icon']
+  onPress?: ButtonProps['onPress']
+  pressedClassName?: string
   tabIndex?: ButtonProps['tabIndex']
-  tooltip: string
+  tooltip?: string
 }
