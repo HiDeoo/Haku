@@ -5,7 +5,7 @@ import clst from 'styles/clst'
 const Layout: React.FC<LayoutProps> = ({ children, sidebar }) => {
   const centered = sidebar ? undefined : 'center'
 
-  const mainClasses = clst('overflow-y-auto', { 'border-l border-zinc-600/30': sidebar })
+  const mainClasses = clst('overflow-hidden', { 'border-l border-zinc-600/30': sidebar })
 
   return (
     <Flex fullHeight fullWidth>
