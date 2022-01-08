@@ -93,6 +93,6 @@
   }
 
   mark {
-    @apply bg-red-600 rounded px-[0.2rem] py-px bg-yellow-400 text-zinc-900;
+    @apply bg-red-600 rounded px-[0.2rem] py-px bg-amber-300 text-zinc-900;
   }
 }
