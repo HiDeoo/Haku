@@ -64,7 +64,7 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ editor }) => {
   return (
     <Inspector>
       <Inspector.Section title="Text">
-        <Inspector.IconMenu icon={headingMenuIcon} tooltip="Hahahaha" toggled={isHeading}>
+        <Inspector.IconMenu icon={headingMenuIcon} tooltip="Toggle Heading" toggled={isHeading}>
           <Inspector.IconMenuItem icon={RiH1} onClick={() => toggleHeading(1)} />
           <Inspector.IconMenuItem icon={RiH2} onClick={() => toggleHeading(2)} />
           <Inspector.IconMenuItem icon={RiH3} onClick={() => toggleHeading(3)} />
