@@ -18,7 +18,7 @@ const Sidebar: React.FC = () => {
       <ContentTree />
       <Flex
         justifyContent="center"
-        className="z-10 px-4 pb-2 border-t border-zinc-600/40 pt-2 shadow-[0_-1px_1px_0_rgba(0,0,0,1)]"
+        className="z-10 px-4 py-2 border-t border-zinc-600/40 shadow-[0_-1px_1px_0_rgba(0,0,0,1)]"
       >
         <ContentTypeSwitch />
         <ContentModal />
