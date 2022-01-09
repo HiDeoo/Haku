@@ -98,8 +98,11 @@ const InspectorIconButton: React.FC<InspectorIconButtonProps> = ({
   )
 }
 
+Inspector.IconButton = InspectorIconButton
+
 type InspectorComponent = React.FC & {
   Button: typeof InspectorButton
+  IconButton: typeof InspectorIconButton
   Section: typeof InspectorSection
   Toggle: typeof InspectorToggle
 }
