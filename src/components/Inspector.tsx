@@ -1,9 +1,10 @@
-import { Button as Roving, Root } from '@radix-ui/react-toolbar'
+import { Content, Item, Root, Trigger } from '@radix-ui/react-dropdown-menu'
+import { forwardRef } from 'react'
 
 import Button, { type ButtonProps } from 'components/Button'
+import Flex from 'components/Flex'
 import { type IconProps } from 'components/Icon'
-import IconButton from 'components/IconButton'
-import Tooltip from 'components/Tooltip'
+import IconButton, { type IconButtonProps } from 'components/IconButton'
 import clst from 'styles/clst'
 
 const Inspector: InspectorComponent = ({ children }) => {
@@ -17,19 +18,11 @@ const InspectorSection: React.FC<InspectorSectionProps> = ({ children, title }) 
     'pt-3': typeof title === 'undefined',
   })
 
-  const content = (
+  return (
     <div className={sectionClasses}>
       {title ? <div className="mb-2 text-blue-100/75 text-xs font-medium">{title}</div> : null}
-      {children}
+      <div className="flex flex-wrap gap-2.5">{children}</div>
     </div>
-  )
-
-  return title ? (
-    <Root asChild orientation="horizontal">
-      {content}
-    </Root>
-  ) : (
-    content
   )
 }
 
@@ -73,36 +66,79 @@ const InspectorToggle: React.FC<InspectorToggleProps> = ({ onToggle, toggled, ..
 
 Inspector.Toggle = InspectorToggle
 
-const InspectorIconButton: React.FC<InspectorIconButtonProps> = ({
-  className,
-  pressedClassName,
-  tooltip,
-  ...props
-}) => {
-  const buttonClasses = clst('bg-zinc-700 hover:bg-zinc-600 hover:text-blue-50 shadow-none', className)
-  const pressedButtonClasses = clst('bg-zinc-500 hover:bg-zinc-500', pressedClassName)
+const InspectorIconButton = forwardRef<HTMLButtonElement, React.PropsWithChildren<InspectorIconButtonProps>>(
+  ({ className, pressedClassName, tooltip, ...props }, forwardedRef) => {
+    const buttonClasses = clst('mx-0 bg-zinc-700 hover:bg-zinc-600 hover:text-blue-50 shadow-none', className)
+    const pressedButtonClasses = clst('bg-zinc-500 hover:bg-zinc-500', pressedClassName)
+
+    return (
+      <IconButton
+        {...props}
+        tooltip={tooltip}
+        ref={forwardedRef}
+        className={buttonClasses}
+        pressedClassName={pressedButtonClasses}
+      />
+    )
+  }
+)
+
+InspectorIconButton.displayName = 'InspectorIconButton'
+Inspector.IconButton = InspectorIconButton
+
+const InspectorIconMenu: React.FC<InspectorIconButtonMenuProps> = ({ children, icon, toggled, tooltip }) => {
+  const buttonClasses = clst({
+    'bg-blue-500 hover:bg-blue-400 border-blue-400': toggled,
+  })
+  const pressedButtonClasses = clst({
+    'bg-blue-300 hover:bg-blue-300': toggled,
+  })
+
+  function onCloseAutoFocus(event: Event) {
+    console.log('>>>>')
+    event.preventDefault()
+  }
 
   return (
-    <Tooltip content={tooltip}>
-      <span className="inline-block mx-1 first-of-type:ml-0 last-of-type:mr-0" role="button">
-        <Roving asChild>
-          <IconButton
-            {...props}
-            aria-label={tooltip}
-            className={buttonClasses}
-            pressedClassName={pressedButtonClasses}
-          />
-        </Roving>
-      </span>
-    </Tooltip>
+    <Root>
+      <Trigger asChild>
+        <InspectorIconButton
+          icon={icon}
+          tooltip={tooltip}
+          className={buttonClasses}
+          pressedClassName={pressedButtonClasses}
+        />
+      </Trigger>
+      <Content loop onCloseAutoFocus={onCloseAutoFocus}>
+        <Flex direction="col" className="rounded-md mt-[2px] bg-zinc-700 shadow-sm shadow-black/50">
+          {children}
+        </Flex>
+      </Content>
+    </Root>
   )
 }
 
-Inspector.IconButton = InspectorIconButton
+Inspector.IconMenu = InspectorIconMenu
+
+const InspectorIconMenuItem: React.FC<InspectorIconMenuItemProps> = ({ icon, onClick }) => {
+  return (
+    <Item asChild>
+      <InspectorIconButton
+        icon={icon}
+        onClick={onClick}
+        className="focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-offset-red-500"
+      />
+    </Item>
+  )
+}
+
+Inspector.IconMenuItem = InspectorIconMenuItem
 
 type InspectorComponent = React.FC & {
   Button: typeof InspectorButton
   IconButton: typeof InspectorIconButton
+  IconMenu: typeof InspectorIconMenu
+  IconMenuItem: typeof InspectorIconMenuItem
   Section: typeof InspectorSection
   Toggle: typeof InspectorToggle
 }
@@ -114,12 +150,23 @@ interface InspectorSectionProps {
 interface InspectorIconButtonProps {
   className?: string
   icon: IconProps['icon']
-  onPress: ButtonProps['onPress']
+  onClick?: IconButtonProps['onClick']
+  onPress?: IconButtonProps['onPress']
   pressedClassName?: string
-  tooltip: string
+  tooltip?: string
 }
 
 interface InspectorToggleProps extends Omit<InspectorIconButtonProps, 'onPress'> {
   toggled?: boolean
   onToggle: (toggled: boolean) => void
+}
+
+interface InspectorIconButtonMenuProps {
+  icon: IconProps['icon']
+  toggled?: boolean
+  tooltip: string
+}
+
+interface InspectorIconMenuItemProps extends Omit<InspectorIconButtonMenuProps, 'tooltip'> {
+  onClick: IconButtonProps['onClick']
 }

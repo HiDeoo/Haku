@@ -13,6 +13,7 @@ const Button = forwardRef<HTMLButtonElement, React.PropsWithChildren<ButtonProps
       className,
       disabled,
       loading,
+      onKeyDown,
       onMouseEnter,
       onMouseLeave,
       pressedClassName,
@@ -59,6 +60,7 @@ const Button = forwardRef<HTMLButtonElement, React.PropsWithChildren<ButtonProps
         {...buttonProps}
         ref={ref}
         tabIndex={tabIndex}
+        onKeyDown={onKeyDown}
         className={buttonClasses}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
@@ -89,6 +91,7 @@ export interface ButtonProps {
   className?: string
   disabled?: UseButtonProps['isDisabled']
   loading?: boolean
+  onKeyDown?: React.HTMLAttributes<HTMLButtonElement>['onKeyDown']
   onMouseEnter?: React.HTMLAttributes<HTMLButtonElement>['onMouseEnter']
   onMouseLeave?: React.HTMLAttributes<HTMLButtonElement>['onMouseLeave']
   onPress?: UseButtonProps['onPress']
@@ -98,7 +101,7 @@ export interface ButtonProps {
   type?: 'submit'
 }
 
-interface ButtonPropsWithOnClickHandler extends ButtonProps {
+export interface ButtonPropsWithOnClickHandler extends ButtonProps {
   /**
    * Some third-party library might use a button and attach it an `onClick` event handler.
    * @see https://react-spectrum.adobe.com/react-aria/usePress.html#features

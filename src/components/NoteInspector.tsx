@@ -3,6 +3,13 @@ import {
   RiBold,
   RiDoubleQuotesR,
   RiCodeLine,
+  RiH1,
+  RiH2,
+  RiH3,
+  RiH4,
+  RiH5,
+  RiH6,
+  RiHeading,
   RiItalic,
   RiListOrdered,
   RiListUnordered,
@@ -12,6 +19,16 @@ import {
 import Inspector from 'components/Inspector'
 
 const NoteInspector: React.FC<NoteInspectorProps> = ({ editor }) => {
+  const isH1 = editor?.isActive('heading', { level: 1 })
+  const isH2 = editor?.isActive('heading', { level: 2 })
+  const isH3 = editor?.isActive('heading', { level: 3 })
+  const isH4 = editor?.isActive('heading', { level: 4 })
+  const isH5 = editor?.isActive('heading', { level: 5 })
+  const isH6 = editor?.isActive('heading', { level: 6 })
+
+  const isHeading = isH1 || isH2 || isH3 || isH4 || isH5 || isH6
+  const headingMenuIcon = isH1 ? RiH1 : isH2 ? RiH2 : isH3 ? RiH3 : isH4 ? RiH4 : isH5 ? RiH5 : isH6 ? RiH6 : RiHeading
+
   function addHorizontalRule() {
     editor?.chain().focus().setHorizontalRule().run()
   }
@@ -26,6 +43,10 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ editor }) => {
 
   function toggleCode() {
     editor?.chain().focus().toggleCode().run()
+  }
+
+  function toggleHeading(level: 1 | 2 | 3 | 4 | 5 | 6) {
+    editor?.chain().focus().toggleHeading({ level }).run()
   }
 
   function toggleItalic() {
@@ -43,6 +64,14 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ editor }) => {
   return (
     <Inspector>
       <Inspector.Section title="Text">
+        <Inspector.IconMenu icon={headingMenuIcon} tooltip="Hahahaha" toggled={isHeading}>
+          <Inspector.IconMenuItem icon={RiH1} onClick={() => toggleHeading(1)} />
+          <Inspector.IconMenuItem icon={RiH2} onClick={() => toggleHeading(2)} />
+          <Inspector.IconMenuItem icon={RiH3} onClick={() => toggleHeading(3)} />
+          <Inspector.IconMenuItem icon={RiH4} onClick={() => toggleHeading(4)} />
+          <Inspector.IconMenuItem icon={RiH5} onClick={() => toggleHeading(5)} />
+          <Inspector.IconMenuItem icon={RiH6} onClick={() => toggleHeading(6)} />
+        </Inspector.IconMenu>
         <Inspector.Toggle
           icon={RiBold}
           onToggle={toggleBold}

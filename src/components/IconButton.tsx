@@ -1,6 +1,6 @@
 import { forwardRef } from 'react'
 
-import Button, { type ButtonProps } from 'components/Button'
+import Button, { type ButtonPropsWithOnClickHandler, type ButtonProps } from 'components/Button'
 import Icon, { type IconProps } from 'components/Icon'
 import Tooltip from 'components/Tooltip'
 import clst from 'styles/clst'
@@ -34,7 +34,7 @@ IconButton.displayName = 'IconButton'
 
 export default IconButton
 
-interface IconButtonProps extends Omit<ButtonProps, 'primary'> {
+export interface IconButtonProps extends Omit<ButtonProps, 'primary'>, Partial<ButtonPropsWithOnClickHandler> {
   className?: string
   icon: IconProps['icon']
   onPress?: ButtonProps['onPress']
