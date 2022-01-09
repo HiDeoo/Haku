@@ -2,10 +2,9 @@ import Highlight from '@tiptap/extension-highlight'
 import Strike from '@tiptap/extension-strike'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import { RiBold } from 'react-icons/ri'
 
 import Flex from 'components/Flex'
-import Inspector from 'components/Inspector'
+import NoteInspector from 'components/NoteInspector'
 import clst from 'styles/clst'
 import styles from 'styles/Note.module.css'
 
@@ -24,23 +23,10 @@ const Note: React.FC = () => {
   // FIXME(HiDeoo) copy(editor.getHTML())
   global.editor = editor
 
-  function toggleBold() {
-    editor?.chain().focus().toggleBold().run()
-  }
-
   return (
     <Flex className="overflow-hidden">
       <EditorContent editor={editor} className="grid h-full overflow-y-auto" />
-      <Inspector>
-        <Inspector.Section title="Text">
-          <Inspector.Toggle
-            icon={RiBold}
-            onToggle={toggleBold}
-            tooltip="Toggle Bold"
-            toggled={editor?.isActive('bold')}
-          />
-        </Inspector.Section>
-      </Inspector>
+      <NoteInspector editor={editor} />
     </Flex>
   )
 }
