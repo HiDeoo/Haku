@@ -87,7 +87,7 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ editor }) => {
   }
 
   return (
-    <Inspector>
+    <Inspector disabled={false}>
       <Inspector.Section>
         <Inspector.Button onPress={undo} primary>
           Save

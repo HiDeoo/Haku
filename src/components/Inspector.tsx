@@ -1,5 +1,5 @@
 import { Content, Item, Root, Trigger } from '@radix-ui/react-dropdown-menu'
-import { forwardRef } from 'react'
+import { Children, cloneElement, forwardRef, isValidElement } from 'react'
 
 import Button, { type ButtonProps } from 'components/Button'
 import Flex from 'components/Flex'
@@ -7,13 +7,23 @@ import { type IconProps } from 'components/Icon'
 import IconButton, { type IconButtonProps } from 'components/IconButton'
 import clst from 'styles/clst'
 
-const Inspector: InspectorComponent = ({ children }) => {
-  return <div className="shrink-0 w-64 overflow-hidden bg-zinc-900 border-l border-zinc-600/50">{children}</div>
+const Inspector: InspectorComponent = ({ children, disabled }) => {
+  return (
+    <div className="shrink-0 w-64 overflow-hidden bg-zinc-900 border-l border-zinc-600/50">
+      {Children.map(children, (child) => {
+        if (!isValidElement(child)) {
+          return null
+        }
+
+        return cloneElement(child, { ...child.props, disabled })
+      })}
+    </div>
+  )
 }
 
 export default Inspector
 
-const InspectorSection: React.FC<InspectorSectionProps> = ({ children, title }) => {
+const InspectorSection: React.FC<InspectorSectionProps> = ({ children, disabled, title }) => {
   const sectionClasses = clst('pt-2 pb-3 px-3 border-b border-zinc-600/25 last-of-type:border-0', {
     'pt-3': typeof title === 'undefined',
   })
@@ -21,7 +31,15 @@ const InspectorSection: React.FC<InspectorSectionProps> = ({ children, title }) 
   return (
     <div className={sectionClasses}>
       {title ? <div className="mb-2 text-blue-100/75 text-xs font-medium">{title}</div> : null}
-      <div className="flex flex-wrap gap-2.5">{children}</div>
+      <div className="flex flex-wrap gap-2.5">
+        {Children.map(children, (child) => {
+          if (!isValidElement(child)) {
+            return null
+          }
+
+          return cloneElement(child, { ...child.props, disabled })
+        })}
+      </div>
     </div>
   )
 }
@@ -89,7 +107,7 @@ const InspectorIconButton = forwardRef<HTMLButtonElement, React.PropsWithChildre
 InspectorIconButton.displayName = 'InspectorIconButton'
 Inspector.IconButton = InspectorIconButton
 
-const InspectorIconMenu: React.FC<InspectorIconButtonMenuProps> = ({ children, icon, toggled, tooltip }) => {
+const InspectorIconMenu: React.FC<InspectorIconButtonMenuProps> = ({ children, disabled, icon, toggled, tooltip }) => {
   const buttonClasses = clst({
     'bg-blue-500 hover:bg-blue-400 border-blue-400': toggled,
   })
@@ -107,6 +125,7 @@ const InspectorIconMenu: React.FC<InspectorIconButtonMenuProps> = ({ children, i
         <InspectorIconButton
           icon={icon}
           tooltip={tooltip}
+          disabled={disabled}
           className={buttonClasses}
           pressedClassName={pressedButtonClasses}
         />
@@ -136,7 +155,7 @@ const InspectorIconMenuItem: React.FC<InspectorIconMenuItemProps> = ({ icon, onC
 
 Inspector.IconMenuItem = InspectorIconMenuItem
 
-type InspectorComponent = React.FC & {
+type InspectorComponent = React.FC<InspectorProps> & {
   Button: typeof InspectorButton
   IconButton: typeof InspectorIconButton
   IconMenu: typeof InspectorIconMenu
@@ -145,7 +164,12 @@ type InspectorComponent = React.FC & {
   Toggle: typeof InspectorToggle
 }
 
+interface InspectorProps {
+  disabled?: boolean
+}
+
 interface InspectorSectionProps {
+  disabled?: boolean
   title?: string
 }
 
@@ -165,6 +189,7 @@ interface InspectorToggleProps extends Omit<InspectorIconButtonProps, 'onPress'>
 }
 
 interface InspectorIconButtonMenuProps {
+  disabled?: boolean
   icon: IconProps['icon']
   toggled?: boolean
   tooltip: string
