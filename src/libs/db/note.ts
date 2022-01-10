@@ -13,10 +13,10 @@ import {
 } from 'libs/api/routes/errors'
 
 export type NoteMetaData = Pick<Note, 'id' | 'folderId' | 'name' | 'slug'>
-export type NoteData = NoteMetaData & Pick<Note, 'html' | 'text'>
+export type NoteData = NoteMetaData & Pick<Note, 'html'>
 
 const noteMetaDataSelect = { id: true, name: true, folderId: true, slug: true }
-const noteDataSelect = { ...noteMetaDataSelect, html: true, text: true }
+const noteDataSelect = { ...noteMetaDataSelect, html: true }
 
 export async function addNote(
   userId: UserId,
@@ -139,4 +139,4 @@ async function validateFolder(folderId: NoteMetaData['folderId'] | undefined, us
 
 type NotesMetaDataGroupedByFolder = Map<NoteMetaData['folderId'], NoteMetaData[]>
 
-type UpdateNoteData = Partial<Pick<NoteMetaData, 'name' | 'folderId'> & Pick<NoteData, 'html' | 'text'>>
+type UpdateNoteData = Partial<Pick<NoteMetaData, 'name' | 'folderId'> & Pick<NoteData, 'html'> & Pick<Note, 'text'>>

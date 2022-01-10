@@ -376,13 +376,12 @@ describe('notes', () => {
 
           assertIsTreeItem(json[0])
           expect(hasKey(json[0], 'html')).toBe(false)
-          expect(hasKey(json[0], 'text')).toBe(false)
         }))
     })
 
     describe('id', () => {
       test('should return a note', async () => {
-        const { html, folderId, id, name, slug, text } = await createTestNote()
+        const { html, folderId, id, name, slug } = await createTestNote()
 
         return testApiRoute(
           idHandler,
@@ -394,7 +393,7 @@ describe('notes', () => {
             expect(json.slug).toBe(slug)
             expect(json.folderId).toBe(folderId)
             expect(json.html).toBe(html)
-            expect(json.text).toBe(text)
+            expect(hasKey(json, 'text')).toBe(false)
           },
           { dynamicRouteParams: { id } }
         )
@@ -621,7 +620,6 @@ describe('notes', () => {
 
           expect(json.name).toBe(newName)
           expect(hasKey(json, 'html')).toBe(false)
-          expect(hasKey(json, 'text')).toBe(false)
 
           const testNote = await getTestNote(id)
 
@@ -676,7 +674,6 @@ describe('notes', () => {
 
           expect(json.folderId).toBe(newFolderId)
           expect(hasKey(json, 'html')).toBe(false)
-          expect(hasKey(json, 'text')).toBe(false)
 
           const testNote = await getTestNote(id)
 
@@ -706,7 +703,6 @@ describe('notes', () => {
 
           expect(json.folderId).toBeNull()
           expect(hasKey(json, 'html')).toBe(false)
-          expect(hasKey(json, 'text')).toBe(false)
 
           const testNote = await getTestNote(id)
 
@@ -845,7 +841,7 @@ describe('notes', () => {
           expect(json.name).toBe(newName)
           expect(json.folderId).toBe(newFolderId)
           expect(json.html).toBe(newHtml)
-          expect(json.text).toBe(newText)
+          expect(hasKey(json, 'text')).toBe(false)
 
           const testNote = await getTestNote(id)
 
@@ -925,7 +921,7 @@ describe('notes', () => {
           expect(json.name).toBe(name)
           expect(json.folderId).toBe(folderId)
           expect(json.html).toBe(newHtml)
-          expect(json.text).toBe(newText)
+          expect(hasKey(json, 'text')).toBe(false)
 
           const testNote = await getTestNote(id)
 
