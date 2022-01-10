@@ -68,7 +68,10 @@ Inspector.Toggle = InspectorToggle
 
 const InspectorIconButton = forwardRef<HTMLButtonElement, React.PropsWithChildren<InspectorIconButtonProps>>(
   ({ className, pressedClassName, tooltip, ...props }, forwardedRef) => {
-    const buttonClasses = clst('mx-0 bg-zinc-700 hover:bg-zinc-600 hover:text-blue-50 shadow-none', className)
+    const buttonClasses = clst(
+      'mx-0 bg-zinc-700 hover:bg-zinc-600 hover:text-blue-50 shadow-none disabled:bg-zinc-700',
+      className
+    )
     const pressedButtonClasses = clst('bg-zinc-500 hover:bg-zinc-500', pressedClassName)
 
     return (
@@ -95,7 +98,6 @@ const InspectorIconMenu: React.FC<InspectorIconButtonMenuProps> = ({ children, i
   })
 
   function onCloseAutoFocus(event: Event) {
-    console.log('>>>>')
     event.preventDefault()
   }
 
@@ -149,6 +151,7 @@ interface InspectorSectionProps {
 
 interface InspectorIconButtonProps {
   className?: string
+  disabled?: IconButtonProps['disabled']
   icon: IconProps['icon']
   onClick?: IconButtonProps['onClick']
   onPress?: IconButtonProps['onPress']

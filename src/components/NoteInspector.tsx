@@ -1,8 +1,10 @@
 import { Editor } from '@tiptap/react'
 import {
+  RiArrowGoBackLine,
+  RiArrowGoForwardLine,
   RiBold,
-  RiDoubleQuotesR,
   RiCodeLine,
+  RiDoubleQuotesR,
   RiH1,
   RiH2,
   RiH3,
@@ -33,6 +35,10 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ editor }) => {
     editor?.chain().focus().setHorizontalRule().run()
   }
 
+  function redo() {
+    editor?.chain().focus().redo().run()
+  }
+
   function toggleBold() {
     editor?.chain().focus().toggleBold().run()
   }
@@ -61,8 +67,21 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ editor }) => {
     editor?.chain().focus().toggleBlockquote().run()
   }
 
+  function undo() {
+    editor?.chain().focus().undo().run()
+  }
+
   return (
     <Inspector>
+      <Inspector.Section>
+        <Inspector.IconButton tooltip="Undo" onPress={undo} icon={RiArrowGoBackLine} disabled={!editor?.can().undo()} />
+        <Inspector.IconButton
+          tooltip="Redo"
+          onPress={redo}
+          icon={RiArrowGoForwardLine}
+          disabled={!editor?.can().redo()}
+        />
+      </Inspector.Section>
       <Inspector.Section title="Text">
         <Inspector.IconMenu icon={headingMenuIcon} tooltip="Toggle Heading" toggled={isHeading}>
           <Inspector.IconMenuItem icon={RiH1} onClick={() => toggleHeading(1)} />

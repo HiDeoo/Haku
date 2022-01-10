@@ -36,6 +36,7 @@ export default IconButton
 
 export interface IconButtonProps extends Omit<ButtonProps, 'primary'>, Partial<ButtonPropsWithOnClickHandler> {
   className?: string
+  disabled?: ButtonProps['disabled']
   icon: IconProps['icon']
   onPress?: ButtonProps['onPress']
   pressedClassName?: string
