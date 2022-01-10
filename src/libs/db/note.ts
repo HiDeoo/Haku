@@ -9,11 +9,14 @@ import {
   API_ERROR_FOLDER_INVALID_TYPE,
   API_ERROR_NOTE_ALREADY_EXISTS,
   API_ERROR_NOTE_DOES_NOT_EXIST,
+  API_ERROR_NOTE_HTML_OR_TEXT_MISSING,
 } from 'libs/api/routes/errors'
 
 export type NoteMetaData = Pick<Note, 'id' | 'folderId' | 'name' | 'slug'>
+export type NoteData = NoteMetaData & Pick<Note, 'html' | 'text'>
 
 const noteMetaDataSelect = { id: true, name: true, folderId: true, slug: true }
+const noteDataSelect = { ...noteMetaDataSelect, html: true, text: true }
 
 export async function addNote(
   userId: UserId,
@@ -25,7 +28,7 @@ export async function addNote(
 
     try {
       return await prisma.note.create({
-        data: { userId, name, folderId, slug: slug(name) },
+        data: { userId, name, folderId, slug: slug(name), html: `<h1>${name}</h1><p></p>`, text: `${name}\n\n` },
         select: noteMetaDataSelect,
       })
     } catch (error) {
@@ -63,6 +66,10 @@ export function updateNote(id: NoteMetaData['id'], userId: UserId, data: UpdateN
       throw new ApiError(API_ERROR_NOTE_DOES_NOT_EXIST)
     }
 
+    if ((data.html && !data.text) || (data.text && !data.html)) {
+      throw new ApiError(API_ERROR_NOTE_HTML_OR_TEXT_MISSING)
+    }
+
     await validateFolder(data.folderId, userId)
 
     try {
@@ -74,8 +81,10 @@ export function updateNote(id: NoteMetaData['id'], userId: UserId, data: UpdateN
           folderId: data.folderId,
           name: data.name,
           slug: data.name ? slug(data.name) : undefined,
+          html: data.html,
+          text: data.text,
         },
-        select: noteMetaDataSelect,
+        select: data.html && data.text ? noteDataSelect : noteMetaDataSelect,
       })
     } catch (error) {
       handleDbError(error, {
@@ -120,4 +129,4 @@ async function validateFolder(folderId: NoteMetaData['folderId'] | undefined, us
 
 type NotesMetaDataGroupedByFolder = Map<NoteMetaData['folderId'], NoteMetaData[]>
 
-type UpdateNoteData = Partial<Pick<NoteMetaData, 'name' | 'folderId'>>
+type UpdateNoteData = Partial<Pick<NoteMetaData, 'name' | 'folderId'> & Pick<NoteData, 'html' | 'text'>>

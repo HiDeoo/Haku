@@ -41,12 +41,15 @@ interface TestFolderOptions {
 
 export function createTestNote(options?: TestNoteOptions) {
   const name = options?.name ?? faker.lorem.words()
+  const data = faker.lorem.paragraphs(3)
 
   return prisma.note.create({
     data: {
       name,
       folderId: options?.folderId,
+      html: data,
       slug: slug(name),
+      text: data,
       userId: options?.userId ?? getTestUser().userId,
     },
   })

@@ -9,6 +9,8 @@ const patchBodySchema = zAtLeastOneOf(
   z.object({
     name: z.string(),
     folderId: z.number().nullable(),
+    html: z.string(),
+    text: z.string(),
   })
 )
 

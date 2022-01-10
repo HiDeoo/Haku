@@ -70,6 +70,9 @@ model Note {
   name String @db.Citext
   slug String
 
+  html String
+  text String
+
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
