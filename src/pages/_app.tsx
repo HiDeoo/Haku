@@ -9,8 +9,9 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import Route from 'components/Route'
 import Layout from 'components/Layout'
 import ErrorBoundary from 'components/ErrorBoundary'
+import { getQueryClientDefaultOptions } from 'libs/api/client'
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({ defaultOptions: getQueryClientDefaultOptions() })
 
 function Haku({ Component, pageProps: { session, ...pageProps } }: AppPropsWithLayout) {
   const sidebar = Component.sidebar ?? true

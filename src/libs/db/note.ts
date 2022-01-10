@@ -1,4 +1,5 @@
 import { FolderType, Note } from '@prisma/client'
+import { StatusCode } from 'status-code-enum'
 import slug from 'url-slug'
 
 import { handleDbError, prisma } from 'libs/db'
@@ -46,7 +47,7 @@ export async function getNote(id: NoteData['id'], userId: UserId): Promise<NoteD
   const note = await prisma.note.findFirst({ where: { id, userId }, select: noteDataSelect })
 
   if (!note) {
-    throw new ApiError(API_ERROR_NOTE_DOES_NOT_EXIST)
+    throw new ApiError(API_ERROR_NOTE_DOES_NOT_EXIST, StatusCode.ClientErrorNotFound)
   }
 
   return note
