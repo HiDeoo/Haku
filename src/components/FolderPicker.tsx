@@ -5,7 +5,7 @@ import Combobox from 'components/Combobox'
 import { type FolderData } from 'libs/db/folder'
 import useContentTree from 'hooks/useContentTree'
 import { isTreeFolder, type TreeFolder } from 'libs/tree'
-import { NoteMetaData } from 'libs/db/note'
+import { NoteMetadata } from 'libs/db/note'
 
 export const ROOT_FOLDER_ID = -1
 
@@ -94,4 +94,4 @@ interface FolderPickerProps<FormFields extends FieldValues> {
 type FolderWithPath = FolderData & { path: string }
 type DefaultFolder = FolderWithPath | undefined
 type Folders = FolderWithPath[]
-type TreeFolders = TreeFolder<FolderData, NoteMetaData>[]
+type TreeFolders = TreeFolder<FolderData, NoteMetadata>[]

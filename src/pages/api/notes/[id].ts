@@ -3,7 +3,7 @@ import { type NextApiResponse } from 'next'
 import { createApiRoute, getApiRequestUser } from 'libs/api/routes'
 import { type ValidatedApiRequest, withAuth, withValidation } from 'libs/api/routes/middlewares'
 import { z, zAtLeastOneOf, zStringAsNumber } from 'libs/validation'
-import { type NoteMetaData, removeNote, updateNote, type NoteData, getNote } from 'libs/db/note'
+import { type NoteMetadata, removeNote, updateNote, type NoteData, getNote } from 'libs/db/note'
 
 const querySchema = z.object({
   id: zStringAsNumber,
@@ -46,7 +46,7 @@ async function getHandler(req: ValidatedApiRequest<{ query: GetNoteQuery }>, res
 
 async function patchHandler(
   req: ValidatedApiRequest<{ body: UpdateNoteBody; query: UpdateNoteQuery }>,
-  res: NextApiResponse<NoteMetaData>
+  res: NextApiResponse<NoteMetadata>
 ) {
   const { userId } = getApiRequestUser(req)
 

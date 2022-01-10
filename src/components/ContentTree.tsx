@@ -8,8 +8,8 @@ import Flex from 'components/Flex'
 import Shimmer from 'components/Shimmer'
 import useContentTree from 'hooks/useContentTree'
 import { type FolderData } from 'libs/db/folder'
-import { type NoteMetaData } from 'libs/db/note'
-import { type TodoMetaData } from 'libs/db/todo'
+import { type NoteMetadata } from 'libs/db/note'
+import { type TodoMetadata } from 'libs/db/todo'
 import { isTreeFolder, type TreeFolder } from 'libs/tree'
 import useContentType, { type UseContentTypeReturnValue } from 'hooks/useContentType'
 import { type StoreState, useStore } from 'stores'
@@ -191,5 +191,5 @@ interface ContentProps extends NodeProps {
   content: DataType
 }
 
-type DataType = NoteMetaData | TodoMetaData
+type DataType = NoteMetadata | TodoMetadata
 type FolderType = TreeFolder<FolderData, DataType>

@@ -22,8 +22,14 @@ import {
 } from 'react-icons/ri'
 
 import Inspector from 'components/Inspector'
+import useContentMutation from 'hooks/useContentMutation'
+import { type NoteData } from 'libs/db/note'
 
-const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor }) => {
+const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, noteId }) => {
+  const { isLoading, mutate } = useContentMutation()
+
+  const inspectorDisabled = disabled || isLoading
+
   const isH1 = editor?.isActive('heading', { level: 1 })
   const isH2 = editor?.isActive('heading', { level: 2 })
   const isH3 = editor?.isActive('heading', { level: 3 })
@@ -44,6 +50,17 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor }) => {
 
   function redo() {
     editor?.chain().focus().redo().run()
+  }
+
+  function save() {
+    if (!editor || !noteId) {
+      return
+    }
+
+    const html = editor.getHTML()
+    const text = editor.getText()
+
+    mutate({ mutationType: 'update', id: noteId, html, text })
   }
 
   function toggleBold() {
@@ -87,9 +104,9 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor }) => {
   }
 
   return (
-    <Inspector disabled={disabled}>
+    <Inspector disabled={inspectorDisabled}>
       <Inspector.Section>
-        <Inspector.Button onPress={undo} primary>
+        <Inspector.Button onPress={save} primary loading={isLoading}>
           Save
         </Inspector.Button>
         <Inspector.IconButton tooltip="Undo" onPress={undo} icon={RiArrowGoBackLine} disabled={!editor?.can().undo()} />
@@ -171,4 +188,5 @@ export default NoteInspector
 interface NoteInspectorProps {
   disabled?: boolean
   editor: Editor | null
+  noteId?: NoteData['id']
 }

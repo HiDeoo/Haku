@@ -36,7 +36,7 @@ const shimmerClasses = [
 
 const Note: React.FC = () => {
   const contentId = useContentId()
-  const { isLoading } = useNote(contentId, {
+  const { data, isLoading } = useNote(contentId, {
     onSuccess(data) {
       editor?.chain().focus().setContent(data.html).run()
     },
@@ -69,7 +69,7 @@ const Note: React.FC = () => {
       ) : (
         <EditorContent editor={editor} className="grid w-full h-full overflow-y-auto" />
       )}
-      <NoteInspector editor={editor} disabled={isLoading} />
+      <NoteInspector editor={editor} disabled={isLoading} noteId={data?.id} />
     </Flex>
   )
 }

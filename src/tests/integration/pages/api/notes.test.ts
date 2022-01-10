@@ -8,7 +8,7 @@ import { HttpMethod } from 'libs/http'
 import indexHandler from 'pages/api/notes'
 import idHandler from 'pages/api/notes/[id]'
 import { type NoteTreeData } from 'libs/db/tree'
-import { type NoteData, type NoteMetaData } from 'libs/db/note'
+import { type NoteData, type NoteMetadata } from 'libs/db/note'
 import { assertIsTreeFolder, assertIsTreeItem } from 'libs/tree'
 import {
   type ApiErrorResponse,
@@ -440,7 +440,7 @@ describe('notes', () => {
           method: HttpMethod.POST,
           body: JSON.stringify({ name }),
         })
-        const json = await res.json<NoteMetaData>()
+        const json = await res.json<NoteMetadata>()
 
         const testNote = await getTestNote(json.id)
 
@@ -460,7 +460,7 @@ describe('notes', () => {
           method: HttpMethod.POST,
           body: JSON.stringify({ name, folderId }),
         })
-        const json = await res.json<NoteMetaData>()
+        const json = await res.json<NoteMetadata>()
 
         const testNote = await getTestNote(json.id)
 
@@ -478,7 +478,7 @@ describe('notes', () => {
           method: HttpMethod.POST,
           body: JSON.stringify({ name }),
         })
-        const json = await res.json<NoteMetaData>()
+        const json = await res.json<NoteMetadata>()
 
         const testNote = await getTestNote(json.id)
 
@@ -496,7 +496,7 @@ describe('notes', () => {
           method: HttpMethod.POST,
           body: JSON.stringify({ name }),
         })
-        const json = await res.json<NoteMetaData>()
+        const json = await res.json<NoteMetadata>()
 
         const testNote = await getTestNote(json.id)
 
@@ -616,7 +616,7 @@ describe('notes', () => {
             method: HttpMethod.PATCH,
             body: JSON.stringify({ name: newName }),
           })
-          const json = await res.json<NoteMetaData>()
+          const json = await res.json<NoteMetadata>()
 
           expect(json.name).toBe(newName)
           expect(hasKey(json, 'html')).toBe(false)
@@ -670,7 +670,7 @@ describe('notes', () => {
             method: HttpMethod.PATCH,
             body: JSON.stringify({ folderId: newFolderId }),
           })
-          const json = await res.json<NoteMetaData>()
+          const json = await res.json<NoteMetadata>()
 
           expect(json.folderId).toBe(newFolderId)
           expect(hasKey(json, 'html')).toBe(false)
@@ -699,7 +699,7 @@ describe('notes', () => {
             method: HttpMethod.PATCH,
             body: JSON.stringify({ folderId: null }),
           })
-          const json = await res.json<NoteMetaData>()
+          const json = await res.json<NoteMetadata>()
 
           expect(json.folderId).toBeNull()
           expect(hasKey(json, 'html')).toBe(false)
