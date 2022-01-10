@@ -3,8 +3,8 @@ import StatusCode from 'status-code-enum'
 
 import { testApiRoute } from 'tests/integration'
 import { createTestEmailAllowList, getTestEmailAllowList, getTestEmailAllowLists } from 'tests/integration/db'
-import getAndPostHandler from 'pages/api/admin/emails'
-import deleteHandler from 'pages/api/admin/emails/[id]'
+import indexHandler from 'pages/api/admin/emails'
+import idHandler from 'pages/api/admin/emails/[id]'
 import { HttpMethod } from 'libs/http'
 import {
   type ApiErrorResponse,
@@ -15,21 +15,21 @@ import {
 describe('admin/emails', () => {
   describe('GET', () => {
     test('should fail without an API key', () =>
-      testApiRoute(getAndPostHandler, async ({ fetch }) => {
+      testApiRoute(indexHandler, async ({ fetch }) => {
         const res = await fetch({ method: HttpMethod.GET })
 
         expect(res.status).toBe(StatusCode.ClientErrorUnauthorized)
       }))
 
     test('should fail with an invalid API key', () =>
-      testApiRoute(getAndPostHandler, async ({ fetch }) => {
+      testApiRoute(indexHandler, async ({ fetch }) => {
         const res = await fetch({ method: HttpMethod.GET, headers: { 'Api-Key': 'abc' } })
 
         expect(res.status).toBe(StatusCode.ClientErrorUnauthorized)
       }))
 
     test('should return an empty list of allowed emails', () =>
-      testApiRoute(getAndPostHandler, async ({ fetch }) => {
+      testApiRoute(indexHandler, async ({ fetch }) => {
         const res = await fetch({ method: HttpMethod.GET, headers: { 'Api-Key': process.env.ADMIN_API_KEY } })
         const json = await res.json<EmailAllowList[]>()
 
@@ -37,7 +37,7 @@ describe('admin/emails', () => {
       }))
 
     test('should return allowed emails', () =>
-      testApiRoute(getAndPostHandler, async ({ fetch }) => {
+      testApiRoute(indexHandler, async ({ fetch }) => {
         const { email: email0 } = await createTestEmailAllowList()
         const { email: email1 } = await createTestEmailAllowList()
 
@@ -52,7 +52,7 @@ describe('admin/emails', () => {
 
   describe('POST', () => {
     test('should add a new email', () =>
-      testApiRoute(getAndPostHandler, async ({ fetch }) => {
+      testApiRoute(indexHandler, async ({ fetch }) => {
         const email = 'test@example.com'
 
         const res = await fetch({
@@ -68,7 +68,7 @@ describe('admin/emails', () => {
       }))
 
     test('should not add a new duplicated email', () =>
-      testApiRoute(getAndPostHandler, async ({ fetch }) => {
+      testApiRoute(indexHandler, async ({ fetch }) => {
         const { email } = await createTestEmailAllowList()
 
         const res = await fetch({
@@ -92,7 +92,7 @@ describe('admin/emails', () => {
       const { id } = await createTestEmailAllowList()
 
       return testApiRoute(
-        deleteHandler,
+        idHandler,
         async ({ fetch }) => {
           await fetch({ method: HttpMethod.DELETE, headers: { 'Api-Key': process.env.ADMIN_API_KEY } })
 
@@ -106,7 +106,7 @@ describe('admin/emails', () => {
 
     test('should not delete a non existing email', async () => {
       return testApiRoute(
-        deleteHandler,
+        idHandler,
         async ({ fetch }) => {
           const res = await fetch({ method: HttpMethod.DELETE, headers: { 'Api-Key': process.env.ADMIN_API_KEY } })
           const json = await res.json<ApiErrorResponse>()

@@ -5,8 +5,8 @@ import slug from 'url-slug'
 import { getTestUser, testApiRoute } from 'tests/integration'
 import { createTestFolder, createTestNote, getTestNote, getTestNotes } from 'tests/integration/db'
 import { HttpMethod } from 'libs/http'
-import getAndPostHandler from 'pages/api/notes'
-import deleteAndPatchHandler from 'pages/api/notes/[id]'
+import indexHandler from 'pages/api/notes'
+import idHandler from 'pages/api/notes/[id]'
 import { type NoteTreeData } from 'libs/db/tree'
 import { type NoteData, type NoteMetaData } from 'libs/db/note'
 import { assertIsTreeFolder, assertIsTreeItem } from 'libs/tree'
@@ -24,7 +24,7 @@ describe('notes', () => {
   describe('GET', () => {
     describe('index', () => {
       test('should return an empty tree', () =>
-        testApiRoute(getAndPostHandler, async ({ fetch }) => {
+        testApiRoute(indexHandler, async ({ fetch }) => {
           const res = await fetch({ method: HttpMethod.GET })
           const json = await res.json<NoteTreeData>()
 
@@ -32,7 +32,7 @@ describe('notes', () => {
         }))
 
       test('should return a tree with only root notes and no folder', () =>
-        testApiRoute(getAndPostHandler, async ({ fetch }) => {
+        testApiRoute(indexHandler, async ({ fetch }) => {
           const { name: note_0 } = await createTestNote({ name: 'note_0' })
           const { name: note_1 } = await createTestNote({ name: 'note_1' })
 
@@ -49,7 +49,7 @@ describe('notes', () => {
         }))
 
       test('should return a tree with only root nodes', () =>
-        testApiRoute(getAndPostHandler, async ({ fetch }) => {
+        testApiRoute(indexHandler, async ({ fetch }) => {
           const { name: note_0 } = await createTestNote({ name: 'note_0' })
           const { name: note_1 } = await createTestNote({ name: 'note_1' })
           const { name: note_2 } = await createTestNote({ name: 'note_2' })
@@ -89,7 +89,7 @@ describe('notes', () => {
         }))
 
       test('should return a tree with nested nodes', () =>
-        testApiRoute(getAndPostHandler, async ({ fetch }) => {
+        testApiRoute(indexHandler, async ({ fetch }) => {
           /**
            * folder_0
            * |__ folder_0_0
@@ -252,7 +252,7 @@ describe('notes', () => {
         }))
 
       test('should return only nodes owned by the current user', () =>
-        testApiRoute(getAndPostHandler, async ({ fetch }) => {
+        testApiRoute(indexHandler, async ({ fetch }) => {
           const { id: folder_0_user_0_id, name: folder_0_user_0 } = await createTestFolder({ name: 'folder_0_user_0' })
           const { name: folder_1_user_0 } = await createTestFolder({ name: 'folder_1_user_0' })
 
@@ -312,7 +312,7 @@ describe('notes', () => {
         }))
 
       test('should return only the content of the proper type', () =>
-        testApiRoute(getAndPostHandler, async ({ fetch }) => {
+        testApiRoute(indexHandler, async ({ fetch }) => {
           const { name: folder_0_type_note } = await createTestFolder({ name: 'folder_0_type_note' })
 
           await createTestFolder({ name: 'folder_0_type_todo', type: FolderType.TODO })
@@ -328,7 +328,7 @@ describe('notes', () => {
         }))
 
       test('should return a tree with nodes ordered alphabetically ignoring letter case', () =>
-        testApiRoute(getAndPostHandler, async ({ fetch }) => {
+        testApiRoute(indexHandler, async ({ fetch }) => {
           const { name: note_z } = await createTestNote({ name: 'note_Z' })
           const { name: note_a } = await createTestNote({ name: 'note_a' })
 
@@ -368,7 +368,7 @@ describe('notes', () => {
         }))
 
       test('should return a tree with only metadata and no content', () =>
-        testApiRoute(getAndPostHandler, async ({ fetch }) => {
+        testApiRoute(indexHandler, async ({ fetch }) => {
           await createTestNote()
 
           const res = await fetch({ method: HttpMethod.GET })
@@ -385,7 +385,7 @@ describe('notes', () => {
         const { html, folderId, id, name, slug, text } = await createTestNote()
 
         return testApiRoute(
-          deleteAndPatchHandler,
+          idHandler,
           async ({ fetch }) => {
             const res = await fetch({ method: HttpMethod.GET })
             const json = await res.json<NoteData>()
@@ -402,7 +402,7 @@ describe('notes', () => {
 
       test('should not return a nonexisting note', async () => {
         return testApiRoute(
-          deleteAndPatchHandler,
+          idHandler,
           async ({ fetch }) => {
             const res = await fetch({ method: HttpMethod.GET })
             const json = await res.json<ApiErrorResponse>()
@@ -418,7 +418,7 @@ describe('notes', () => {
         const { id } = await createTestNote({ userId: getTestUser('1').userId })
 
         return testApiRoute(
-          deleteAndPatchHandler,
+          idHandler,
           async ({ fetch }) => {
             const res = await fetch({ method: HttpMethod.GET })
             const json = await res.json<ApiErrorResponse>()
@@ -434,7 +434,7 @@ describe('notes', () => {
 
   describe('POST', () => {
     test('should add a new note at the root', () =>
-      testApiRoute(getAndPostHandler, async ({ fetch }) => {
+      testApiRoute(indexHandler, async ({ fetch }) => {
         const name = 'note'
 
         const res = await fetch({
@@ -452,7 +452,7 @@ describe('notes', () => {
       }))
 
     test('should add a new note inside an existing folder', () =>
-      testApiRoute(getAndPostHandler, async ({ fetch }) => {
+      testApiRoute(indexHandler, async ({ fetch }) => {
         const { id: folderId } = await createTestFolder()
 
         const name = 'note'
@@ -472,7 +472,7 @@ describe('notes', () => {
       }))
 
     test('should add a new note and attach to it a valid URL slug', () =>
-      testApiRoute(getAndPostHandler, async ({ fetch }) => {
+      testApiRoute(indexHandler, async ({ fetch }) => {
         const name = 'note Note 1/10 ½ 🤔'
 
         const res = await fetch({
@@ -490,7 +490,7 @@ describe('notes', () => {
       }))
 
     test('should add a new note and populate its data', () =>
-      testApiRoute(getAndPostHandler, async ({ fetch }) => {
+      testApiRoute(indexHandler, async ({ fetch }) => {
         const name = 'Test Note'
 
         const res = await fetch({
@@ -507,7 +507,7 @@ describe('notes', () => {
       }))
 
     test('should not add a new note inside a nonexisting folder', () =>
-      testApiRoute(getAndPostHandler, async ({ fetch }) => {
+      testApiRoute(indexHandler, async ({ fetch }) => {
         const name = 'note'
         const folderId = 1
 
@@ -526,7 +526,7 @@ describe('notes', () => {
       }))
 
     test('should not add a new note inside an existing folder not owned by the current user', () =>
-      testApiRoute(getAndPostHandler, async ({ fetch }) => {
+      testApiRoute(indexHandler, async ({ fetch }) => {
         const { id: folderId } = await createTestFolder({ userId: getTestUser('1').userId })
 
         const name = 'note'
@@ -546,7 +546,7 @@ describe('notes', () => {
       }))
 
     test('should not add a new note inside an existing folder of a different type', () =>
-      testApiRoute(getAndPostHandler, async ({ fetch }) => {
+      testApiRoute(indexHandler, async ({ fetch }) => {
         const { id: folderId } = await createTestFolder({ type: FolderType.TODO })
 
         const name = 'note'
@@ -566,7 +566,7 @@ describe('notes', () => {
       }))
 
     test('should not add a new duplicated note at the root', () =>
-      testApiRoute(getAndPostHandler, async ({ fetch }) => {
+      testApiRoute(indexHandler, async ({ fetch }) => {
         const { name } = await createTestNote()
 
         const res = await fetch({
@@ -584,7 +584,7 @@ describe('notes', () => {
       }))
 
     test('should not add a new duplicated note inside an existing folder', () =>
-      testApiRoute(getAndPostHandler, async ({ fetch }) => {
+      testApiRoute(indexHandler, async ({ fetch }) => {
         const { id: folderId } = await createTestFolder()
         const { name } = await createTestNote({ folderId })
 
@@ -611,7 +611,7 @@ describe('notes', () => {
       const newName = 'newName'
 
       return testApiRoute(
-        deleteAndPatchHandler,
+        idHandler,
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
@@ -640,7 +640,7 @@ describe('notes', () => {
       const { name: newName } = await createTestNote()
 
       return testApiRoute(
-        deleteAndPatchHandler,
+        idHandler,
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
@@ -666,7 +666,7 @@ describe('notes', () => {
       const { html, id, slug, text } = await createTestNote({ folderId })
 
       return testApiRoute(
-        deleteAndPatchHandler,
+        idHandler,
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
@@ -696,7 +696,7 @@ describe('notes', () => {
       const { html, id, slug, text } = await createTestNote({ folderId })
 
       return testApiRoute(
-        deleteAndPatchHandler,
+        idHandler,
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
@@ -728,7 +728,7 @@ describe('notes', () => {
       await createTestNote({ folderId: newFolderId, name: 'note' })
 
       return testApiRoute(
-        deleteAndPatchHandler,
+        idHandler,
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
@@ -752,7 +752,7 @@ describe('notes', () => {
       const { id, folderId } = await createTestNote()
 
       return testApiRoute(
-        deleteAndPatchHandler,
+        idHandler,
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
@@ -778,7 +778,7 @@ describe('notes', () => {
       const { id, folderId } = await createTestNote()
 
       return testApiRoute(
-        deleteAndPatchHandler,
+        idHandler,
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
@@ -804,7 +804,7 @@ describe('notes', () => {
       const { id, folderId } = await createTestNote()
 
       return testApiRoute(
-        deleteAndPatchHandler,
+        idHandler,
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
@@ -834,7 +834,7 @@ describe('notes', () => {
       const newText = 'test\n\n'
 
       return testApiRoute(
-        deleteAndPatchHandler,
+        idHandler,
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
@@ -864,7 +864,7 @@ describe('notes', () => {
       const { id, name } = await createTestNote({ userId: getTestUser('1').userId })
 
       return testApiRoute(
-        deleteAndPatchHandler,
+        idHandler,
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
@@ -888,7 +888,7 @@ describe('notes', () => {
       const newName = 'newName'
 
       return testApiRoute(
-        deleteAndPatchHandler,
+        idHandler,
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
@@ -914,7 +914,7 @@ describe('notes', () => {
       const newText = 'test\n\n'
 
       return testApiRoute(
-        deleteAndPatchHandler,
+        idHandler,
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
@@ -944,7 +944,7 @@ describe('notes', () => {
       const newHtml = '<p>test</p>'
 
       return testApiRoute(
-        deleteAndPatchHandler,
+        idHandler,
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
@@ -970,7 +970,7 @@ describe('notes', () => {
       const newText = 'test\n\n'
 
       return testApiRoute(
-        deleteAndPatchHandler,
+        idHandler,
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
@@ -996,7 +996,7 @@ describe('notes', () => {
       const { id } = await createTestNote()
 
       return testApiRoute(
-        deleteAndPatchHandler,
+        idHandler,
         async ({ fetch }) => {
           await fetch({ method: HttpMethod.DELETE })
 
@@ -1012,7 +1012,7 @@ describe('notes', () => {
       const { id } = await createTestNote({ userId: getTestUser('1').userId })
 
       return testApiRoute(
-        deleteAndPatchHandler,
+        idHandler,
         async ({ fetch }) => {
           const res = await fetch({ method: HttpMethod.DELETE })
           const json = await res.json<ApiErrorResponse>()
@@ -1032,7 +1032,7 @@ describe('notes', () => {
       const id = 1
 
       return testApiRoute(
-        deleteAndPatchHandler,
+        idHandler,
         async ({ fetch }) => {
           const res = await fetch({ method: HttpMethod.DELETE })
           const json = await res.json<ApiErrorResponse>()
