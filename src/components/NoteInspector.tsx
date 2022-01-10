@@ -5,6 +5,7 @@ import {
   RiBold,
   RiCodeLine,
   RiDoubleQuotesR,
+  RiFormatClear,
   RiH1,
   RiH2,
   RiH3,
@@ -35,6 +36,10 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ editor }) => {
 
   function addHorizontalRule() {
     editor?.chain().focus().setHorizontalRule().run()
+  }
+
+  function clearFormat() {
+    editor?.chain().focus().clearNodes().unsetAllMarks().run()
   }
 
   function redo() {
@@ -91,6 +96,7 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ editor }) => {
           icon={RiArrowGoForwardLine}
           disabled={!editor?.can().redo()}
         />
+        <Inspector.IconButton tooltip="Clear Format" onPress={clearFormat} icon={RiFormatClear} />
       </Inspector.Section>
       <Inspector.Section title="Text">
         <Inspector.IconMenu icon={headingMenuIcon} tooltip="Toggle Heading" toggled={isHeading}>
