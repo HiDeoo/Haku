@@ -42,6 +42,16 @@ export async function addNote(
   })
 }
 
+export async function getNote(id: NoteData['id'], userId: UserId): Promise<NoteData> {
+  const note = await prisma.note.findFirst({ where: { id, userId }, select: noteDataSelect })
+
+  if (!note) {
+    throw new ApiError(API_ERROR_NOTE_DOES_NOT_EXIST)
+  }
+
+  return note
+}
+
 export async function getNotesMetaDataGroupedByFolder(userId: UserId): Promise<NotesMetaDataGroupedByFolder> {
   const metaDatas = await prisma.note.findMany({
     where: { userId },
