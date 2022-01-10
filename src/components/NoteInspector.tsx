@@ -15,7 +15,9 @@ import {
   RiItalic,
   RiListOrdered,
   RiListUnordered,
+  RiMarkPenLine,
   RiSeparator,
+  RiStrikethrough,
 } from 'react-icons/ri'
 
 import Inspector from 'components/Inspector'
@@ -55,6 +57,10 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ editor }) => {
     editor?.chain().focus().toggleHeading({ level }).run()
   }
 
+  function toggleHighlight() {
+    editor?.chain().focus().toggleHighlight().run()
+  }
+
   function toggleItalic() {
     editor?.chain().focus().toggleItalic().run()
   }
@@ -65,6 +71,10 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ editor }) => {
 
   function toggleQuote() {
     editor?.chain().focus().toggleBlockquote().run()
+  }
+
+  function toggleStrike() {
+    editor?.chain().focus().toggleStrike().run()
   }
 
   function undo() {
@@ -108,6 +118,18 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ editor }) => {
           onToggle={toggleCode}
           tooltip="Toggle Code"
           toggled={editor?.isActive('code')}
+        />
+        <Inspector.Toggle
+          icon={RiStrikethrough}
+          onToggle={toggleStrike}
+          tooltip="Toggle Strike"
+          toggled={editor?.isActive('strike')}
+        />
+        <Inspector.Toggle
+          icon={RiMarkPenLine}
+          onToggle={toggleHighlight}
+          tooltip="Toggle Highlight"
+          toggled={editor?.isActive('highlight')}
         />
         <Inspector.Toggle
           icon={RiDoubleQuotesR}
