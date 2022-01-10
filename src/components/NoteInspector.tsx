@@ -89,6 +89,9 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ editor }) => {
   return (
     <Inspector>
       <Inspector.Section>
+        <Inspector.Button onPress={undo} primary>
+          Save
+        </Inspector.Button>
         <Inspector.IconButton tooltip="Undo" onPress={undo} icon={RiArrowGoBackLine} disabled={!editor?.can().undo()} />
         <Inspector.IconButton
           tooltip="Redo"

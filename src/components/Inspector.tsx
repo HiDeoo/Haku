@@ -29,7 +29,7 @@ const InspectorSection: React.FC<InspectorSectionProps> = ({ children, title }) 
 Inspector.Section = InspectorSection
 
 const InspectorButton: React.FC<ButtonProps> = (props) => {
-  const buttonClasses = clst('bg-zinc-700 hover:bg-zinc-600 shadow-none', {
+  const buttonClasses = clst('min-w-0 mx-0 py-0 bg-zinc-700 hover:bg-zinc-600 shadow-none', {
     'bg-blue-600 hover:bg-blue-500': props.primary,
   })
   const pressedButtonClasses = clst('bg-zinc-500 hover:bg-zinc-500', {
