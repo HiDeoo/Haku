@@ -5,6 +5,10 @@ import { type ValidatedApiRequest, withAuth, withValidation } from 'libs/api/rou
 import { z, zAtLeastOneOf, zStringAsNumber } from 'libs/validation'
 import { type NoteMetaData, removeNote, updateNote } from 'libs/db/note'
 
+const querySchema = z.object({
+  id: zStringAsNumber,
+})
+
 const patchBodySchema = zAtLeastOneOf(
   z.object({
     name: z.string(),
@@ -14,18 +18,10 @@ const patchBodySchema = zAtLeastOneOf(
   })
 )
 
-const patchQuerySchema = z.object({
-  id: zStringAsNumber,
-})
-
-const deleteQuerySchema = z.object({
-  id: zStringAsNumber,
-})
-
 const route = createApiRoute(
   {
-    delete: withValidation(deleteHandler, undefined, deleteQuerySchema),
-    patch: withValidation(patchHandler, patchBodySchema, patchQuerySchema),
+    delete: withValidation(deleteHandler, undefined, querySchema),
+    patch: withValidation(patchHandler, patchBodySchema, querySchema),
   },
   [withAuth]
 )
@@ -51,6 +47,6 @@ async function patchHandler(
   return res.status(200).json(note)
 }
 
-export type RemoveNoteQuery = z.infer<typeof deleteQuerySchema>
+export type RemoveNoteQuery = z.infer<typeof querySchema>
 export type UpdateNoteBody = z.infer<typeof patchBodySchema>
-export type UpdateNoteQuery = z.infer<typeof patchQuerySchema>
+export type UpdateNoteQuery = z.infer<typeof querySchema>

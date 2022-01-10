@@ -1,7 +1,7 @@
 import { z, zStringAsNumber } from 'libs/validation'
 
-const deleteQuerySchema = z.object({
+const querySchema = z.object({
   id: zStringAsNumber,
 })
 
-export type RemoveTodoQuery = z.infer<typeof deleteQuerySchema>
+export type RemoveTodoQuery = z.infer<typeof querySchema>
