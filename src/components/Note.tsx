@@ -24,8 +24,8 @@ const Note: React.FC = () => {
   global.editor = editor
 
   return (
-    <Flex className="overflow-hidden">
-      <EditorContent editor={editor} className="grid h-full overflow-y-auto" />
+    <Flex fullHeight className="overflow-hidden">
+      <EditorContent editor={editor} className="grid w-full h-full overflow-y-auto" />
       <NoteInspector editor={editor} />
     </Flex>
   )
