@@ -13,7 +13,7 @@ const Shimmer: ShimmerComponent = ({ children }) => {
 }
 
 const Line: React.FC<LineProps> = ({ className, style }) => {
-  const lineClasses = clst('bg-zinc-400/[.15] w-full h-3.5 py-2.5 motion-safe:animate-pulse', className)
+  const lineClasses = clst('bg-zinc-400/10 w-full h-3.5 py-2.5 motion-safe:animate-pulse', className)
 
   return (
     <div style={style}>

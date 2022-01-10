@@ -23,7 +23,7 @@ import {
 
 import Inspector from 'components/Inspector'
 
-const NoteInspector: React.FC<NoteInspectorProps> = ({ editor }) => {
+const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor }) => {
   const isH1 = editor?.isActive('heading', { level: 1 })
   const isH2 = editor?.isActive('heading', { level: 2 })
   const isH3 = editor?.isActive('heading', { level: 3 })
@@ -87,7 +87,7 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ editor }) => {
   }
 
   return (
-    <Inspector disabled={false}>
+    <Inspector disabled={disabled}>
       <Inspector.Section>
         <Inspector.Button onPress={undo} primary>
           Save
@@ -169,5 +169,6 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ editor }) => {
 export default NoteInspector
 
 interface NoteInspectorProps {
+  disabled?: boolean
   editor: Editor | null
 }
