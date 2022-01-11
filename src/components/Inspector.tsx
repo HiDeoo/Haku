@@ -23,15 +23,16 @@ const Inspector: InspectorComponent = ({ children, disabled }) => {
 
 export default Inspector
 
-const InspectorSection: React.FC<InspectorSectionProps> = ({ children, disabled, title }) => {
+const InspectorSection: React.FC<InspectorSectionProps> = ({ children, className, disabled, title }) => {
   const sectionClasses = clst('pt-2 pb-3 px-3 border-b border-zinc-600/25 last-of-type:border-0', {
     'pt-3': typeof title === 'undefined',
   })
+  const contentClasses = clst('gap-2.5', className)
 
   return (
     <div className={sectionClasses}>
       {title ? <div className="mb-2 text-blue-100/75 text-xs font-medium">{title}</div> : null}
-      <div className="flex flex-wrap gap-2.5">
+      <Flex wrap alignItems="baseline" className={contentClasses}>
         {Children.map(children, (child) => {
           if (!isValidElement(child)) {
             return null
@@ -39,7 +40,7 @@ const InspectorSection: React.FC<InspectorSectionProps> = ({ children, disabled,
 
           return cloneElement(child, { ...child.props, disabled })
         })}
-      </div>
+      </Flex>
     </div>
   )
 }
@@ -47,7 +48,7 @@ const InspectorSection: React.FC<InspectorSectionProps> = ({ children, disabled,
 Inspector.Section = InspectorSection
 
 const InspectorButton: React.FC<ButtonProps> = (props) => {
-  const buttonClasses = clst('min-w-0 mx-0 py-0 bg-zinc-700 hover:bg-zinc-600 shadow-none', {
+  const buttonClasses = clst('min-w-[65px] mx-0 py-1 bg-zinc-700 hover:bg-zinc-600 shadow-none', {
     'bg-blue-600 hover:bg-blue-500': props.primary,
   })
   const pressedButtonClasses = clst('bg-zinc-500 hover:bg-zinc-500', {
@@ -169,6 +170,7 @@ interface InspectorProps {
 }
 
 interface InspectorSectionProps {
+  className?: string
   disabled?: boolean
   title?: string
 }

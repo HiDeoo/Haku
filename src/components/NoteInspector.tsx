@@ -22,10 +22,12 @@ import {
 } from 'react-icons/ri'
 
 import Inspector from 'components/Inspector'
+import { type EditorState } from 'components/Note'
 import useContentMutation from 'hooks/useContentMutation'
 import { type NoteData } from 'libs/db/note'
+import clst from 'styles/clst'
 
-const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, noteId }) => {
+const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorState, noteId, onMutation }) => {
   const { isLoading, mutate } = useContentMutation()
 
   const inspectorDisabled = disabled || isLoading
@@ -57,10 +59,12 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, noteId 
       return
     }
 
+    editor.setEditable(false)
+
     const html = editor.getHTML()
     const text = editor.getText()
 
-    mutate({ mutationType: 'update', id: noteId, html, text })
+    mutate({ mutationType: 'update', id: noteId, html, text }, { onSettled: onSettledMutation })
   }
 
   function toggleBold() {
@@ -103,12 +107,28 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, noteId 
     editor?.chain().focus().undo().run()
   }
 
+  function onSettledMutation(_: unknown, error: unknown) {
+    editor?.setEditable(true)
+    editor?.commands.focus()
+
+    onMutation(error)
+  }
+
+  const syncText = editorState.lastSync ? `Synced at ${editorState.lastSync.toLocaleTimeString()}` : 'Sync issue'
+  const syncClasses = clst('grow text-xs italic', {
+    hidden: (editorState.pristine && !editorState.error && !editorState.lastSync) || isLoading,
+    'text-zinc-500': editorState.lastSync,
+    'text-red-500 font-semibold': editorState.error,
+  })
+
   return (
     <Inspector disabled={inspectorDisabled}>
-      <Inspector.Section>
+      <Inspector.Section className="gap-y-[0.3125rem]">
         <Inspector.Button onPress={save} primary loading={isLoading}>
           Save
         </Inspector.Button>
+        <div className={syncClasses}>{syncText}</div>
+        <div className="basis-full h-0" />
         <Inspector.IconButton tooltip="Undo" onPress={undo} icon={RiArrowGoBackLine} disabled={!editor?.can().undo()} />
         <Inspector.IconButton
           tooltip="Redo"
@@ -188,5 +208,7 @@ export default NoteInspector
 interface NoteInspectorProps {
   disabled?: boolean
   editor: Editor | null
+  editorState: EditorState
   noteId?: NoteData['id']
+  onMutation: (error?: unknown) => void
 }

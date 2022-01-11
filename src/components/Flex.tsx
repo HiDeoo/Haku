@@ -13,6 +13,7 @@ const Flex = <Element extends React.ElementType = 'div'>(
     fullHeight,
     fullWidth,
     justifyContent,
+    wrap,
     ...props
   }: React.PropsWithChildren<FlexProps<Element>>,
   ref: React.ForwardedRef<HTMLDivElement>
@@ -52,6 +53,10 @@ const Flex = <Element extends React.ElementType = 'div'>(
       'h-full': fullHeight,
       'w-full': fullWidth,
     },
+    {
+      'flex-wrap': wrap === true,
+      'flex-wrap-reverse': wrap === 'reverse',
+    },
     className
   )
 
@@ -76,4 +81,5 @@ interface FlexProps<Element extends React.ElementType> {
   fullWidth?: boolean
   justifyContent?: 'start' | 'end' | 'center' | 'between' | 'around' | 'evenly'
   style?: React.HtmlHTMLAttributes<HTMLElement>['style']
+  wrap?: true | 'reverse'
 }

@@ -2,6 +2,7 @@ import Highlight from '@tiptap/extension-highlight'
 import Strike from '@tiptap/extension-strike'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
+import { useState } from 'react'
 
 import Flex from 'components/Flex'
 import NoteInspector from 'components/NoteInspector'
@@ -35,6 +36,8 @@ const shimmerClasses = [
 ]
 
 const Note: React.FC = () => {
+  const [editorState, setEditorState] = useState<EditorState>({ pristine: true })
+
   const contentId = useContentId()
   const { data, isLoading } = useNote(contentId, {
     onSuccess(data) {
@@ -58,6 +61,10 @@ const Note: React.FC = () => {
   // @ts-ignore
   global.editor = editor
 
+  function onMutation(error?: unknown) {
+    setEditorState({ error, pristine: typeof error === 'undefined', lastSync: error ? undefined : new Date() })
+  }
+
   return (
     <Flex fullHeight className="overflow-hidden">
       {isLoading ? (
@@ -69,9 +76,21 @@ const Note: React.FC = () => {
       ) : (
         <EditorContent editor={editor} className="grid w-full h-full overflow-y-auto" />
       )}
-      <NoteInspector editor={editor} disabled={isLoading} noteId={data?.id} />
+      <NoteInspector
+        editor={editor}
+        noteId={data?.id}
+        disabled={isLoading}
+        onMutation={onMutation}
+        editorState={editorState}
+      />
     </Flex>
   )
 }
 
 export default Note
+
+export interface EditorState {
+  error?: unknown
+  pristine: boolean
+  lastSync?: Date
+}
