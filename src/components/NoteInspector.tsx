@@ -116,7 +116,7 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
 
   const syncText = editorState.lastSync ? `Synced at ${editorState.lastSync.toLocaleTimeString()}` : 'Sync issue'
   const syncClasses = clst('grow text-xs italic', {
-    hidden: (editorState.pristine && !editorState.error && !editorState.lastSync) || isLoading,
+    hidden: (!editorState.error && !editorState.lastSync) || isLoading,
     'text-zinc-500': editorState.lastSync,
     'text-red-500 font-semibold': editorState.error,
   })

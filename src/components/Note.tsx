@@ -43,9 +43,8 @@ const Note: React.FC = () => {
     onSuccess(data) {
       editor?.chain().focus().setContent(data.html).run()
     },
-    refetchInterval: false,
-    refetchOnReconnect: false,
-    refetchOnWindowFocus: false,
+    refetchOnReconnect: editorState.pristine,
+    refetchOnWindowFocus: editorState.pristine,
   })
 
   const editorClasses = clst('h-full p-3 outline-none', styles.editor)
@@ -54,6 +53,9 @@ const Note: React.FC = () => {
     autofocus: 'end',
     editorProps: { attributes: { class: editorClasses } },
     extensions: [StarterKit.configure({ codeBlock: false, strike: false }), Highlight, Strike],
+    onUpdate() {
+      setEditorState((prevEditorState) => ({ ...prevEditorState, pristine: false }))
+    },
   })
 
   // FIXME(HiDeoo) copy(editor.getHTML())
@@ -62,7 +64,7 @@ const Note: React.FC = () => {
   global.editor = editor
 
   function onMutation(error?: unknown) {
-    setEditorState({ error, pristine: typeof error === 'undefined', lastSync: error ? undefined : new Date() })
+    setEditorState({ error, pristine: !error, lastSync: error ? undefined : new Date() })
   }
 
   return (
