@@ -20,6 +20,7 @@ import {
 import { RiArrowDownSLine } from 'react-icons/ri'
 
 import Button from 'components/Button'
+import Flex from 'components/Flex'
 import Icon from 'components/Icon'
 import Label from 'components/Label'
 import Spinner from 'components/Spinner'
@@ -212,7 +213,7 @@ const Combobox = <Item, FormFields extends FieldValues>({
       <Label {...getLabelProps()} errorMessage={errorMessage} disabled={isDisabled()}>
         {label}
       </Label>
-      <div {...getComboboxProps()} className="flex relative">
+      <Flex {...getComboboxProps()} className="relative">
         {loading ? <Spinner className="absolute top-1.5 right-12 h-5 w-5 text-blue-500" /> : null}
         <TextInput
           {...inputProps}
@@ -230,7 +231,7 @@ const Combobox = <Item, FormFields extends FieldValues>({
         >
           <Icon icon={RiArrowDownSLine} className={triggerIconClasses} />
         </Button>
-      </div>
+      </Flex>
       <div {...getMenuProps()} className="absolute top-full inset-x-0 mt-0.5 mr-9 outline-none">
         <Presence present={isOpen}>
           <ul
