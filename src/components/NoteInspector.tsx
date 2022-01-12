@@ -1,4 +1,5 @@
 import { Editor } from '@tiptap/react'
+import { useState } from 'react'
 import {
   RiArrowGoBackLine,
   RiArrowGoForwardLine,
@@ -14,6 +15,7 @@ import {
   RiH6,
   RiHeading,
   RiItalic,
+  RiLink,
   RiListOrdered,
   RiListUnordered,
   RiMarkPenLine,
@@ -22,12 +24,15 @@ import {
 } from 'react-icons/ri'
 
 import Inspector from 'components/Inspector'
+import EditorLinkModal from 'components/EditorLinkModal'
 import { type EditorState } from 'components/Note'
 import useContentMutation from 'hooks/useContentMutation'
 import { type NoteData } from 'libs/db/note'
 import clst from 'styles/clst'
 
 const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorState, noteId, onMutation }) => {
+  const [linkModalOpened, setLinkModalOpened] = useState(false)
+
   const { isLoading, mutate } = useContentMutation()
 
   const inspectorDisabled = disabled || isLoading
@@ -91,6 +96,10 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
     editor?.chain().focus().toggleItalic().run()
   }
 
+  function toggleLink() {
+    setLinkModalOpened((prevLinkModalOpened) => !prevLinkModalOpened)
+  }
+
   function toggleOrderedList() {
     editor?.chain().focus().toggleOrderedList().run()
   }
@@ -122,84 +131,98 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
   })
 
   return (
-    <Inspector disabled={inspectorDisabled}>
-      <Inspector.Section className="gap-y-[0.3125rem]">
-        <Inspector.Button onPress={save} primary loading={isLoading}>
-          Save
-        </Inspector.Button>
-        <div className={syncClasses}>{syncText}</div>
-        <div className="basis-full h-0" />
-        <Inspector.IconButton tooltip="Undo" onPress={undo} icon={RiArrowGoBackLine} disabled={!editor?.can().undo()} />
-        <Inspector.IconButton
-          tooltip="Redo"
-          onPress={redo}
-          icon={RiArrowGoForwardLine}
-          disabled={!editor?.can().redo()}
-        />
-        <Inspector.IconButton tooltip="Clear Format" onPress={clearFormat} icon={RiFormatClear} />
-      </Inspector.Section>
-      <Inspector.Section title="Text">
-        <Inspector.IconMenu icon={headingMenuIcon} tooltip="Toggle Heading" toggled={isHeading}>
-          <Inspector.IconMenuItem icon={RiH1} onClick={() => toggleHeading(1)} />
-          <Inspector.IconMenuItem icon={RiH2} onClick={() => toggleHeading(2)} />
-          <Inspector.IconMenuItem icon={RiH3} onClick={() => toggleHeading(3)} />
-          <Inspector.IconMenuItem icon={RiH4} onClick={() => toggleHeading(4)} />
-          <Inspector.IconMenuItem icon={RiH5} onClick={() => toggleHeading(5)} />
-          <Inspector.IconMenuItem icon={RiH6} onClick={() => toggleHeading(6)} />
-        </Inspector.IconMenu>
-        <Inspector.Toggle
-          icon={RiBold}
-          onToggle={toggleBold}
-          tooltip="Toggle Bold"
-          toggled={editor?.isActive('bold')}
-        />
-        <Inspector.Toggle
-          icon={RiItalic}
-          onToggle={toggleItalic}
-          tooltip="Toggle Italic"
-          toggled={editor?.isActive('italic')}
-        />
-        <Inspector.Toggle
-          icon={RiCodeLine}
-          onToggle={toggleCode}
-          tooltip="Toggle Code"
-          toggled={editor?.isActive('code')}
-        />
-        <Inspector.Toggle
-          icon={RiStrikethrough}
-          onToggle={toggleStrike}
-          tooltip="Toggle Strike"
-          toggled={editor?.isActive('strike')}
-        />
-        <Inspector.Toggle
-          icon={RiMarkPenLine}
-          onToggle={toggleHighlight}
-          tooltip="Toggle Highlight"
-          toggled={editor?.isActive('highlight')}
-        />
-        <Inspector.Toggle
-          icon={RiDoubleQuotesR}
-          onToggle={toggleQuote}
-          tooltip="Toggle Quote"
-          toggled={editor?.isActive('blockquote')}
-        />
-        <Inspector.Toggle
-          icon={RiListUnordered}
-          onToggle={toggleBulletList}
-          tooltip="Toggle Bullet List"
-          toggled={editor?.isActive('bulletList')}
-        />
-        <Inspector.Toggle
-          icon={RiListOrdered}
-          onToggle={toggleOrderedList}
-          tooltip="Toggle Ordered List"
-          toggled={editor?.isActive('orderedList')}
-        />
-      </Inspector.Section>
-      <Inspector.Section title="Content">
-        <Inspector.IconButton icon={RiSeparator} onPress={addHorizontalRule} tooltip="Insert Separator" />
-      </Inspector.Section>
-    </Inspector>
+    <>
+      <Inspector disabled={inspectorDisabled}>
+        <Inspector.Section className="gap-y-[0.3125rem]">
+          <Inspector.Button onPress={save} primary loading={isLoading}>
+            Save
+          </Inspector.Button>
+          <div className={syncClasses}>{syncText}</div>
+          <div className="basis-full h-0" />
+          <Inspector.IconButton
+            tooltip="Undo"
+            onPress={undo}
+            icon={RiArrowGoBackLine}
+            disabled={!editor?.can().undo()}
+          />
+          <Inspector.IconButton
+            tooltip="Redo"
+            onPress={redo}
+            icon={RiArrowGoForwardLine}
+            disabled={!editor?.can().redo()}
+          />
+          <Inspector.IconButton tooltip="Clear Format" onPress={clearFormat} icon={RiFormatClear} />
+        </Inspector.Section>
+        <Inspector.Section title="Text">
+          <Inspector.IconMenu icon={headingMenuIcon} tooltip="Toggle Heading" toggled={isHeading}>
+            <Inspector.IconMenuItem icon={RiH1} onClick={() => toggleHeading(1)} />
+            <Inspector.IconMenuItem icon={RiH2} onClick={() => toggleHeading(2)} />
+            <Inspector.IconMenuItem icon={RiH3} onClick={() => toggleHeading(3)} />
+            <Inspector.IconMenuItem icon={RiH4} onClick={() => toggleHeading(4)} />
+            <Inspector.IconMenuItem icon={RiH5} onClick={() => toggleHeading(5)} />
+            <Inspector.IconMenuItem icon={RiH6} onClick={() => toggleHeading(6)} />
+          </Inspector.IconMenu>
+          <Inspector.Toggle
+            icon={RiBold}
+            onToggle={toggleBold}
+            tooltip="Toggle Bold"
+            toggled={editor?.isActive('bold')}
+          />
+          <Inspector.Toggle
+            icon={RiItalic}
+            onToggle={toggleItalic}
+            tooltip="Toggle Italic"
+            toggled={editor?.isActive('italic')}
+          />
+          <Inspector.Toggle
+            icon={RiCodeLine}
+            onToggle={toggleCode}
+            tooltip="Toggle Code"
+            toggled={editor?.isActive('code')}
+          />
+          <Inspector.Toggle
+            icon={RiStrikethrough}
+            onToggle={toggleStrike}
+            tooltip="Toggle Strike"
+            toggled={editor?.isActive('strike')}
+          />
+          <Inspector.Toggle
+            icon={RiMarkPenLine}
+            onToggle={toggleHighlight}
+            tooltip="Toggle Highlight"
+            toggled={editor?.isActive('highlight')}
+          />
+          <Inspector.Toggle
+            icon={RiLink}
+            onToggle={toggleLink}
+            tooltip="Toggle Link"
+            toggled={editor?.isActive('link')}
+          />
+          <Inspector.Toggle
+            icon={RiDoubleQuotesR}
+            onToggle={toggleQuote}
+            tooltip="Toggle Quote"
+            toggled={editor?.isActive('blockquote')}
+          />
+          <Inspector.Toggle
+            icon={RiListUnordered}
+            onToggle={toggleBulletList}
+            tooltip="Toggle Bullet List"
+            toggled={editor?.isActive('bulletList')}
+          />
+          <Inspector.Toggle
+            icon={RiListOrdered}
+            onToggle={toggleOrderedList}
+            tooltip="Toggle Ordered List"
+            toggled={editor?.isActive('orderedList')}
+          />
+        </Inspector.Section>
+        <Inspector.Section title="Content">
+          <Inspector.IconButton icon={RiSeparator} onPress={addHorizontalRule} tooltip="Insert Separator" />
+        </Inspector.Section>
+      </Inspector>
+      <EditorLinkModal opened={linkModalOpened} onOpenChange={setLinkModalOpened} title="Link" editor={editor} />
+    </>
   )
 }
 

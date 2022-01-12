@@ -95,4 +95,8 @@
   mark {
     @apply bg-red-600 rounded px-[0.2rem] py-px bg-amber-300 text-zinc-900;
   }
+
+  a {
+    @apply underline underline-offset-1 text-blue-200 cursor-pointer hover:no-underline;
+  }
 }

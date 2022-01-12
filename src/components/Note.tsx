@@ -1,4 +1,5 @@
 import Highlight from '@tiptap/extension-highlight'
+import Link from '@tiptap/extension-link'
 import Strike from '@tiptap/extension-strike'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
@@ -52,7 +53,7 @@ const Note: React.FC = () => {
   const editor = useEditor({
     autofocus: 'end',
     editorProps: { attributes: { class: editorClasses } },
-    extensions: [StarterKit.configure({ codeBlock: false, strike: false }), Highlight, Strike],
+    extensions: [StarterKit.configure({ codeBlock: false, strike: false }), Highlight, Strike, Link],
     onUpdate() {
       setEditorState((prevEditorState) => ({ ...prevEditorState, pristine: false }))
     },

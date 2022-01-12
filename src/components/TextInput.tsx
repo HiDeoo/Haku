@@ -63,5 +63,5 @@ interface TextInputProps extends Partial<Omit<UseFormRegisterReturn, 'ref'>> {
   label?: string
   placeholder: string
   spellCheck?: React.InputHTMLAttributes<HTMLInputElement>['spellCheck']
-  type?: 'text' | 'email'
+  type?: 'text' | 'email' | 'url'
 }
