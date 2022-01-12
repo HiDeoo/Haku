@@ -53,12 +53,12 @@
   }
 
   ol,
-  ul {
+  ul:not([data-state]) {
     @apply pl-5;
   }
 
   ol > li,
-  ul > li {
+  ul:not([data-state]) > li {
     @apply relative;
 
     &::before {
@@ -77,12 +77,12 @@
     }
   }
 
-  ul > li::before {
+  ul:not([data-state]) > li::before {
     @apply -left-4 -top-[5px] text-xl content-['\2022'];
   }
 
   & > ol,
-  & > ul {
+  & > ul:not([data-state]) {
     & > li p {
       @apply my-2;
     }

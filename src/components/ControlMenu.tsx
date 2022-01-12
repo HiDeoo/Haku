@@ -17,6 +17,7 @@ const ControlMenu = <Item,>({
   items,
   itemToInnerHtml,
   itemToString,
+  menuClassName,
   menuProps,
 }: ControlMenuProps<Item>) => {
   const [maxHeight, setMaxHeight] = useState<number | undefined>(undefined)
@@ -42,9 +43,13 @@ const ControlMenu = <Item,>({
   }, [container])
 
   const containerClasses = clst('absolute top-full inset-x-0 mt-0.5 outline-none', className)
-  const menuClasses = clst('rounded-md bg-zinc-700 shadow-sm shadow-zinc-900/50 overflow-auto origin-top', {
-    'animate-control-menu': !disableAnimation,
-  })
+  const menuClasses = clst(
+    'rounded-md bg-zinc-700 shadow-sm shadow-zinc-900/50 overflow-auto origin-top',
+    {
+      'animate-control-menu': !disableAnimation,
+    },
+    menuClassName
+  )
 
   return (
     <div {...menuProps} className={containerClasses}>
@@ -80,7 +85,7 @@ const ControlMenu = <Item,>({
 
 export default ControlMenu
 
-interface ControlMenuProps<Item> {
+export interface ControlMenuProps<Item> {
   className?: string
   container: RefObject<HTMLDivElement>
   disableAnimation?: boolean
@@ -90,5 +95,6 @@ interface ControlMenuProps<Item> {
   itemToInnerHtml?: (item: Item, isHighlighted: boolean) => string
   itemToString: (item: Item | null) => string
   items: Item[]
+  menuClassName?: string
   menuProps: ReturnType<UseSelectPropGetters<Item>['getMenuProps']>
 }

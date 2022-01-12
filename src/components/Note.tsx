@@ -7,7 +7,7 @@ import StarterKit from '@tiptap/starter-kit'
 import { lowlight } from 'lowlight/lib/common'
 import { useState } from 'react'
 
-import EditorCodeBlock from 'components/EditorCodeBlock'
+import EditorCodeBlock, { CODE_BLOCK_DEFAULT_LANGUAGE } from 'components/EditorCodeBlock'
 import Flex from 'components/Flex'
 import NoteInspector from 'components/NoteInspector'
 import Shimmer from 'components/Shimmer'
@@ -67,7 +67,7 @@ const Note: React.FC = () => {
         addNodeView() {
           return ReactNodeViewRenderer(EditorCodeBlock)
         },
-      }).configure({ lowlight }),
+      }).configure({ defaultLanguage: CODE_BLOCK_DEFAULT_LANGUAGE, lowlight }),
     ],
     onUpdate() {
       setEditorState((prevEditorState) => ({ ...prevEditorState, pristine: false }))
