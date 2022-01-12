@@ -89,11 +89,11 @@
   }
 
   code:not(pre > code) {
-    @apply bg-red-600 rounded px-[0.2rem] py-px bg-zinc-600;
+    @apply rounded px-[0.2rem] py-px bg-zinc-600;
   }
 
   mark {
-    @apply bg-red-600 rounded px-[0.2rem] py-px bg-amber-300 text-zinc-900;
+    @apply rounded px-[0.2rem] py-px bg-amber-300 text-zinc-900;
   }
 
   a {
@@ -101,6 +101,94 @@
   }
 
   pre {
-    @apply bg-red-600 rounded px-2 py-1.5 bg-zinc-600;
+    @apply rounded px-2 py-1.5 bg-zinc-700;
+
+    /**
+     * Based on GitHub Dark.
+     * @see https://github.com/highlightjs/highlight.js/blob/112135fb063af64b7a94155b5d86859e8d52b6f0/src/styles/github-dark.css
+     */
+    code :global {
+      .hljs-doctag,
+      .hljs-keyword,
+      .hljs-meta .hljs-keyword,
+      .hljs-template-tag,
+      .hljs-template-variable,
+      .hljs-type,
+      .hljs-variable.language_ {
+        @apply text-red-400;
+      }
+
+      .hljs-title,
+      .hljs-title.class_,
+      .hljs-title.class_.inherited__,
+      .hljs-title.function_ {
+        @apply text-purple-300;
+      }
+
+      .hljs-attr,
+      .hljs-attribute,
+      .hljs-literal,
+      .hljs-meta,
+      .hljs-number,
+      .hljs-operator,
+      .hljs-variable,
+      .hljs-selector-attr,
+      .hljs-selector-class,
+      .hljs-selector-id {
+        @apply text-sky-400;
+      }
+
+      .hljs-regexp,
+      .hljs-string,
+      .hljs-meta .hljs-string {
+        @apply text-sky-300;
+      }
+
+      .hljs-built_in,
+      .hljs-symbol {
+        @apply text-amber-500;
+      }
+
+      .hljs-comment,
+      .hljs-code,
+      .hljs-formula {
+        @apply text-zinc-400;
+      }
+
+      .hljs-name,
+      .hljs-quote,
+      .hljs-selector-tag,
+      .hljs-selector-pseudo {
+        @apply text-emerald-400;
+      }
+
+      .hljs-subst {
+        @apply text-blue-100;
+      }
+
+      .hljs-section {
+        @apply font-semibold text-blue-300;
+      }
+
+      .hljs-bullet {
+        @apply text-yellow-400;
+      }
+
+      .hljs-emphasis {
+        @apply italic;
+      }
+
+      .hljs-strong {
+        @apply font-semibold;
+      }
+
+      .hljs-addition {
+        @apply bg-emerald-900 text-emerald-200;
+      }
+
+      .hljs-deletion {
+        @apply bg-red-900 text-red-200;
+      }
+    }
   }
 }

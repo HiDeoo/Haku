@@ -17,12 +17,12 @@ const EditorCodeBlock: React.FC<EditorCodeBlockProps> = ({ extension, node, upda
       <Select
         items={languages}
         onChange={onChangeLanguage}
-        menuClassName="rounded text-xs"
+        menuClassName="rounded text-xs bg-zinc-500/50"
         itemToString={getLanguageLabel}
         className="absolute top-1 right-1"
-        triggerPressedClassName="bg-zinc-300 hover:bg-zinc-300"
+        triggerPressedClassName="bg-zinc-300/50 hover:bg-zinc-300/50"
         defaultItem={node.attrs.language ?? CODE_BLOCK_DEFAULT_LANGUAGE}
-        triggerClassName="shadow-none bg-zinc-500 hover:bg-zinc-400 px-2 py-1 text-xs rounded min-w-0 w-28"
+        triggerClassName="shadow-none bg-zinc-500/50 hover:bg-zinc-400/50 px-2 py-1 text-xs rounded min-w-0 w-28"
       />
       <pre>
         <NodeViewContent as="code" />

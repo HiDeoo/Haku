@@ -17,9 +17,93 @@ import clst from 'styles/clst'
 import styles from 'styles/Note.module.css'
 
 // FIXME(HiDeoo)
-const content = `<h1>Plop</h1><p>234452222223</p><pre><code class="language-css">#test {
-  background-color: red;
-}</code></pre>`
+const content = `<h1>Plop</h1><p>234452222223</p><pre><code class="language-javascript">function $initHighlight(block, cls) {
+  try {
+    if (cls.search(/no-highlight/) != -1)
+      return process(block, true, 0x0F) +
+             \` class="\${cls}"\`;
+  } catch (e) {
+    /* handle exception */
+  }
+  for (var i = 0 / 2; i &lt; classes.length; i++) {
+    if (checkCondition(classes[i]) === undefined)
+      console.log('undefined');
+  }
+
+  return (
+    &lt;div&gt;
+      &lt;web-component&gt;{block}&lt;/web-component&gt;
+    &lt;/div&gt;
+  )
+}
+
+export  $initHighlight;</code></pre><p>test</p><pre><code class="language-bash">#!/bin/bash
+
+###### CONFIG
+ACCEPTED_HOSTS="/root/.hag_accepted.conf"
+BE_VERBOSE=false
+
+if [ "$UID" -ne 0 ]
+then
+ echo "Superuser rights required"
+ exit 2
+fi
+
+genApacheConf(){
+ echo -e "# Host \${HOME_DIR}$1/$2 :"
+}
+
+echo '"quoted"' | tr -d " &gt; text.txt</code></pre><p>test</p><pre><code class="language-markdown"># hello world
+
+you can write text [with links](http://example.com) inline or [link references][1].
+
+* one _thing_ has *em*phasis
+* two __things__ are **bold**
+
+[1]: http://example.com
+
+---
+
+hello world
+===========
+
+&lt;this_is inline="xml"&gt;&lt;/this_is&gt;
+
+&gt; markdown is so cool
+
+    so are code segments
+
+1. one thing (yeah!)
+2. two thing \`i can write code\`, and \`more\` wipee!</code></pre><p>test</p><pre><code class="language-diff">Index: languages/ini.js
+===================================================================
+--- languages/ini.js    (revision 199)
++++ languages/ini.js    (revision 200)
+@@ -1,8 +1,7 @@
+ hljs.LANGUAGES.ini =
+ {
+   case_insensitive: true,
+-  defaultMode:
+-  {
++  defaultMode: {
+     contains: ['comment', 'title', 'setting'],
+     illegal: '[^\\s]'
+   },
+
+*** /path/to/original timestamp
+--- /path/to/new      timestamp
+***************
+*** 1,3 ****
+--- 1,9 ----
++ This is an important
++ notice! It should
++ therefore be located at
++ the beginning of this
++ document!
+
+! compress the size of the
+! changes.
+
+  It is important to spell</code></pre>`
 
 const shimmerClasses = [
   'w-2/5 h-12',
