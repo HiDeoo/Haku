@@ -1,4 +1,3 @@
-import { Presence } from '@radix-ui/react-presence'
 import fuzzaldrin from 'fuzzaldrin-plus'
 import {
   useCombobox,
@@ -6,7 +5,7 @@ import {
   type UseComboboxState,
   type UseComboboxStateChange,
 } from 'downshift'
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   type Control,
   useController,
@@ -20,15 +19,13 @@ import {
 import { RiArrowDownSLine } from 'react-icons/ri'
 
 import Button from 'components/Button'
+import ControlMenu from 'components/ControlMenu'
 import Flex from 'components/Flex'
 import Icon from 'components/Icon'
 import Label from 'components/Label'
 import Spinner from 'components/Spinner'
 import TextInput from 'components/TextInput'
 import clst from 'styles/clst'
-
-const menuWindowBottomOffsetInPixels = 20
-const menuMaxHeightInPixels = 210
 
 const Combobox = <Item, FormFields extends FieldValues>({
   control,
@@ -46,7 +43,6 @@ const Combobox = <Item, FormFields extends FieldValues>({
 
   const [filteredItems, setFilteredItems] = useState(items)
   const [disableMenuAnimation, setDisableMenuAnimation] = useState(false)
-  const [maxHeight, setMaxHeight] = useState<number | undefined>(undefined)
 
   const renderItem = useCallback(
     (item: Item | null): string => {
@@ -95,26 +91,6 @@ const Combobox = <Item, FormFields extends FieldValues>({
     () => items.map((item) => ({ item, str: itemToMenuItem ? itemToMenuItem(item) : renderItem(item) })),
     [items, itemToMenuItem, renderItem]
   )
-
-  useLayoutEffect(() => {
-    function calculateMaxHeight() {
-      const rect = container.current?.getBoundingClientRect()
-
-      setMaxHeight(
-        rect
-          ? Math.min(window.innerHeight - rect.bottom - menuWindowBottomOffsetInPixels, menuMaxHeightInPixels)
-          : undefined
-      )
-    }
-
-    calculateMaxHeight()
-
-    window.addEventListener('resize', calculateMaxHeight)
-
-    return () => {
-      window.removeEventListener('resize', calculateMaxHeight)
-    }
-  }, [])
 
   useEffect(() => {
     setFilteredItems(items)
@@ -204,9 +180,6 @@ const Combobox = <Item, FormFields extends FieldValues>({
   }
 
   const triggerIconClasses = clst('motion-safe:transition-transform motion-safe:duration-200', { 'rotate-180': isOpen })
-  const menuClasses = clst('rounded-md bg-zinc-700 shadow-sm shadow-zinc-900/50 overflow-auto origin-top', {
-    'animate-combobox': !disableMenuAnimation,
-  })
 
   return (
     <div className="relative mb-3" ref={container}>
@@ -232,32 +205,18 @@ const Combobox = <Item, FormFields extends FieldValues>({
           <Icon icon={RiArrowDownSLine} className={triggerIconClasses} />
         </Button>
       </Flex>
-      <div {...getMenuProps()} className="absolute top-full inset-x-0 mt-0.5 mr-9 outline-none">
-        <Presence present={isOpen}>
-          <ul
-            className={menuClasses}
-            data-state={isOpen ? 'open' : 'closed'}
-            style={{ maxHeight: maxHeight ? `${maxHeight}px` : 'initial' }}
-          >
-            {filteredItems.map((item, index) => {
-              const isHighlighted = highlightedIndex === index
-
-              const menuItemClasses = clst('px-3 py-1.5 cursor-pointer text-ellipsis overflow-hidden', {
-                'bg-blue-600': isHighlighted,
-              })
-
-              return (
-                <li
-                  {...getItemProps({ item, index })}
-                  className={menuItemClasses}
-                  key={`${renderItem(item)}-${index}`}
-                  dangerouslySetInnerHTML={{ __html: renderFilteredItem(item, isHighlighted) }}
-                />
-              )
-            })}
-          </ul>
-        </Presence>
-      </div>
+      <ControlMenu
+        isOpen={isOpen}
+        className="mr-9"
+        container={container}
+        items={filteredItems}
+        itemToString={renderItem}
+        menuProps={getMenuProps()}
+        getItemProps={getItemProps}
+        highlightedIndex={highlightedIndex}
+        itemToInnerHtml={renderFilteredItem}
+        disableAnimation={disableMenuAnimation}
+      />
     </div>
   )
 }
