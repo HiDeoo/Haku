@@ -88,7 +88,7 @@
     }
   }
 
-  code {
+  code:not(pre > code) {
     @apply bg-red-600 rounded px-[0.2rem] py-px bg-zinc-600;
   }
 
@@ -98,5 +98,9 @@
 
   a {
     @apply underline underline-offset-1 text-blue-200 cursor-pointer hover:no-underline;
+  }
+
+  pre {
+    @apply bg-red-600 rounded px-2 py-1.5 bg-zinc-600;
   }
 }

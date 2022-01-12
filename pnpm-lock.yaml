@@ -16,6 +16,7 @@ specifiers:
   '@react-aria/button': 3.3.4
   '@react-aria/textfield': 3.5.0
   '@react-aria/utils': 3.11.0
+  '@tiptap/extension-code-block-lowlight': 2.0.0-beta.65
   '@tiptap/extension-highlight': 2.0.0-beta.32
   '@tiptap/extension-link': 2.0.0-beta.35
   '@tiptap/extension-strike': 2.0.0-beta.27
@@ -43,6 +44,7 @@ specifiers:
   jest: 27.4.5
   ky: 0.28.7
   lint-staged: 12.1.2
+  lowlight: 2.5.0
   msw: 0.36.3
   next: 12.0.7
   next-auth: 4.0.2
@@ -80,6 +82,7 @@ dependencies:
   '@react-aria/button': 3.3.4_react@17.0.2
   '@react-aria/textfield': 3.5.0_react@17.0.2
   '@react-aria/utils': 3.11.0_react@17.0.2
+  '@tiptap/extension-code-block-lowlight': 2.0.0-beta.65
   '@tiptap/extension-highlight': 2.0.0-beta.32
   '@tiptap/extension-link': 2.0.0-beta.35
   '@tiptap/extension-strike': 2.0.0-beta.27
@@ -89,6 +92,7 @@ dependencies:
   downshift: 6.1.7_react@17.0.2
   fuzzaldrin-plus: 0.6.0
   ky: 0.28.7
+  lowlight: 2.5.0
   next: 12.0.7_react-dom@17.0.2+react@17.0.2
   next-auth: 4.0.2_react-dom@17.0.2+react@17.0.2
   react: 17.0.2
@@ -1749,6 +1753,27 @@ packages:
       '@tiptap/core': 2.0.0-beta.160
     dev: false
 
+  /@tiptap/extension-code-block-lowlight/2.0.0-beta.65:
+    resolution: {integrity: sha512-MK2Rs2nKImJ2UKf5P4nnhtSCt5RnX7lp4GbFBEixc+9mOa7kB2HPz7ETu1VGAJ7ngCUX2rFhIanLwtpVyP0lUw==}
+    peerDependencies:
+      '@tiptap/core': ^2.0.0-beta.1
+    dependencies:
+      '@tiptap/extension-code-block': 2.0.0-beta.35
+      '@types/lowlight': 0.0.3
+      lowlight: 1.20.0
+      prosemirror-model: 1.16.1
+      prosemirror-state: 1.3.4
+      prosemirror-view: 1.23.5
+    dev: false
+
+  /@tiptap/extension-code-block/2.0.0-beta.35:
+    resolution: {integrity: sha512-8SIP45Bl/mii3mdRdVPCF3yJGU37Nt2EJiU9eyfTzQSMbaf9Vf1Kop39tjKdbjTrsZ3W7Lnycj+q4x18Zusb6Q==}
+    peerDependencies:
+      '@tiptap/core': ^2.0.0-beta.1
+    dependencies:
+      prosemirror-state: 1.3.4
+    dev: false
+
   /@tiptap/extension-code-block/2.0.0-beta.35_@tiptap+core@2.0.0-beta.160:
     resolution: {integrity: sha512-8SIP45Bl/mii3mdRdVPCF3yJGU37Nt2EJiU9eyfTzQSMbaf9Vf1Kop39tjKdbjTrsZ3W7Lnycj+q4x18Zusb6Q==}
     peerDependencies:
@@ -2015,6 +2040,12 @@ packages:
       '@types/node': 16.11.11
     dev: true
 
+  /@types/hast/2.3.4:
+    resolution: {integrity: sha512-wLEm0QvaoawEDoTRwzTXp4b4jpwiJDvR5KMnFnVodm3scufTlBOWRD6N1OBf9TZMhjlNsSfcO5V+7AF4+Vy+9g==}
+    dependencies:
+      '@types/unist': 2.0.6
+    dev: false
+
   /@types/inquirer/8.1.3:
     resolution: {integrity: sha512-AayK4ZL5ssPzR1OtnOLGAwpT0Dda3Xi/h1G0l1oJDNrowp7T1423q4Zb8/emr7tzRlCy4ssEri0LWVexAqHyKQ==}
     dependencies:
@@ -2056,6 +2087,10 @@ packages:
   /@types/json5/0.0.29:
     resolution: {integrity: sha1-7ihweulOEdK4J7y+UnC86n8+ce4=}
     dev: true
+
+  /@types/lowlight/0.0.3:
+    resolution: {integrity: sha512-R83q/yPX2nIlo9D3WtSjyUDd57t8s+GVLaL8YIv3k7zMMWpYpOXqjJgrWp80qXUJB/a1t76nTyBpxrv0JNYaEg==}
+    dev: false
 
   /@types/node/16.11.11:
     resolution: {integrity: sha512-KB0sixD67CeecHC33MYn+eYARkqTheIRNuu97y2XMjR7Wu3XibO1vaY6VBV6O/a89SPI81cEUIYT87UqUWlZNw==}
@@ -2182,6 +2217,10 @@ packages:
     dependencies:
       '@types/node': 16.11.11
     dev: true
+
+  /@types/unist/2.0.6:
+    resolution: {integrity: sha512-PBjIUxZHOuj0R15/xuwJYjFi+KZdNFrehocChv4g5hu6aFroHue8m0lBP0POdK2nKzbw0cgV1mws8+V/JAcEkQ==}
+    dev: false
 
   /@types/yargs-parser/20.2.1:
     resolution: {integrity: sha512-7tFImggNeNBVMsn0vLrpn1H1uPrUBdnARPTpZoitY37ZrdJREzf7I16tMrlK3hen349gr1NYh8CmZQa7CTG6Aw==}
@@ -3902,6 +3941,18 @@ packages:
       reusify: 1.0.4
     dev: true
 
+  /fault/1.0.4:
+    resolution: {integrity: sha512-CJ0HCB5tL5fYTEA7ToAq5+kTwd++Borf1/bifxd9iT70QcXr4MRrO3Llf8Ifs70q+SJcGHFtnIE/Nw6giCtECA==}
+    dependencies:
+      format: 0.2.2
+    dev: false
+
+  /fault/2.0.1:
+    resolution: {integrity: sha512-WtySTkS4OKev5JtpHXnib4Gxiurzh5NCGvWrFaZ34m6JehfTUhKZvn9njTfw48t6JumVQOmrKqpmGcdwxnhqBQ==}
+    dependencies:
+      format: 0.2.2
+    dev: false
+
   /fb-watchman/2.0.1:
     resolution: {integrity: sha512-DkPJKQeY6kKwmuMretBhr7G6Vodr7bFwDYTXIkfG1gjvNpaxBTQV3PbXg6bR1c1UP4jPOX0jHUbbHANL9vRjVg==}
     dependencies:
@@ -3975,6 +4026,11 @@ packages:
       combined-stream: 1.0.8
       mime-types: 2.1.34
     dev: true
+
+  /format/0.2.2:
+    resolution: {integrity: sha1-1hcBB+nv3E7TDJ3DkBbflCtctYs=}
+    engines: {node: '>=0.4.x'}
+    dev: false
 
   /fraction.js/4.1.2:
     resolution: {integrity: sha512-o2RiJQ6DZaR/5+Si0qJUIy637QMRudSi9kU/FFzx9EZazrIdnBgpU+3sEWCxAVhH2RtxW2Oz+T4p2o8uOPVcgA==}
@@ -4178,6 +4234,15 @@ packages:
   /headers-utils/3.0.2:
     resolution: {integrity: sha512-xAxZkM1dRyGV2Ou5bzMxBPNLoRCjcX+ya7KSWybQD2KwLphxsapUVK6x/02o7f4VU6GPSXch9vNY2+gkU8tYWQ==}
     dev: true
+
+  /highlight.js/10.7.3:
+    resolution: {integrity: sha512-tzcUFauisWKNHaRkN4Wjl/ZA07gENAjFl3J/c480dprkGTg5EQstgaNFqBfUqCq54kZRIEcreTsAgF/m2quD7A==}
+    dev: false
+
+  /highlight.js/11.4.0:
+    resolution: {integrity: sha512-nawlpCBCSASs7EdvZOYOYVkJpGmAOKMYZgZtUqSRqodZE0GRVcFKwo1RcpeOemqh9hyttTdd5wDBwHkuSyUfnA==}
+    engines: {node: '>=12.0.0'}
+    dev: false
 
   /hmac-drbg/1.0.1:
     resolution: {integrity: sha1-0nRXAQJabHdabFRXk+1QL8DGSaE=}
@@ -5345,6 +5410,21 @@ packages:
     hasBin: true
     dependencies:
       js-tokens: 4.0.0
+
+  /lowlight/1.20.0:
+    resolution: {integrity: sha512-8Ktj+prEb1RoCPkEOrPMYUN/nCggB7qAWe3a7OpMjWQkh3l2RD5wKRQ+o8Q8YuI9RG/xs95waaI/E6ym/7NsTw==}
+    dependencies:
+      fault: 1.0.4
+      highlight.js: 10.7.3
+    dev: false
+
+  /lowlight/2.5.0:
+    resolution: {integrity: sha512-OXGUch9JZu4q5r4Ir6QlUp5pBXMxS7NHaclhRiUlxNRcOSK0gtXZcVrsGP4eM7bv0/KDHg/TXQagx/X35EULsA==}
+    dependencies:
+      '@types/hast': 2.3.4
+      fault: 2.0.1
+      highlight.js: 11.4.0
+    dev: false
 
   /lru-cache/6.0.0:
     resolution: {integrity: sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==}

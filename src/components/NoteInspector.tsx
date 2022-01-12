@@ -4,6 +4,7 @@ import {
   RiArrowGoBackLine,
   RiArrowGoForwardLine,
   RiBold,
+  RiCodeBoxLine,
   RiCodeLine,
   RiDoubleQuotesR,
   RiFormatClear,
@@ -82,6 +83,10 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
 
   function toggleCode() {
     editor?.chain().focus().toggleCode().run()
+  }
+
+  function toggleCodeBlock() {
+    editor?.chain().focus().toggleCodeBlock().run()
   }
 
   function toggleHeading(level: 1 | 2 | 3 | 4 | 5 | 6) {
@@ -219,6 +224,12 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
         </Inspector.Section>
         <Inspector.Section title="Content">
           <Inspector.IconButton icon={RiSeparator} onPress={addHorizontalRule} tooltip="Insert Separator" />
+          <Inspector.Toggle
+            icon={RiCodeBoxLine}
+            onToggle={toggleCodeBlock}
+            tooltip="Toggle Code Block"
+            toggled={editor?.isActive('codeBlock')}
+          />
         </Inspector.Section>
       </Inspector>
       <EditorLinkModal opened={linkModalOpened} onOpenChange={setLinkModalOpened} title="Link" editor={editor} />
