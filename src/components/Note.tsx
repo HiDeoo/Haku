@@ -141,7 +141,7 @@ const Note: React.FC = () => {
   const editor = useEditor({
     autofocus: 'end',
     content,
-    editorProps: { attributes: { class: editorClasses } },
+    editorProps: { attributes: { class: editorClasses, spellcheck: 'false' } },
     extensions: [
       StarterKit.configure({ codeBlock: false, strike: false }),
       Highlight,
