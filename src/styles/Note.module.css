@@ -101,7 +101,7 @@
   }
 
   pre {
-    @apply rounded px-2 py-1.5 bg-zinc-700;
+    @apply rounded rounded-tr-none px-2 py-1.5 bg-zinc-700 mt-8;
 
     /**
      * Based on GitHub Dark.
