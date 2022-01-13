@@ -38,6 +38,8 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
 
   const inspectorDisabled = disabled || isLoading
 
+  const isCodeBlock = editor?.isActive('codeBlock')
+
   const isH1 = editor?.isActive('heading', { level: 1 })
   const isH2 = editor?.isActive('heading', { level: 2 })
   const isH3 = editor?.isActive('heading', { level: 3 })
@@ -159,7 +161,12 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
           <Inspector.IconButton tooltip="Clear Format" onPress={clearFormat} icon={RiFormatClear} />
         </Inspector.Section>
         <Inspector.Section title="Text">
-          <Inspector.IconMenu icon={headingMenuIcon} tooltip="Toggle Heading" toggled={isHeading}>
+          <Inspector.IconMenu
+            toggled={isHeading}
+            icon={headingMenuIcon}
+            disabled={isCodeBlock}
+            tooltip="Toggle Heading"
+          >
             <Inspector.IconMenuItem icon={RiH1} onClick={() => toggleHeading(1)} />
             <Inspector.IconMenuItem icon={RiH2} onClick={() => toggleHeading(2)} />
             <Inspector.IconMenuItem icon={RiH3} onClick={() => toggleHeading(3)} />
@@ -171,10 +178,12 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
             icon={RiBold}
             onToggle={toggleBold}
             tooltip="Toggle Bold"
+            disabled={isCodeBlock}
             toggled={editor?.isActive('bold')}
           />
           <Inspector.Toggle
             icon={RiItalic}
+            disabled={isCodeBlock}
             onToggle={toggleItalic}
             tooltip="Toggle Italic"
             toggled={editor?.isActive('italic')}
@@ -183,16 +192,19 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
             icon={RiCodeLine}
             onToggle={toggleCode}
             tooltip="Toggle Code"
+            disabled={isCodeBlock}
             toggled={editor?.isActive('code')}
           />
           <Inspector.Toggle
             icon={RiStrikethrough}
+            disabled={isCodeBlock}
             onToggle={toggleStrike}
             tooltip="Toggle Strike"
             toggled={editor?.isActive('strike')}
           />
           <Inspector.Toggle
             icon={RiMarkPenLine}
+            disabled={isCodeBlock}
             onToggle={toggleHighlight}
             tooltip="Toggle Highlight"
             toggled={editor?.isActive('highlight')}
@@ -201,29 +213,38 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
             icon={RiLink}
             onToggle={toggleLink}
             tooltip="Toggle Link"
+            disabled={isCodeBlock}
             toggled={editor?.isActive('link')}
           />
           <Inspector.Toggle
             icon={RiDoubleQuotesR}
             onToggle={toggleQuote}
             tooltip="Toggle Quote"
+            disabled={isCodeBlock}
             toggled={editor?.isActive('blockquote')}
           />
           <Inspector.Toggle
             icon={RiListUnordered}
+            disabled={isCodeBlock}
             onToggle={toggleBulletList}
             tooltip="Toggle Bullet List"
             toggled={editor?.isActive('bulletList')}
           />
           <Inspector.Toggle
             icon={RiListOrdered}
+            disabled={isCodeBlock}
             onToggle={toggleOrderedList}
             tooltip="Toggle Ordered List"
             toggled={editor?.isActive('orderedList')}
           />
         </Inspector.Section>
         <Inspector.Section title="Content">
-          <Inspector.IconButton icon={RiSeparator} onPress={addHorizontalRule} tooltip="Insert Separator" />
+          <Inspector.IconButton
+            icon={RiSeparator}
+            disabled={isCodeBlock}
+            tooltip="Insert Separator"
+            onPress={addHorizontalRule}
+          />
           <Inspector.Toggle
             icon={RiCodeBoxLine}
             onToggle={toggleCodeBlock}

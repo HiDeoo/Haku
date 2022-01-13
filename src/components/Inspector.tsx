@@ -38,7 +38,7 @@ const InspectorSection: React.FC<InspectorSectionProps> = ({ children, className
             return null
           }
 
-          return cloneElement(child, { ...child.props, disabled })
+          return cloneElement(child, { ...child.props, disabled: child.props.disabled || disabled })
         })}
       </Flex>
     </div>
