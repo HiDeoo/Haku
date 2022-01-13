@@ -129,7 +129,7 @@ const Note: React.FC = () => {
 
   const contentId = useContentId()
   const { data, isLoading } = useNote(contentId, {
-    onSuccess(data) {
+    onSuccess(/* data */) {
       // editor?.chain().focus().setContent(data.html).run()
     },
     refetchOnReconnect: editorState.pristine,
