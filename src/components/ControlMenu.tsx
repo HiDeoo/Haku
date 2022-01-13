@@ -36,9 +36,11 @@ const ControlMenu = <Item,>({
     calculateMaxHeight()
 
     window.addEventListener('resize', calculateMaxHeight)
+    window.addEventListener('scroll', calculateMaxHeight, true)
 
     return () => {
       window.removeEventListener('resize', calculateMaxHeight)
+      window.removeEventListener('scroll', calculateMaxHeight, true)
     }
   }, [container])
 
