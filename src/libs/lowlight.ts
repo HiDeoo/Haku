@@ -18,24 +18,24 @@ import yaml from 'highlight.js/lib/languages/yaml'
 import { lowlight } from 'lowlight/lib/core'
 
 const languages: Languages = {
-  bash: { fn: bash },
-  css: { fn: css },
-  diff: { fn: diff },
-  dockerfile: { fn: dockerfile },
-  go: { fn: go },
-  html: { fn: xml },
-  javascript: { fn: javascript },
-  json: { fn: json },
-  markdown: { fn: markdown },
-  plaintext: { fn: plaintext },
-  pgsql: { fn: pgsql },
-  scss: { fn: scss },
-  shell: { fn: shell },
-  toml: { fn: ini },
-  typescript: { fn: typescript },
-  xml: { fn: xml },
-  yaml: { fn: yaml },
-  zsh: { fn: bash },
+  bash: { fn: bash, name: 'Bash' },
+  css: { fn: css, name: 'CSS' },
+  diff: { fn: diff, name: 'Diff' },
+  dockerfile: { fn: dockerfile, name: 'Dockerfile' },
+  go: { fn: go, name: 'Go' },
+  html: { fn: xml, name: 'HTML' },
+  javascript: { fn: javascript, name: 'JavaScript' },
+  json: { fn: json, name: 'JSON' },
+  markdown: { fn: markdown, name: 'Markdown' },
+  plaintext: { fn: plaintext, name: 'Plain Text' },
+  pgsql: { fn: pgsql, name: 'PL/pgSQL' },
+  scss: { fn: scss, name: 'SCSS' },
+  shell: { fn: shell, name: 'Shell' },
+  toml: { fn: ini, name: 'TOML' },
+  typescript: { fn: typescript, name: 'TypeScript' },
+  xml: { fn: xml, name: 'XML' },
+  yaml: { fn: yaml, name: 'YAML' },
+  zsh: { fn: bash, name: 'Zsh' },
 }
 
 for (const id in languages) {
@@ -48,4 +48,12 @@ for (const id in languages) {
 
 export { lowlight }
 
-type Languages = Record<string, { fn: LanguageFn }>
+export function getLanguageName(id: string | null) {
+  if (!id) {
+    return ''
+  }
+
+  return languages[id]?.name ?? id
+}
+
+type Languages = Record<string, { fn: LanguageFn; name: string }>
