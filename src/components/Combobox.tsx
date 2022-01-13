@@ -27,7 +27,7 @@ import Spinner from 'components/Spinner'
 import TextInput from 'components/TextInput'
 import clst from 'styles/clst'
 
-const Combobox = <Item, FormFields extends FieldValues>({
+const Combobox = <TItem, TFormFields extends FieldValues>({
   control,
   defaultItem,
   disabled,
@@ -38,14 +38,14 @@ const Combobox = <Item, FormFields extends FieldValues>({
   label,
   loading,
   name,
-}: ComboboxProps<Item, FormFields>) => {
+}: ComboboxProps<TItem, TFormFields>) => {
   const container = useRef<HTMLDivElement>(null)
 
   const [filteredItems, setFilteredItems] = useState(items)
   const [disableMenuAnimation, setDisableMenuAnimation] = useState(false)
 
   const renderItem = useCallback(
-    (item: Item | null): string => {
+    (item: TItem | null): string => {
       if (!item || !itemToString) {
         return item ? String(item) : ''
       }
@@ -57,10 +57,10 @@ const Combobox = <Item, FormFields extends FieldValues>({
 
   const {
     field: { onChange, value },
-  } = useController<FormFields>({
+  } = useController<TFormFields>({
     control,
     // https://github.com/react-hook-form/react-hook-form/issues/2978#issuecomment-1001992272
-    defaultValue: defaultItem as UnpackNestedValue<PathValue<FormFields, Path<FormFields>>>,
+    defaultValue: defaultItem as UnpackNestedValue<PathValue<TFormFields, Path<TFormFields>>>,
     name,
     rules: { validate },
   })
@@ -116,7 +116,7 @@ const Combobox = <Item, FormFields extends FieldValues>({
     }
   }, [disableMenuAnimation])
 
-  function stateReducer(state: UseComboboxState<Item>, { type, changes }: UseComboboxStateChangeOptions<Item>) {
+  function stateReducer(state: UseComboboxState<TItem>, { type, changes }: UseComboboxStateChangeOptions<TItem>) {
     switch (type) {
       case useCombobox.stateChangeTypes.InputChange: {
         const needle = changes.inputValue?.toLowerCase() ?? ''
@@ -155,11 +155,11 @@ const Combobox = <Item, FormFields extends FieldValues>({
     return !isOpen || 'required'
   }
 
-  function onSelectedItemChange(changes: UseComboboxStateChange<Item>) {
+  function onSelectedItemChange(changes: UseComboboxStateChange<TItem>) {
     onChange(changes.selectedItem)
   }
 
-  function renderFilteredItem(item: Item, isHighlighted: boolean) {
+  function renderFilteredItem(item: TItem, isHighlighted: boolean) {
     const itemStr = itemToMenuItem ? itemToMenuItem(item) : renderItem(item)
 
     if (inputValue.length === 0) {
@@ -223,15 +223,15 @@ const Combobox = <Item, FormFields extends FieldValues>({
 
 export default Combobox
 
-interface ComboboxProps<Item, FormFields extends FieldValues> {
-  control: Control<FormFields>
-  defaultItem: Item
+interface ComboboxProps<TItem, TFormFields extends FieldValues> {
+  control: Control<TFormFields>
+  defaultItem: TItem
   disabled?: boolean
   errorMessage?: string
-  items: Item[]
-  itemToMenuItem?: (item: Item | null) => string
-  itemToString?: (item: Item | null) => string
+  items: TItem[]
+  itemToMenuItem?: (item: TItem | null) => string
+  itemToString?: (item: TItem | null) => string
   label: string
   loading?: boolean
-  name: FieldPath<FormFields>
+  name: FieldPath<TFormFields>
 }

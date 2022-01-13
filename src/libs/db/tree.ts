@@ -15,12 +15,12 @@ export async function getNoteTree(userId: UserId): Promise<NoteTreeData> {
   return getTree<FolderData, NoteMetadata>(userId, FolderType.NOTE, notesGroupedByFolder)
 }
 
-async function getTree<Folder extends HierarchicalListFolder, Item extends HierarchicalListItem>(
+async function getTree<TFolder extends HierarchicalListFolder, TItem extends HierarchicalListItem>(
   userId: UserId,
   folderType: FolderType,
-  items: Map<Item['folderId'], Item[]>
-): Promise<Tree<Folder, Item>> {
-  const folders = await getTreeFolders<Folder>(userId, folderType)
+  items: Map<TItem['folderId'], TItem[]>
+): Promise<Tree<TFolder, TItem>> {
+  const folders = await getTreeFolders<TFolder>(userId, folderType)
 
   return hierarchicalListToTree(folders, items)
 }
@@ -35,12 +35,12 @@ export async function getTreeChildrenFolderIds(
   return folders.map(({ id }) => id)
 }
 
-function getTreeFolders<Folder extends HierarchicalListFolder>(
+function getTreeFolders<TFolder extends HierarchicalListFolder>(
   userId: UserId,
   folderType: FolderType,
-  baseFolderId?: Folder['id']
-): Promise<Folder[]> {
-  return prisma.$queryRaw<Folder[]>`
+  baseFolderId?: TFolder['id']
+): Promise<TFolder[]> {
+  return prisma.$queryRaw<TFolder[]>`
 WITH RECURSIVE root_to_leaf AS (
   SELECT
     "id",

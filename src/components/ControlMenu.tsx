@@ -7,7 +7,7 @@ import clst from 'styles/clst'
 const menuWindowBottomOffsetInPixels = 20
 const menuMaxHeightInPixels = 210
 
-const ControlMenu = <Item,>({
+const ControlMenu = <TItem,>({
   className,
   container,
   disableAnimation,
@@ -19,7 +19,7 @@ const ControlMenu = <Item,>({
   itemToString,
   menuClassName,
   menuProps,
-}: ControlMenuProps<Item>) => {
+}: ControlMenuProps<TItem>) => {
   const [maxHeight, setMaxHeight] = useState<number | undefined>(undefined)
 
   useEffect(() => {
@@ -87,16 +87,16 @@ const ControlMenu = <Item,>({
 
 export default ControlMenu
 
-export interface ControlMenuProps<Item> {
+export interface ControlMenuProps<TItem> {
   className?: string
   container: RefObject<HTMLDivElement>
   disableAnimation?: boolean
-  getItemProps: UseSelectPropGetters<Item>['getItemProps']
-  highlightedIndex: UseSelectState<Item>['highlightedIndex']
-  isOpen: UseSelectState<Item>['isOpen']
-  itemToInnerHtml?: (item: Item, isHighlighted: boolean) => string
-  itemToString: (item: Item | null) => string
-  items: Item[]
+  getItemProps: UseSelectPropGetters<TItem>['getItemProps']
+  highlightedIndex: UseSelectState<TItem>['highlightedIndex']
+  isOpen: UseSelectState<TItem>['isOpen']
+  itemToInnerHtml?: (item: TItem, isHighlighted: boolean) => string
+  itemToString: (item: TItem | null) => string
+  items: TItem[]
   menuClassName?: string
-  menuProps: ReturnType<UseSelectPropGetters<Item>['getMenuProps']>
+  menuProps: ReturnType<UseSelectPropGetters<TItem>['getMenuProps']>
 }

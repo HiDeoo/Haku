@@ -37,4 +37,4 @@ export function handleApiError<TData = unknown, TError = unknown, TVariables = v
 }
 
 export type MutationType = 'add' | 'update' | 'remove'
-export type Mutation<Data, Type extends MutationType> = Data & { mutationType: Type }
+export type Mutation<TData, TType extends MutationType> = TData & { mutationType: TType }

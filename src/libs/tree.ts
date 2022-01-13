@@ -1,12 +1,12 @@
 // The list should be ordered in such a way that the parent of a folder is always defined before its children.
-export function hierarchicalListToTree<Folder extends HierarchicalListFolder, Item extends HierarchicalListItem>(
-  list: Folder[],
-  items: Map<Item['folderId'], Item[]>
-): Tree<Folder, Item> {
+export function hierarchicalListToTree<TFolder extends HierarchicalListFolder, TItem extends HierarchicalListItem>(
+  list: TFolder[],
+  items: Map<TItem['folderId'], TItem[]>
+): Tree<TFolder, TItem> {
   const hierarchyError = new Error('Unable to generate tree from an unordered hierarchical list')
   const indexMap: Record<number, number> = {}
-  const tree: Tree<Folder, Item> = []
-  let treeFolder: TreeFolder<Folder, Item>
+  const tree: Tree<TFolder, TItem> = []
+  let treeFolder: TreeFolder<TFolder, TItem>
 
   const clonedList = [...list]
 
@@ -42,31 +42,31 @@ export function hierarchicalListToTree<Folder extends HierarchicalListFolder, It
   return tree
 }
 
-export function isTreeFolder<Folder extends HierarchicalListFolder, Item extends HierarchicalListItem>(
-  folder?: Item | Folder | TreeFolder<Folder, Item>
-): folder is TreeFolder<Folder, Item> {
-  return typeof (folder as TreeFolder<Folder, Item>).children !== 'undefined'
+export function isTreeFolder<TFolder extends HierarchicalListFolder, TItem extends HierarchicalListItem>(
+  folder?: TItem | TFolder | TreeFolder<TFolder, TItem>
+): folder is TreeFolder<TFolder, TItem> {
+  return typeof (folder as TreeFolder<TFolder, TItem>).children !== 'undefined'
 }
 
-export function assertIsTreeFolder<Folder extends HierarchicalListFolder, Item extends HierarchicalListItem>(
-  folder?: Item | TreeFolder<Folder, Item>
-): asserts folder is TreeFolder<Folder, Item> {
+export function assertIsTreeFolder<TFolder extends HierarchicalListFolder, TItem extends HierarchicalListItem>(
+  folder?: TItem | TreeFolder<TFolder, TItem>
+): asserts folder is TreeFolder<TFolder, TItem> {
   if (!isTreeFolder(folder)) {
     throw new Error('Expected tree folder.')
   }
 }
 
-export function assertIsTreeItem<Folder extends HierarchicalListFolder, Item extends HierarchicalListItem>(
-  item?: Item | TreeFolder<Folder, Item>
-): asserts item is TreeFolder<Folder, Item> {
+export function assertIsTreeItem<TFolder extends HierarchicalListFolder, TItem extends HierarchicalListItem>(
+  item?: TItem | TreeFolder<TFolder, TItem>
+): asserts item is TreeFolder<TFolder, TItem> {
   if (isTreeFolder(item)) {
     throw new Error('Expected tree folder.')
   }
 }
 
-function addItemsToFolder<Folder extends HierarchicalListFolder, Item extends HierarchicalListItem>(
-  folder: TreeFolder<Folder, Item> | Tree<Folder, Item>,
-  items: Map<Item['folderId'], Item[]>
+function addItemsToFolder<TFolder extends HierarchicalListFolder, TItem extends HierarchicalListItem>(
+  folder: TreeFolder<TFolder, TItem> | Tree<TFolder, TItem>,
+  items: Map<TItem['folderId'], TItem[]>
 ) {
   const isRoot = Array.isArray(folder)
   const folderId = isRoot ? null : folder.id
@@ -86,12 +86,12 @@ function addItemsToFolder<Folder extends HierarchicalListFolder, Item extends Hi
 export type HierarchicalListItem = { id: number; folderId: number | null }
 export type HierarchicalListFolder = { id: number; parentId: number | null }
 
-export type TreeFolder<Folder extends HierarchicalListFolder, Item extends HierarchicalListItem> = Folder & {
-  children: TreeFolder<Folder, Item>[]
-  items: Item[]
+export type TreeFolder<TFolder extends HierarchicalListFolder, TItem extends HierarchicalListItem> = TFolder & {
+  children: TreeFolder<TFolder, TItem>[]
+  items: TItem[]
 }
 
-export type Tree<Folder extends HierarchicalListFolder, Item extends HierarchicalListItem> = (
-  | TreeFolder<Folder, Item>
-  | Item
+export type Tree<TFolder extends HierarchicalListFolder, TItem extends HierarchicalListItem> = (
+  | TreeFolder<TFolder, TItem>
+  | TItem
 )[]

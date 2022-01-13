@@ -2,7 +2,7 @@ import { forwardRef, useMemo } from 'react'
 
 import clst from 'styles/clst'
 
-const Flex = <Element extends React.ElementType = 'div'>(
+const Flex = <TElement extends React.ElementType = 'div'>(
   {
     alignItems,
     as,
@@ -15,7 +15,7 @@ const Flex = <Element extends React.ElementType = 'div'>(
     justifyContent,
     wrap,
     ...props
-  }: React.PropsWithChildren<FlexProps<Element>>,
+  }: React.PropsWithChildren<FlexProps<TElement>>,
   ref: React.ForwardedRef<HTMLDivElement>
 ) => {
   const Element = as || 'div'
@@ -71,13 +71,13 @@ const Flex = <Element extends React.ElementType = 'div'>(
   )
 }
 
-export default forwardRef(Flex) as <Element extends React.ElementType = 'div'>(
-  props: React.PropsWithChildren<FlexProps<Element>> & { ref?: React.ForwardedRef<HTMLDivElement> }
+export default forwardRef(Flex) as <TElement extends React.ElementType = 'div'>(
+  props: React.PropsWithChildren<FlexProps<TElement>> & { ref?: React.ForwardedRef<HTMLDivElement> }
 ) => ReturnType<typeof Flex>
 
-interface FlexProps<Element extends React.ElementType> {
+interface FlexProps<TElement extends React.ElementType> {
   alignItems?: 'start' | 'end' | 'center' | 'baseline' | 'stretch'
-  as?: Element
+  as?: TElement
   className?: string
   direction?: 'row' | 'row-reverse' | 'col' | 'col-reverse'
   flex?: true | 'auto' | 'initial' | 'none'

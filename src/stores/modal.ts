@@ -30,8 +30,8 @@ export interface ModalState {
   setFolderModal: (opened: boolean, mutationType?: MutationType, folder?: FolderData) => void
 }
 
-interface MutationModal<Data> {
-  data: Data | undefined
+interface MutationModal<TData> {
+  data: TData | undefined
   mutationType: MutationType | undefined
   opened: boolean
 }

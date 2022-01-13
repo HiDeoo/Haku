@@ -9,7 +9,7 @@ import Icon from 'components/Icon'
 import Label from 'components/Label'
 import clst from 'styles/clst'
 
-const Select = <Item,>({
+const Select = <TItem,>({
   className,
   defaultItem,
   disabled,
@@ -21,11 +21,11 @@ const Select = <Item,>({
   tabIndex,
   triggerClassName,
   triggerPressedClassName,
-}: SelectProps<Item>) => {
+}: SelectProps<TItem>) => {
   const container = useRef<HTMLDivElement>(null)
 
   const renderItem = useCallback(
-    (item: Item | null): string => {
+    (item: TItem | null): string => {
       if (!item || !itemToString) {
         return item ? String(item) : ''
       }
@@ -44,7 +44,7 @@ const Select = <Item,>({
       onSelectedItemChange,
     })
 
-  function onSelectedItemChange(changes: UseSelectStateChange<Item>) {
+  function onSelectedItemChange(changes: UseSelectStateChange<TItem>) {
     if (changes.selectedItem) {
       onChange(changes.selectedItem)
     }
@@ -94,15 +94,15 @@ const Select = <Item,>({
 
 export default Select
 
-interface SelectProps<Item> {
+interface SelectProps<TItem> {
   className?: string
-  defaultItem: Item
+  defaultItem: TItem
   disabled?: boolean
-  items: Item[]
-  itemToString?: (item: Item | null) => string
+  items: TItem[]
+  itemToString?: (item: TItem | null) => string
   label?: string
-  menuClassName?: ControlMenuProps<Item>['menuClassName']
-  onChange: (item: Item) => void
+  menuClassName?: ControlMenuProps<TItem>['menuClassName']
+  onChange: (item: TItem) => void
   tabIndex?: ButtonProps['tabIndex']
   triggerClassName?: string
   triggerPressedClassName?: string
