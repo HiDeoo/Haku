@@ -17,7 +17,7 @@ import clst from 'styles/clst'
 import styles from 'styles/Note.module.css'
 
 // FIXME(HiDeoo)
-const content = `<h1>Plop</h1><p>234452222223</p><pre><code class="language-javascript">function $initHighlight(block, cls) {
+const content = `<h1>Plop</h1><p>234452222223</p><ul><li><p>test</p><ul><li><p>test</p><ul><li><p>test</p></li></ul></li><li><p>test</p></li></ul></li></ul><p>test</p><p>test</p><pre><code class="language-javascript">function $initHighlight(block, cls) {
   try {
     if (cls.search(/no-highlight/) != -1)
       return process(block, true, 0x0F) +
@@ -147,11 +147,10 @@ const Note: React.FC = () => {
       Highlight,
       Strike,
       Link,
-      CodeBlockLowlight.extend({
-        addNodeView() {
-          return ReactNodeViewRenderer(EditorCodeBlock)
-        },
-      }).configure({ defaultLanguage: CODE_BLOCK_DEFAULT_LANGUAGE, lowlight }),
+      CodeBlockLowlight.extend({ addNodeView: addCodeBlockLowlightNodeView }).configure({
+        defaultLanguage: CODE_BLOCK_DEFAULT_LANGUAGE,
+        lowlight,
+      }),
     ],
     onUpdate() {
       setEditorState((prevEditorState) => ({ ...prevEditorState, pristine: false }))
@@ -190,6 +189,10 @@ const Note: React.FC = () => {
 }
 
 export default Note
+
+function addCodeBlockLowlightNodeView() {
+  return ReactNodeViewRenderer(EditorCodeBlock)
+}
 
 export interface EditorState {
   error?: unknown

@@ -2,7 +2,7 @@ import { useSelect, UseSelectStateChange } from 'downshift'
 import { useCallback, useRef } from 'react'
 import { RiArrowDownSLine } from 'react-icons/ri'
 
-import Button from 'components/Button'
+import Button, { ButtonProps } from 'components/Button'
 import ControlMenu, { type ControlMenuProps } from 'components/ControlMenu'
 import Flex from 'components/Flex'
 import Icon from 'components/Icon'
@@ -18,6 +18,7 @@ const Select = <Item,>({
   label,
   menuClassName,
   onChange,
+  tabIndex,
   triggerClassName,
   triggerPressedClassName,
 }: SelectProps<Item>) => {
@@ -67,6 +68,7 @@ const Select = <Item,>({
       <Button
         {...getToggleButtonProps()}
         disabled={disabled}
+        tabIndex={tabIndex}
         aria-label="Toggle Menu"
         className={triggerClasses}
         pressedClassName={triggerPressedClassName}
@@ -101,6 +103,7 @@ interface SelectProps<Item> {
   label?: string
   menuClassName?: ControlMenuProps<Item>['menuClassName']
   onChange: (item: Item) => void
+  tabIndex?: ButtonProps['tabIndex']
   triggerClassName?: string
   triggerPressedClassName?: string
 }

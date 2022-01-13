@@ -1,22 +1,37 @@
-import { type CodeBlockLowlightOptions } from '@tiptap/extension-code-block-lowlight'
-import { type NodeView, type Extension, NodeViewContent, NodeViewWrapper } from '@tiptap/react'
+import { type NodeViewProps, NodeViewContent, NodeViewWrapper } from '@tiptap/react'
+import { useEffect, useState } from 'react'
 
 import Select from 'components/Select'
 import { getLanguageName } from 'libs/lowlight'
 
 export const CODE_BLOCK_DEFAULT_LANGUAGE = 'plaintext'
 
-const EditorCodeBlock: React.FC<EditorCodeBlockProps> = ({ extension, node, updateAttributes }) => {
+const EditorCodeBlock: React.FC<NodeViewProps> = ({ editor, extension, node, updateAttributes }) => {
+  const [tabIndex, setTabIndex] = useState<-1 | undefined>(-1)
+
   const languages = extension.options.lowlight.listLanguages()
 
   function onChangeLanguage(language: string) {
     updateAttributes({ language })
   }
 
+  useEffect(() => {
+    function onSelectionUpdate() {
+      setTabIndex(editor?.isActive('codeBlock') ? undefined : -1)
+    }
+
+    editor.on('selectionUpdate', onSelectionUpdate)
+
+    return () => {
+      editor.off('selectionUpdate', onSelectionUpdate)
+    }
+  }, [editor])
+
   return (
     <NodeViewWrapper className="code-block relative">
       <Select
         items={languages}
+        tabIndex={tabIndex}
         onChange={onChangeLanguage}
         itemToString={getLanguageName}
         className="absolute top-1 right-1"
@@ -33,9 +48,3 @@ const EditorCodeBlock: React.FC<EditorCodeBlockProps> = ({ extension, node, upda
 }
 
 export default EditorCodeBlock
-
-interface EditorCodeBlockProps {
-  extension: Extension<CodeBlockLowlightOptions>
-  node: NodeView<typeof EditorCodeBlock>['node']
-  updateAttributes: NodeView<typeof EditorCodeBlock>['updateAttributes']
-}
