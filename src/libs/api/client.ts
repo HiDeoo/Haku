@@ -1,7 +1,5 @@
-import ky from 'ky'
+import ky, { HTTPError, TimeoutError } from 'ky'
 import { type DefaultOptions, type UseMutationResult, type UseQueryResult } from 'react-query'
-
-import { is404, isNetworkError } from 'libs/http'
 
 const client = ky.create({ prefixUrl: '/api', retry: 0 })
 
@@ -34,6 +32,18 @@ export function handleApiError<TData = unknown, TError = unknown, TVariables = v
   }
 
   throw error
+}
+
+function isNetworkError(error: unknown) {
+  return (
+    error instanceof HTTPError ||
+    error instanceof TimeoutError ||
+    (error instanceof TypeError && error.message === 'Failed to fetch')
+  )
+}
+
+function is404(error: unknown) {
+  return error instanceof HTTPError && error.response.status === 404
 }
 
 export type MutationType = 'add' | 'update' | 'remove'

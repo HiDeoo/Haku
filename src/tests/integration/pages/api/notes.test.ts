@@ -406,7 +406,7 @@ describe('notes', () => {
             const res = await fetch({ method: HttpMethod.GET })
             const json = await res.json<ApiErrorResponse>()
 
-            expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+            expect(res.status).toBe(StatusCode.ClientErrorNotFound)
             expect(json.error).toBe(API_ERROR_NOTE_DOES_NOT_EXIST)
           },
           { dynamicRouteParams: { id: 1 } }
@@ -422,7 +422,7 @@ describe('notes', () => {
             const res = await fetch({ method: HttpMethod.GET })
             const json = await res.json<ApiErrorResponse>()
 
-            expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+            expect(res.status).toBe(StatusCode.ClientErrorNotFound)
             expect(json.error).toBe(API_ERROR_NOTE_DOES_NOT_EXIST)
           },
           { dynamicRouteParams: { id } }
