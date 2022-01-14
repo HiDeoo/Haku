@@ -1,6 +1,7 @@
 import { Editor } from '@tiptap/react'
 import { useState } from 'react'
 import {
+  RiArrowDropRightFill,
   RiArrowGoBackLine,
   RiArrowGoForwardLine,
   RiBold,
@@ -26,6 +27,8 @@ import {
 
 import Inspector from 'components/Inspector'
 import EditorLinkModal from 'components/EditorLinkModal'
+import Flex from 'components/Flex'
+import Icon from 'components/Icon'
 import { type EditorState } from 'components/Note'
 import useContentMutation from 'hooks/useContentMutation'
 import { type NoteData } from 'libs/db/note'
@@ -252,6 +255,13 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
             toggled={editor?.isActive('codeBlock')}
           />
         </Inspector.Section>
+        {editorState.toc && editorState.toc.length > 0 ? (
+          <Inspector.Section title="Table of contents" className="flex-col gap-1.5">
+            {editorState.toc.map((entry) => (
+              <TocEntry key={entry.id} entry={entry} editor={editor} />
+            ))}
+          </Inspector.Section>
+        ) : null}
       </Inspector>
       <EditorLinkModal opened={linkModalOpened} onOpenChange={setLinkModalOpened} title="Link" editor={editor} />
     </>
@@ -260,10 +270,39 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
 
 export default NoteInspector
 
+const TocEntry: React.FC<TocEntryProps> = ({ editor, entry }) => {
+  function onClick() {
+    editor?.chain().setTextSelection(entry.pos).focus().run()
+  }
+
+  const linkClasses = clst(
+    'cursor-pointer hover:text-blue-500 outline-none rounded-sm truncate',
+    'focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-zinc-900 focus-visible:ring-offset-2'
+  )
+
+  return (
+    <Flex
+      alignItems="center"
+      className="text-blue-100/90 w-full"
+      style={{ paddingLeft: `calc(0.625rem * (${entry.level - 1}))` }}
+    >
+      <Icon icon={RiArrowDropRightFill} className="mr-0.5 mt-px shrink-0" />
+      <a onClick={onClick} href={`#${entry.id}`} className={linkClasses}>
+        {entry.name}
+      </a>
+    </Flex>
+  )
+}
+
 interface NoteInspectorProps {
   disabled?: boolean
   editor: Editor | null
   editorState: EditorState
   noteId?: NoteData['id']
   onMutation: (error?: unknown) => void
+}
+
+interface TocEntryProps {
+  editor: Editor | null
+  entry: NonNullable<EditorState['toc']>[number]
 }

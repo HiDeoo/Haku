@@ -9,7 +9,7 @@ import clst from 'styles/clst'
 
 const Inspector: InspectorComponent = ({ children, disabled }) => {
   return (
-    <div className="shrink-0 w-64 overflow-hidden bg-zinc-900 border-l border-zinc-600/50">
+    <div className="shrink-0 w-[15.2rem] overflow-hidden bg-zinc-900 border-l border-zinc-600/50">
       {Children.map(children, (child) => {
         if (!isValidElement(child)) {
           return null

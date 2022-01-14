@@ -2,9 +2,9 @@ import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
 import Highlight from '@tiptap/extension-highlight'
 import Link from '@tiptap/extension-link'
 import Strike from '@tiptap/extension-strike'
-import { useEditor, EditorContent, ReactNodeViewRenderer } from '@tiptap/react'
+import { useEditor, EditorContent, ReactNodeViewRenderer, type Editor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import { useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import EditorCodeBlock, { CODE_BLOCK_DEFAULT_LANGUAGE } from 'components/EditorCodeBlock'
 import Flex from 'components/Flex'
@@ -12,98 +12,12 @@ import NoteInspector from 'components/NoteInspector'
 import Shimmer from 'components/Shimmer'
 import useContentId from 'hooks/useContentId'
 import useNote from 'hooks/useNote'
-import { lowlight } from 'libs/lowlight'
+import { getLowlight, getToc, HeadingWithId, type ToC } from 'libs/editor'
 import clst from 'styles/clst'
 import styles from 'styles/Note.module.css'
 
 // FIXME(HiDeoo)
-const content = `<h1>Plop</h1><p>234452222223</p><ul><li><p>test</p><ul><li><p>test</p><ul><li><p>test</p></li></ul></li><li><p>test</p></li></ul></li></ul><p>test</p><p>test</p><pre><code class="language-javascript">function $initHighlight(block, cls) {
-  try {
-    if (cls.search(/no-highlight/) != -1)
-      return process(block, true, 0x0F) +
-             \` class="\${cls}"\`;
-  } catch (e) {
-    /* handle exception */
-  }
-  for (var i = 0 / 2; i &lt; classes.length; i++) {
-    if (checkCondition(classes[i]) === undefined)
-      console.log('undefined');
-  }
-
-  return (
-    &lt;div&gt;
-      &lt;web-component&gt;{block}&lt;/web-component&gt;
-    &lt;/div&gt;
-  )
-}
-
-export  $initHighlight;</code></pre><p>test</p><pre><code class="language-bash">#!/bin/bash
-
-###### CONFIG
-ACCEPTED_HOSTS="/root/.hag_accepted.conf"
-BE_VERBOSE=false
-
-if [ "$UID" -ne 0 ]
-then
- echo "Superuser rights required"
- exit 2
-fi
-
-genApacheConf(){
- echo -e "# Host \${HOME_DIR}$1/$2 :"
-}
-
-echo '"quoted"' | tr -d " &gt; text.txt</code></pre><p>test</p><pre><code class="language-markdown"># hello world
-
-you can write text [with links](http://example.com) inline or [link references][1].
-
-* one _thing_ has *em*phasis
-* two __things__ are **bold**
-
-[1]: http://example.com
-
----
-
-hello world
-===========
-
-&lt;this_is inline="xml"&gt;&lt;/this_is&gt;
-
-&gt; markdown is so cool
-
-    so are code segments
-
-1. one thing (yeah!)
-2. two thing \`i can write code\`, and \`more\` wipee!</code></pre><p>test</p><pre><code class="language-diff">Index: languages/ini.js
-===================================================================
---- languages/ini.js    (revision 199)
-+++ languages/ini.js    (revision 200)
-@@ -1,8 +1,7 @@
- hljs.LANGUAGES.ini =
- {
-   case_insensitive: true,
--  defaultMode:
--  {
-+  defaultMode: {
-     contains: ['comment', 'title', 'setting'],
-     illegal: '[^\\s]'
-   },
-
-*** /path/to/original timestamp
---- /path/to/new      timestamp
-***************
-*** 1,3 ****
---- 1,9 ----
-+ This is an important
-+ notice! It should
-+ therefore be located at
-+ the beginning of this
-+ document!
-
-! compress the size of the
-! changes.
-
-  It is important to spell</code></pre>`
+const content = `<h1>test 1</h1><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><h2>test 2</h2><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><h3>test 3</h3><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><h4>test 4</h4><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><h5>test 5</h5><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><h6>test6</h6><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><h1>test 1</h1><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><h2>test 2</h2><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><h3>test 3</h3><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><h4>test 4</h4><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><h5>test 5</h5><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><h6>test6</h6><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p><p>test</p>`
 
 const shimmerClasses = [
   'w-2/5 h-12',
@@ -125,6 +39,7 @@ const shimmerClasses = [
 ]
 
 const Note: React.FC = () => {
+  const editorRef = useRef<Editor | null>(null)
   const [editorState, setEditorState] = useState<EditorState>({ pristine: true })
 
   const contentId = useContentId()
@@ -138,6 +53,14 @@ const Note: React.FC = () => {
 
   const editorClasses = clst('h-full p-3 outline-none', styles.editor)
 
+  const onEditorUpdate = useCallback(() => {
+    if (editorRef.current) {
+      const toc = getToc(editorRef.current)
+
+      setEditorState((prevEditorState) => ({ ...prevEditorState, pristine: !prevEditorState.toc, toc }))
+    }
+  }, [])
+
   const editor = useEditor({
     autofocus: 'end',
     content,
@@ -149,13 +72,17 @@ const Note: React.FC = () => {
       Link,
       CodeBlockLowlight.extend({ addNodeView: addCodeBlockLowlightNodeView }).configure({
         defaultLanguage: CODE_BLOCK_DEFAULT_LANGUAGE,
-        lowlight,
+        lowlight: getLowlight(),
       }),
+      HeadingWithId,
     ],
-    onUpdate() {
-      setEditorState((prevEditorState) => ({ ...prevEditorState, pristine: false }))
-    },
+    onCreate: onEditorUpdate,
+    onUpdate: onEditorUpdate,
   })
+
+  useEffect(() => {
+    editorRef.current = editor
+  }, [editor])
 
   // FIXME(HiDeoo) copy(editor.getHTML())
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -163,7 +90,12 @@ const Note: React.FC = () => {
   global.editor = editor
 
   function onMutation(error?: unknown) {
-    setEditorState({ error, pristine: !error, lastSync: error ? undefined : new Date() })
+    setEditorState((prevEditorState) => ({
+      ...prevEditorState,
+      error,
+      lastSync: error ? undefined : new Date(),
+      pristine: !error,
+    }))
   }
 
   return (
@@ -198,4 +130,5 @@ export interface EditorState {
   error?: unknown
   pristine: boolean
   lastSync?: Date
+  toc?: ToC
 }

@@ -2,7 +2,7 @@ import { type NodeViewProps, NodeViewContent, NodeViewWrapper } from '@tiptap/re
 import { useEffect, useState } from 'react'
 
 import Select from 'components/Select'
-import { getLanguageName } from 'libs/lowlight'
+import { getLanguageName } from 'libs/editor'
 
 export const CODE_BLOCK_DEFAULT_LANGUAGE = 'plaintext'
 

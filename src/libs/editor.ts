@@ -1,3 +1,4 @@
+import { Node, type Editor } from '@tiptap/react'
 import { type LanguageFn } from 'highlight.js'
 import bash from 'highlight.js/lib/languages/bash'
 import css from 'highlight.js/lib/languages/css'
@@ -16,6 +17,7 @@ import typescript from 'highlight.js/lib/languages/typescript'
 import xml from 'highlight.js/lib/languages/xml'
 import yaml from 'highlight.js/lib/languages/yaml'
 import { lowlight } from 'lowlight/lib/core'
+import slug from 'url-slug'
 
 const languages: Languages = {
   bash: { fn: bash, name: 'Bash' },
@@ -38,15 +40,21 @@ const languages: Languages = {
   zsh: { fn: bash, name: 'Zsh' },
 }
 
-for (const id in languages) {
-  const language = languages[id]
-
-  if (language) {
-    lowlight.registerLanguage(id, languages[id]?.fn)
+export function getLowlight() {
+  if (lowlight.listLanguages().length !== 0) {
+    return lowlight
   }
-}
 
-export { lowlight }
+  for (const id in languages) {
+    const language = languages[id]
+
+    if (language) {
+      lowlight.registerLanguage(id, languages[id]?.fn)
+    }
+  }
+
+  return lowlight
+}
 
 export function getLanguageName(id: string | null) {
   if (!id) {
@@ -55,5 +63,48 @@ export function getLanguageName(id: string | null) {
 
   return languages[id]?.name ?? id
 }
+
+export function getToc(editor: Editor) {
+  const toc: ToC = []
+
+  const transaction = editor.state.tr
+
+  editor.state.doc.descendants((node, pos) => {
+    if (node.type.name === 'heading') {
+      const id = slug(`${node.textContent}-${toc.length + 1}`)
+
+      if (node.attrs.id !== id) {
+        transaction.setNodeMarkup(pos, undefined, { ...node.attrs, id })
+      }
+
+      toc.push({ id, level: node.attrs.level, name: node.textContent, pos })
+    }
+  })
+
+  transaction.setMeta('preventUpdate', true)
+  transaction.setMeta('addToHistory', false)
+
+  editor.view.dispatch(transaction)
+
+  return toc
+}
+
+export const HeadingWithId = Node.create({
+  name: 'HeadingWithId',
+  addGlobalAttributes() {
+    return [
+      {
+        types: ['heading'],
+        attributes: {
+          id: {
+            default: null,
+          },
+        },
+      },
+    ]
+  },
+})
+
+export type ToC = { id: string; level: number; name: string; pos: number }[]
 
 type Languages = Record<string, { fn: LanguageFn; name: string }>
