@@ -47,11 +47,11 @@ const Note: React.FC = () => {
 
   const editorClasses = clst('h-full p-3 outline-none', styles.editor)
 
-  const updateToc = useCallback(() => {
+  const updateToc = useCallback((emitUpdate = true) => {
     if (editorRef.current) {
       const toc = getToc(editorRef.current)
 
-      setEditorState((prevEditorState) => ({ ...prevEditorState, pristine: !prevEditorState.toc, toc }))
+      setEditorState((prevEditorState) => ({ ...prevEditorState, pristine: !emitUpdate, toc }))
     }
   }, [])
 
@@ -72,7 +72,7 @@ const Note: React.FC = () => {
       }
     }
 
-    updateToc()
+    updateToc(false)
   }, [updateToc])
 
   const editor = useEditor(

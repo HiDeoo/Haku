@@ -144,7 +144,7 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
     <>
       <Inspector disabled={inspectorDisabled}>
         <Inspector.Section className="gap-y-[0.3125rem]">
-          <Inspector.Button onPress={save} primary loading={isLoading}>
+          <Inspector.Button onPress={save} primary loading={isLoading} disabled={editorState.pristine}>
             Save
           </Inspector.Button>
           <div className={syncClasses}>{syncText}</div>
