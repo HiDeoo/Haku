@@ -256,7 +256,12 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
           />
         </Inspector.Section>
         {editorState.toc && editorState.toc.length > 0 ? (
-          <Inspector.Section title="Table of contents" className="flex-col gap-1.5">
+          <Inspector.Section
+            title="Table of contents"
+            titleClassName="pt-2 pb-1.5 px-3 mb-0"
+            sectionClassName="shrink p-0 min-h-[150px]"
+            className="flex-col gap-1.5 overflow-y-auto flex-nowrap pt-1 pb-3 px-3"
+          >
             {editorState.toc.map((entry) => (
               <TocEntry key={entry.id} entry={entry} editor={editor} />
             ))}

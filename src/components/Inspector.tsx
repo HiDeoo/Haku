@@ -9,7 +9,7 @@ import clst from 'styles/clst'
 
 const Inspector: InspectorComponent = ({ children, disabled }) => {
   return (
-    <div className="shrink-0 w-[15.2rem] overflow-hidden bg-zinc-900 border-l border-zinc-600/50">
+    <Flex direction="col" className="shrink-0 w-[15.2rem] overflow-y-auto bg-zinc-900 border-l border-zinc-600/50">
       {Children.map(children, (child) => {
         if (!isValidElement(child)) {
           return null
@@ -17,21 +17,33 @@ const Inspector: InspectorComponent = ({ children, disabled }) => {
 
         return cloneElement(child, { ...child.props, disabled })
       })}
-    </div>
+    </Flex>
   )
 }
 
 export default Inspector
 
-const InspectorSection: React.FC<InspectorSectionProps> = ({ children, className, disabled, title }) => {
-  const sectionClasses = clst('pt-2 pb-3 px-3 border-b border-zinc-600/25 last-of-type:border-0', {
-    'pt-3': typeof title === 'undefined',
-  })
+const InspectorSection: React.FC<InspectorSectionProps> = ({
+  children,
+  className,
+  disabled,
+  sectionClassName,
+  title,
+  titleClassName,
+}) => {
+  const sectionClasses = clst(
+    'shrink-0 pt-2 pb-3 px-3 border-b border-zinc-600/25 last-of-type:border-0 overflow-hidden',
+    {
+      'pt-3': typeof title === 'undefined',
+    },
+    sectionClassName
+  )
+  const titleClasses = clst('mb-2 text-blue-100/75 text-xs font-medium', titleClassName)
   const contentClasses = clst('gap-2.5', className)
 
   return (
-    <div className={sectionClasses}>
-      {title ? <div className="mb-2 text-blue-100/75 text-xs font-medium">{title}</div> : null}
+    <Flex direction="col" className={sectionClasses}>
+      {title ? <div className={titleClasses}>{title}</div> : null}
       <Flex wrap alignItems="baseline" className={contentClasses}>
         {Children.map(children, (child) => {
           if (!isValidElement(child)) {
@@ -41,7 +53,7 @@ const InspectorSection: React.FC<InspectorSectionProps> = ({ children, className
           return cloneElement(child, { ...child.props, disabled: child.props.disabled || disabled })
         })}
       </Flex>
-    </div>
+    </Flex>
   )
 }
 
@@ -172,7 +184,9 @@ interface InspectorProps {
 interface InspectorSectionProps {
   className?: string
   disabled?: boolean
+  sectionClassName?: string
   title?: string
+  titleClassName?: string
 }
 
 interface InspectorIconButtonProps {
