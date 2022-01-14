@@ -71,7 +71,7 @@ export function getToc(editor: Editor) {
 
   editor.state.doc.descendants((node, pos) => {
     if (node.type.name === 'heading') {
-      const id = slug(`${node.textContent}-${toc.length + 1}`)
+      const id = slug(`${node.textContent}-${pos}`)
 
       if (node.attrs.id !== id) {
         transaction.setNodeMarkup(pos, undefined, { ...node.attrs, id })
