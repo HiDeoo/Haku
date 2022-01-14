@@ -5,13 +5,16 @@ import { HttpMethod } from 'libs/http'
 import { type ApiErrorResponse, API_ERROR_UNKNOWN, ApiError } from 'libs/api/routes/errors'
 import { type ApiRequestValidationData, type ValidatedApiRequest } from 'libs/api/routes/middlewares'
 
-export function createApiRoute<Get = never, Post = never, Put = never, Delete = never, Patch = never>(
-  route: ApiRoute<Get, Post, Put, Delete, Patch>,
+export function createApiRoute<TGet = never, TPost = never, TPut = never, TDelete = never, TPatch = never>(
+  route: ApiRoute<TGet, TPost, TPut, TDelete, TPatch>,
   middlewares?: ApiMiddleware[]
 ) {
   const orderedMiddlewares = middlewares?.reverse()
 
-  return async (req: NextApiRequest, res: NextApiResponse<Get | Post | Put | Delete | Patch | ApiErrorResponse>) => {
+  return async (
+    req: NextApiRequest,
+    res: NextApiResponse<TGet | TPost | TPut | TDelete | TPatch | ApiErrorResponse>
+  ) => {
     let handler: NextApiHandler | undefined
 
     if (req.method === HttpMethod.GET && route.get) {
@@ -54,8 +57,8 @@ export function createApiRoute<Get = never, Post = never, Put = never, Delete = 
   }
 }
 
-export function getApiRequestUser<Data extends ApiRequestValidationData>(
-  req: NextApiRequest | ValidatedApiRequest<Data>
+export function getApiRequestUser<TData extends ApiRequestValidationData>(
+  req: NextApiRequest | ValidatedApiRequest<TData>
 ): UserWithUserId {
   if (!req.user) {
     throw new Error('Unauthenticated API request received for an authenticated endpoint.')
@@ -64,12 +67,12 @@ export function getApiRequestUser<Data extends ApiRequestValidationData>(
   return { ...req.user, userId: req.user.id }
 }
 
-interface ApiRoute<Get, Post, Put, Delete, Patch> {
-  get?: NextApiHandler<Get>
-  post?: NextApiHandler<Post>
-  put?: NextApiHandler<Put>
-  delete?: NextApiHandler<Delete>
-  patch?: NextApiHandler<Patch>
+interface ApiRoute<TGet, TPost, TPut, TDelete, TPatch> {
+  get?: NextApiHandler<TGet>
+  post?: NextApiHandler<TPost>
+  put?: NextApiHandler<TPut>
+  delete?: NextApiHandler<TDelete>
+  patch?: NextApiHandler<TPatch>
 }
 
 type ApiMiddleware = (handler: NextApiHandler) => NextApiHandler

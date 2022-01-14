@@ -4,8 +4,8 @@ import StatusCode from 'status-code-enum'
 import { getTestUser, testApiRoute } from 'tests/integration'
 import { createTestFolder, createTestNote, getTestFolder, getTestFolders, getTestNotes } from 'tests/integration/db'
 import { HttpMethod } from 'libs/http'
-import postHandler from 'pages/api/folders'
-import deleteAndPatchHandler from 'pages/api/folders/[id]'
+import indexHandler from 'pages/api/folders'
+import idHandler from 'pages/api/folders/[id]'
 import { type FolderData } from 'libs/db/folder'
 import {
   type ApiErrorResponse,
@@ -18,7 +18,7 @@ import {
 describe('folders', () => {
   describe('POST', () => {
     test('should add a new folder at the root', () =>
-      testApiRoute(postHandler, async ({ fetch }) => {
+      testApiRoute(indexHandler, async ({ fetch }) => {
         const name = 'folder'
         const type = FolderType.NOTE
 
@@ -36,7 +36,7 @@ describe('folders', () => {
       }))
 
     test('should add a new folder inside an existing folder', () =>
-      testApiRoute(postHandler, async ({ fetch }) => {
+      testApiRoute(indexHandler, async ({ fetch }) => {
         const { id: parentId } = await createTestFolder()
 
         const name = 'folder'
@@ -56,7 +56,7 @@ describe('folders', () => {
       }))
 
     test('should not add a new folder inside a nonexisting folder', () =>
-      testApiRoute(postHandler, async ({ fetch }) => {
+      testApiRoute(indexHandler, async ({ fetch }) => {
         const name = 'folder'
         const type = FolderType.NOTE
         const parentId = 1
@@ -76,7 +76,7 @@ describe('folders', () => {
       }))
 
     test('should not add a new folder inside an existing folder not owned by the current user', () =>
-      testApiRoute(postHandler, async ({ fetch }) => {
+      testApiRoute(indexHandler, async ({ fetch }) => {
         const { id: parentId } = await createTestFolder({ userId: getTestUser('1').userId })
 
         const name = 'folder'
@@ -97,7 +97,7 @@ describe('folders', () => {
       }))
 
     test('should not add a new folder inside an existing folder of a different type', () =>
-      testApiRoute(postHandler, async ({ fetch }) => {
+      testApiRoute(indexHandler, async ({ fetch }) => {
         const { id: parentId } = await createTestFolder({ type: FolderType.TODO })
 
         const name = 'folder'
@@ -118,7 +118,7 @@ describe('folders', () => {
       }))
 
     test('should not add a new duplicated folder at the root', () =>
-      testApiRoute(postHandler, async ({ fetch }) => {
+      testApiRoute(indexHandler, async ({ fetch }) => {
         await createTestFolder({ type: FolderType.TODO })
         const { name, type } = await createTestFolder()
 
@@ -137,7 +137,7 @@ describe('folders', () => {
       }))
 
     test('should not add a new duplicated folder inside an existing folder', () =>
-      testApiRoute(postHandler, async ({ fetch }) => {
+      testApiRoute(indexHandler, async ({ fetch }) => {
         const { id: parentId } = await createTestFolder()
         const { name, type } = await createTestFolder({ parentId })
 
@@ -164,7 +164,7 @@ describe('folders', () => {
       const newName = 'newName'
 
       return testApiRoute(
-        deleteAndPatchHandler,
+        idHandler,
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
@@ -188,7 +188,7 @@ describe('folders', () => {
       const { name: newName } = await createTestFolder()
 
       return testApiRoute(
-        deleteAndPatchHandler,
+        idHandler,
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
@@ -212,7 +212,7 @@ describe('folders', () => {
       const { id, name } = await createTestFolder()
 
       return testApiRoute(
-        deleteAndPatchHandler,
+        idHandler,
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
@@ -237,7 +237,7 @@ describe('folders', () => {
       const { id, name } = await createTestFolder({ parentId })
 
       return testApiRoute(
-        deleteAndPatchHandler,
+        idHandler,
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
@@ -264,7 +264,7 @@ describe('folders', () => {
       const { id, parentId } = await createTestFolder({ name: 'folder' })
 
       return testApiRoute(
-        deleteAndPatchHandler,
+        idHandler,
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
@@ -288,7 +288,7 @@ describe('folders', () => {
       const { id, parentId } = await createTestFolder()
 
       return testApiRoute(
-        deleteAndPatchHandler,
+        idHandler,
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
@@ -313,7 +313,7 @@ describe('folders', () => {
       const { id, parentId } = await createTestFolder()
 
       return testApiRoute(
-        deleteAndPatchHandler,
+        idHandler,
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
@@ -338,7 +338,7 @@ describe('folders', () => {
       const { id, parentId } = await createTestFolder()
 
       return testApiRoute(
-        deleteAndPatchHandler,
+        idHandler,
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
@@ -365,7 +365,7 @@ describe('folders', () => {
       const newName = 'newName'
 
       return testApiRoute(
-        deleteAndPatchHandler,
+        idHandler,
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
@@ -390,7 +390,7 @@ describe('folders', () => {
       const { id, name } = await createTestFolder({ userId: getTestUser('1').userId })
 
       return testApiRoute(
-        deleteAndPatchHandler,
+        idHandler,
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
@@ -414,7 +414,7 @@ describe('folders', () => {
       const newName = 'newName'
 
       return testApiRoute(
-        deleteAndPatchHandler,
+        idHandler,
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
@@ -439,7 +439,7 @@ describe('folders', () => {
       const { id } = await createTestFolder()
 
       return testApiRoute(
-        deleteAndPatchHandler,
+        idHandler,
         async ({ fetch }) => {
           await fetch({ method: HttpMethod.DELETE })
 
@@ -455,7 +455,7 @@ describe('folders', () => {
       const { id } = await createTestFolder()
 
       return testApiRoute(
-        deleteAndPatchHandler,
+        idHandler,
         async ({ fetch }) => {
           /**
            * folder_0
@@ -518,7 +518,7 @@ describe('folders', () => {
       const { id } = await createTestFolder({ userId: getTestUser('1').userId })
 
       return testApiRoute(
-        deleteAndPatchHandler,
+        idHandler,
         async ({ fetch }) => {
           const res = await fetch({ method: HttpMethod.DELETE })
           const json = await res.json<ApiErrorResponse>()
@@ -538,7 +538,7 @@ describe('folders', () => {
       const id = 1
 
       return testApiRoute(
-        deleteAndPatchHandler,
+        idHandler,
         async ({ fetch }) => {
           const res = await fetch({ method: HttpMethod.DELETE })
           const json = await res.json<ApiErrorResponse>()

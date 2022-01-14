@@ -1,13 +1,13 @@
-import { useRouter } from 'next/router'
+import dynamic from 'next/dynamic'
 
-const Note: Page = () => {
-  const { query } = useRouter()
+import Spinner from 'components/Spinner'
 
-  return (
-    <>
-      <div>note - {query.id}</div>
-    </>
-  )
+const Note = dynamic(import('components/Note'), {
+  loading: () => <Spinner delay className="h-10 w-10 self-center my-auto" />,
+})
+
+const NotePage: Page = () => {
+  return <Note />
 }
 
-export default Note
+export default NotePage

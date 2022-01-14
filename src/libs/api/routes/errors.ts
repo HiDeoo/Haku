@@ -13,6 +13,7 @@ export const API_ERROR_FOLDER_INVALID_TYPE = 'The folder type is invalid.'
 
 export const API_ERROR_NOTE_ALREADY_EXISTS = 'A note with the same name already exists.'
 export const API_ERROR_NOTE_DOES_NOT_EXIST = 'The note specified does not exist.'
+export const API_ERROR_NOTE_HTML_OR_TEXT_MISSING = 'The note html or text content is missing.'
 
 export class ApiError extends Error {
   constructor(public message: string, public httpStatusCode: StatusCode = StatusCode.ClientErrorForbidden) {

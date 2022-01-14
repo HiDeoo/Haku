@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 @layer components {
-  .animate-combobox {
+  .animate-control-menu {
     @media (prefers-reduced-motion: no-preference) {
       &[data-state='open'] {
         @apply animate-slide-in;
@@ -63,9 +63,14 @@ div#__next {
 }
 
 body {
-  @apply bg-zinc-800 text-blue-50 text-sm;
+  @apply bg-zinc-800 text-blue-50 text-sm caret-blue-400;
 }
 
 div#__next {
   @apply flex justify-center items-center overflow-hidden;
+}
+
+::selection {
+  color: theme('colors.blue.50');
+  background-color: theme('colors.blue.600');
 }

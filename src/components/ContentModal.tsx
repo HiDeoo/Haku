@@ -9,7 +9,7 @@ import Form from 'components/Form'
 import IconButton from 'components/IconButton'
 import Modal from 'components/Modal'
 import TextInput from 'components/TextInput'
-import useContentMutation, { type ContentMutation } from 'hooks/useContentMutation'
+import useMetadataMutation, { type MetadataMutation } from 'hooks/useMetadataMutation'
 import { type FolderData } from 'libs/db/folder'
 import useContentType from 'hooks/useContentType'
 import { type StoreState, useStore } from 'stores'
@@ -27,7 +27,7 @@ const NewContentModal: React.FC = () => {
     reset,
   } = useForm<FormFields>()
 
-  const { error, isLoading, mutate } = useContentMutation()
+  const { error, isLoading, mutate } = useMetadataMutation()
   const [{ data: content, mutationType, opened }, setOpened] = useStore(storeSelector)
 
   const isUpdating = mutationType === 'update' && typeof content !== 'undefined'
@@ -40,7 +40,7 @@ const NewContentModal: React.FC = () => {
   const onSubmit = handleSubmit(({ folder, ...data }) => {
     const folderId = folder.id === ROOT_FOLDER_ID ? undefined : folder.id
 
-    const mutationData: ContentMutation = isUpdating
+    const mutationData: MetadataMutation = isUpdating
       ? { ...data, mutationType: 'update', folderId, id: content.id }
       : { ...data, mutationType: 'add', folderId }
 

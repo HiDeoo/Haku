@@ -5,20 +5,20 @@ import Combobox from 'components/Combobox'
 import { type FolderData } from 'libs/db/folder'
 import useContentTree from 'hooks/useContentTree'
 import { isTreeFolder, type TreeFolder } from 'libs/tree'
-import { NoteMetaData } from 'libs/db/note'
+import { NoteMetadata } from 'libs/db/note'
 
 export const ROOT_FOLDER_ID = -1
 
 const rootFolder: FolderWithPath = { id: ROOT_FOLDER_ID, name: '/', parentId: null, path: '' }
 
-const FolderPicker = <FormFields extends FieldValues>({
+const FolderPicker = <TFormFields extends FieldValues>({
   control,
   defaultFolderId,
   disabled,
   errorMessage,
   label,
   name,
-}: FolderPickerProps<FormFields>) => {
+}: FolderPickerProps<TFormFields>) => {
   const { data, isLoading } = useContentTree()
 
   const [folders, defaultItem]: [Folders, DefaultFolder] = useMemo(() => {
@@ -82,16 +82,16 @@ function getFolderList(
   return [folders, defaultItem]
 }
 
-interface FolderPickerProps<FormFields extends FieldValues> {
-  control: Control<FormFields>
+interface FolderPickerProps<TFormFields extends FieldValues> {
+  control: Control<TFormFields>
   defaultFolderId?: FolderData['id'] | null
   disabled?: boolean
   errorMessage?: string
   label?: string
-  name: FieldPath<FormFields>
+  name: FieldPath<TFormFields>
 }
 
 type FolderWithPath = FolderData & { path: string }
 type DefaultFolder = FolderWithPath | undefined
 type Folders = FolderWithPath[]
-type TreeFolders = TreeFolder<FolderData, NoteMetaData>[]
+type TreeFolders = TreeFolder<FolderData, NoteMetadata>[]

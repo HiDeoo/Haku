@@ -2,25 +2,25 @@ import { FolderType, Prisma } from '@prisma/client'
 
 import { prisma } from 'libs/db'
 import { type FolderData } from 'libs/db/folder'
-import { getNotesMetaDataGroupedByFolder, type NoteMetaData } from 'libs/db/note'
-import { type TodoMetaData } from 'libs/db/todo'
+import { getNotesMetadataGroupedByFolder, type NoteMetadata } from 'libs/db/note'
+import { type TodoMetadata } from 'libs/db/todo'
 import { type HierarchicalListFolder, type HierarchicalListItem, hierarchicalListToTree, type Tree } from 'libs/tree'
 
-export type NoteTreeData = Tree<FolderData, NoteMetaData>
-export type TodoTreeData = Tree<FolderData, TodoMetaData>
+export type NoteTreeData = Tree<FolderData, NoteMetadata>
+export type TodoTreeData = Tree<FolderData, TodoMetadata>
 
 export async function getNoteTree(userId: UserId): Promise<NoteTreeData> {
-  const notesGroupedByFolder = await getNotesMetaDataGroupedByFolder(userId)
+  const notesGroupedByFolder = await getNotesMetadataGroupedByFolder(userId)
 
-  return getTree<FolderData, NoteMetaData>(userId, FolderType.NOTE, notesGroupedByFolder)
+  return getTree<FolderData, NoteMetadata>(userId, FolderType.NOTE, notesGroupedByFolder)
 }
 
-async function getTree<Folder extends HierarchicalListFolder, Item extends HierarchicalListItem>(
+async function getTree<TFolder extends HierarchicalListFolder, TItem extends HierarchicalListItem>(
   userId: UserId,
   folderType: FolderType,
-  items: Map<Item['folderId'], Item[]>
-): Promise<Tree<Folder, Item>> {
-  const folders = await getTreeFolders<Folder>(userId, folderType)
+  items: Map<TItem['folderId'], TItem[]>
+): Promise<Tree<TFolder, TItem>> {
+  const folders = await getTreeFolders<TFolder>(userId, folderType)
 
   return hierarchicalListToTree(folders, items)
 }
@@ -35,12 +35,12 @@ export async function getTreeChildrenFolderIds(
   return folders.map(({ id }) => id)
 }
 
-function getTreeFolders<Folder extends HierarchicalListFolder>(
+function getTreeFolders<TFolder extends HierarchicalListFolder>(
   userId: UserId,
   folderType: FolderType,
-  baseFolderId?: Folder['id']
-): Promise<Folder[]> {
-  return prisma.$queryRaw<Folder[]>`
+  baseFolderId?: TFolder['id']
+): Promise<TFolder[]> {
+  return prisma.$queryRaw<TFolder[]>`
 WITH RECURSIVE root_to_leaf AS (
   SELECT
     "id",

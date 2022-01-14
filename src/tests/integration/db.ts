@@ -4,7 +4,7 @@ import slug from 'url-slug'
 
 import { prisma } from 'libs/db'
 import { type FolderData } from 'libs/db/folder'
-import { type NoteMetaData } from 'libs/db/note'
+import { type NoteMetadata } from 'libs/db/note'
 import { getTestUser } from 'tests/integration'
 
 export function createTestFolder(options?: TestFolderOptions) {
@@ -41,12 +41,15 @@ interface TestFolderOptions {
 
 export function createTestNote(options?: TestNoteOptions) {
   const name = options?.name ?? faker.lorem.words()
+  const data = faker.lorem.paragraphs(3)
 
   return prisma.note.create({
     data: {
       name,
       folderId: options?.folderId,
+      html: data,
       slug: slug(name),
+      text: data,
       userId: options?.userId ?? getTestUser().userId,
     },
   })
@@ -61,13 +64,13 @@ export function getTestNotes(options?: TestNoteOptions) {
   })
 }
 
-export function getTestNote(id: NoteMetaData['id']) {
+export function getTestNote(id: NoteMetadata['id']) {
   return prisma.note.findUnique({ where: { id } })
 }
 
 interface TestNoteOptions {
-  name?: NoteMetaData['name']
-  folderId?: NoteMetaData['folderId']
+  name?: NoteMetadata['name']
+  folderId?: NoteMetadata['folderId']
   userId?: UserId
 }
 

@@ -5,13 +5,13 @@ import { type ValidatedApiRequest, withAdmin, withValidation } from 'libs/api/ro
 import { z, zStringAsNumber } from 'libs/validation'
 import { removeAllowedEmail } from 'libs/db/emailAllowList'
 
-const deleteQuerySchema = z.object({
+const querySchema = z.object({
   id: zStringAsNumber,
 })
 
 const route = createApiRoute(
   {
-    delete: withValidation(deleteHandler, undefined, deleteQuerySchema),
+    delete: withValidation(deleteHandler, undefined, querySchema),
   },
   [withAdmin]
 )
@@ -24,4 +24,4 @@ async function deleteHandler(req: ValidatedApiRequest<{ query: RemoveAllowedEmai
   return res.status(200).end()
 }
 
-type RemoveAllowedEmailQuery = z.infer<typeof deleteQuerySchema>
+type RemoveAllowedEmailQuery = z.infer<typeof querySchema>

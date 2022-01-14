@@ -1,4 +1,3 @@
-import { Presence } from '@radix-ui/react-presence'
 import fuzzaldrin from 'fuzzaldrin-plus'
 import {
   useCombobox,
@@ -6,7 +5,7 @@ import {
   type UseComboboxState,
   type UseComboboxStateChange,
 } from 'downshift'
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   type Control,
   useController,
@@ -20,16 +19,15 @@ import {
 import { RiArrowDownSLine } from 'react-icons/ri'
 
 import Button from 'components/Button'
+import ControlMenu from 'components/ControlMenu'
+import Flex from 'components/Flex'
 import Icon from 'components/Icon'
 import Label from 'components/Label'
 import Spinner from 'components/Spinner'
 import TextInput from 'components/TextInput'
 import clst from 'styles/clst'
 
-const menuWindowBottomOffsetInPixels = 20
-const menuMaxHeightInPixels = 210
-
-const Combobox = <Item, FormFields extends FieldValues>({
+const Combobox = <TItem, TFormFields extends FieldValues>({
   control,
   defaultItem,
   disabled,
@@ -40,15 +38,14 @@ const Combobox = <Item, FormFields extends FieldValues>({
   label,
   loading,
   name,
-}: ComboboxProps<Item, FormFields>) => {
+}: ComboboxProps<TItem, TFormFields>) => {
   const container = useRef<HTMLDivElement>(null)
 
   const [filteredItems, setFilteredItems] = useState(items)
   const [disableMenuAnimation, setDisableMenuAnimation] = useState(false)
-  const [maxHeight, setMaxHeight] = useState<number | undefined>(undefined)
 
   const renderItem = useCallback(
-    (item: Item | null): string => {
+    (item: TItem | null): string => {
       if (!item || !itemToString) {
         return item ? String(item) : ''
       }
@@ -60,10 +57,10 @@ const Combobox = <Item, FormFields extends FieldValues>({
 
   const {
     field: { onChange, value },
-  } = useController<FormFields>({
+  } = useController<TFormFields>({
     control,
     // https://github.com/react-hook-form/react-hook-form/issues/2978#issuecomment-1001992272
-    defaultValue: defaultItem as UnpackNestedValue<PathValue<FormFields, Path<FormFields>>>,
+    defaultValue: defaultItem as UnpackNestedValue<PathValue<TFormFields, Path<TFormFields>>>,
     name,
     rules: { validate },
   })
@@ -95,26 +92,6 @@ const Combobox = <Item, FormFields extends FieldValues>({
     [items, itemToMenuItem, renderItem]
   )
 
-  useLayoutEffect(() => {
-    function calculateMaxHeight() {
-      const rect = container.current?.getBoundingClientRect()
-
-      setMaxHeight(
-        rect
-          ? Math.min(window.innerHeight - rect.bottom - menuWindowBottomOffsetInPixels, menuMaxHeightInPixels)
-          : undefined
-      )
-    }
-
-    calculateMaxHeight()
-
-    window.addEventListener('resize', calculateMaxHeight)
-
-    return () => {
-      window.removeEventListener('resize', calculateMaxHeight)
-    }
-  }, [])
-
   useEffect(() => {
     setFilteredItems(items)
   }, [items])
@@ -139,7 +116,7 @@ const Combobox = <Item, FormFields extends FieldValues>({
     }
   }, [disableMenuAnimation])
 
-  function stateReducer(state: UseComboboxState<Item>, { type, changes }: UseComboboxStateChangeOptions<Item>) {
+  function stateReducer(state: UseComboboxState<TItem>, { type, changes }: UseComboboxStateChangeOptions<TItem>) {
     switch (type) {
       case useCombobox.stateChangeTypes.InputChange: {
         const needle = changes.inputValue?.toLowerCase() ?? ''
@@ -178,11 +155,11 @@ const Combobox = <Item, FormFields extends FieldValues>({
     return !isOpen || 'required'
   }
 
-  function onSelectedItemChange(changes: UseComboboxStateChange<Item>) {
+  function onSelectedItemChange(changes: UseComboboxStateChange<TItem>) {
     onChange(changes.selectedItem)
   }
 
-  function renderFilteredItem(item: Item, isHighlighted: boolean) {
+  function renderFilteredItem(item: TItem, isHighlighted: boolean) {
     const itemStr = itemToMenuItem ? itemToMenuItem(item) : renderItem(item)
 
     if (inputValue.length === 0) {
@@ -203,16 +180,13 @@ const Combobox = <Item, FormFields extends FieldValues>({
   }
 
   const triggerIconClasses = clst('motion-safe:transition-transform motion-safe:duration-200', { 'rotate-180': isOpen })
-  const menuClasses = clst('rounded-md bg-zinc-700 shadow-sm shadow-zinc-900/50 overflow-auto origin-top', {
-    'animate-combobox': !disableMenuAnimation,
-  })
 
   return (
     <div className="relative mb-3" ref={container}>
       <Label {...getLabelProps()} errorMessage={errorMessage} disabled={isDisabled()}>
         {label}
       </Label>
-      <div {...getComboboxProps()} className="flex relative">
+      <Flex {...getComboboxProps()} className="relative">
         {loading ? <Spinner className="absolute top-1.5 right-12 h-5 w-5 text-blue-500" /> : null}
         <TextInput
           {...inputProps}
@@ -230,48 +204,34 @@ const Combobox = <Item, FormFields extends FieldValues>({
         >
           <Icon icon={RiArrowDownSLine} className={triggerIconClasses} />
         </Button>
-      </div>
-      <div {...getMenuProps()} className="absolute top-full inset-x-0 mt-0.5 mr-9 outline-none">
-        <Presence present={isOpen}>
-          <ul
-            className={menuClasses}
-            data-state={isOpen ? 'open' : 'closed'}
-            style={{ maxHeight: maxHeight ? `${maxHeight}px` : 'initial' }}
-          >
-            {filteredItems.map((item, index) => {
-              const isHighlighted = highlightedIndex === index
-
-              const menuItemClasses = clst('px-3 py-1.5 cursor-pointer text-ellipsis overflow-hidden', {
-                'bg-blue-600': isHighlighted,
-              })
-
-              return (
-                <li
-                  {...getItemProps({ item, index })}
-                  className={menuItemClasses}
-                  key={`${renderItem(item)}-${index}`}
-                  dangerouslySetInnerHTML={{ __html: renderFilteredItem(item, isHighlighted) }}
-                />
-              )
-            })}
-          </ul>
-        </Presence>
-      </div>
+      </Flex>
+      <ControlMenu
+        isOpen={isOpen}
+        className="mr-9"
+        container={container}
+        items={filteredItems}
+        itemToString={renderItem}
+        menuProps={getMenuProps()}
+        getItemProps={getItemProps}
+        highlightedIndex={highlightedIndex}
+        itemToInnerHtml={renderFilteredItem}
+        disableAnimation={disableMenuAnimation}
+      />
     </div>
   )
 }
 
 export default Combobox
 
-interface ComboboxProps<Item, FormFields extends FieldValues> {
-  control: Control<FormFields>
-  defaultItem: Item
+interface ComboboxProps<TItem, TFormFields extends FieldValues> {
+  control: Control<TFormFields>
+  defaultItem: TItem
   disabled?: boolean
   errorMessage?: string
-  items: Item[]
-  itemToMenuItem?: (item: Item | null) => string
-  itemToString?: (item: Item | null) => string
+  items: TItem[]
+  itemToMenuItem?: (item: TItem | null) => string
+  itemToString?: (item: TItem | null) => string
   label: string
   loading?: boolean
-  name: FieldPath<FormFields>
+  name: FieldPath<TFormFields>
 }

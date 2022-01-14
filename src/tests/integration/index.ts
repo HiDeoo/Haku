@@ -7,12 +7,12 @@ import { getTestApiUrl, rest, server } from 'tests/integration/mocks/http'
 // The test users will have sequential numbered IDs starting at `0`.
 export const TEST_USER_COUNT = 2
 
-export function testApiRoute<ResponseType>(
-  handler: NextApiHandler<ResponseType>,
+export function testApiRoute<TResponseType>(
+  handler: NextApiHandler<TResponseType>,
   test: (obj: { fetch: FetchFn }) => Promise<void>,
   options?: TestApiRouteOptions
 ) {
-  return testApiHandler<ResponseType>({
+  return testApiHandler<TResponseType>({
     handler,
     params: mapDynamicRouteParams(options?.dynamicRouteParams),
     test: async (testParams) => {
@@ -62,7 +62,7 @@ type FetchFn = (init?: RequestInit) => FetchReturnType
 type FetchReturnValue = Awaited<ReturnType<typeof fetch>>
 type FetchReturnType = Promise<
   Omit<FetchReturnValue, 'json' | 'headers'> & {
-    json: <Json>(...args: Parameters<FetchReturnValue['json']>) => Promise<Json>
+    json: <TJson>(...args: Parameters<FetchReturnValue['json']>) => Promise<TJson>
     headers: FetchReturnValue['headers'] & {
       raw: () => Record<string, string | string[]>
     }
