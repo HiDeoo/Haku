@@ -726,7 +726,7 @@ describe('notes', () => {
       )
     })
 
-    test('should not move a folder if becoming duplicated', async () => {
+    test('should not move a note if becoming duplicated', async () => {
       const { id: folderId } = await createTestNoteFolder()
       const { id: newFolderId } = await createTestNoteFolder()
 
@@ -890,7 +890,7 @@ describe('notes', () => {
       )
     })
 
-    test('should not update a nonexisting folder', async () => {
+    test('should not update a nonexisting note', async () => {
       const newName = 'newName'
 
       return testApiRoute(

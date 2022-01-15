@@ -50,6 +50,39 @@ export async function getTodosMetadataGroupedByFolder(userId: UserId): Promise<T
   return todoMetadataGroupedByFolder
 }
 
+export function updateTodo(id: TodoMetadata['id'], userId: UserId, data: UpdateTodoData): Promise<TodoMetadata> {
+  return prisma.$transaction(async (prisma) => {
+    const todo = await getTodoById(id, userId)
+
+    if (!todo) {
+      throw new ApiError(API_ERROR_TODO_DOES_NOT_EXIST)
+    }
+
+    await validateFolder(data.folderId, userId, FolderType.TODO)
+
+    try {
+      return await prisma.todo.update({
+        where: {
+          id,
+        },
+        data: {
+          folderId: data.folderId,
+          name: data.name,
+          slug: data.name ? slug(data.name) : undefined,
+        },
+        select: todoMetadataSelect,
+      })
+    } catch (error) {
+      handleDbError(error, {
+        unique: {
+          userId_name: API_ERROR_TODO_ALREADY_EXISTS,
+          folderId_userId_name: API_ERROR_TODO_ALREADY_EXISTS,
+        },
+      })
+    }
+  })
+}
+
 export function removeTodo(id: TodoMetadata['id'], userId: UserId) {
   return prisma.$transaction(async (prisma) => {
     const todo = await getTodoById(id, userId)
@@ -67,3 +100,5 @@ function getTodoById(id: number, userId: UserId): Promise<Todo | null> {
 }
 
 type TodoMetadataGroupedByFolder = Map<TodoMetadata['folderId'], TodoMetadata[]>
+
+type UpdateTodoData = Partial<Pick<TodoMetadata, 'name' | 'folderId'>>

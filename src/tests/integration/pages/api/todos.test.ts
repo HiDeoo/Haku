@@ -536,6 +536,293 @@ describe('todos', () => {
       }))
   })
 
+  describe('PATCH', () => {
+    test('should rename a todo and update its slug', async () => {
+      const { id: folderId } = await createTestTodoFolder()
+      const { id } = await createTestTodo({ folderId })
+
+      const newName = 'newName'
+
+      return testApiRoute(
+        idHandler,
+        async ({ fetch }) => {
+          const res = await fetch({
+            method: HttpMethod.PATCH,
+            body: JSON.stringify({ name: newName }),
+          })
+          const json = await res.json<TodoMetadata>()
+
+          expect(json.name).toBe(newName)
+
+          const testNote = await getTestTodo(id)
+
+          expect(testNote?.name).toBe(newName)
+          expect(testNote?.slug).toBe(slug(newName))
+          expect(testNote?.folderId).toBe(folderId)
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should not rename a todo if becoming duplicated', async () => {
+      const { id, name } = await createTestTodo()
+      const { name: newName } = await createTestTodo()
+
+      return testApiRoute(
+        idHandler,
+        async ({ fetch }) => {
+          const res = await fetch({
+            method: HttpMethod.PATCH,
+            body: JSON.stringify({ name: newName }),
+          })
+          const json = await res.json<ApiErrorResponse>()
+
+          expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+          expect(json.error).toBe(API_ERROR_TODO_ALREADY_EXISTS)
+
+          const testTodo = await getTestTodo(id)
+
+          expect(testTodo?.name).toBe(name)
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should move a todo inside another folder', async () => {
+      const { id: folderId } = await createTestTodoFolder()
+      const { id: newFolderId } = await createTestTodoFolder()
+
+      const { id, slug } = await createTestTodo({ folderId })
+
+      return testApiRoute(
+        idHandler,
+        async ({ fetch }) => {
+          const res = await fetch({
+            method: HttpMethod.PATCH,
+            body: JSON.stringify({ folderId: newFolderId }),
+          })
+          const json = await res.json<TodoMetadata>()
+
+          expect(json.folderId).toBe(newFolderId)
+
+          const testTodo = await getTestTodo(id)
+
+          expect(testTodo).toBeDefined()
+          expect(testTodo?.folderId).toBe(newFolderId)
+          expect(testTodo?.slug).toBe(slug)
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should move a todo to the root', async () => {
+      const { id: folderId } = await createTestTodoFolder()
+
+      const { id, slug } = await createTestTodo({ folderId })
+
+      return testApiRoute(
+        idHandler,
+        async ({ fetch }) => {
+          const res = await fetch({
+            method: HttpMethod.PATCH,
+            body: JSON.stringify({ folderId: null }),
+          })
+          const json = await res.json<TodoMetadata>()
+
+          expect(json.folderId).toBeNull()
+
+          const testTodo = await getTestTodo(id)
+
+          expect(testTodo).toBeDefined()
+          expect(testTodo?.folderId).toBeNull()
+          expect(testTodo?.slug).toBe(slug)
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should not move a todo if becoming duplicated', async () => {
+      const { id: folderId } = await createTestTodoFolder()
+      const { id: newFolderId } = await createTestTodoFolder()
+
+      const { id } = await createTestTodo({ folderId, name: 'todo' })
+      await createTestTodo({ folderId: newFolderId, name: 'todo' })
+
+      return testApiRoute(
+        idHandler,
+        async ({ fetch }) => {
+          const res = await fetch({
+            method: HttpMethod.PATCH,
+            body: JSON.stringify({ folderId: newFolderId }),
+          })
+          const json = await res.json<ApiErrorResponse>()
+
+          expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+          expect(json.error).toBe(API_ERROR_TODO_ALREADY_EXISTS)
+
+          const testTodo = await getTestTodo(id)
+
+          expect(testTodo).toBeDefined()
+          expect(testTodo?.folderId).toBe(folderId)
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should not move a todo inside a nonexisting folder', async () => {
+      const { id, folderId } = await createTestTodo()
+
+      return testApiRoute(
+        idHandler,
+        async ({ fetch }) => {
+          const res = await fetch({
+            method: HttpMethod.PATCH,
+            body: JSON.stringify({ folderId: 1 }),
+          })
+          const json = await res.json<ApiErrorResponse>()
+
+          expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+          expect(json.error).toBe(API_ERROR_FOLDER_DOES_NOT_EXIST)
+
+          const testTodo = await getTestTodo(id)
+
+          expect(testTodo).toBeDefined()
+          expect(testTodo?.folderId).toBe(folderId)
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should not move a todo inside an existing folder not owned by the current user', async () => {
+      const { id: newFolderId } = await createTestTodoFolder({ userId: getTestUser('1').userId })
+
+      const { id, folderId } = await createTestTodo()
+
+      return testApiRoute(
+        idHandler,
+        async ({ fetch }) => {
+          const res = await fetch({
+            method: HttpMethod.PATCH,
+            body: JSON.stringify({ folderId: newFolderId }),
+          })
+          const json = await res.json<ApiErrorResponse>()
+
+          expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+          expect(json.error).toBe(API_ERROR_FOLDER_DOES_NOT_EXIST)
+
+          const testTodo = await getTestTodo(id)
+
+          expect(testTodo).toBeDefined()
+          expect(testTodo?.folderId).toBe(folderId)
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should not move a todo inside an existing folder of a different type', async () => {
+      const { id: newFolderId } = await createTestNoteFolder()
+
+      const { id, folderId } = await createTestTodo()
+
+      return testApiRoute(
+        idHandler,
+        async ({ fetch }) => {
+          const res = await fetch({
+            method: HttpMethod.PATCH,
+            body: JSON.stringify({ folderId: newFolderId }),
+          })
+          const json = await res.json<ApiErrorResponse>()
+
+          expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+          expect(json.error).toBe(API_ERROR_FOLDER_INVALID_TYPE)
+
+          const testTodo = await getTestTodo(id)
+
+          expect(testTodo).toBeDefined()
+          expect(testTodo?.folderId).toBe(folderId)
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should move & rename a todo at the same time', async () => {
+      const { id: newFolderId } = await createTestTodoFolder()
+
+      const { id } = await createTestTodo()
+
+      const newName = 'newName'
+
+      return testApiRoute(
+        idHandler,
+        async ({ fetch }) => {
+          const res = await fetch({
+            method: HttpMethod.PATCH,
+            body: JSON.stringify({ name: newName, folderId: newFolderId }),
+          })
+          const json = await res.json<TodoMetadata>()
+
+          expect(json.name).toBe(newName)
+          expect(json.folderId).toBe(newFolderId)
+
+          const testTodo = await getTestTodo(id)
+
+          expect(testTodo).toBeDefined()
+          expect(testTodo?.name).toBe(newName)
+          expect(testTodo?.folderId).toBe(newFolderId)
+          expect(testTodo?.slug).toBe(slug(newName))
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should not update a todo not owned by the current user', async () => {
+      const { id, name } = await createTestTodo({ userId: getTestUser('1').userId })
+
+      return testApiRoute(
+        idHandler,
+        async ({ fetch }) => {
+          const res = await fetch({
+            method: HttpMethod.PATCH,
+            body: JSON.stringify({ name: 'newName' }),
+          })
+          const json = await res.json<ApiErrorResponse>()
+
+          expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+          expect(json.error).toBe(API_ERROR_TODO_DOES_NOT_EXIST)
+
+          const testTodo = await getTestTodo(id)
+
+          expect(testTodo).toBeDefined()
+          expect(testTodo?.name).toBe(name)
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should not update a nonexisting todo', async () => {
+      const newName = 'newName'
+
+      return testApiRoute(
+        idHandler,
+        async ({ fetch }) => {
+          const res = await fetch({
+            method: HttpMethod.PATCH,
+            body: JSON.stringify({ name: newName }),
+          })
+          const json = await res.json<ApiErrorResponse>()
+
+          expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+          expect(json.error).toBe(API_ERROR_TODO_DOES_NOT_EXIST)
+
+          const testTodos = await getTestTodos({ name: newName })
+
+          expect(testTodos.length).toBe(0)
+        },
+        { dynamicRouteParams: { id: 1 } }
+      )
+    })
+  })
+
   describe('DELETE', () => {
     test('should remove a todo', async () => {
       const { id } = await createTestTodo()
