@@ -35,6 +35,8 @@ const shimmerClasses = [
   'w-4/6',
 ]
 
+const anchorHeadingRegExp = /^#.*-(?<pos>\d+)$/
+
 const Note: React.FC = () => {
   const editorRef = useRef<Editor | null>(null)
   const [editorState, setEditorState] = useState<EditorState>({ pristine: true })
@@ -60,10 +62,11 @@ const Note: React.FC = () => {
       const heading = document.querySelector(location.hash)
 
       if (heading) {
-        const matches = /^#.*-(\d+)$/.exec(location.hash)
+        const matches = anchorHeadingRegExp.exec(location.hash)
+        const pos = matches?.groups?.pos
 
-        if (editorRef.current && matches && matches[1]) {
-          const headingPos = parseInt(matches[1], 10)
+        if (editorRef.current && pos) {
+          const headingPos = parseInt(pos, 10)
 
           editorRef.current?.chain().setTextSelection(headingPos).focus().run()
 
