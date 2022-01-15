@@ -11,7 +11,7 @@ const unsecureRoutes = ['/auth/error', '/auth/login', '/auth/verify']
 const contentTypeStoreSelector = (state: StoreState) => [state.contentType, state.setContentType] as const
 
 const Route: React.FC = ({ children }) => {
-  const { push, route } = useRouter()
+  const { push, query, route } = useRouter()
   const { status } = useSession()
 
   const [contentType, setContentType] = useStore(contentTypeStoreSelector)
@@ -19,15 +19,17 @@ const Route: React.FC = ({ children }) => {
   const isAuthenticated = status === 'authenticated'
   const isSecureRoute = !unsecureRoutes.includes(route)
 
+  const callbackUrl = typeof query.callbackUrl === 'string' ? query.callbackUrl : undefined
+
   useEffect(() => {
     if (status === 'loading') {
       return
     } else if (!isAuthenticated && isSecureRoute) {
       signIn()
     } else if (isAuthenticated && !isSecureRoute) {
-      push('/')
+      push(callbackUrl ?? '/')
     }
-  }, [isAuthenticated, isSecureRoute, push, status])
+  }, [callbackUrl, isAuthenticated, isSecureRoute, push, status])
 
   useEffect(() => {
     let currentContentType: ContentType | undefined = undefined

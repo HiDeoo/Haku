@@ -16,8 +16,10 @@ const Login: Page = () => {
     formState: { errors, isSubmitSuccessful },
   } = useForm<FormFields>()
 
+  const callbackUrl = typeof query.callbackUrl === 'string' ? query.callbackUrl : undefined
+
   function onSubmit({ email }: FormFields) {
-    signIn('email-api', { email, callbackUrl: '/' })
+    signIn('email-api', { email, callbackUrl: callbackUrl ?? '/' })
   }
 
   return (
