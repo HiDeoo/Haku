@@ -1,9 +1,25 @@
+import StatusCode from 'status-code-enum'
+import slug from 'url-slug'
+
 import { getTestUser, testApiRoute } from 'tests/integration'
-import { createTestNoteFolder, createTestTodo, createTestTodoFolder } from 'tests/integration/db'
+import {
+  createTestNoteFolder,
+  createTestTodo,
+  createTestTodoFolder,
+  getTestTodo,
+  getTestTodos,
+} from 'tests/integration/db'
 import { HttpMethod } from 'libs/http'
 import indexHandler from 'pages/api/todos'
 import { type TodoTreeData } from 'libs/db/tree'
 import { assertIsTreeFolder, assertIsTreeItem } from 'libs/tree'
+import { type TodoMetadata } from 'libs/db/todo'
+import {
+  API_ERROR_FOLDER_DOES_NOT_EXIST,
+  API_ERROR_FOLDER_INVALID_TYPE,
+  API_ERROR_TODO_ALREADY_EXISTS,
+  type ApiErrorResponse,
+} from 'libs/api/routes/errors'
 
 describe('todos', () => {
   describe('GET', () => {
@@ -256,12 +272,12 @@ describe('todos', () => {
             parentId: folder_0_user_0_id,
           })
 
-          const { name: note_0_folder_0_user_0 } = await createTestTodo({
-            name: 'note_0_folder_0_user_0',
+          const { name: todo_0_folder_0_user_0 } = await createTestTodo({
+            name: 'todo_0_folder_0_user_0',
             folderId: folder_0_user_0_id,
           })
-          const { name: note_0_folder_0_0_user_0 } = await createTestTodo({
-            name: 'note_0_folder_0_0_user_0',
+          const { name: todo_0_folder_0_0_user_0 } = await createTestTodo({
+            name: 'todo_0_folder_0_0_user_0',
             folderId: folder_0_0_user_0_id,
           })
 
@@ -271,8 +287,8 @@ describe('todos', () => {
 
           await createTestTodoFolder({ name: 'folder_0_0_user_1', parentId: folder_0_user_1_id })
 
-          await createTestTodo({ name: 'note_0_folder_0_user_1', folderId: folder_0_user_1_id, userId: userId1 })
-          await createTestTodo({ name: 'note_0_folder_0_0_user_1', folderId: folder_0_0_user_0_id, userId: userId1 })
+          await createTestTodo({ name: 'todo_0_folder_0_user_1', folderId: folder_0_user_1_id, userId: userId1 })
+          await createTestTodo({ name: 'todo_0_folder_0_0_user_1', folderId: folder_0_0_user_0_id, userId: userId1 })
 
           const res = await fetch({ method: HttpMethod.GET })
           const json = await res.json<TodoTreeData>()
@@ -284,13 +300,13 @@ describe('todos', () => {
           expect(json[0]?.children.length).toBe(2)
           expect(json[0]?.items.length).toBe(1)
 
-          expect(json[0]?.items[0]?.name).toBe(note_0_folder_0_user_0)
+          expect(json[0]?.items[0]?.name).toBe(todo_0_folder_0_user_0)
 
           expect(json[0]?.children[0]?.name).toBe(folder_0_0_user_0)
           expect(json[0]?.children[0]?.children.length).toBe(0)
           expect(json[0]?.children[0]?.items.length).toBe(1)
 
-          expect(json[0]?.children[0]?.items[0]?.name).toBe(note_0_folder_0_0_user_0)
+          expect(json[0]?.children[0]?.items[0]?.name).toBe(todo_0_folder_0_0_user_0)
 
           expect(json[0]?.children[1]?.name).toBe(folder_0_1_user_0)
           expect(json[0]?.children[1]?.children.length).toBe(0)
@@ -360,5 +376,161 @@ describe('todos', () => {
 
       test.todo('should return a tree with only metadata and no content')
     })
+  })
+
+  describe('POST', () => {
+    test('should add a new todo at the root', () =>
+      testApiRoute(indexHandler, async ({ fetch }) => {
+        const name = 'todo'
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: JSON.stringify({ name }),
+        })
+        const json = await res.json<TodoMetadata>()
+
+        const testTodo = await getTestTodo(json.id)
+
+        expect(testTodo).toBeDefined()
+        expect(testTodo?.name).toBe(name)
+        expect(testTodo?.folderId).toBeNull()
+        expect(testTodo?.slug).toBe(slug(name))
+      }))
+
+    test('should add a new todo inside an existing folder', () =>
+      testApiRoute(indexHandler, async ({ fetch }) => {
+        const { id: folderId } = await createTestTodoFolder()
+
+        const name = 'todo'
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: JSON.stringify({ name, folderId }),
+        })
+        const json = await res.json<TodoMetadata>()
+
+        const testTodo = await getTestTodo(json.id)
+
+        expect(testTodo).toBeDefined()
+        expect(testTodo?.name).toBe(name)
+        expect(testTodo?.folderId).toBe(folderId)
+        expect(testTodo?.slug).toBe(slug(name))
+      }))
+
+    test('should add a new todo and attach to it a valid URL slug', () =>
+      testApiRoute(indexHandler, async ({ fetch }) => {
+        const name = 'todo Todo 1/10 ½ 🤔'
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: JSON.stringify({ name }),
+        })
+        const json = await res.json<TodoMetadata>()
+
+        const testTodo = await getTestTodo(json.id)
+
+        expect(testTodo).toBeDefined()
+        expect(testTodo?.name).toBe(name)
+        expect(testTodo?.folderId).toBeNull()
+        expect(testTodo?.slug).toBe('todo-todo-1-10-1-2')
+      }))
+
+    test.todo('should add a new todo and populate its data')
+
+    test('should not add a new todo inside a nonexisting folder', () =>
+      testApiRoute(indexHandler, async ({ fetch }) => {
+        const name = 'todo'
+        const folderId = 1
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: JSON.stringify({ name, folderId }),
+        })
+        const json = await res.json<ApiErrorResponse>()
+
+        expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+        expect(json.error).toBe(API_ERROR_FOLDER_DOES_NOT_EXIST)
+
+        const testTodos = await getTestTodos({ name, folderId })
+
+        expect(testTodos.length).toBe(0)
+      }))
+
+    test('should not add a new todo inside an existing folder not owned by the current user', () =>
+      testApiRoute(indexHandler, async ({ fetch }) => {
+        const { id: folderId } = await createTestTodoFolder({ userId: getTestUser('1').userId })
+
+        const name = 'todo'
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: JSON.stringify({ name, folderId }),
+        })
+        const json = await res.json<ApiErrorResponse>()
+
+        expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+        expect(json.error).toBe(API_ERROR_FOLDER_DOES_NOT_EXIST)
+
+        const testTodos = await getTestTodos({ name, folderId })
+
+        expect(testTodos.length).toBe(0)
+      }))
+
+    test('should not add a new todo inside an existing folder of a different type', () =>
+      testApiRoute(indexHandler, async ({ fetch }) => {
+        const { id: folderId } = await createTestNoteFolder()
+
+        const name = 'todo'
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: JSON.stringify({ name, folderId }),
+        })
+        const json = await res.json<ApiErrorResponse>()
+
+        expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+        expect(json.error).toBe(API_ERROR_FOLDER_INVALID_TYPE)
+
+        const testTodos = await getTestTodos({ name, folderId })
+
+        expect(testTodos.length).toBe(0)
+      }))
+
+    test('should not add a new duplicated todo at the root', () =>
+      testApiRoute(indexHandler, async ({ fetch }) => {
+        const { name } = await createTestTodo()
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: JSON.stringify({ name }),
+        })
+        const json = await res.json<ApiErrorResponse>()
+
+        expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+        expect(json.error).toBe(API_ERROR_TODO_ALREADY_EXISTS)
+
+        const testTodos = await getTestTodos({ name })
+
+        expect(testTodos.length).toBe(1)
+      }))
+
+    test('should not add a new duplicated todo inside an existing folder', () =>
+      testApiRoute(indexHandler, async ({ fetch }) => {
+        const { id: folderId } = await createTestTodoFolder()
+        const { name } = await createTestTodo({ folderId })
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: JSON.stringify({ name, folderId }),
+        })
+        const json = await res.json<ApiErrorResponse>()
+
+        expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+        expect(json.error).toBe(API_ERROR_TODO_ALREADY_EXISTS)
+
+        const testTodos = await getTestTodos({ name, folderId })
+
+        expect(testTodos.length).toBe(1)
+      }))
   })
 })

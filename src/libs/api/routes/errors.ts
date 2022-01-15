@@ -15,6 +15,8 @@ export const API_ERROR_NOTE_ALREADY_EXISTS = 'A note with the same name already 
 export const API_ERROR_NOTE_DOES_NOT_EXIST = 'The note specified does not exist.'
 export const API_ERROR_NOTE_HTML_OR_TEXT_MISSING = 'The note html or text content is missing.'
 
+export const API_ERROR_TODO_ALREADY_EXISTS = 'A todo with the same name already exists.'
+
 export class ApiError extends Error {
   constructor(public message: string, public httpStatusCode: StatusCode = StatusCode.ClientErrorForbidden) {
     super(message)

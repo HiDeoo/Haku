@@ -86,8 +86,21 @@ export function getTestNotes(options?: TestNoteOptions) {
   })
 }
 
+export function getTestTodos(options?: TestTodoOptions) {
+  return prisma.todo.findMany({
+    where: {
+      ...options,
+      userId: options?.userId ?? getTestUser().userId,
+    },
+  })
+}
+
 export function getTestNote(id: NoteMetadata['id']) {
   return prisma.note.findUnique({ where: { id } })
+}
+
+export function getTestTodo(id: TodoMetadata['id']) {
+  return prisma.todo.findUnique({ where: { id } })
 }
 
 interface TestNoteOptions {

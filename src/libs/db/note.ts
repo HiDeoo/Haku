@@ -3,11 +3,9 @@ import { StatusCode } from 'status-code-enum'
 import slug from 'url-slug'
 
 import { handleDbError, prisma } from 'libs/db'
-import { getFolderById } from 'libs/db/folder'
+import { validateFolder } from 'libs/db/folder'
 import {
   ApiError,
-  API_ERROR_FOLDER_DOES_NOT_EXIST,
-  API_ERROR_FOLDER_INVALID_TYPE,
   API_ERROR_NOTE_ALREADY_EXISTS,
   API_ERROR_NOTE_DOES_NOT_EXIST,
   API_ERROR_NOTE_HTML_OR_TEXT_MISSING,
@@ -25,7 +23,7 @@ export async function addNote(
   folderId?: NoteMetadata['folderId']
 ): Promise<NoteMetadata> {
   return prisma.$transaction(async (prisma) => {
-    await validateFolder(folderId, userId)
+    await validateFolder(folderId, userId, FolderType.NOTE)
 
     try {
       return await prisma.note.create({
@@ -81,7 +79,7 @@ export function updateNote(id: NoteMetadata['id'], userId: UserId, data: UpdateN
       throw new ApiError(API_ERROR_NOTE_HTML_OR_TEXT_MISSING)
     }
 
-    await validateFolder(data.folderId, userId)
+    await validateFolder(data.folderId, userId, FolderType.NOTE)
 
     try {
       return await prisma.note.update({
@@ -122,20 +120,6 @@ export function removeNote(id: NoteMetadata['id'], userId: UserId) {
 
 function getNoteById(id: number, userId: UserId): Promise<Note | null> {
   return prisma.note.findFirst({ where: { id, userId } })
-}
-
-async function validateFolder(folderId: NoteMetadata['folderId'] | undefined, userId: UserId) {
-  if (folderId) {
-    const folder = await getFolderById(folderId, userId)
-
-    if (!folder) {
-      throw new ApiError(API_ERROR_FOLDER_DOES_NOT_EXIST)
-    }
-
-    if (folder.type !== FolderType.NOTE) {
-      throw new ApiError(API_ERROR_FOLDER_INVALID_TYPE)
-    }
-  }
 }
 
 type NoteMetadataGroupedByFolder = Map<NoteMetadata['folderId'], NoteMetadata[]>
