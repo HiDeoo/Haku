@@ -11,6 +11,7 @@ import {
 } from 'tests/integration/db'
 import { HttpMethod } from 'libs/http'
 import indexHandler from 'pages/api/todos'
+import idHandler from 'pages/api/todos/[id]'
 import { type TodoTreeData } from 'libs/db/tree'
 import { assertIsTreeFolder, assertIsTreeItem } from 'libs/tree'
 import { type TodoMetadata } from 'libs/db/todo'
@@ -18,6 +19,7 @@ import {
   API_ERROR_FOLDER_DOES_NOT_EXIST,
   API_ERROR_FOLDER_INVALID_TYPE,
   API_ERROR_TODO_ALREADY_EXISTS,
+  API_ERROR_TODO_DOES_NOT_EXIST,
   type ApiErrorResponse,
 } from 'libs/api/routes/errors'
 
@@ -532,5 +534,63 @@ describe('todos', () => {
 
         expect(testTodos.length).toBe(1)
       }))
+  })
+
+  describe('DELETE', () => {
+    test('should remove a todo', async () => {
+      const { id } = await createTestTodo()
+
+      return testApiRoute(
+        idHandler,
+        async ({ fetch }) => {
+          await fetch({ method: HttpMethod.DELETE })
+
+          const testTodo = await getTestTodo(id)
+
+          expect(testTodo).toBeNull()
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should not remove a todo not owned by the current user', async () => {
+      const { id } = await createTestTodo({ userId: getTestUser('1').userId })
+
+      return testApiRoute(
+        idHandler,
+        async ({ fetch }) => {
+          const res = await fetch({ method: HttpMethod.DELETE })
+          const json = await res.json<ApiErrorResponse>()
+
+          expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+          expect(json.error).toBe(API_ERROR_TODO_DOES_NOT_EXIST)
+
+          const testFolder = await getTestTodo(id)
+
+          expect(testFolder).toBeDefined()
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should not remove a nonexisting todo', () => {
+      const id = 1
+
+      return testApiRoute(
+        idHandler,
+        async ({ fetch }) => {
+          const res = await fetch({ method: HttpMethod.DELETE })
+          const json = await res.json<ApiErrorResponse>()
+
+          expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+          expect(json.error).toBe(API_ERROR_TODO_DOES_NOT_EXIST)
+
+          const testFolder = await getTestTodo(id)
+
+          expect(testFolder).toBeNull()
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
   })
 })
