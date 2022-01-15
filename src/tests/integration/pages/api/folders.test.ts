@@ -5,10 +5,12 @@ import { getTestUser, testApiRoute } from 'tests/integration'
 import {
   createTestNote,
   createTestNoteFolder,
+  createTestTodo,
   createTestTodoFolder,
   getTestFolder,
   getTestFolders,
   getTestNotes,
+  getTestTodos,
 } from 'tests/integration/db'
 import { HttpMethod } from 'libs/http'
 import indexHandler from 'pages/api/folders'
@@ -460,8 +462,8 @@ describe('folders', () => {
       )
     })
 
-    test('should remove a folder containing nested nodes', async () => {
-      const { id } = await createTestNoteFolder()
+    test('should remove a note folder containing nested nodes', async () => {
+      const { id: folder_0_id } = await createTestNoteFolder()
 
       return testApiRoute(
         idHandler,
@@ -483,11 +485,11 @@ describe('folders', () => {
            * note_1
            */
 
-          await createTestNote({ folderId: id })
-          await createTestNote({ folderId: id })
+          await createTestNote({ folderId: folder_0_id })
+          await createTestNote({ folderId: folder_0_id })
 
-          await createTestNoteFolder({ parentId: id })
-          const { id: folder_0_1_id } = await createTestNoteFolder({ parentId: id })
+          await createTestNoteFolder({ parentId: folder_0_id })
+          const { id: folder_0_1_id } = await createTestNoteFolder({ parentId: folder_0_id })
 
           await createTestNote({ folderId: folder_0_1_id })
 
@@ -519,7 +521,58 @@ describe('folders', () => {
           expect(testNotes.length).toBe(remainingNotesIds.length)
           expect(testNotes.every((testNote) => remainingNotesIds.includes(testNote.id))).toBe(true)
         },
-        { dynamicRouteParams: { id } }
+        { dynamicRouteParams: { id: folder_0_id } }
+      )
+    })
+
+    test('should remove a todo folder containing nested nodes', async () => {
+      const { id: folder_0_id } = await createTestTodoFolder()
+      const { id: folder_0_0_id } = await createTestTodoFolder({ parentId: folder_0_id })
+
+      return testApiRoute(
+        idHandler,
+        async ({ fetch }) => {
+          /**
+           * folder_0
+           * |__ folder_0_0
+           *     |__ folder_0_0_0
+           *     |__ folder_0_0_1
+           *         |__ note_0_folder_0_0_1
+           *     |__ todo_0_folder_0_1
+           * |__ todo_0_folder_0
+           * |__ todo_1_folder_0
+           * todo_0
+           * todo_1
+           */
+
+          const { id: todo_0_folder_0_id } = await createTestTodo({ folderId: folder_0_id })
+          const { id: todo_1_folder_0_id } = await createTestTodo({ folderId: folder_0_id })
+
+          await createTestTodo({ folderId: folder_0_0_id })
+
+          await createTestTodoFolder({ parentId: folder_0_0_id })
+          const { id: folder_0_0_1_id } = await createTestTodoFolder({ parentId: folder_0_0_id })
+
+          await createTestTodo({ folderId: folder_0_0_1_id })
+
+          const { id: todo_0_id } = await createTestTodo()
+          const { id: todo_1_id } = await createTestTodo()
+
+          await fetch({ method: HttpMethod.DELETE })
+
+          const remainingFolderIds = [folder_0_id]
+          const testFolders = await getTestFolders({ type: FolderType.TODO })
+
+          expect(testFolders.length).toBe(remainingFolderIds.length)
+          expect(testFolders.every((testFolder) => remainingFolderIds.includes(testFolder.id))).toBe(true)
+
+          const remainingNotesIds = [todo_0_id, todo_1_id, todo_0_folder_0_id, todo_1_folder_0_id]
+          const testTodos = await getTestTodos()
+
+          expect(testTodos.length).toBe(remainingNotesIds.length)
+          expect(testTodos.every((testNote) => remainingNotesIds.includes(testNote.id))).toBe(true)
+        },
+        { dynamicRouteParams: { id: folder_0_0_id } }
       )
     })
 
