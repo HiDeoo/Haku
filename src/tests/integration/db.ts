@@ -1,5 +1,5 @@
 import { type EmailAllowList, FolderType } from '@prisma/client'
-import faker from 'faker'
+import faker from '@faker-js/faker'
 import slug from 'url-slug'
 
 import { prisma } from 'libs/db'

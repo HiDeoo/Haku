@@ -1,6 +1,7 @@
 lockfileVersion: 5.3
 
 specifiers:
+  '@faker-js/faker': 6.0.0-alpha.2
   '@jcoreio/wait-for-postgres': 2.0.0
   '@next-auth/prisma-adapter': 0.5.2-next.19
   '@next/bundle-analyzer': 12.0.7
@@ -38,7 +39,6 @@ specifiers:
   eslint-config-next: 12.0.5
   eslint-config-prettier: 8.3.0
   execa: 5.1.1
-  faker: 5.5.3
   fuzzaldrin-plus: 0.6.0
   highlight.js: 11.4.0
   husky: 7.0.4
@@ -110,6 +110,7 @@ dependencies:
   zustand: 3.6.8_react@17.0.2
 
 devDependencies:
+  '@faker-js/faker': 6.0.0-alpha.2
   '@jcoreio/wait-for-postgres': 2.0.0
   '@next/bundle-analyzer': 12.0.7
   '@types/faker': 5.5.9
@@ -126,7 +127,6 @@ devDependencies:
   eslint-config-next: 12.0.5_3d8e4885d300537a04bacadd06e129a1
   eslint-config-prettier: 8.3.0_eslint@8.4.0
   execa: 5.1.1
-  faker: 5.5.3
   husky: 7.0.4
   jest: 27.4.5_ts-node@10.4.0
   lint-staged: 12.1.2
@@ -533,6 +533,10 @@ packages:
       strip-json-comments: 3.1.1
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /@faker-js/faker/6.0.0-alpha.2:
+    resolution: {integrity: sha512-rLvPsu0aS7lqpzOT0Sd9a5cX4DBxzwFpfuvOPVVyJRe0azIQWt9pEKwWChNrHReUIqIrEpHicdLi5FvFpqQSDw==}
     dev: true
 
   /@hapi/accept/5.0.2:
@@ -3908,10 +3912,6 @@ packages:
       chardet: 0.7.0
       iconv-lite: 0.4.24
       tmp: 0.0.33
-    dev: true
-
-  /faker/5.5.3:
-    resolution: {integrity: sha512-wLTv2a28wjUyWkbnX7u/ABZBkUkIF2fCd73V6P2oFqEGEktDfzWx4UxrSqtPRw0xPRAcjeAOIiJWqZm3pP4u3g==}
     dev: true
 
   /fast-deep-equal/3.1.3:
