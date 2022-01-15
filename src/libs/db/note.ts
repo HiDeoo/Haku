@@ -53,20 +53,20 @@ export async function getNote(id: NoteData['id'], userId: UserId): Promise<NoteD
   return note
 }
 
-export async function getNotesMetadataGroupedByFolder(userId: UserId): Promise<NotesMetadataGroupedByFolder> {
+export async function getNotesMetadataGroupedByFolder(userId: UserId): Promise<NoteMetadataGroupedByFolder> {
   const metaDatas = await prisma.note.findMany({
     where: { userId },
     select: noteMetadataSelect,
     orderBy: [{ name: 'asc' }],
   })
 
-  const notesMetadataGroupedByFolder: NotesMetadataGroupedByFolder = new Map()
+  const noteMetadataGroupedByFolder: NoteMetadataGroupedByFolder = new Map()
 
   metaDatas.forEach((note) => {
-    notesMetadataGroupedByFolder.set(note.folderId, [...(notesMetadataGroupedByFolder.get(note.folderId) ?? []), note])
+    noteMetadataGroupedByFolder.set(note.folderId, [...(noteMetadataGroupedByFolder.get(note.folderId) ?? []), note])
   })
 
-  return notesMetadataGroupedByFolder
+  return noteMetadataGroupedByFolder
 }
 
 export function updateNote(id: NoteMetadata['id'], userId: UserId, data: UpdateNoteData): Promise<NoteMetadata> {
@@ -138,6 +138,6 @@ async function validateFolder(folderId: NoteMetadata['folderId'] | undefined, us
   }
 }
 
-type NotesMetadataGroupedByFolder = Map<NoteMetadata['folderId'], NoteMetadata[]>
+type NoteMetadataGroupedByFolder = Map<NoteMetadata['folderId'], NoteMetadata[]>
 
 type UpdateNoteData = Partial<Pick<NoteMetadata, 'name' | 'folderId'> & Pick<NoteData, 'html'> & Pick<Note, 'text'>>

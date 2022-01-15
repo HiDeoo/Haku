@@ -2,7 +2,14 @@ import { FolderType } from '@prisma/client'
 import StatusCode from 'status-code-enum'
 
 import { getTestUser, testApiRoute } from 'tests/integration'
-import { createTestFolder, createTestNote, getTestFolder, getTestFolders, getTestNotes } from 'tests/integration/db'
+import {
+  createTestNote,
+  createTestNoteFolder,
+  createTestTodoFolder,
+  getTestFolder,
+  getTestFolders,
+  getTestNotes,
+} from 'tests/integration/db'
 import { HttpMethod } from 'libs/http'
 import indexHandler from 'pages/api/folders'
 import idHandler from 'pages/api/folders/[id]'
@@ -37,7 +44,7 @@ describe('folders', () => {
 
     test('should add a new folder inside an existing folder', () =>
       testApiRoute(indexHandler, async ({ fetch }) => {
-        const { id: parentId } = await createTestFolder()
+        const { id: parentId } = await createTestNoteFolder()
 
         const name = 'folder'
         const type = FolderType.NOTE
@@ -77,7 +84,7 @@ describe('folders', () => {
 
     test('should not add a new folder inside an existing folder not owned by the current user', () =>
       testApiRoute(indexHandler, async ({ fetch }) => {
-        const { id: parentId } = await createTestFolder({ userId: getTestUser('1').userId })
+        const { id: parentId } = await createTestNoteFolder({ userId: getTestUser('1').userId })
 
         const name = 'folder'
         const type = FolderType.NOTE
@@ -98,7 +105,7 @@ describe('folders', () => {
 
     test('should not add a new folder inside an existing folder of a different type', () =>
       testApiRoute(indexHandler, async ({ fetch }) => {
-        const { id: parentId } = await createTestFolder({ type: FolderType.TODO })
+        const { id: parentId } = await createTestTodoFolder()
 
         const name = 'folder'
         const type = FolderType.NOTE
@@ -119,8 +126,8 @@ describe('folders', () => {
 
     test('should not add a new duplicated folder at the root', () =>
       testApiRoute(indexHandler, async ({ fetch }) => {
-        await createTestFolder({ type: FolderType.TODO })
-        const { name, type } = await createTestFolder()
+        await createTestTodoFolder()
+        const { name, type } = await createTestTodoFolder()
 
         const res = await fetch({
           method: HttpMethod.POST,
@@ -138,8 +145,8 @@ describe('folders', () => {
 
     test('should not add a new duplicated folder inside an existing folder', () =>
       testApiRoute(indexHandler, async ({ fetch }) => {
-        const { id: parentId } = await createTestFolder()
-        const { name, type } = await createTestFolder({ parentId })
+        const { id: parentId } = await createTestNoteFolder()
+        const { name, type } = await createTestNoteFolder({ parentId })
 
         const res = await fetch({
           method: HttpMethod.POST,
@@ -158,8 +165,8 @@ describe('folders', () => {
 
   describe('PATCH', () => {
     test('should rename a folder', async () => {
-      const { id: parentId } = await createTestFolder()
-      const { id } = await createTestFolder({ parentId })
+      const { id: parentId } = await createTestNoteFolder()
+      const { id } = await createTestNoteFolder({ parentId })
 
       const newName = 'newName'
 
@@ -184,8 +191,8 @@ describe('folders', () => {
     })
 
     test('should not rename a folder if becoming duplicated', async () => {
-      const { id, name } = await createTestFolder()
-      const { name: newName } = await createTestFolder()
+      const { id, name } = await createTestNoteFolder()
+      const { name: newName } = await createTestNoteFolder()
 
       return testApiRoute(
         idHandler,
@@ -208,8 +215,8 @@ describe('folders', () => {
     })
 
     test('should move a folder inside another folder', async () => {
-      const { id: newParentId } = await createTestFolder()
-      const { id, name } = await createTestFolder()
+      const { id: newParentId } = await createTestNoteFolder()
+      const { id, name } = await createTestNoteFolder()
 
       return testApiRoute(
         idHandler,
@@ -233,8 +240,8 @@ describe('folders', () => {
     })
 
     test('should move a folder to the root', async () => {
-      const { id: parentId } = await createTestFolder()
-      const { id, name } = await createTestFolder({ parentId })
+      const { id: parentId } = await createTestNoteFolder()
+      const { id, name } = await createTestNoteFolder({ parentId })
 
       return testApiRoute(
         idHandler,
@@ -258,10 +265,10 @@ describe('folders', () => {
     })
 
     test('should not move a folder if becoming duplicated', async () => {
-      const { id: newParentId } = await createTestFolder()
-      await createTestFolder({ name: 'folder', parentId: newParentId })
+      const { id: newParentId } = await createTestNoteFolder()
+      await createTestNoteFolder({ name: 'folder', parentId: newParentId })
 
-      const { id, parentId } = await createTestFolder({ name: 'folder' })
+      const { id, parentId } = await createTestNoteFolder({ name: 'folder' })
 
       return testApiRoute(
         idHandler,
@@ -285,7 +292,7 @@ describe('folders', () => {
     })
 
     test('should not move a folder inside a nonexisting folder', async () => {
-      const { id, parentId } = await createTestFolder()
+      const { id, parentId } = await createTestNoteFolder()
 
       return testApiRoute(
         idHandler,
@@ -309,8 +316,8 @@ describe('folders', () => {
     })
 
     test('should not move a folder inside an existing folder not owned by the current user', async () => {
-      const { id: newParentId } = await createTestFolder({ userId: getTestUser('1').userId })
-      const { id, parentId } = await createTestFolder()
+      const { id: newParentId } = await createTestNoteFolder({ userId: getTestUser('1').userId })
+      const { id, parentId } = await createTestNoteFolder()
 
       return testApiRoute(
         idHandler,
@@ -334,8 +341,8 @@ describe('folders', () => {
     })
 
     test('should not move a folder inside an existing folder of a different type', async () => {
-      const { id: newParentId } = await createTestFolder({ type: FolderType.TODO })
-      const { id, parentId } = await createTestFolder()
+      const { id: newParentId } = await createTestTodoFolder()
+      const { id, parentId } = await createTestNoteFolder()
 
       return testApiRoute(
         idHandler,
@@ -359,8 +366,8 @@ describe('folders', () => {
     })
 
     test('should move & rename a folder at the same time', async () => {
-      const { id: newParentId } = await createTestFolder()
-      const { id } = await createTestFolder()
+      const { id: newParentId } = await createTestNoteFolder()
+      const { id } = await createTestNoteFolder()
 
       const newName = 'newName'
 
@@ -387,7 +394,7 @@ describe('folders', () => {
     })
 
     test('should not update a folder not owned by the current user', async () => {
-      const { id, name } = await createTestFolder({ userId: getTestUser('1').userId })
+      const { id, name } = await createTestNoteFolder({ userId: getTestUser('1').userId })
 
       return testApiRoute(
         idHandler,
@@ -425,9 +432,11 @@ describe('folders', () => {
           expect(res.status).toBe(StatusCode.ClientErrorForbidden)
           expect(json.error).toBe(API_ERROR_FOLDER_DOES_NOT_EXIST)
 
-          const testFolders = await getTestFolders({ name: newName })
+          const testNoteFolders = await getTestFolders({ name: newName, type: FolderType.NOTE })
+          const testTodoFolders = await getTestFolders({ name: newName, type: FolderType.TODO })
 
-          expect(testFolders.length).toBe(0)
+          expect(testNoteFolders.length).toBe(0)
+          expect(testTodoFolders.length).toBe(0)
         },
         { dynamicRouteParams: { id: 1 } }
       )
@@ -436,7 +445,7 @@ describe('folders', () => {
 
   describe('DELETE', () => {
     test('should remove an empty folder', async () => {
-      const { id } = await createTestFolder()
+      const { id } = await createTestNoteFolder()
 
       return testApiRoute(
         idHandler,
@@ -452,7 +461,7 @@ describe('folders', () => {
     })
 
     test('should remove a folder containing nested nodes', async () => {
-      const { id } = await createTestFolder()
+      const { id } = await createTestNoteFolder()
 
       return testApiRoute(
         idHandler,
@@ -477,19 +486,19 @@ describe('folders', () => {
           await createTestNote({ folderId: id })
           await createTestNote({ folderId: id })
 
-          await createTestFolder({ parentId: id })
-          const { id: folder_0_1_id } = await createTestFolder({ parentId: id })
+          await createTestNoteFolder({ parentId: id })
+          const { id: folder_0_1_id } = await createTestNoteFolder({ parentId: id })
 
           await createTestNote({ folderId: folder_0_1_id })
 
-          await createTestFolder({ parentId: folder_0_1_id })
-          const { id: folder_0_1_1_id } = await createTestFolder({ parentId: folder_0_1_id })
+          await createTestNoteFolder({ parentId: folder_0_1_id })
+          const { id: folder_0_1_1_id } = await createTestNoteFolder({ parentId: folder_0_1_id })
 
           await createTestNote({ folderId: folder_0_1_1_id })
 
-          const { id: folder_1_id } = await createTestFolder()
+          const { id: folder_1_id } = await createTestNoteFolder()
 
-          const { id: folder_1_0_id } = await createTestFolder({ parentId: folder_1_id })
+          const { id: folder_1_0_id } = await createTestNoteFolder({ parentId: folder_1_id })
 
           const { id: note_0_folder_1_0_id } = await createTestNote({ folderId: folder_1_0_id })
 
@@ -499,7 +508,7 @@ describe('folders', () => {
           await fetch({ method: HttpMethod.DELETE })
 
           const remainingFolderIds = [folder_1_id, folder_1_0_id]
-          const testFolders = await getTestFolders()
+          const testFolders = await getTestFolders({ type: FolderType.NOTE })
 
           expect(testFolders.length).toBe(remainingFolderIds.length)
           expect(testFolders.every((testFolder) => remainingFolderIds.includes(testFolder.id))).toBe(true)
@@ -515,7 +524,7 @@ describe('folders', () => {
     })
 
     test('should not remove a folder not owned by the current user', async () => {
-      const { id } = await createTestFolder({ userId: getTestUser('1').userId })
+      const { id } = await createTestNoteFolder({ userId: getTestUser('1').userId })
 
       return testApiRoute(
         idHandler,

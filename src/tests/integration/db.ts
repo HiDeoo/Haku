@@ -5,24 +5,33 @@ import slug from 'url-slug'
 import { prisma } from 'libs/db'
 import { type FolderData } from 'libs/db/folder'
 import { type NoteMetadata } from 'libs/db/note'
+import { type TodoMetadata } from 'libs/db/todo'
 import { getTestUser } from 'tests/integration'
 
-export function createTestFolder(options?: TestFolderOptions) {
+function createTestFolder(options: TestFolderOptions) {
   return prisma.folder.create({
     data: {
       name: options?.name ?? faker.lorem.words(),
       parentId: options?.parentId,
-      type: options?.type ?? FolderType.NOTE,
+      type: options.type,
       userId: options?.userId ?? getTestUser().userId,
     },
   })
 }
 
-export function getTestFolders(options?: TestFolderOptions) {
+export function createTestNoteFolder(options?: Omit<TestFolderOptions, 'type'>) {
+  return createTestFolder({ ...options, type: FolderType.NOTE })
+}
+
+export function createTestTodoFolder(options?: Omit<TestFolderOptions, 'type'>) {
+  return createTestFolder({ ...options, type: FolderType.TODO })
+}
+
+export function getTestFolders(options: TestFolderOptions) {
   return prisma.folder.findMany({
     where: {
       ...options,
-      type: options?.type ?? FolderType.NOTE,
+      type: options.type,
       userId: options?.userId ?? getTestUser().userId,
     },
   })
@@ -35,7 +44,7 @@ export function getTestFolder(id: FolderData['id']) {
 interface TestFolderOptions {
   name?: FolderData['name']
   parentId?: FolderData['parentId']
-  type?: FolderType
+  type: FolderType
   userId?: UserId
 }
 
@@ -50,6 +59,19 @@ export function createTestNote(options?: TestNoteOptions) {
       html: data,
       slug: slug(name),
       text: data,
+      userId: options?.userId ?? getTestUser().userId,
+    },
+  })
+}
+
+export function createTestTodo(options?: TestTodoOptions) {
+  const name = options?.name ?? faker.lorem.words()
+
+  return prisma.todo.create({
+    data: {
+      name,
+      folderId: options?.folderId,
+      slug: slug(name),
       userId: options?.userId ?? getTestUser().userId,
     },
   })
@@ -71,6 +93,12 @@ export function getTestNote(id: NoteMetadata['id']) {
 interface TestNoteOptions {
   name?: NoteMetadata['name']
   folderId?: NoteMetadata['folderId']
+  userId?: UserId
+}
+
+interface TestTodoOptions {
+  name?: TodoMetadata['name']
+  folderId?: TodoMetadata['folderId']
   userId?: UserId
 }
 
