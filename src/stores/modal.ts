@@ -5,27 +5,27 @@ import { type TodoMetadata } from 'libs/db/todo'
 import { type StoreSlice } from 'stores'
 
 export const createModalSlice: StoreSlice<ModalState> = (set) => ({
-  content: {
+  contentModal: {
     data: undefined,
     mutationType: undefined,
     opened: false,
   },
-  folder: {
+  folderModal: {
     data: undefined,
     mutationType: undefined,
     opened: false,
   },
   setContentModal: (opened: boolean, mutationType = 'add', content?: ContentMetadata) => {
-    return set(() => ({ content: { data: content, mutationType, opened } }))
+    return set(() => ({ contentModal: { data: content, mutationType, opened } }))
   },
   setFolderModal: (opened: boolean, mutationType = 'add', folder?: FolderData) => {
-    return set(() => ({ folder: { data: folder, mutationType, opened } }))
+    return set(() => ({ folderModal: { data: folder, mutationType, opened } }))
   },
 })
 
 export interface ModalState {
-  content: MutationModal<ContentMetadata>
-  folder: MutationModal<FolderData>
+  contentModal: MutationModal<ContentMetadata>
+  folderModal: MutationModal<FolderData>
   setContentModal: (opened: boolean, mutationType?: MutationType, content?: ContentMetadata) => void
   setFolderModal: (opened: boolean, mutationType?: MutationType, folder?: FolderData) => void
 }

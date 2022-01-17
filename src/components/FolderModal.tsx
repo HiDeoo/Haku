@@ -13,7 +13,7 @@ import useFolderMutation, { type FolderMutation } from 'hooks/useFolderMutation'
 import { type FolderData } from 'libs/db/folder'
 import { useStore, type StoreState } from 'stores'
 
-const storeSelector = (state: StoreState) => [state.folder, state.setFolderModal] as const
+const storeSelector = (state: StoreState) => [state.folderModal, state.setFolderModal] as const
 
 const NewFolderModal: React.FC = () => {
   const {

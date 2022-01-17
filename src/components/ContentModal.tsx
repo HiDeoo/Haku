@@ -14,7 +14,7 @@ import { type FolderData } from 'libs/db/folder'
 import useContentType from 'hooks/useContentType'
 import { type StoreState, useStore } from 'stores'
 
-const storeSelector = (state: StoreState) => [state.content, state.setContentModal] as const
+const storeSelector = (state: StoreState) => [state.contentModal, state.setContentModal] as const
 
 const NewContentModal: React.FC = () => {
   const { cType, lcType } = useContentType()
