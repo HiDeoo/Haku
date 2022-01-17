@@ -22,6 +22,7 @@ import {
   API_ERROR_TODO_DOES_NOT_EXIST,
   type ApiErrorResponse,
 } from 'libs/api/routes/errors'
+import { hasKey } from 'libs/object'
 
 describe('todos', () => {
   describe('GET', () => {
@@ -376,7 +377,16 @@ describe('todos', () => {
           expect(json[3]?.name).toBe(todo_z)
         }))
 
-      test.todo('should return a tree with only metadata and no content')
+      test('should return a tree with only metadata and no content', () =>
+        testApiRoute(indexHandler, async ({ fetch }) => {
+          await createTestTodo()
+
+          const res = await fetch({ method: HttpMethod.GET })
+          const json = await res.json<TodoTreeData>()
+
+          assertIsTreeItem(json[0])
+          expect(hasKey(json[0], 'rootNodes')).toBe(false)
+        }))
     })
   })
 
@@ -437,7 +447,26 @@ describe('todos', () => {
         expect(testTodo?.slug).toBe('todo-todo-1-10-1-2')
       }))
 
-    test.todo('should add a new todo and populate its data')
+    test('should add a new todo and populate its data', () =>
+      testApiRoute(indexHandler, async ({ fetch }) => {
+        const name = 'Test Note'
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: JSON.stringify({ name }),
+        })
+        const json = await res.json<TodoMetadata>()
+
+        const testNote = await getTestTodo(json.id)
+
+        expect(testNote).toBeDefined()
+        expect(testNote?.rootNodes).toBeDefined()
+        expect(testNote?.rootNodes.length).toBe(1)
+
+        expect(testNote?.rootNodes[0]).toBeDefined()
+        expect(testNote?.rootNodes[0]?.todoId).toBe(json.id)
+        expect(testNote?.rootNodes[0]?.content).toBe('')
+      }))
 
     test('should not add a new todo inside a nonexisting folder', () =>
       testApiRoute(indexHandler, async ({ fetch }) => {

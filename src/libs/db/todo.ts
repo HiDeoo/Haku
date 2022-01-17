@@ -20,7 +20,15 @@ export async function addTodo(
 
     try {
       return await prisma.todo.create({
-        data: { userId, name, folderId, slug: slug(name) },
+        data: {
+          userId,
+          name,
+          folderId,
+          slug: slug(name),
+          rootNodes: {
+            create: [{ content: '' }],
+          },
+        },
         select: todoMetadataSelect,
       })
     } catch (error) {

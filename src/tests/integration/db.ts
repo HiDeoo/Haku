@@ -100,7 +100,7 @@ export function getTestNote(id: NoteMetadata['id']) {
 }
 
 export function getTestTodo(id: TodoMetadata['id']) {
-  return prisma.todo.findUnique({ where: { id } })
+  return prisma.todo.findUnique({ where: { id }, include: { rootNodes: true } })
 }
 
 interface TestNoteOptions {
