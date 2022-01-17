@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
 import { useMutation, useQueryClient } from 'react-query'
 
-import client, { handleApiError, type Mutation } from 'libs/api/client'
+import client, { type Mutation } from 'libs/api/client'
 import { type FolderData } from 'libs/db/folder'
 import { type AddFolderBody } from 'pages/api/folders'
 import { type UpdateFolderQuery, type UpdateFolderBody, type RemoveFolderQuery } from 'pages/api/folders/[id]'
@@ -13,7 +13,7 @@ export default function useFolderMutation() {
   const { type, urlPath } = useContentType()
   const queryClient = useQueryClient()
 
-  const mutation = useMutation<FolderData | void, unknown, FolderMutation>(
+  return useMutation<FolderData | void, unknown, FolderMutation>(
     (data) => {
       if (!type) {
         throw new Error(`Missing content type to ${data.mutationType} a folder.`)
@@ -44,10 +44,6 @@ export default function useFolderMutation() {
       },
     }
   )
-
-  handleApiError(mutation)
-
-  return mutation
 }
 
 function addFolder(data: AddFolderData, type: ContentType) {

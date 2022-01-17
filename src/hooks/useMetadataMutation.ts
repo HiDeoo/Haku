@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
 import { useMutation, useQueryClient } from 'react-query'
 
-import client, { handleApiError, type Mutation } from 'libs/api/client'
+import client, { type Mutation } from 'libs/api/client'
 import { type AddNoteBody } from 'pages/api/notes'
 import { type AddTodoBody } from 'pages/api/todos'
 import { type NoteMetadata } from 'libs/db/note'
@@ -18,7 +18,7 @@ export default function useMetadataMutation() {
   const { lcType, type, urlPath } = useContentType()
   const queryClient = useQueryClient()
 
-  const mutation = useMutation<NoteMetadata | TodoMetadata | void, unknown, MetadataMutation>(
+  return useMutation<NoteMetadata | TodoMetadata | void, unknown, MetadataMutation>(
     (data) => {
       if (!type) {
         throw new Error(`Missing content type to ${data.mutationType} metadata.`)
@@ -58,10 +58,6 @@ export default function useMetadataMutation() {
       },
     }
   )
-
-  handleApiError(mutation)
-
-  return mutation
 }
 
 function addNote(data: AddNoteBody) {
