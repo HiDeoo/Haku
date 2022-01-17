@@ -457,15 +457,15 @@ describe('todos', () => {
         })
         const json = await res.json<TodoMetadata>()
 
-        const testNote = await getTestTodo(json.id)
+        const testTodo = await getTestTodo(json.id)
 
-        expect(testNote).toBeDefined()
-        expect(testNote?.rootNodes).toBeDefined()
-        expect(testNote?.rootNodes.length).toBe(1)
+        expect(testTodo).toBeDefined()
+        expect(testTodo?.rootNodes).toBeDefined()
+        expect(testTodo?.rootNodes.length).toBe(1)
 
-        expect(testNote?.rootNodes[0]).toBeDefined()
-        expect(testNote?.rootNodes[0]?.todoId).toBe(json.id)
-        expect(testNote?.rootNodes[0]?.content).toBe('')
+        expect(testTodo?.rootNodes[0]).toBeDefined()
+        expect(testTodo?.rootNodes[0]?.todoId).toBe(json.id)
+        expect(testTodo?.rootNodes[0]?.content).toBe('')
       }))
 
     test('should not add a new todo inside a nonexisting folder', () =>
