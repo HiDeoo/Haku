@@ -25,10 +25,10 @@ const NewFolderModal: React.FC = () => {
   } = useForm<FormFields>()
 
   const { error, isLoading, mutate } = useFolderMutation()
-  const [{ data: folder, mutationType, opened }, setOpened] = useStore(storeSelector)
+  const [{ action, data: folder, opened }, setOpened] = useStore(storeSelector)
 
-  const isUpdating = mutationType === 'update' && typeof folder !== 'undefined'
-  const isRemoving = mutationType === 'remove' && typeof folder !== 'undefined'
+  const isUpdating = action === 'update' && typeof folder !== 'undefined'
+  const isRemoving = action === 'delete' && typeof folder !== 'undefined'
 
   useEffect(() => {
     reset()
@@ -38,15 +38,15 @@ const NewFolderModal: React.FC = () => {
     const parentId = parentFolder.id === ROOT_FOLDER_ID ? null : parentFolder.id
 
     const mutationData: FolderMutation = isUpdating
-      ? { ...data, mutationType: 'update', id: folder.id, parentId }
-      : { ...data, mutationType: 'add', parentId }
+      ? { ...data, action: 'update', id: folder.id, parentId }
+      : { ...data, action: 'insert', parentId }
 
     mutate(mutationData, { onSuccess: onSuccessfulMutation })
   })
 
   function onConfirmDelete() {
     if (isRemoving) {
-      mutate({ mutationType: 'remove', id: folder.id }, { onSuccess: onSuccessfulMutation })
+      mutate({ action: 'delete', id: folder.id }, { onSuccess: onSuccessfulMutation })
     }
   }
 

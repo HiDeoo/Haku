@@ -11,10 +11,10 @@ export default function useContentMutation() {
 
   return useMutation<NoteData | TodoData | void, unknown, ContentMutation>((data) => {
     if (!type) {
-      throw new Error(`Missing content type to ${data.mutationType} content.`)
+      throw new Error(`Missing content type to ${data.action} content.`)
     }
 
-    switch (data.mutationType) {
+    switch (data.action) {
       case 'update': {
         if (type === ContentType.TODO) {
           // TODO(HiDeoo)

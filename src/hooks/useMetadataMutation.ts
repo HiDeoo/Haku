@@ -21,11 +21,11 @@ export default function useMetadataMutation() {
   return useMutation<NoteMetadata | TodoMetadata | void, unknown, MetadataMutation>(
     (data) => {
       if (!type) {
-        throw new Error(`Missing content type to ${data.mutationType} metadata.`)
+        throw new Error(`Missing content type to ${data.action} metadata.`)
       }
 
-      switch (data.mutationType) {
-        case 'add': {
+      switch (data.action) {
+        case 'insert': {
           return type === ContentType.NOTE ? addNote(data) : addTodo(data)
         }
         case 'update': {
@@ -33,7 +33,7 @@ export default function useMetadataMutation() {
 
           return updateFn({ id: data.id, name: data.name, folderId: data.folderId })
         }
-        case 'remove': {
+        case 'delete': {
           const removeFn = type === ContentType.NOTE ? removeNote : removeTodo
 
           return removeFn({ id: data.id })
@@ -49,10 +49,10 @@ export default function useMetadataMutation() {
 
         if (
           newMetadata &&
-          (variables.mutationType === 'add' || (variables.mutationType === 'update' && variables.id === contentId))
+          (variables.action === 'insert' || (variables.action === 'update' && variables.id === contentId))
         ) {
           push(`${urlPath}/${newMetadata.id}/${newMetadata.slug}`)
-        } else if (variables.mutationType === 'remove' && variables.id === contentId) {
+        } else if (variables.action === 'delete' && variables.id === contentId) {
           push(urlPath)
         }
       },
@@ -89,6 +89,6 @@ type UpdateMetadata = Omit<UpdateNoteBody, 'type'> & UpdateNoteQuery
 type RemoveMetadata = RemoveNoteQuery | RemoveTodoQuery
 
 export type MetadataMutation =
-  | Mutation<AddMetadata, 'add'>
+  | Mutation<AddMetadata, 'insert'>
   | Mutation<UpdateMetadata, 'update'>
-  | Mutation<RemoveMetadata, 'remove'>
+  | Mutation<RemoveMetadata, 'delete'>

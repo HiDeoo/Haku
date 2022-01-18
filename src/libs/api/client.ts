@@ -31,5 +31,5 @@ function isClientNotFoundError(error: unknown) {
   return error instanceof HTTPError && error.response.status === 404
 }
 
-export type MutationType = 'add' | 'update' | 'remove'
-export type Mutation<TData, TType extends MutationType> = TData & { mutationType: TType }
+export type MutationAction = 'insert' | 'update' | 'delete'
+export type Mutation<TData, TAction extends MutationAction> = TData & { action: TAction }
