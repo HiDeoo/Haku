@@ -58,7 +58,7 @@ export function createTestNote(options?: TestNoteOptions) {
   })
 }
 
-export async function createTestTodo(options?: TestTodoOptions) {
+export async function createTestTodo(options?: TestTodoOptions, rootNodes?: TodoNodeData['id'][]) {
   const name = options?.name ?? faker.lorem.words()
 
   const todoNode = await createTestTodoNode()
@@ -69,7 +69,7 @@ export async function createTestTodo(options?: TestTodoOptions) {
       folderId: options?.folderId,
       slug: slug(name),
       userId: options?.userId ?? getTestUser().userId,
-      rootNodes: [todoNode.id],
+      rootNodes: rootNodes ?? [todoNode.id],
       nodes: {
         connect: [{ id: todoNode.id }],
       },

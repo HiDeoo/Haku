@@ -9,7 +9,7 @@ import {
   API_ERROR_TODO_NODE_DOES_NOT_EXIST,
 } from 'libs/api/routes/errors'
 
-export type TodoNodeData = Pick<TodoNode, 'id' | 'content'>
+export type TodoNodeData = Pick<TodoNode, 'id' | 'content' | 'children'>
 
 export function updateTodoNodes(id: TodoData['id'], userId: UserId, data: UpdateTodoNodesData): Promise<void> {
   return prisma.$transaction(async (prisma) => {

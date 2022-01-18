@@ -106,6 +106,8 @@ model TodoNode {
   id      String @id @default(cuid())
   content String
 
+  children String[]
+
   todoId String?
   todo   Todo?   @relation(fields: [todoId], references: [id])
 }

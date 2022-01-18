@@ -8,6 +8,7 @@ import { updateTodoNodes } from 'libs/db/todoNodes'
 const mutationMapSchema = z.record(
   z.object({
     id: z.string(),
+    children: z.string().array(),
     content: z.string(),
   })
 )
