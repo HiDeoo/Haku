@@ -95,7 +95,7 @@ const Folder: React.FC<FolderProps> = ({ contentType, depth = 1, folder, selecte
   }
 
   function openDeleteModal() {
-    setFolderModalOpened(true, 'remove', folder)
+    setFolderModalOpened(true, 'delete', folder)
   }
 
   return (
@@ -139,7 +139,7 @@ const Content: React.FC<ContentProps> = ({ content, contentType, depth = 0, sele
   }
 
   function openDeleteModal() {
-    setContentModalOpened(true, 'remove', content)
+    setContentModalOpened(true, 'delete', content)
   }
 
   return (

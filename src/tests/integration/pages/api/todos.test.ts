@@ -464,8 +464,7 @@ describe('todos', () => {
         expect(testTodo?.rootNodes.length).toBe(1)
 
         expect(testTodo?.rootNodes[0]).toBeDefined()
-        expect(testTodo?.rootNodes[0]?.todoId).toBe(json.id)
-        expect(testTodo?.rootNodes[0]?.content).toBe('')
+        expect(testTodo?.rootNodes[0]).toBe(json.id)
       }))
 
     test('should not add a new todo inside a nonexisting folder', () =>

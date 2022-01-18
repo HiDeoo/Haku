@@ -1,4 +1,4 @@
-import { type EmailAllowList, FolderType } from '@prisma/client'
+import { type EmailAllowList, FolderType, TodoNode } from '@prisma/client'
 import faker from '@faker-js/faker'
 import slug from 'url-slug'
 
@@ -41,13 +41,6 @@ export function getTestFolder(id: FolderData['id']) {
   return prisma.folder.findUnique({ where: { id } })
 }
 
-interface TestFolderOptions {
-  name?: FolderData['name']
-  parentId?: FolderData['parentId']
-  type: FolderType
-  userId?: UserId
-}
-
 export function createTestNote(options?: TestNoteOptions) {
   const name = options?.name ?? faker.lorem.words()
   const data = faker.lorem.paragraphs(3)
@@ -64,8 +57,10 @@ export function createTestNote(options?: TestNoteOptions) {
   })
 }
 
-export function createTestTodo(options?: TestTodoOptions) {
+export async function createTestTodo(options?: TestTodoOptions) {
   const name = options?.name ?? faker.lorem.words()
+
+  const todoNode = await createTestTodoNode()
 
   return prisma.todo.create({
     data: {
@@ -73,6 +68,13 @@ export function createTestTodo(options?: TestTodoOptions) {
       folderId: options?.folderId,
       slug: slug(name),
       userId: options?.userId ?? getTestUser().userId,
+      rootNodes: [todoNode.id],
+      nodes: {
+        connect: [{ id: todoNode.id }],
+      },
+    },
+    include: {
+      nodes: true,
     },
   })
 }
@@ -100,19 +102,15 @@ export function getTestNote(id: NoteMetadata['id']) {
 }
 
 export function getTestTodo(id: TodoMetadata['id']) {
-  return prisma.todo.findUnique({ where: { id }, include: { rootNodes: true } })
+  return prisma.todo.findUnique({ where: { id }, include: { nodes: true } })
 }
 
-interface TestNoteOptions {
-  name?: NoteMetadata['name']
-  folderId?: NoteMetadata['folderId']
-  userId?: UserId
-}
-
-interface TestTodoOptions {
-  name?: TodoMetadata['name']
-  folderId?: TodoMetadata['folderId']
-  userId?: UserId
+export function createTestTodoNode(options?: TestTodoNodeOptions) {
+  return prisma.todoNode.create({
+    data: {
+      content: options?.content ?? faker.lorem.words(),
+    },
+  })
 }
 
 export function createTestEmailAllowList() {
@@ -131,6 +129,29 @@ export function getTestEmailAllowLists(options: TestEmailAllowListOptions) {
 
 export function getTestEmailAllowList(id: EmailAllowList['id']) {
   return prisma.emailAllowList.findUnique({ where: { id } })
+}
+
+interface TestFolderOptions {
+  name?: FolderData['name']
+  parentId?: FolderData['parentId']
+  type: FolderType
+  userId?: UserId
+}
+
+interface TestNoteOptions {
+  name?: NoteMetadata['name']
+  folderId?: NoteMetadata['folderId']
+  userId?: UserId
+}
+
+interface TestTodoOptions {
+  name?: TodoMetadata['name']
+  folderId?: TodoMetadata['folderId']
+  userId?: UserId
+}
+
+interface TestTodoNodeOptions {
+  content?: TodoNode['content']
 }
 
 interface TestEmailAllowListOptions {

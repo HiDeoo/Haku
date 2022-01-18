@@ -19,14 +19,17 @@ export async function addTodo(
     await validateFolder(folderId, userId, FolderType.TODO)
 
     try {
+      const todoNode = await prisma.todoNode.create({ data: { content: '' } })
+
       return await prisma.todo.create({
         data: {
           userId,
           name,
           folderId,
+          rootNodes: [todoNode.id],
           slug: slug(name),
-          rootNodes: {
-            create: [{ content: '' }],
+          nodes: {
+            connect: [{ id: todoNode.id }],
           },
         },
         select: todoMetadataSelect,
@@ -103,7 +106,7 @@ export function removeTodo(id: TodoMetadata['id'], userId: UserId) {
   })
 }
 
-function getTodoById(id: number, userId: UserId): Promise<Todo | null> {
+export function getTodoById(id: number, userId: UserId): Promise<Todo | null> {
   return prisma.todo.findFirst({ where: { id, userId } })
 }
 
