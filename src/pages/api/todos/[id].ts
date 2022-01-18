@@ -2,24 +2,20 @@ import { type NextApiResponse } from 'next'
 
 import { createApiRoute, getApiRequestUser } from 'libs/api/routes'
 import { type ValidatedApiRequest, withAuth, withValidation } from 'libs/api/routes/middlewares'
-import { z, zAtLeastOneOf, zStringAsNumber } from 'libs/validation'
+import { z, zAtLeastOneOf, zQuerySchemaWithId } from 'libs/validation'
 import { removeTodo, updateTodo, type TodoMetadata } from 'libs/db/todo'
-
-const querySchema = z.object({
-  id: zStringAsNumber,
-})
 
 const patchBodySchema = zAtLeastOneOf(
   z.object({
     name: z.string(),
-    folderId: z.number().nullable(),
+    folderId: z.string().nullable(),
   })
 )
 
 const route = createApiRoute(
   {
-    delete: withValidation(deleteHandler, undefined, querySchema),
-    patch: withValidation(patchHandler, patchBodySchema, querySchema),
+    delete: withValidation(deleteHandler, undefined, zQuerySchemaWithId),
+    patch: withValidation(patchHandler, patchBodySchema, zQuerySchemaWithId),
   },
   [withAuth]
 )
@@ -45,6 +41,6 @@ async function patchHandler(
   return res.status(200).json(todo)
 }
 
-export type RemoveTodoQuery = z.infer<typeof querySchema>
+export type RemoveTodoQuery = z.infer<typeof zQuerySchemaWithId>
 export type UpdateTodoBody = z.infer<typeof patchBodySchema>
-export type UpdateTodoQuery = z.infer<typeof querySchema>
+export type UpdateTodoQuery = z.infer<typeof zQuerySchemaWithId>

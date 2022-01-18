@@ -6,6 +6,7 @@ import { prisma } from 'libs/db'
 import { type FolderData } from 'libs/db/folder'
 import { type NoteMetadata } from 'libs/db/note'
 import { type TodoMetadata } from 'libs/db/todo'
+import { type TodoNodeData } from 'libs/db/todoNodes'
 import { getTestUser } from 'tests/integration'
 
 function createTestFolder(options: TestFolderOptions) {
@@ -103,6 +104,10 @@ export function getTestNote(id: NoteMetadata['id']) {
 
 export function getTestTodo(id: TodoMetadata['id']) {
   return prisma.todo.findUnique({ where: { id }, include: { nodes: true } })
+}
+
+export function getTestTodoNode(id: TodoNodeData['id']) {
+  return prisma.todoNode.findUnique({ where: { id } })
 }
 
 export function createTestTodoNode(options?: TestTodoNodeOptions) {

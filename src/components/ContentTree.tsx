@@ -179,7 +179,7 @@ interface ShimmerNodeProps {
 interface NodeProps {
   contentType: UseContentTypeReturnValue
   depth?: number
-  selectedId?: number
+  selectedId?: string
   style?: React.HtmlHTMLAttributes<HTMLElement>['style']
 }
 

@@ -1,3 +1,5 @@
+import assert from 'assert'
+
 import StatusCode from 'status-code-enum'
 import slug from 'url-slug'
 
@@ -7,6 +9,7 @@ import {
   createTestTodo,
   createTestTodoFolder,
   getTestTodo,
+  getTestTodoNode,
   getTestTodos,
 } from 'tests/integration/db'
 import { HttpMethod } from 'libs/http'
@@ -464,13 +467,19 @@ describe('todos', () => {
         expect(testTodo?.rootNodes.length).toBe(1)
 
         expect(testTodo?.rootNodes[0]).toBeDefined()
-        expect(testTodo?.rootNodes[0]).toBe(json.id)
+
+        assert(typeof testTodo?.rootNodes[0] === 'string')
+
+        const testTodoNode = await getTestTodoNode(testTodo?.rootNodes[0])
+
+        expect(testTodoNode).toBeDefined()
+        expect(testTodoNode?.todoId).toBe(json.id)
       }))
 
     test('should not add a new todo inside a nonexisting folder', () =>
       testApiRoute(indexHandler, async ({ fetch }) => {
         const name = 'todo'
-        const folderId = 1
+        const folderId = 'nonexistingFolderId'
 
         const res = await fetch({
           method: HttpMethod.POST,
@@ -705,7 +714,7 @@ describe('todos', () => {
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
-            body: JSON.stringify({ folderId: 1 }),
+            body: JSON.stringify({ folderId: 'nonexistingFolderId' }),
           })
           const json = await res.json<ApiErrorResponse>()
 
@@ -889,7 +898,7 @@ describe('todos', () => {
     })
 
     test('should not remove a nonexisting todo', () => {
-      const id = 1
+      const id = 'nonexistingTodoId'
 
       return testApiRoute(
         idHandler,

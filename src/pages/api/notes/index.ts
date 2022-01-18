@@ -8,7 +8,7 @@ import { addNote, type NoteMetadata } from 'libs/db/note'
 
 const postBodySchema = z.object({
   name: z.string(),
-  folderId: z.number().optional(),
+  folderId: z.string().optional(),
 })
 
 const route = createApiRoute(

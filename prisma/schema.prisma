@@ -10,7 +10,7 @@ datasource db {
 }
 
 model EmailAllowList {
-  id    Int    @id @default(autoincrement())
+  id    String @id @default(cuid())
   email String @unique
 }
 
@@ -44,14 +44,14 @@ model VerificationToken {
 }
 
 model Folder {
-  id   Int        @id @default(autoincrement())
+  id   String     @id @default(cuid())
   name String     @db.Citext
   type FolderType
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  parentId Int?
+  parentId String?
   parent   Folder?  @relation("FolderToFolder", fields: [parentId], references: [id])
   children Folder[] @relation("FolderToFolder")
 
@@ -68,7 +68,7 @@ enum FolderType {
 }
 
 model Note {
-  id   Int    @id @default(autoincrement())
+  id   String @id @default(cuid())
   name String @db.Citext
   slug String
 
@@ -78,24 +78,24 @@ model Note {
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  folderId Int?
+  folderId String?
   folder   Folder? @relation(fields: [folderId], references: [id], onDelete: Cascade)
 
   @@unique([folderId, userId, name], map: "Note_folderId_userId_name_unique_constraint")
 }
 
 model Todo {
-  id   Int    @id @default(autoincrement())
+  id   String @id @default(cuid())
   name String @db.Citext
   slug String
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  folderId Int?
+  folderId String?
   folder   Folder? @relation(fields: [folderId], references: [id], onDelete: Cascade)
 
-  rootNodes Int[]
+  rootNodes String[]
 
   nodes TodoNode[]
 
@@ -103,9 +103,9 @@ model Todo {
 }
 
 model TodoNode {
-  id      Int    @id @default(autoincrement())
+  id      String @id @default(cuid())
   content String
 
-  todoId Int?
-  todo   Todo? @relation(fields: [todoId], references: [id])
+  todoId String?
+  todo   Todo?   @relation(fields: [todoId], references: [id])
 }

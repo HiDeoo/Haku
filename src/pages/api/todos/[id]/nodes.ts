@@ -2,12 +2,8 @@ import { type NextApiResponse } from 'next'
 
 import { createApiRoute, getApiRequestUser } from 'libs/api/routes'
 import { ValidatedApiRequest, withAuth, withValidation } from 'libs/api/routes/middlewares'
-import { z, zStringAsNumber } from 'libs/validation'
+import { z, zQuerySchemaWithId } from 'libs/validation'
 import { updateTodoNodes } from 'libs/db/todoNodes'
-
-const querySchema = z.object({
-  id: zStringAsNumber,
-})
 
 // const mutationSchema = z.object({
 //   id: zStringAsNumber,
@@ -20,12 +16,12 @@ const patchBodySchema = z.object({
   //   insert: mutationSchema.array(),
   //   update: mutationSchema.array(),
   // }),
-  rootNodes: z.number().array(),
+  rootNodes: z.string().array(),
 })
 
 const route = createApiRoute(
   {
-    patch: withValidation(patchHandler, patchBodySchema, querySchema),
+    patch: withValidation(patchHandler, patchBodySchema, zQuerySchemaWithId),
   },
   [withAuth]
 )
@@ -44,4 +40,4 @@ async function patchHandler(
 }
 
 export type UpdateTodoNodesBody = z.infer<typeof patchBodySchema>
-export type UpdateTodoNodesQuery = z.infer<typeof querySchema>
+export type UpdateTodoNodesQuery = z.infer<typeof zQuerySchemaWithId>

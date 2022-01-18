@@ -34,7 +34,7 @@ async function getTree<TFolder extends HierarchicalListFolder, TItem extends Hie
 export async function getTreeChildrenFolderIds(
   userId: UserId,
   folderType: FolderType,
-  folderId: number
+  folderId: FolderData['id']
 ): Promise<FolderData['id'][]> {
   const folders = await getTreeFolders(userId, folderType, folderId)
 

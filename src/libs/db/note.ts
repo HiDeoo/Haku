@@ -118,7 +118,7 @@ export function removeNote(id: NoteMetadata['id'], userId: UserId) {
   })
 }
 
-function getNoteById(id: number, userId: UserId): Promise<Note | null> {
+function getNoteById(id: Note['id'], userId: UserId): Promise<Note | null> {
   return prisma.note.findFirst({ where: { id, userId } })
 }
 

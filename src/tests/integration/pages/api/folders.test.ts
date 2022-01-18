@@ -68,7 +68,7 @@ describe('folders', () => {
       testApiRoute(indexHandler, async ({ fetch }) => {
         const name = 'folder'
         const type = FolderType.NOTE
-        const parentId = 1
+        const parentId = 'nonexistingFolderId'
 
         const res = await fetch({
           method: HttpMethod.POST,
@@ -301,7 +301,7 @@ describe('folders', () => {
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
-            body: JSON.stringify({ parentId: 1 }),
+            body: JSON.stringify({ parentId: 'nonexistingParentId' }),
           })
           const json = await res.json<ApiErrorResponse>()
 
@@ -597,7 +597,7 @@ describe('folders', () => {
     })
 
     test('should not remove a nonexisting folder', () => {
-      const id = 1
+      const id = 'nonexistingFolderId'
 
       return testApiRoute(
         idHandler,

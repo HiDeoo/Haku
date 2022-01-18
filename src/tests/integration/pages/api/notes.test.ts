@@ -518,7 +518,7 @@ describe('notes', () => {
     test('should not add a new note inside a nonexisting folder', () =>
       testApiRoute(indexHandler, async ({ fetch }) => {
         const name = 'note'
-        const folderId = 1
+        const folderId = 'nonexistingFolderId'
 
         const res = await fetch({
           method: HttpMethod.POST,
@@ -762,7 +762,7 @@ describe('notes', () => {
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
-            body: JSON.stringify({ folderId: 1 }),
+            body: JSON.stringify({ folderId: 'nonexistingFolderId' }),
           })
           const json = await res.json<ApiErrorResponse>()
 
@@ -1035,7 +1035,7 @@ describe('notes', () => {
     })
 
     test('should not remove a nonexisting note', () => {
-      const id = 1
+      const id = 'nonexistingNoteId'
 
       return testApiRoute(
         idHandler,

@@ -7,7 +7,7 @@ import { addFolder, type FolderData } from 'libs/db/folder'
 
 const postBodySchema = z.object({
   name: z.string(),
-  parentId: z.number().nullable().optional(),
+  parentId: z.string().nullable().optional(),
   type: zFolderType,
 })
 

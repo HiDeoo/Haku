@@ -7,7 +7,7 @@ import useContentTree from 'hooks/useContentTree'
 import { isTreeFolder, type TreeFolder } from 'libs/tree'
 import { NoteMetadata } from 'libs/db/note'
 
-export const ROOT_FOLDER_ID = -1
+export const ROOT_FOLDER_ID = 'rootFolderId'
 
 const rootFolder: FolderWithPath = { id: ROOT_FOLDER_ID, name: '/', parentId: null, path: '' }
 

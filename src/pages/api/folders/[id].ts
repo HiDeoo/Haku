@@ -2,24 +2,20 @@ import { type NextApiResponse } from 'next'
 
 import { createApiRoute, getApiRequestUser } from 'libs/api/routes'
 import { type ValidatedApiRequest, withAuth, withValidation } from 'libs/api/routes/middlewares'
-import { z, zAtLeastOneOf, zStringAsNumber } from 'libs/validation'
+import { z, zAtLeastOneOf, zQuerySchemaWithId } from 'libs/validation'
 import { type FolderData, updateFolder, removeFolder } from 'libs/db/folder'
-
-const querySchema = z.object({
-  id: zStringAsNumber,
-})
 
 const patchBodySchema = zAtLeastOneOf(
   z.object({
     name: z.string(),
-    parentId: z.number().nullable(),
+    parentId: z.string().nullable(),
   })
 )
 
 const route = createApiRoute(
   {
-    delete: withValidation(deleteHandler, undefined, querySchema),
-    patch: withValidation(patchHandler, patchBodySchema, querySchema),
+    delete: withValidation(deleteHandler, undefined, zQuerySchemaWithId),
+    patch: withValidation(patchHandler, patchBodySchema, zQuerySchemaWithId),
   },
   [withAuth]
 )
@@ -45,6 +41,6 @@ async function patchHandler(
   return res.status(200).json(folder)
 }
 
-export type RemoveFolderQuery = z.infer<typeof querySchema>
+export type RemoveFolderQuery = z.infer<typeof zQuerySchemaWithId>
 export type UpdateFolderBody = z.infer<typeof patchBodySchema>
-export type UpdateFolderQuery = z.infer<typeof querySchema>
+export type UpdateFolderQuery = z.infer<typeof zQuerySchemaWithId>

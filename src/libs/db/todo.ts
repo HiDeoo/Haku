@@ -106,7 +106,7 @@ export function removeTodo(id: TodoMetadata['id'], userId: UserId) {
   })
 }
 
-export function getTodoById(id: number, userId: UserId): Promise<Todo | null> {
+export function getTodoById(id: Todo['id'], userId: UserId): Promise<Todo | null> {
   return prisma.todo.findFirst({ where: { id, userId } })
 }
 
