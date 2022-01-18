@@ -18,6 +18,9 @@ export const API_ERROR_NOTE_HTML_OR_TEXT_MISSING = 'The note html or text conten
 export const API_ERROR_TODO_ALREADY_EXISTS = 'A todo with the same name already exists.'
 export const API_ERROR_TODO_DOES_NOT_EXIST = 'The todo specified does not exist.'
 
+export const API_ERROR_TODO_NODE_ALREADY_EXISTS = 'A todo node with the same ID already exists.'
+export const API_ERROR_TODO_NODE_DOES_NOT_EXIST = 'The todo node specified does not exist.'
+
 export class ApiError extends Error {
   constructor(public message: string, public httpStatusCode: StatusCode = StatusCode.ClientErrorForbidden) {
     super(message)

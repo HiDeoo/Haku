@@ -33,12 +33,12 @@ export function handleDbError(error: unknown, options: DbErrorHandlerOptions): n
         break
       }
       case 'P2025': {
-        if (
-          isDbErrorMetaWithCause(error.meta) &&
-          error.meta.cause === 'Record to delete does not exist.' &&
-          options.delete
-        ) {
-          apiClientErrorMessage = options.delete
+        if (isDbErrorMetaWithCause(error.meta)) {
+          if (error.meta.cause === 'Record to delete does not exist.' && options.delete) {
+            apiClientErrorMessage = options.delete
+          } else if (error.meta.cause === 'Record to update not found.' && options.update) {
+            apiClientErrorMessage = options.update
+          }
         }
 
         break
@@ -70,6 +70,7 @@ export interface DbErrorHandlerOptions {
   delete?: string
   fKey?: Record<string, string>
   unique?: Record<string, string>
+  update?: string
 }
 
 interface DbErrorMetaWithTarget {

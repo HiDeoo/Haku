@@ -34,6 +34,7 @@ specifiers:
   '@typescript-eslint/parser': 5.9.1
   autoprefixer: 10.4.0
   clsx: 1.1.1
+  cuid: 2.1.8
   docker-compose: 0.23.14
   dotenv-cli: 4.1.1
   downshift: 6.1.7
@@ -125,6 +126,7 @@ devDependencies:
   '@typescript-eslint/eslint-plugin': 5.5.0_7c169a00409c2e526b5f12016a48db45
   '@typescript-eslint/parser': 5.9.1_eslint@8.4.0+typescript@4.5.2
   autoprefixer: 10.4.0_postcss@8.4.4
+  cuid: 2.1.8
   docker-compose: 0.23.14
   dotenv-cli: 4.1.1
   eslint: 8.4.0
@@ -2992,6 +2994,10 @@ packages:
 
   /csstype/3.0.10:
     resolution: {integrity: sha512-2u44ZG2OcNUO9HDp/Jl8C07x6pU/eTR3ncV91SiK3dhG9TWvRVsCoJw14Ckx5DgWkzGA3waZWO3d7pgqpUI/XA==}
+
+  /cuid/2.1.8:
+    resolution: {integrity: sha512-xiEMER6E7TlTPnDxrM4eRiC6TRgjNX9xzEZ5U/Se2YJKr7Mq4pJn/2XEHjl3STcSh96GmkHPcBXLES8M29wyyg==}
+    dev: true
 
   /damerau-levenshtein/1.0.7:
     resolution: {integrity: sha512-VvdQIPGdWP0SqFXghj79Wf/5LArmreyMsGLa6FG6iC4t3j7j5s71TrwWmT/4akbDQIqjfACkLZmjXhA7g2oUZw==}
