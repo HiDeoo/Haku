@@ -5,16 +5,18 @@ import { ValidatedApiRequest, withAuth, withValidation } from 'libs/api/routes/m
 import { z, zQuerySchemaWithId } from 'libs/validation'
 import { updateTodoNodes } from 'libs/db/todoNodes'
 
-const mutationSchema = z.object({
-  id: z.string(),
-  content: z.string(),
-})
+const mutationMapSchema = z.record(
+  z.object({
+    id: z.string(),
+    content: z.string(),
+  })
+)
 
 const patchBodySchema = z.object({
   mutations: z.object({
     delete: z.string().array(),
-    insert: mutationSchema.array(),
-    update: mutationSchema.array(),
+    insert: mutationMapSchema,
+    update: mutationMapSchema,
   }),
   rootNodes: z.string().array(),
 })

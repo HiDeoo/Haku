@@ -17,8 +17,8 @@ import {
 
 const baseMutation: UpdateTodoNodesBody['mutations'] = {
   delete: [],
-  insert: [],
-  update: [],
+  insert: {},
+  update: {},
 }
 
 describe('todo nodes', () => {
@@ -106,7 +106,10 @@ describe('todo nodes', () => {
 
           await fetch({
             method: HttpMethod.PATCH,
-            body: JSON.stringify({ mutations: { ...baseMutation, insert: [newTodoNode] }, rootNodes }),
+            body: JSON.stringify({
+              mutations: { ...baseMutation, insert: { [newTodoNode.id]: newTodoNode } },
+              rootNodes,
+            }),
           })
 
           const testTodo = await getTestTodo(id)
@@ -133,7 +136,10 @@ describe('todo nodes', () => {
 
           const res = await fetch({
             method: HttpMethod.PATCH,
-            body: JSON.stringify({ mutations: { ...baseMutation, insert: [newTodoNode] }, rootNodes }),
+            body: JSON.stringify({
+              mutations: { ...baseMutation, insert: { [newTodoNode.id]: newTodoNode } },
+              rootNodes,
+            }),
           })
           const json = await res.json<ApiErrorResponse>()
 
@@ -159,7 +165,10 @@ describe('todo nodes', () => {
 
           await fetch({
             method: HttpMethod.PATCH,
-            body: JSON.stringify({ mutations: { ...baseMutation, update: [updatedTodoNode] }, rootNodes }),
+            body: JSON.stringify({
+              mutations: { ...baseMutation, update: { [updatedTodoNode.id]: updatedTodoNode } },
+              rootNodes,
+            }),
           })
 
           const testTodo = await getTestTodo(id)
@@ -186,7 +195,10 @@ describe('todo nodes', () => {
 
           const res = await fetch({
             method: HttpMethod.PATCH,
-            body: JSON.stringify({ mutations: { ...baseMutation, update: [updatedTodoNode] }, rootNodes }),
+            body: JSON.stringify({
+              mutations: { ...baseMutation, update: { [updatedTodoNode.id]: updatedTodoNode } },
+              rootNodes,
+            }),
           })
           const json = await res.json<ApiErrorResponse>()
 

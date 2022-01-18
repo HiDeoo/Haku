@@ -20,7 +20,7 @@ export function updateTodoNodes(id: TodoData['id'], userId: UserId, data: Update
     }
 
     try {
-      for (const { id, ...nodeUpdate } of data.mutations.update) {
+      for (const { id, ...nodeUpdate } of Object.values(data.mutations.update)) {
         await prisma.todoNode.update({ data: nodeUpdate, where: { id } })
       }
 
@@ -32,7 +32,7 @@ export function updateTodoNodes(id: TodoData['id'], userId: UserId, data: Update
           rootNodes: data.rootNodes,
           nodes: {
             createMany: {
-              data: data.mutations.insert,
+              data: Object.values(data.mutations.insert),
             },
             deleteMany: data.mutations.delete.map((id) => ({ id })),
           },
@@ -49,11 +49,13 @@ export function updateTodoNodes(id: TodoData['id'], userId: UserId, data: Update
   })
 }
 
+type TodoNodeDataMap = Record<TodoNodeData['id'], TodoNodeData>
+
 interface UpdateTodoNodesData {
   mutations: {
     delete: TodoNodeData['id'][]
-    insert: TodoNodeData[]
-    update: TodoNodeData[]
+    insert: TodoNodeDataMap
+    update: TodoNodeDataMap
   }
   rootNodes: TodoNodeData['id'][]
 }
