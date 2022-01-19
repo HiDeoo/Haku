@@ -20,6 +20,7 @@ import {
   API_ERROR_TODO_DOES_NOT_EXIST,
   API_ERROR_TODO_NODE_ALREADY_EXISTS,
   API_ERROR_TODO_NODE_DELETE_DOES_NOT_EXIST,
+  API_ERROR_TODO_NODE_DELETE_PARENT_NODE_CONFLICT,
   API_ERROR_TODO_NODE_DELETE_ROOT_NODE_CONFLICT,
   API_ERROR_TODO_NODE_DELETE_UPDATE_CONFLICT,
   API_ERROR_TODO_NODE_INSERT_CHILD_DELETE_CONFLICT,
@@ -678,7 +679,7 @@ describe('todo nodes', () => {
       )
     })
 
-    test('should delete an existing todo node', async () => {
+    test('should delete a nested todo node', async () => {
       const { id, rootNodes } = await createTestTodo()
 
       return testApiRoute(
@@ -699,7 +700,41 @@ describe('todo nodes', () => {
       )
     })
 
-    test('should delete nested todos', async () => {
+    test('should delete a root todo node', async () => {
+      const { id, nodes, rootNodes } = await createTestTodo()
+
+      return testApiRoute(
+        idHandler,
+        async ({ fetch }) => {
+          const deletedTodoNode = await createTestTodoNode({ todoId: id })
+
+          const rootNode = nodes[0]
+
+          assert(rootNode)
+
+          await updateTestTodoNodeChildren(rootNode.id, [deletedTodoNode.id])
+
+          await fetch({
+            method: HttpMethod.PATCH,
+            body: JSON.stringify({
+              mutations: {
+                ...baseMutation,
+                delete: [deletedTodoNode.id],
+                update: { [rootNode.id]: { ...rootNode, children: [] } },
+              },
+              rootNodes,
+            }),
+          })
+
+          const testTodoNode = await getTestTodoNode(deletedTodoNode.id)
+
+          expect(testTodoNode).toBeNull()
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should delete nested todo nodes', async () => {
       const { id, rootNodes, nodes } = await createTestTodo()
 
       return testApiRoute(
@@ -713,16 +748,20 @@ describe('todo nodes', () => {
           })
           const todoNode_0 = await createTestTodoNode({ todoId: id, children: [todoNode_0_0.id] })
 
-          const rootNodeId = nodes[0]?.id
+          const rootNode = nodes[0]
 
-          assert(rootNodeId)
+          assert(rootNode)
 
-          await updateTestTodoNodeChildren(rootNodeId, [todoNode_0.id])
+          await updateTestTodoNodeChildren(rootNode.id, [todoNode_0.id])
 
           await fetch({
             method: HttpMethod.PATCH,
             body: JSON.stringify({
-              mutations: { ...baseMutation, delete: [todoNode_0.id] },
+              mutations: {
+                ...baseMutation,
+                delete: [todoNode_0.id],
+                update: { [rootNode.id]: { ...rootNode, children: [] } },
+              },
               rootNodes,
             }),
           })
@@ -731,7 +770,7 @@ describe('todo nodes', () => {
 
           expect(testTodo?.nodes.length).toBe(1)
 
-          const testRootTodoNode = await getTestTodo(rootNodeId)
+          const testRootTodoNode = await getTestTodo(rootNode.id)
           expect(testRootTodoNode).toBeDefined()
 
           const testTodoNode_0 = await getTestTodo(todoNode_0.id)
@@ -745,6 +784,36 @@ describe('todo nodes', () => {
 
           const testTodoNode_0_0_1 = await getTestTodo(todoNode_0_0_1.id)
           expect(testTodoNode_0_0_1).toBe(null)
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should not delete a nested todo nodes still referenced by its parent', async () => {
+      const { id, rootNodes, nodes } = await createTestTodo()
+
+      return testApiRoute(
+        idHandler,
+        async ({ fetch }) => {
+          const todoNode_0 = await createTestTodoNode({ todoId: id })
+
+          const rootNode = nodes[0]
+
+          assert(rootNode)
+
+          await updateTestTodoNodeChildren(rootNode.id, [todoNode_0.id])
+
+          const res = await fetch({
+            method: HttpMethod.PATCH,
+            body: JSON.stringify({
+              mutations: { ...baseMutation, delete: [todoNode_0.id] },
+              rootNodes,
+            }),
+          })
+          const json = await res.json<ApiErrorResponse>()
+
+          expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+          expect(json.error).toBe(API_ERROR_TODO_NODE_DELETE_PARENT_NODE_CONFLICT)
         },
         { dynamicRouteParams: { id } }
       )
