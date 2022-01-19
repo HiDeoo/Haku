@@ -71,7 +71,7 @@ export async function createTestTodo(options?: TestTodoOptions, rootNodes?: Todo
       userId: options?.userId ?? getTestUser().userId,
       rootNodes: rootNodes ?? [todoNode.id],
       nodes: {
-        connect: [{ id: todoNode.id }],
+        connect: rootNodes?.map((id) => ({ id })) ?? [{ id: todoNode.id }],
       },
     },
     include: {
@@ -113,7 +113,9 @@ export function getTestTodoNode(id: TodoNodeData['id']) {
 export function createTestTodoNode(options?: TestTodoNodeOptions) {
   return prisma.todoNode.create({
     data: {
+      id: options?.id,
       content: options?.content ?? faker.lorem.words(),
+      todoId: options?.todoId,
     },
   })
 }
@@ -156,7 +158,9 @@ interface TestTodoOptions {
 }
 
 interface TestTodoNodeOptions {
+  id?: TodoNode['id']
   content?: TodoNode['content']
+  todoId?: TodoNode['todoId']
 }
 
 interface TestEmailAllowListOptions {
