@@ -8,7 +8,13 @@ import { StatusCode } from 'status-code-enum'
 import { getTestUser, testApiRoute } from 'tests/integration'
 import { HttpMethod } from 'libs/http'
 import idHandler, { type UpdateTodoNodesBody } from 'pages/api/todos/[id]/nodes'
-import { createTestTodo, createTestTodoNode, getTestTodo, getTestTodoNode } from 'tests/integration/db'
+import {
+  createTestTodo,
+  createTestTodoNode,
+  getTestTodo,
+  getTestTodoNode,
+  updateTestTodoNodeChildren,
+} from 'tests/integration/db'
 import { type TodoNodeData } from 'libs/db/todoNodes'
 import {
   API_ERROR_TODO_DOES_NOT_EXIST,
@@ -33,7 +39,7 @@ const baseMutation: UpdateTodoNodesBody['mutations'] = {
 
 describe('todo nodes', () => {
   describe('PATCH', () => {
-    test.only('should not mutate todo nodes not owned by the current user', async () => {
+    test('should not mutate todo nodes not owned by the current user', async () => {
       const { id, rootNodes } = await createTestTodo({ userId: getTestUser('1').userId })
 
       return testApiRoute(
@@ -688,6 +694,57 @@ describe('todo nodes', () => {
           const testTodoNode = await getTestTodoNode(deletedTodoNode.id)
 
           expect(testTodoNode).toBeNull()
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should delete nested todos', async () => {
+      const { id, rootNodes, nodes } = await createTestTodo()
+
+      return testApiRoute(
+        idHandler,
+        async ({ fetch }) => {
+          const todoNode_0_0_0 = await createTestTodoNode({ todoId: id })
+          const todoNode_0_0_1 = await createTestTodoNode({ todoId: id })
+          const todoNode_0_0 = await createTestTodoNode({
+            todoId: id,
+            children: [todoNode_0_0_0.id, todoNode_0_0_1.id],
+          })
+          const todoNode_0 = await createTestTodoNode({ todoId: id, children: [todoNode_0_0.id] })
+
+          const rootNodeId = nodes[0]?.id
+
+          assert(rootNodeId)
+
+          await updateTestTodoNodeChildren(rootNodeId, [todoNode_0.id])
+
+          await fetch({
+            method: HttpMethod.PATCH,
+            body: JSON.stringify({
+              mutations: { ...baseMutation, delete: [todoNode_0.id] },
+              rootNodes,
+            }),
+          })
+
+          const testTodo = await getTestTodo(id)
+
+          expect(testTodo?.nodes.length).toBe(1)
+
+          const testRootTodoNode = await getTestTodo(rootNodeId)
+          expect(testRootTodoNode).toBeDefined()
+
+          const testTodoNode_0 = await getTestTodo(todoNode_0.id)
+          expect(testTodoNode_0).toBe(null)
+
+          const testTodoNode_0_0 = await getTestTodo(todoNode_0_0.id)
+          expect(testTodoNode_0_0).toBe(null)
+
+          const testTodoNode_0_0_0 = await getTestTodo(todoNode_0_0_0.id)
+          expect(testTodoNode_0_0_0).toBe(null)
+
+          const testTodoNode_0_0_1 = await getTestTodo(todoNode_0_0_1.id)
+          expect(testTodoNode_0_0_1).toBe(null)
         },
         { dynamicRouteParams: { id } }
       )

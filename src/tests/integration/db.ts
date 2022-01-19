@@ -114,8 +114,20 @@ export function createTestTodoNode(options?: TestTodoNodeOptions) {
   return prisma.todoNode.create({
     data: {
       id: options?.id,
+      children: options?.children,
       content: options?.content ?? faker.lorem.words(),
       todoId: options?.todoId,
+    },
+  })
+}
+
+export function updateTestTodoNodeChildren(id: TodoNode['id'], children: TodoNode['children']) {
+  return prisma.todoNode.update({
+    data: {
+      children,
+    },
+    where: {
+      id,
     },
   })
 }
@@ -159,6 +171,7 @@ interface TestTodoOptions {
 
 interface TestTodoNodeOptions {
   id?: TodoNode['id']
+  children?: TodoNode['children']
   content?: TodoNode['content']
   todoId?: TodoNode['todoId']
 }
