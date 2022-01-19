@@ -14,6 +14,7 @@ import {
   API_ERROR_TODO_NODE_INSERT_CHILD_DELETE_CONFLICT,
   API_ERROR_TODO_NODE_INSERT_CHILD_DOES_NOT_EXIST,
   API_ERROR_TODO_NODE_ROOT_NODE_DOES_NOT_EXIST,
+  API_ERROR_TODO_NODE_ROOT_NODE_EMPTY,
   API_ERROR_TODO_NODE_UPDATE_CHILD_DELETE_CONFLICT,
   API_ERROR_TODO_NODE_UPDATE_CHILD_DOES_NOT_EXIST,
   API_ERROR_TODO_NODE_UPDATE_DOES_NOT_EXIST,
@@ -67,6 +68,10 @@ function getTodoNodes(todoId: TodoData['id']) {
 }
 
 async function validateMutations(todoId: TodoData['id'], update: UpdateTodoNodesData): Promise<DeletedTodoNodeIds> {
+  if (update.rootNodes.length === 0) {
+    throw new ApiError(API_ERROR_TODO_NODE_ROOT_NODE_EMPTY)
+  }
+
   const nodes = await getTodoNodes(todoId)
 
   const nodesMap = nodes.reduce<TodoNodeDataMapWithParentId>((acc, node) => {

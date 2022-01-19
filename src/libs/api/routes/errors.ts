@@ -21,6 +21,7 @@ export const API_ERROR_TODO_DOES_NOT_EXIST = 'The todo specified does not exist.
 export const API_ERROR_TODO_NODE_ALREADY_EXISTS = 'A todo node with the same ID already exists.'
 export const API_ERROR_TODO_NODE_DOES_NOT_EXIST = 'The todo node specified does not exist.'
 
+export const API_ERROR_TODO_NODE_ROOT_NODE_EMPTY = 'A todo must have at least 1 root todo node.'
 export const API_ERROR_TODO_NODE_ROOT_NODE_DOES_NOT_EXIST = 'A root todo node does not exist.'
 export const API_ERROR_TODO_NODE_DELETE_DOES_NOT_EXIST = 'A todo node to delete does not exist.'
 export const API_ERROR_TODO_NODE_DELETE_UPDATE_CONFLICT = 'A todo node to update cannot be deleted.'

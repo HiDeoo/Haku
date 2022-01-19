@@ -26,6 +26,7 @@ import {
   API_ERROR_TODO_NODE_INSERT_CHILD_DELETE_CONFLICT,
   API_ERROR_TODO_NODE_INSERT_CHILD_DOES_NOT_EXIST,
   API_ERROR_TODO_NODE_ROOT_NODE_DOES_NOT_EXIST,
+  API_ERROR_TODO_NODE_ROOT_NODE_EMPTY,
   API_ERROR_TODO_NODE_UPDATE_CHILD_DELETE_CONFLICT,
   API_ERROR_TODO_NODE_UPDATE_CHILD_DOES_NOT_EXIST,
   API_ERROR_TODO_NODE_UPDATE_DOES_NOT_EXIST,
@@ -784,6 +785,35 @@ describe('todo nodes', () => {
 
           const testTodoNode_0_0_1 = await getTestTodo(todoNode_0_0_1.id)
           expect(testTodoNode_0_0_1).toBe(null)
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should not delete all root todo nodes', async () => {
+      const { id, nodes } = await createTestTodo()
+
+      return testApiRoute(
+        idHandler,
+        async ({ fetch }) => {
+          const deletedRootNode = nodes[0]
+
+          assert(deletedRootNode)
+
+          const res = await fetch({
+            method: HttpMethod.PATCH,
+            body: JSON.stringify({
+              mutations: {
+                ...baseMutation,
+                delete: [deletedRootNode.id],
+              },
+              rootNodes: [],
+            }),
+          })
+          const json = await res.json<ApiErrorResponse>()
+
+          expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+          expect(json.error).toBe(API_ERROR_TODO_NODE_ROOT_NODE_EMPTY)
         },
         { dynamicRouteParams: { id } }
       )
