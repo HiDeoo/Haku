@@ -14,6 +14,7 @@ import {
   getTestTodo,
   getTestTodoNode,
   updateTestTodoNodeChildren,
+  updateTestTodoRootNodes,
 } from 'tests/integration/db'
 import { type TodoNodeData } from 'libs/db/todoNodes'
 import {
@@ -920,6 +921,178 @@ describe('todo nodes', () => {
 
           expect(res.status).toBe(StatusCode.ClientErrorForbidden)
           expect(json.error).toBe(API_ERROR_TODO_NODE_DELETE_UPDATE_CONFLICT)
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should properly mutate various todo nodes', async () => {
+      const { id, nodes } = await createTestTodo()
+
+      return testApiRoute(
+        idHandler,
+        async ({ fetch }) => {
+          /**
+           * Before:
+           *
+           * node_0
+           * |__ node_0_0
+           * |__ node_0_1               <- deleted
+           *     |__ node_0_1_0
+           *     |__ node_0_1_1
+           *         |__ node_0_1_1_0
+           *     |__ node_0_1_2
+           * |__ node_0_2
+           * |__ node_0_3               <- moved to root node 2nd child
+           * node_1                     <- moved to node_0 first child
+           * |__ node_1_0
+           *     |__ node_1_0_0         <- renamed to node_1_0_0_updated
+           * node_2
+           * node_3                     <- moved before node_2
+           */
+
+          const node_0 = nodes[0]
+
+          assert(node_0)
+
+          const node_0_1_1_0 = await createTestTodoNode({ todoId: id })
+
+          const node_0_1_0 = await createTestTodoNode({ todoId: id })
+          const node_0_1_1 = await createTestTodoNode({ todoId: id, children: [node_0_1_1_0.id] })
+          const node_0_1_2 = await createTestTodoNode({ todoId: id })
+
+          const node_0_0 = await createTestTodoNode({ todoId: id })
+          const node_0_1 = await createTestTodoNode({
+            todoId: id,
+            children: [node_0_1_0.id, node_0_1_1.id, node_0_1_2.id],
+          })
+          const node_0_2 = await createTestTodoNode({ todoId: id })
+          const node_0_3 = await createTestTodoNode({ todoId: id })
+
+          await updateTestTodoNodeChildren(node_0.id, [node_0_0.id, node_0_1.id, node_0_2.id, node_0_3.id])
+
+          const node_1_0_0 = await createTestTodoNode({ todoId: id })
+
+          const node_1_0 = await createTestTodoNode({ todoId: id, children: [node_1_0_0.id] })
+
+          const node_1 = await createTestTodoNode({ todoId: id, children: [node_1_0.id] })
+          const node_2 = await createTestTodoNode({ todoId: id })
+          const node_3 = await createTestTodoNode({ todoId: id })
+
+          await updateTestTodoRootNodes(id, [node_0.id, node_1.id, node_2.id, node_3.id])
+
+          /**
+           * After:
+           *
+           * node_0
+           * |__ node_1
+           *     |__ node_1_0
+           *         |__ node_1_0_0_updated
+           * |__ node_0_0
+           *     |__ node_0_0_0_inserted
+           * |__ node_0_2
+           * node_0_3
+           * node_3
+           * node_2
+           */
+
+          const node_1_0_0_new_name = 'node_1_0_0_updated'
+          const node_0_0_0_inserted = getFakeTodoNode()
+
+          await fetch({
+            method: HttpMethod.PATCH,
+            body: JSON.stringify({
+              mutations: {
+                ...baseMutation,
+                delete: [node_0_1.id],
+                update: {
+                  [node_1_0_0.id]: { ...node_1_0_0, content: node_1_0_0_new_name },
+                  [node_0.id]: { ...node_0, children: [node_1.id, node_0_0.id, node_0_2.id] },
+                  [node_0_0.id]: { ...node_0_0, children: [node_0_0_0_inserted.id] },
+                },
+                insert: {
+                  [node_0_0_0_inserted.id]: node_0_0_0_inserted,
+                },
+              },
+              rootNodes: [node_0.id, node_0_3.id, node_3.id, node_2.id],
+            }),
+          })
+
+          const testTodo = await getTestTodo(id)
+
+          expect(testTodo?.nodes.length).toBe(10)
+
+          expect(testTodo?.rootNodes.length).toBe(4)
+          expect(testTodo?.rootNodes[0]).toBe(node_0.id)
+          expect(testTodo?.rootNodes[1]).toBe(node_0_3.id)
+          expect(testTodo?.rootNodes[2]).toBe(node_3.id)
+          expect(testTodo?.rootNodes[3]).toBe(node_2.id)
+
+          let testTodoNode = await getTestTodoNode(node_0.id)
+
+          expect(testTodoNode).toBeDefined()
+          expect(testTodoNode?.children.length).toBe(3)
+          expect(testTodoNode?.children[0]).toBe(node_1.id)
+          expect(testTodoNode?.children[1]).toBe(node_0_0.id)
+          expect(testTodoNode?.children[2]).toBe(node_0_2.id)
+
+          testTodoNode = await getTestTodoNode(node_1.id)
+
+          expect(testTodoNode).toBeDefined()
+          expect(testTodoNode?.children.length).toBe(1)
+          expect(testTodoNode?.children[0]).toBe(node_1_0.id)
+
+          testTodoNode = await getTestTodoNode(node_1_0.id)
+
+          expect(testTodoNode).toBeDefined()
+          expect(testTodoNode?.children.length).toBe(1)
+          expect(testTodoNode?.children[0]).toBe(node_1_0_0.id)
+
+          testTodoNode = await getTestTodoNode(node_1_0_0.id)
+
+          expect(testTodoNode).toBeDefined()
+          expect(testTodoNode?.children.length).toBe(0)
+          expect(testTodoNode?.content).toBe(node_1_0_0_new_name)
+
+          testTodoNode = await getTestTodoNode(node_0_0.id)
+
+          expect(testTodoNode).toBeDefined()
+          expect(testTodoNode?.children.length).toBe(1)
+          expect(testTodoNode?.children[0]).toBe(node_0_0_0_inserted.id)
+
+          testTodoNode = await getTestTodoNode(node_0_0_0_inserted.id)
+
+          expect(testTodoNode).toBeDefined()
+          expect(testTodoNode?.children.length).toBe(0)
+          expect(testTodoNode?.content).toBe(node_0_0_0_inserted.content)
+
+          testTodoNode = await getTestTodoNode(node_0_2.id)
+
+          expect(testTodoNode).toBeDefined()
+          expect(testTodoNode?.children.length).toBe(0)
+
+          testTodoNode = await getTestTodoNode(node_0_3.id)
+
+          expect(testTodoNode).toBeDefined()
+          expect(testTodoNode?.children.length).toBe(0)
+
+          testTodoNode = await getTestTodoNode(node_3.id)
+
+          expect(testTodoNode).toBeDefined()
+          expect(testTodoNode?.children.length).toBe(0)
+
+          testTodoNode = await getTestTodoNode(node_2.id)
+
+          expect(testTodoNode).toBeDefined()
+          expect(testTodoNode?.children.length).toBe(0)
+
+          const deletedNodeIds = [node_0_1.id, node_0_1_0.id, node_0_1_1.id, node_0_1_1_0.id, node_0_1_2.id]
+
+          for (const deletedNodeId of deletedNodeIds) {
+            testTodoNode = await getTestTodoNode(deletedNodeId)
+
+            expect(testTodoNode).toBe(null)
+          }
         },
         { dynamicRouteParams: { id } }
       )
