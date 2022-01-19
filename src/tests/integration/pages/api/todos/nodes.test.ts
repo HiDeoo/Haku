@@ -5,12 +5,13 @@ import { type TodoNode } from '@prisma/client'
 import cuid from 'cuid'
 import { StatusCode } from 'status-code-enum'
 
-import { testApiRoute } from 'tests/integration'
+import { getTestUser, testApiRoute } from 'tests/integration'
 import { HttpMethod } from 'libs/http'
 import idHandler, { type UpdateTodoNodesBody } from 'pages/api/todos/[id]/nodes'
 import { createTestTodo, createTestTodoNode, getTestTodo, getTestTodoNode } from 'tests/integration/db'
 import { type TodoNodeData } from 'libs/db/todoNodes'
 import {
+  API_ERROR_TODO_DOES_NOT_EXIST,
   API_ERROR_TODO_NODE_ALREADY_EXISTS,
   API_ERROR_TODO_NODE_DELETE_DOES_NOT_EXIST,
   API_ERROR_TODO_NODE_DELETE_ROOT_NODE_CONFLICT,
@@ -32,6 +33,27 @@ const baseMutation: UpdateTodoNodesBody['mutations'] = {
 
 describe('todo nodes', () => {
   describe('PATCH', () => {
+    test.only('should not mutate todo nodes not owned by the current user', async () => {
+      const { id, rootNodes } = await createTestTodo({ userId: getTestUser('1').userId })
+
+      return testApiRoute(
+        idHandler,
+        async ({ fetch }) => {
+          const { id: nodeId } = await createTestTodoNode({ todoId: id })
+
+          const res = await fetch({
+            method: HttpMethod.PATCH,
+            body: JSON.stringify({ mutations: baseMutation, rootNodes: [...rootNodes, nodeId] }),
+          })
+          const json = await res.json<ApiErrorResponse>()
+
+          expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+          expect(json.error).toBe(API_ERROR_TODO_DOES_NOT_EXIST)
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
     test('should add a previously known node to the root nodes after the default one', async () => {
       const { id, rootNodes } = await createTestTodo()
 
@@ -143,7 +165,6 @@ describe('todo nodes', () => {
             method: HttpMethod.PATCH,
             body: JSON.stringify({ mutations: baseMutation, rootNodes: [nodeId] }),
           })
-
           const json = await res.json<ApiErrorResponse>()
 
           expect(res.status).toBe(StatusCode.ClientErrorForbidden)
