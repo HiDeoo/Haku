@@ -1,4 +1,4 @@
-import { type Folder, FolderType } from '@prisma/client'
+import { type Folder, type FolderType } from '@prisma/client'
 
 import {
   ApiError,
