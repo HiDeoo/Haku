@@ -45,13 +45,7 @@ export async function getTodoNodes(todoId: TodoMetadata['id'], userId: UserId): 
     throw new ApiError(API_ERROR_TODO_DOES_NOT_EXIST)
   }
 
-  const nodeMap = result.nodes.reduce<TodoNodeDataMap>((acc, node) => {
-    acc[node.id] = node
-
-    return acc
-  }, {})
-
-  return { nodes: nodeMap, root: result.root }
+  return { nodes: getTodosNodesMapKeyedById(result.nodes), root: result.root }
 }
 
 export function updateTodoNodes(todoId: TodoMetadata['id'], userId: UserId, data: UpdateTodoNodesData): Promise<void> {
@@ -104,16 +98,7 @@ async function validateMutations(todoId: TodoMetadata['id'], update: UpdateTodoN
   }
 
   const nodes = await getTodoNodesByTodoId(todoId)
-
-  const nodesMap = nodes.reduce<TodoNodeDataMapWithParentId>((acc, node) => {
-    acc[node.id] = acc[node.id] ? { ...acc[node.id], ...node } : node
-
-    for (const child of node.children) {
-      acc[child] = acc[child] ? { ...acc[child], parentId: node.id } : { parentId: node.id }
-    }
-
-    return acc
-  }, {})
+  const nodesMap = getTodosNodesMapKeyedById(nodes)
 
   update.root.forEach((rootId) => {
     if (!hasKey(nodesMap, rootId) && !hasKey(update.mutations.insert, rootId)) {
@@ -173,7 +158,32 @@ async function validateMutations(todoId: TodoMetadata['id'], update: UpdateTodoN
   return deletedNodeIds
 }
 
-function getNestedTodoNodeIds(id: TodoNodeData['id'], nodes: TodoNodeDataMapWithParentId, ids: DeletedTodoNodeIds) {
+function getTodosNodesMapKeyedById(nodes: TodoNodeData[]): TodoNodeDataMap {
+  const nodesMap: TodoNodeDataMap = {}
+  const parentNodesMap: Record<string, { parentId?: TodoNodeData['id'] }> = {}
+
+  for (const node of nodes) {
+    nodesMap[node.id] = nodesMap[node.id]
+      ? { ...nodesMap[node.id], ...node }
+      : parentNodesMap[node.id]
+      ? { ...parentNodesMap[node.id], ...node }
+      : node
+
+    for (const child of node.children) {
+      const childNode = nodesMap[child]
+
+      if (childNode) {
+        nodesMap[child] = { ...childNode, parentId: node.id }
+      } else {
+        parentNodesMap[child] = { parentId: node.id }
+      }
+    }
+  }
+
+  return nodesMap
+}
+
+function getNestedTodoNodeIds(id: TodoNodeData['id'], nodes: TodoNodeDataMap, ids: DeletedTodoNodeIds) {
   const deletedNode = nodes[id]
 
   if (deletedNode) {
@@ -189,8 +199,7 @@ function getNestedTodoNodeIds(id: TodoNodeData['id'], nodes: TodoNodeDataMapWith
   return ids
 }
 
-type TodoNodeDataMap = Record<TodoNodeData['id'], TodoNodeData>
-type TodoNodeDataMapWithParentId = Record<TodoNodeData['id'], Partial<TodoNodeData> & { parentId?: TodoNodeData['id'] }>
+type TodoNodeDataMap = Record<TodoNodeData['id'], TodoNodeData & { parentId?: TodoNodeData['id'] }>
 
 interface UpdateTodoNodesData {
   mutations: {

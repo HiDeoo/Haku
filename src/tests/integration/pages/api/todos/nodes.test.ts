@@ -58,6 +58,7 @@ describe('todo nodes', () => {
 
           expect(Object.keys(json.nodes).length).toBe(1)
           expect(json.nodes[root[0]]?.id).toBe(nodes[0]?.id)
+          expect(json.nodes[root[0]]?.parentId).toBeUndefined()
         },
         { dynamicRouteParams: { id } }
       )
@@ -82,6 +83,7 @@ describe('todo nodes', () => {
 
           expect(Object.keys(json.nodes).length).toBe(1)
           expect(json.nodes[root[0]]?.id).toBe(nodes[0]?.id)
+          expect(json.nodes[root[0]]?.parentId).toBeUndefined()
         },
         { dynamicRouteParams: { id } }
       )
@@ -148,15 +150,28 @@ describe('todo nodes', () => {
           }
 
           expect(isEqualTodoNode(json.nodes[node_0_1_0.id], node_0_1_0)).toBe(true)
+          expect(json.nodes[node_0_1_0.id]?.parentId).toBe(node_0_1.id)
+
           expect(isEqualTodoNode(json.nodes[node_0_1_1.id], node_0_1_1)).toBe(true)
+          expect(json.nodes[node_0_1_1.id]?.parentId).toBe(node_0_1.id)
 
           expect(isEqualTodoNode(json.nodes[node_0_0.id], node_0_0)).toBe(true)
+          expect(json.nodes[node_0_0.id]?.parentId).toBe(node_0.id)
+
           expect(isEqualTodoNode(json.nodes[node_0_1.id], node_0_1)).toBe(true)
+          expect(json.nodes[node_0_1.id]?.parentId).toBe(node_0.id)
+
           expect(isEqualTodoNode(json.nodes[node_0_2.id], node_0_2)).toBe(true)
+          expect(json.nodes[node_0_2.id]?.parentId).toBe(node_0.id)
 
           expect(isEqualTodoNode(json.nodes[node_0.id], node_0)).toBe(true)
+          expect(json.nodes[node_0.id]?.parentId).toBeUndefined()
+
           expect(isEqualTodoNode(json.nodes[node_1.id], node_1)).toBe(true)
+          expect(json.nodes[node_0.id]?.parentId).toBeUndefined()
+
           expect(isEqualTodoNode(json.nodes[node_2.id], node_2)).toBe(true)
+          expect(json.nodes[node_0.id]?.parentId).toBeUndefined()
         },
         { dynamicRouteParams: { id } }
       )
