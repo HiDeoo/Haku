@@ -25,7 +25,7 @@ export async function addTodo(
           userId,
           name,
           folderId,
-          rootNodes: [todoNode.id],
+          root: [todoNode.id],
           slug: slug(name),
           nodes: {
             connect: [{ id: todoNode.id }],

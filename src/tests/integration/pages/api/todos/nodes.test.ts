@@ -14,7 +14,7 @@ import {
   getTestTodo,
   getTestTodoNode,
   updateTestTodoNodeChildren,
-  updateTestTodoRootNodes,
+  updateTestTodoRoot,
 } from 'tests/integration/db'
 import { type TodoNodesData, type TodoNodeData } from 'libs/db/todoNodes'
 import {
@@ -43,7 +43,7 @@ const baseMutation: UpdateTodoNodesBody['mutations'] = {
 describe('todo nodes', () => {
   describe('GET', () => {
     test('should return the single todo node of a new todo', async () => {
-      const { id, nodes, rootNodes } = await createTestTodo()
+      const { id, nodes, root } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -51,20 +51,20 @@ describe('todo nodes', () => {
           const res = await fetch({ method: HttpMethod.GET })
           const json = await res.json<TodoNodesData>()
 
-          expect(json.rootNodes.length).toBe(1)
-          expect(json.rootNodes[0]).toBe(rootNodes[0])
+          expect(json.root.length).toBe(1)
+          expect(json.root[0]).toBe(root[0])
 
-          assert(rootNodes[0])
+          assert(root[0])
 
           expect(Object.keys(json.nodes).length).toBe(1)
-          expect(json.nodes[rootNodes[0]]?.id).toBe(nodes[0]?.id)
+          expect(json.nodes[root[0]]?.id).toBe(nodes[0]?.id)
         },
         { dynamicRouteParams: { id } }
       )
     })
 
     test('should only return todo nodes of a specific todo', async () => {
-      const { id, nodes, rootNodes } = await createTestTodo()
+      const { id, nodes, root } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -75,13 +75,13 @@ describe('todo nodes', () => {
           const res = await fetch({ method: HttpMethod.GET })
           const json = await res.json<TodoNodesData>()
 
-          expect(json.rootNodes.length).toBe(1)
-          expect(json.rootNodes[0]).toBe(rootNodes[0])
+          expect(json.root.length).toBe(1)
+          expect(json.root[0]).toBe(root[0])
 
-          assert(rootNodes[0])
+          assert(root[0])
 
           expect(Object.keys(json.nodes).length).toBe(1)
-          expect(json.nodes[rootNodes[0]]?.id).toBe(nodes[0]?.id)
+          expect(json.nodes[root[0]]?.id).toBe(nodes[0]?.id)
         },
         { dynamicRouteParams: { id } }
       )
@@ -121,15 +121,15 @@ describe('todo nodes', () => {
           const node_1 = await createTestTodoNode({ todoId: id })
           const node_2 = await createTestTodoNode({ todoId: id })
 
-          await updateTestTodoRootNodes(id, [node_0.id, node_1.id, node_2.id])
+          await updateTestTodoRoot(id, [node_0.id, node_1.id, node_2.id])
 
           const res = await fetch({ method: HttpMethod.GET })
           const json = await res.json<TodoNodesData>()
 
-          expect(json.rootNodes.length).toBe(3)
-          expect(json.rootNodes[0]).toBe(node_0.id)
-          expect(json.rootNodes[1]).toBe(node_1.id)
-          expect(json.rootNodes[2]).toBe(node_2.id)
+          expect(json.root.length).toBe(3)
+          expect(json.root[0]).toBe(node_0.id)
+          expect(json.root[1]).toBe(node_1.id)
+          expect(json.root[2]).toBe(node_2.id)
 
           expect(Object.keys(json.nodes).length).toBe(8)
 
@@ -181,7 +181,7 @@ describe('todo nodes', () => {
 
   describe('PATCH', () => {
     test('should not mutate todo nodes not owned by the current user', async () => {
-      const { id, rootNodes } = await createTestTodo({ userId: getTestUser('1').userId })
+      const { id, root } = await createTestTodo({ userId: getTestUser('1').userId })
 
       return testApiRoute(
         idHandler,
@@ -190,7 +190,7 @@ describe('todo nodes', () => {
 
           const res = await fetch({
             method: HttpMethod.PATCH,
-            body: JSON.stringify({ mutations: baseMutation, rootNodes: [...rootNodes, nodeId] }),
+            body: JSON.stringify({ mutations: baseMutation, root: [...root, nodeId] }),
           })
           const json = await res.json<ApiErrorResponse>()
 
@@ -202,7 +202,7 @@ describe('todo nodes', () => {
     })
 
     test('should add a previously known node to the root nodes after the default one', async () => {
-      const { id, rootNodes } = await createTestTodo()
+      const { id, root } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -211,23 +211,23 @@ describe('todo nodes', () => {
 
           await fetch({
             method: HttpMethod.PATCH,
-            body: JSON.stringify({ mutations: baseMutation, rootNodes: [...rootNodes, nodeId] }),
+            body: JSON.stringify({ mutations: baseMutation, root: [...root, nodeId] }),
           })
 
           const testTodo = await getTestTodo(id)
 
-          expect(testTodo?.rootNodes.length).toBe(2)
+          expect(testTodo?.root.length).toBe(2)
 
-          expect(testTodo?.rootNodes[0]).toBe(rootNodes[0])
+          expect(testTodo?.root[0]).toBe(root[0])
 
-          expect(testTodo?.rootNodes[1]).toBe(nodeId)
+          expect(testTodo?.root[1]).toBe(nodeId)
         },
         { dynamicRouteParams: { id } }
       )
     })
 
     test('should add a previously known node to the root nodes before the default one', async () => {
-      const { id, rootNodes } = await createTestTodo()
+      const { id, root } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -236,16 +236,16 @@ describe('todo nodes', () => {
 
           await fetch({
             method: HttpMethod.PATCH,
-            body: JSON.stringify({ mutations: baseMutation, rootNodes: [nodeId, ...rootNodes] }),
+            body: JSON.stringify({ mutations: baseMutation, root: [nodeId, ...root] }),
           })
 
           const testTodo = await getTestTodo(id)
 
-          expect(testTodo?.rootNodes.length).toBe(2)
+          expect(testTodo?.root.length).toBe(2)
 
-          expect(testTodo?.rootNodes[0]).toBe(nodeId)
+          expect(testTodo?.root[0]).toBe(nodeId)
 
-          expect(testTodo?.rootNodes[1]).toBe(rootNodes[0])
+          expect(testTodo?.root[1]).toBe(root[0])
         },
         { dynamicRouteParams: { id } }
       )
@@ -261,14 +261,14 @@ describe('todo nodes', () => {
 
           await fetch({
             method: HttpMethod.PATCH,
-            body: JSON.stringify({ mutations: baseMutation, rootNodes: [nodeId] }),
+            body: JSON.stringify({ mutations: baseMutation, root: [nodeId] }),
           })
 
           const testTodo = await getTestTodo(id)
 
-          expect(testTodo?.rootNodes.length).toBe(1)
+          expect(testTodo?.root.length).toBe(1)
 
-          expect(testTodo?.rootNodes[0]).toBe(nodeId)
+          expect(testTodo?.root[0]).toBe(nodeId)
         },
         { dynamicRouteParams: { id } }
       )
@@ -285,16 +285,16 @@ describe('todo nodes', () => {
           await fetch({
             method: HttpMethod.PATCH,
             body: JSON.stringify({
-              rootNodes: [newTodoNode.id],
+              root: [newTodoNode.id],
               mutations: { ...baseMutation, insert: { [newTodoNode.id]: newTodoNode } },
             }),
           })
 
           const testTodo = await getTestTodo(id)
 
-          expect(testTodo?.rootNodes.length).toBe(1)
+          expect(testTodo?.root.length).toBe(1)
 
-          expect(testTodo?.rootNodes[0]).toBe(newTodoNode.id)
+          expect(testTodo?.root[0]).toBe(newTodoNode.id)
         },
         { dynamicRouteParams: { id } }
       )
@@ -310,7 +310,7 @@ describe('todo nodes', () => {
 
           const res = await fetch({
             method: HttpMethod.PATCH,
-            body: JSON.stringify({ mutations: baseMutation, rootNodes: [nodeId] }),
+            body: JSON.stringify({ mutations: baseMutation, root: [nodeId] }),
           })
           const json = await res.json<ApiErrorResponse>()
 
@@ -322,7 +322,7 @@ describe('todo nodes', () => {
     })
 
     test('should insert a new todo node', async () => {
-      const { id, rootNodes } = await createTestTodo()
+      const { id, root } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -333,7 +333,7 @@ describe('todo nodes', () => {
             method: HttpMethod.PATCH,
             body: JSON.stringify({
               mutations: { ...baseMutation, insert: { [newTodoNode.id]: newTodoNode } },
-              rootNodes,
+              root,
             }),
           })
 
@@ -352,12 +352,12 @@ describe('todo nodes', () => {
     })
 
     test('should insert a new todo node with a previously knwown child', async () => {
-      const { id, rootNodes } = await createTestTodo()
+      const { id, root } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
         async ({ fetch }) => {
-          const newTodoNodeChildId = rootNodes[0]
+          const newTodoNodeChildId = root[0]
 
           assert(newTodoNodeChildId)
 
@@ -368,7 +368,7 @@ describe('todo nodes', () => {
             method: HttpMethod.PATCH,
             body: JSON.stringify({
               mutations: { ...baseMutation, insert: { [newTodoNode.id]: newTodoNode } },
-              rootNodes,
+              root,
             }),
           })
 
@@ -383,7 +383,7 @@ describe('todo nodes', () => {
     })
 
     test('should insert a new todo node with a previously unknwown child', async () => {
-      const { id, rootNodes } = await createTestTodo()
+      const { id, root } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -399,7 +399,7 @@ describe('todo nodes', () => {
                 ...baseMutation,
                 insert: { [newTodoNode.id]: newTodoNode, [newTodoNodeChild.id]: newTodoNodeChild },
               },
-              rootNodes,
+              root,
             }),
           })
 
@@ -414,7 +414,7 @@ describe('todo nodes', () => {
     })
 
     test('should insert nested todo nodes', async () => {
-      const { id, rootNodes, nodes } = await createTestTodo()
+      const { id, root, nodes } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -424,7 +424,7 @@ describe('todo nodes', () => {
 
           newTodoNode_0.children = [newTodoNode_0_0.id]
 
-          const rootNode: TodoNode | undefined = nodes.find((node) => node.id === rootNodes[0])
+          const rootNode = nodes[0]
 
           assert(rootNode)
 
@@ -436,7 +436,7 @@ describe('todo nodes', () => {
                 insert: { [newTodoNode_0.id]: newTodoNode_0, [newTodoNode_0_0.id]: newTodoNode_0_0 },
                 update: { [rootNode.id]: { ...rootNode, children: [...rootNode.children, newTodoNode_0.id] } },
               },
-              rootNodes,
+              root,
             }),
           })
 
@@ -468,14 +468,14 @@ describe('todo nodes', () => {
     })
 
     test('should insert a new todo node as children of a root node', async () => {
-      const { id, rootNodes, nodes } = await createTestTodo()
+      const { id, root, nodes } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
         async ({ fetch }) => {
           const newTodoNode = getFakeTodoNode()
 
-          const rootNode: TodoNode | undefined = nodes.find((node) => node.id === rootNodes[0])
+          const rootNode = nodes[0]
 
           assert(rootNode)
 
@@ -487,7 +487,7 @@ describe('todo nodes', () => {
                 insert: { [newTodoNode.id]: newTodoNode },
                 update: { [rootNode.id]: { ...rootNode, children: [...rootNode.children, newTodoNode.id] } },
               },
-              rootNodes,
+              root,
             }),
           })
 
@@ -511,7 +511,7 @@ describe('todo nodes', () => {
     })
 
     test('should not insert multiple todo nodes with the same ID', async () => {
-      const { id, nodes, rootNodes } = await createTestTodo()
+      const { id, nodes, root } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -522,7 +522,7 @@ describe('todo nodes', () => {
             method: HttpMethod.PATCH,
             body: JSON.stringify({
               mutations: { ...baseMutation, insert: { [newTodoNode.id]: newTodoNode } },
-              rootNodes,
+              root,
             }),
           })
           const json = await res.json<ApiErrorResponse>()
@@ -535,7 +535,7 @@ describe('todo nodes', () => {
     })
 
     test('should not insert a new todo node with a nonexisting child', async () => {
-      const { id, rootNodes } = await createTestTodo()
+      const { id, root } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -547,7 +547,7 @@ describe('todo nodes', () => {
             method: HttpMethod.PATCH,
             body: JSON.stringify({
               mutations: { ...baseMutation, insert: { [newTodoNode.id]: newTodoNode } },
-              rootNodes,
+              root,
             }),
           })
           const json = await res.json<ApiErrorResponse>()
@@ -560,7 +560,7 @@ describe('todo nodes', () => {
     })
 
     test('should not insert a new todo node with a deleted child', async () => {
-      const { id, rootNodes } = await createTestTodo()
+      const { id, root } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -578,7 +578,7 @@ describe('todo nodes', () => {
                 insert: { [newTodoNode.id]: newTodoNode },
                 delete: [deletedTodoNode.id],
               },
-              rootNodes,
+              root,
             }),
           })
           const json = await res.json<ApiErrorResponse>()
@@ -591,7 +591,7 @@ describe('todo nodes', () => {
     })
 
     test('should update an existing todo node', async () => {
-      const { id, nodes, rootNodes } = await createTestTodo()
+      const { id, nodes, root } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -607,7 +607,7 @@ describe('todo nodes', () => {
             method: HttpMethod.PATCH,
             body: JSON.stringify({
               mutations: { ...baseMutation, update: { [updatedTodoNode.id]: updatedTodoNode } },
-              rootNodes,
+              root,
             }),
           })
 
@@ -626,7 +626,7 @@ describe('todo nodes', () => {
     })
 
     test('should update an existing todo node children with a previously knwow child', async () => {
-      const { id, nodes, rootNodes } = await createTestTodo()
+      const { id, nodes, root } = await createTestTodo()
       const childTodoNode = await createTestTodoNode({ todoId: id })
 
       return testApiRoute(
@@ -643,7 +643,7 @@ describe('todo nodes', () => {
             method: HttpMethod.PATCH,
             body: JSON.stringify({
               mutations: { ...baseMutation, update: { [updatedTodoNode.id]: updatedTodoNode } },
-              rootNodes,
+              root,
             }),
           })
 
@@ -658,7 +658,7 @@ describe('todo nodes', () => {
     })
 
     test('should update an existing todo node children with a previously unknwown child', async () => {
-      const { id, nodes, rootNodes } = await createTestTodo()
+      const { id, nodes, root } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -680,7 +680,7 @@ describe('todo nodes', () => {
                 update: { [updatedTodoNode.id]: updatedTodoNode },
                 insert: { [childTodoNode.id]: childTodoNode },
               },
-              rootNodes,
+              root,
             }),
           })
 
@@ -698,7 +698,7 @@ describe('todo nodes', () => {
       const todoNode_0 = await createTestTodoNode(getFakeTodoNode())
       const todoNode_1 = await createTestTodoNode(getFakeTodoNode())
 
-      const { id, nodes, rootNodes } = await createTestTodo({}, [todoNode_0.id, todoNode_1.id])
+      const { id, nodes, root } = await createTestTodo({}, [todoNode_0.id, todoNode_1.id])
 
       return testApiRoute(
         idHandler,
@@ -714,7 +714,7 @@ describe('todo nodes', () => {
                 ...baseMutation,
                 update: { [updatedTodoNode.id]: { ...updatedTodoNode, children: [todoNode_1.id, todoNode_0.id] } },
               },
-              rootNodes,
+              root,
             }),
           })
 
@@ -732,7 +732,7 @@ describe('todo nodes', () => {
     })
 
     test('should not update a nonexisting todo node', async () => {
-      const { id, rootNodes } = await createTestTodo()
+      const { id, root } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -743,7 +743,7 @@ describe('todo nodes', () => {
             method: HttpMethod.PATCH,
             body: JSON.stringify({
               mutations: { ...baseMutation, update: { [updatedTodoNode.id]: updatedTodoNode } },
-              rootNodes,
+              root,
             }),
           })
           const json = await res.json<ApiErrorResponse>()
@@ -756,7 +756,7 @@ describe('todo nodes', () => {
     })
 
     test('should not update a todo node with a nonexisting child', async () => {
-      const { id, nodes, rootNodes } = await createTestTodo()
+      const { id, nodes, root } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -772,7 +772,7 @@ describe('todo nodes', () => {
             method: HttpMethod.PATCH,
             body: JSON.stringify({
               mutations: { ...baseMutation, update: { [updatedTodoNode.id]: updatedTodoNode } },
-              rootNodes,
+              root,
             }),
           })
           const json = await res.json<ApiErrorResponse>()
@@ -785,7 +785,7 @@ describe('todo nodes', () => {
     })
 
     test('should not update a todo node with a deleted child', async () => {
-      const { id, nodes, rootNodes } = await createTestTodo()
+      const { id, nodes, root } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -807,7 +807,7 @@ describe('todo nodes', () => {
                 update: { [updatedTodoNode.id]: updatedTodoNode },
                 delete: [(await deletedTodoNode).id],
               },
-              rootNodes,
+              root,
             }),
           })
           const json = await res.json<ApiErrorResponse>()
@@ -820,7 +820,7 @@ describe('todo nodes', () => {
     })
 
     test('should delete a nested todo node', async () => {
-      const { id, rootNodes } = await createTestTodo()
+      const { id, root } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -829,7 +829,7 @@ describe('todo nodes', () => {
 
           await fetch({
             method: HttpMethod.PATCH,
-            body: JSON.stringify({ mutations: { ...baseMutation, delete: [deletedTodoNode.id] }, rootNodes }),
+            body: JSON.stringify({ mutations: { ...baseMutation, delete: [deletedTodoNode.id] }, root }),
           })
 
           const testTodoNode = await getTestTodoNode(deletedTodoNode.id)
@@ -841,7 +841,7 @@ describe('todo nodes', () => {
     })
 
     test('should delete a root todo node', async () => {
-      const { id, nodes, rootNodes } = await createTestTodo()
+      const { id, nodes, root } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -862,7 +862,7 @@ describe('todo nodes', () => {
                 delete: [deletedTodoNode.id],
                 update: { [rootNode.id]: { ...rootNode, children: [] } },
               },
-              rootNodes,
+              root,
             }),
           })
 
@@ -875,7 +875,7 @@ describe('todo nodes', () => {
     })
 
     test('should delete nested todo nodes', async () => {
-      const { id, rootNodes, nodes } = await createTestTodo()
+      const { id, root, nodes } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -902,7 +902,7 @@ describe('todo nodes', () => {
                 delete: [todoNode_0.id],
                 update: { [rootNode.id]: { ...rootNode, children: [] } },
               },
-              rootNodes,
+              root,
             }),
           })
 
@@ -946,7 +946,7 @@ describe('todo nodes', () => {
                 ...baseMutation,
                 delete: [deletedRootNode.id],
               },
-              rootNodes: [],
+              root: [],
             }),
           })
           const json = await res.json<ApiErrorResponse>()
@@ -959,7 +959,7 @@ describe('todo nodes', () => {
     })
 
     test('should not delete a nested todo nodes still referenced by its parent', async () => {
-      const { id, rootNodes, nodes } = await createTestTodo()
+      const { id, root, nodes } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -976,7 +976,7 @@ describe('todo nodes', () => {
             method: HttpMethod.PATCH,
             body: JSON.stringify({
               mutations: { ...baseMutation, delete: [todoNode_0.id] },
-              rootNodes,
+              root,
             }),
           })
           const json = await res.json<ApiErrorResponse>()
@@ -989,18 +989,18 @@ describe('todo nodes', () => {
     })
 
     test('should not delete a todo node set as root node', async () => {
-      const { id, rootNodes } = await createTestTodo()
+      const { id, root } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
         async ({ fetch }) => {
-          const deletedTodoNodeId = rootNodes[0]
+          const deletedTodoNodeId = root[0]
 
           assert(deletedTodoNodeId)
 
           const res = await fetch({
             method: HttpMethod.PATCH,
-            body: JSON.stringify({ mutations: { ...baseMutation, delete: [deletedTodoNodeId] }, rootNodes }),
+            body: JSON.stringify({ mutations: { ...baseMutation, delete: [deletedTodoNodeId] }, root }),
           })
           const json = await res.json<ApiErrorResponse>()
 
@@ -1012,7 +1012,7 @@ describe('todo nodes', () => {
     })
 
     test('should not delete a nonexisting todo node', async () => {
-      const { id, nodes, rootNodes } = await createTestTodo()
+      const { id, nodes, root } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -1023,7 +1023,7 @@ describe('todo nodes', () => {
 
           const res = await fetch({
             method: HttpMethod.PATCH,
-            body: JSON.stringify({ mutations: { ...baseMutation, delete: ['nonexistingTodoNodeId'] }, rootNodes }),
+            body: JSON.stringify({ mutations: { ...baseMutation, delete: ['nonexistingTodoNodeId'] }, root }),
           })
           const json = await res.json<ApiErrorResponse>()
 
@@ -1035,7 +1035,7 @@ describe('todo nodes', () => {
     })
 
     test('should not delete an updated todo node', async () => {
-      const { id, nodes, rootNodes } = await createTestTodo()
+      const { id, nodes, root } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -1052,7 +1052,7 @@ describe('todo nodes', () => {
                 delete: [deletedTodoNode.id],
                 update: { [deletedTodoNode.id]: deletedTodoNode },
               },
-              rootNodes,
+              root,
             }),
           })
           const json = await res.json<ApiErrorResponse>()
@@ -1117,7 +1117,7 @@ describe('todo nodes', () => {
           const node_2 = await createTestTodoNode({ todoId: id })
           const node_3 = await createTestTodoNode({ todoId: id })
 
-          await updateTestTodoRootNodes(id, [node_0.id, node_1.id, node_2.id, node_3.id])
+          await updateTestTodoRoot(id, [node_0.id, node_1.id, node_2.id, node_3.id])
 
           /**
            * After:
@@ -1152,7 +1152,7 @@ describe('todo nodes', () => {
                   [node_0_0_0_inserted.id]: node_0_0_0_inserted,
                 },
               },
-              rootNodes: [node_0.id, node_0_3.id, node_3.id, node_2.id],
+              root: [node_0.id, node_0_3.id, node_3.id, node_2.id],
             }),
           })
 
@@ -1160,11 +1160,11 @@ describe('todo nodes', () => {
 
           expect(testTodo?.nodes.length).toBe(10)
 
-          expect(testTodo?.rootNodes.length).toBe(4)
-          expect(testTodo?.rootNodes[0]).toBe(node_0.id)
-          expect(testTodo?.rootNodes[1]).toBe(node_0_3.id)
-          expect(testTodo?.rootNodes[2]).toBe(node_3.id)
-          expect(testTodo?.rootNodes[3]).toBe(node_2.id)
+          expect(testTodo?.root.length).toBe(4)
+          expect(testTodo?.root[0]).toBe(node_0.id)
+          expect(testTodo?.root[1]).toBe(node_0_3.id)
+          expect(testTodo?.root[2]).toBe(node_3.id)
+          expect(testTodo?.root[3]).toBe(node_2.id)
 
           let testTodoNode = await getTestTodoNode(node_0.id)
 

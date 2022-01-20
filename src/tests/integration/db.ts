@@ -58,7 +58,7 @@ export function createTestNote(options?: TestNoteOptions) {
   })
 }
 
-export async function createTestTodo(options?: TestTodoOptions, rootNodes?: TodoNodeData['id'][]) {
+export async function createTestTodo(options?: TestTodoOptions, root?: TodoNodeData['id'][]) {
   const name = options?.name ?? faker.lorem.words()
 
   const todoNode = await createTestTodoNode()
@@ -69,9 +69,9 @@ export async function createTestTodo(options?: TestTodoOptions, rootNodes?: Todo
       folderId: options?.folderId,
       slug: slug(name),
       userId: options?.userId ?? getTestUser().userId,
-      rootNodes: rootNodes ?? [todoNode.id],
+      root: root ?? [todoNode.id],
       nodes: {
-        connect: rootNodes?.map((id) => ({ id })) ?? [{ id: todoNode.id }],
+        connect: root?.map((id) => ({ id })) ?? [{ id: todoNode.id }],
       },
     },
     include: {
@@ -132,15 +132,8 @@ export function updateTestTodoNodeChildren(id: TodoNode['id'], children: TodoNod
   })
 }
 
-export function updateTestTodoRootNodes(id: TodoMetadata['id'], rootNodes: TodoNode['children']) {
-  return prisma.todo.update({
-    data: {
-      rootNodes,
-    },
-    where: {
-      id,
-    },
-  })
+export function updateTestTodoRoot(id: TodoMetadata['id'], root: TodoNode['children']) {
+  return prisma.todo.update({ data: { root }, where: { id } })
 }
 
 export function createTestEmailAllowList() {

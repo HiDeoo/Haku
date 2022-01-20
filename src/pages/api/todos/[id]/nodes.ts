@@ -19,7 +19,7 @@ const patchBodySchema = z.object({
     insert: mutationMapSchema,
     update: mutationMapSchema,
   }),
-  rootNodes: z.string().array(),
+  root: z.string().array(),
 })
 
 const route = createApiRoute(

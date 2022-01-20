@@ -388,7 +388,7 @@ describe('todos', () => {
           const json = await res.json<TodoTreeData>()
 
           assertIsTreeItem(json[0])
-          expect(hasKey(json[0], 'rootNodes')).toBe(false)
+          expect(hasKey(json[0], 'root')).toBe(false)
         }))
     })
   })
@@ -463,14 +463,14 @@ describe('todos', () => {
         const testTodo = await getTestTodo(json.id)
 
         expect(testTodo).toBeDefined()
-        expect(testTodo?.rootNodes).toBeDefined()
-        expect(testTodo?.rootNodes.length).toBe(1)
+        expect(testTodo?.root).toBeDefined()
+        expect(testTodo?.root.length).toBe(1)
 
-        expect(testTodo?.rootNodes[0]).toBeDefined()
+        expect(testTodo?.root[0]).toBeDefined()
 
-        assert(typeof testTodo?.rootNodes[0] === 'string')
+        assert(typeof testTodo?.root[0] === 'string')
 
-        const testTodoNode = await getTestTodoNode(testTodo?.rootNodes[0])
+        const testTodoNode = await getTestTodoNode(testTodo?.root[0])
 
         expect(testTodoNode).toBeDefined()
         expect(testTodoNode?.todoId).toBe(json.id)

@@ -24,7 +24,7 @@ import { hasKey } from 'libs/object'
 export type TodoNodeData = Pick<TodoNode, 'id' | 'content' | 'children'>
 
 export interface TodoNodesData {
-  rootNodes: TodoNodeData['id'][]
+  root: TodoNodeData['id'][]
   nodes: TodoNodeDataMap
 }
 
@@ -37,7 +37,7 @@ export async function getTodoNodes(todoId: TodoMetadata['id'], userId: UserId): 
       nodes: {
         select: todoNodeDataSelect,
       },
-      rootNodes: true,
+      root: true,
     },
   })
 
@@ -51,7 +51,7 @@ export async function getTodoNodes(todoId: TodoMetadata['id'], userId: UserId): 
     return acc
   }, {})
 
-  return { nodes: nodeMap, rootNodes: result.rootNodes }
+  return { nodes: nodeMap, root: result.root }
 }
 
 export function updateTodoNodes(todoId: TodoMetadata['id'], userId: UserId, data: UpdateTodoNodesData): Promise<void> {
@@ -74,7 +74,7 @@ export function updateTodoNodes(todoId: TodoMetadata['id'], userId: UserId, data
           id: todoId,
         },
         data: {
-          rootNodes: data.rootNodes,
+          root: data.root,
           nodes: {
             createMany: {
               data: Object.values(data.mutations.insert),
@@ -99,7 +99,7 @@ function getTodoNodesByTodoId(todoId: TodoMetadata['id']) {
 }
 
 async function validateMutations(todoId: TodoMetadata['id'], update: UpdateTodoNodesData): Promise<DeletedTodoNodeIds> {
-  if (update.rootNodes.length === 0) {
+  if (update.root.length === 0) {
     throw new ApiError(API_ERROR_TODO_NODE_ROOT_NODE_EMPTY)
   }
 
@@ -115,8 +115,8 @@ async function validateMutations(todoId: TodoMetadata['id'], update: UpdateTodoN
     return acc
   }, {})
 
-  update.rootNodes.forEach((rootNodeId) => {
-    if (!hasKey(nodesMap, rootNodeId) && !hasKey(update.mutations.insert, rootNodeId)) {
+  update.root.forEach((rootId) => {
+    if (!hasKey(nodesMap, rootId) && !hasKey(update.mutations.insert, rootId)) {
       throw new ApiError(API_ERROR_TODO_NODE_ROOT_NODE_DOES_NOT_EXIST)
     }
   })
@@ -128,7 +128,7 @@ async function validateMutations(todoId: TodoMetadata['id'], update: UpdateTodoN
       throw new ApiError(API_ERROR_TODO_NODE_DELETE_DOES_NOT_EXIST)
     } else if (hasKey(update.mutations.update, deletedTodoNodeId)) {
       throw new ApiError(API_ERROR_TODO_NODE_DELETE_UPDATE_CONFLICT)
-    } else if (update.rootNodes.includes(deletedTodoNodeId)) {
+    } else if (update.root.includes(deletedTodoNodeId)) {
       throw new ApiError(API_ERROR_TODO_NODE_DELETE_ROOT_NODE_CONFLICT)
     }
 
@@ -138,7 +138,7 @@ async function validateMutations(todoId: TodoMetadata['id'], update: UpdateTodoN
 
     if (
       (parentId && (!updatedParent || updatedParent.children.includes(deletedTodoNodeId))) ||
-      (!parentId && update.rootNodes.includes(deletedTodoNodeId))
+      (!parentId && update.root.includes(deletedTodoNodeId))
     ) {
       throw new ApiError(API_ERROR_TODO_NODE_DELETE_PARENT_NODE_CONFLICT)
     }
@@ -198,7 +198,7 @@ interface UpdateTodoNodesData {
     insert: TodoNodeDataMap
     update: TodoNodeDataMap
   }
-  rootNodes: TodoNodeData['id'][]
+  root: TodoNodeData['id'][]
 }
 
 type DeletedTodoNodeIds = { id: TodoNodeData['id'] }[]

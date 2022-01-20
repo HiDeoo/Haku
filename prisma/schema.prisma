@@ -95,7 +95,7 @@ model Todo {
   folderId String?
   folder   Folder? @relation(fields: [folderId], references: [id], onDelete: Cascade)
 
-  rootNodes String[]
+  root String[]
 
   nodes TodoNode[]
 
