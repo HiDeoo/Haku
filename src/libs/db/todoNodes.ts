@@ -1,7 +1,7 @@
 import { type TodoNode } from '@prisma/client'
 
 import { handleDbError, prisma } from 'libs/db'
-import { getTodoById, type TodoData } from 'libs/db/todo'
+import { getTodoById, type TodoMetadata } from 'libs/db/todo'
 import {
   ApiError,
   API_ERROR_TODO_DOES_NOT_EXIST,
@@ -23,7 +23,38 @@ import { hasKey } from 'libs/object'
 
 export type TodoNodeData = Pick<TodoNode, 'id' | 'content' | 'children'>
 
-export function updateTodoNodes(todoId: TodoData['id'], userId: UserId, data: UpdateTodoNodesData): Promise<void> {
+export interface TodoNodesData {
+  rootNodes: TodoNodeData['id'][]
+  nodes: TodoNodeDataMap
+}
+
+const todoNodeDataSelect = { id: true, content: true, children: true }
+
+export async function getTodoNodes(todoId: TodoMetadata['id'], userId: UserId): Promise<TodoNodesData> {
+  const result = await prisma.todo.findFirst({
+    where: { id: todoId, userId },
+    select: {
+      nodes: {
+        select: todoNodeDataSelect,
+      },
+      rootNodes: true,
+    },
+  })
+
+  if (!result) {
+    throw new ApiError(API_ERROR_TODO_DOES_NOT_EXIST)
+  }
+
+  const nodeMap = result.nodes.reduce<TodoNodeDataMap>((acc, node) => {
+    acc[node.id] = node
+
+    return acc
+  }, {})
+
+  return { nodes: nodeMap, rootNodes: result.rootNodes }
+}
+
+export function updateTodoNodes(todoId: TodoMetadata['id'], userId: UserId, data: UpdateTodoNodesData): Promise<void> {
   return prisma.$transaction(async (prisma) => {
     const todo = await getTodoById(todoId, userId)
 
@@ -63,16 +94,16 @@ export function updateTodoNodes(todoId: TodoData['id'], userId: UserId, data: Up
   })
 }
 
-function getTodoNodes(todoId: TodoData['id']) {
+function getTodoNodesByTodoId(todoId: TodoMetadata['id']) {
   return prisma.todoNode.findMany({ where: { todoId } })
 }
 
-async function validateMutations(todoId: TodoData['id'], update: UpdateTodoNodesData): Promise<DeletedTodoNodeIds> {
+async function validateMutations(todoId: TodoMetadata['id'], update: UpdateTodoNodesData): Promise<DeletedTodoNodeIds> {
   if (update.rootNodes.length === 0) {
     throw new ApiError(API_ERROR_TODO_NODE_ROOT_NODE_EMPTY)
   }
 
-  const nodes = await getTodoNodes(todoId)
+  const nodes = await getTodoNodesByTodoId(todoId)
 
   const nodesMap = nodes.reduce<TodoNodeDataMapWithParentId>((acc, node) => {
     acc[node.id] = acc[node.id] ? { ...acc[node.id], ...node } : node

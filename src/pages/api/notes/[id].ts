@@ -35,9 +35,10 @@ async function deleteHandler(req: ValidatedApiRequest<{ query: RemoveNoteQuery }
 
 async function getHandler(req: ValidatedApiRequest<{ query: GetNoteQuery }>, res: NextApiResponse<NoteData>) {
   const { userId } = getApiRequestUser(req)
-  const content = await getNote(req.query.id, userId)
 
-  return res.status(200).json(content)
+  const note = await getNote(req.query.id, userId)
+
+  return res.status(200).json(note)
 }
 
 async function patchHandler(

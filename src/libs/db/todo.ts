@@ -6,7 +6,6 @@ import { ApiError, API_ERROR_TODO_ALREADY_EXISTS, API_ERROR_TODO_DOES_NOT_EXIST 
 import { validateFolder } from 'libs/db/folder'
 
 export type TodoMetadata = Pick<Todo, 'id' | 'folderId' | 'name' | 'slug'>
-export type TodoData = TodoMetadata
 
 const todoMetadataSelect = { id: true, name: true, folderId: true, slug: true }
 

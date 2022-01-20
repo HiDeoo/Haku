@@ -5,7 +5,7 @@ import slug from 'url-slug'
 import { prisma } from 'libs/db'
 import { type FolderData } from 'libs/db/folder'
 import { type NoteMetadata } from 'libs/db/note'
-import { TodoData, type TodoMetadata } from 'libs/db/todo'
+import { type TodoMetadata } from 'libs/db/todo'
 import { type TodoNodeData } from 'libs/db/todoNodes'
 import { getTestUser } from 'tests/integration'
 
@@ -132,7 +132,7 @@ export function updateTestTodoNodeChildren(id: TodoNode['id'], children: TodoNod
   })
 }
 
-export function updateTestTodoRootNodes(id: TodoData['id'], rootNodes: TodoNode['children']) {
+export function updateTestTodoRootNodes(id: TodoMetadata['id'], rootNodes: TodoNode['children']) {
   return prisma.todo.update({
     data: {
       rootNodes,

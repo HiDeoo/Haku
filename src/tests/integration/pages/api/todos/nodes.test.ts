@@ -16,7 +16,7 @@ import {
   updateTestTodoNodeChildren,
   updateTestTodoRootNodes,
 } from 'tests/integration/db'
-import { type TodoNodeData } from 'libs/db/todoNodes'
+import { type TodoNodesData, type TodoNodeData } from 'libs/db/todoNodes'
 import {
   API_ERROR_TODO_DOES_NOT_EXIST,
   API_ERROR_TODO_NODE_ALREADY_EXISTS,
@@ -41,6 +41,144 @@ const baseMutation: UpdateTodoNodesBody['mutations'] = {
 }
 
 describe('todo nodes', () => {
+  describe('GET', () => {
+    test('should return the single todo node of a new todo', async () => {
+      const { id, nodes, rootNodes } = await createTestTodo()
+
+      return testApiRoute(
+        idHandler,
+        async ({ fetch }) => {
+          const res = await fetch({ method: HttpMethod.GET })
+          const json = await res.json<TodoNodesData>()
+
+          expect(json.rootNodes.length).toBe(1)
+          expect(json.rootNodes[0]).toBe(rootNodes[0])
+
+          assert(rootNodes[0])
+
+          expect(Object.keys(json.nodes).length).toBe(1)
+          expect(json.nodes[rootNodes[0]]?.id).toBe(nodes[0]?.id)
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should only return todo nodes of a specific todo', async () => {
+      const { id, nodes, rootNodes } = await createTestTodo()
+
+      return testApiRoute(
+        idHandler,
+        async ({ fetch }) => {
+          const { id: otherTodoId } = await createTestTodo()
+          await createTestTodoNode({ todoId: otherTodoId })
+
+          const res = await fetch({ method: HttpMethod.GET })
+          const json = await res.json<TodoNodesData>()
+
+          expect(json.rootNodes.length).toBe(1)
+          expect(json.rootNodes[0]).toBe(rootNodes[0])
+
+          assert(rootNodes[0])
+
+          expect(Object.keys(json.nodes).length).toBe(1)
+          expect(json.nodes[rootNodes[0]]?.id).toBe(nodes[0]?.id)
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should return nested todo nodes', async () => {
+      const { id, nodes } = await createTestTodo()
+
+      return testApiRoute(
+        idHandler,
+        async ({ fetch }) => {
+          /**
+           * node_0
+           * |__ node_0_0
+           * |__ node_0_1
+           *     |__ node_0_1_0
+           *     |__ node_0_1_1
+           * |__ node_0_2
+           * node_1
+           * node_2
+           */
+
+          const node_0 = nodes[0]
+
+          assert(node_0)
+
+          const node_0_1_0 = await createTestTodoNode({ todoId: id })
+          const node_0_1_1 = await createTestTodoNode({ todoId: id })
+
+          const node_0_0 = await createTestTodoNode({ todoId: id })
+          const node_0_1 = await createTestTodoNode({ todoId: id, children: [node_0_1_0.id, node_0_1_1.id] })
+          const node_0_2 = await createTestTodoNode({ todoId: id })
+
+          node_0.children = [node_0_0.id, node_0_1.id, node_0_2.id]
+          await updateTestTodoNodeChildren(node_0.id, node_0.children)
+
+          const node_1 = await createTestTodoNode({ todoId: id })
+          const node_2 = await createTestTodoNode({ todoId: id })
+
+          await updateTestTodoRootNodes(id, [node_0.id, node_1.id, node_2.id])
+
+          const res = await fetch({ method: HttpMethod.GET })
+          const json = await res.json<TodoNodesData>()
+
+          expect(json.rootNodes.length).toBe(3)
+          expect(json.rootNodes[0]).toBe(node_0.id)
+          expect(json.rootNodes[1]).toBe(node_1.id)
+          expect(json.rootNodes[2]).toBe(node_2.id)
+
+          expect(Object.keys(json.nodes).length).toBe(8)
+
+          function isEqualTodoNode(
+            todoNodeA: TodoNodeData | TodoNode | undefined,
+            todoNodeB: TodoNodeData | TodoNode | undefined
+          ) {
+            return (
+              todoNodeA &&
+              todoNodeB &&
+              todoNodeA.id === todoNodeB.id &&
+              todoNodeA.content === todoNodeB.content &&
+              todoNodeA.children.length === todoNodeB.children.length &&
+              todoNodeA.children.every((child, index) => child === todoNodeB.children[index])
+            )
+          }
+
+          expect(isEqualTodoNode(json.nodes[node_0_1_0.id], node_0_1_0)).toBe(true)
+          expect(isEqualTodoNode(json.nodes[node_0_1_1.id], node_0_1_1)).toBe(true)
+
+          expect(isEqualTodoNode(json.nodes[node_0_0.id], node_0_0)).toBe(true)
+          expect(isEqualTodoNode(json.nodes[node_0_1.id], node_0_1)).toBe(true)
+          expect(isEqualTodoNode(json.nodes[node_0_2.id], node_0_2)).toBe(true)
+
+          expect(isEqualTodoNode(json.nodes[node_0.id], node_0)).toBe(true)
+          expect(isEqualTodoNode(json.nodes[node_1.id], node_1)).toBe(true)
+          expect(isEqualTodoNode(json.nodes[node_2.id], node_2)).toBe(true)
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should return only todo nodes for a todo owned by the current user', async () => {
+      const { id } = await createTestTodo({ userId: getTestUser('1').userId })
+
+      return testApiRoute(
+        idHandler,
+        async ({ fetch }) => {
+          const res = await fetch({ method: HttpMethod.GET })
+          const json = await res.json<ApiErrorResponse>()
+
+          expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+          expect(json.error).toBe(API_ERROR_TODO_DOES_NOT_EXIST)
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+  })
+
   describe('PATCH', () => {
     test('should not mutate todo nodes not owned by the current user', async () => {
       const { id, rootNodes } = await createTestTodo({ userId: getTestUser('1').userId })

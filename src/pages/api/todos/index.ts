@@ -23,13 +23,15 @@ export default route
 
 async function getHandler(req: NextApiRequest, res: NextApiResponse<TodoTreeData>) {
   const { userId } = getApiRequestUser(req)
-  const content = await getTodoTree(userId)
 
-  return res.status(200).json(content)
+  const tree = await getTodoTree(userId)
+
+  return res.status(200).json(tree)
 }
 
 async function postHandler(req: ValidatedApiRequest<{ body: AddTodoBody }>, res: NextApiResponse<TodoMetadata>) {
   const { userId } = getApiRequestUser(req)
+
   const todo = await addTodo(userId, req.body.name, req.body.folderId)
 
   return res.status(200).json(todo)
