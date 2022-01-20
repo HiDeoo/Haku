@@ -1,6 +1,8 @@
 import { Link as Roving, Root } from '@radix-ui/react-toolbar'
+import { useAtom } from 'jotai'
 import { RiFileTextLine, RiFolderLine } from 'react-icons/ri'
 
+import { contentModalAtom, folderModalAtom, setContentModalOpenedAtom } from 'atoms/modal'
 import Button from 'components/Button'
 import ContentTreeNode from 'components/ContentTreeNode'
 import ContextMenu from 'components/ContextMenu'
@@ -12,15 +14,11 @@ import { type NoteMetadata } from 'libs/db/note'
 import { type TodoMetadata } from 'libs/db/todo'
 import { isTreeFolder, type TreeFolder } from 'libs/tree'
 import useContentType, { type UseContentTypeReturnValue } from 'hooks/useContentType'
-import { type StoreState, useStore } from 'stores'
 import useContentId from 'hooks/useContentId'
 
 const depthOffset = '1.25rem'
 
 const shimmerDepths = [0, 1, 2, 2, 3, 0, 1, 1, 1, 1, 2]
-
-const contentModalStoreSelector = (state: StoreState) => state.setContentModal
-const folderModalStoreSelector = (state: StoreState) => state.setFolderModal
 
 const ContentTree: React.FC = () => {
   const contentType = useContentType()
@@ -31,10 +29,10 @@ const ContentTree: React.FC = () => {
 
   const contentId = useContentId()
   const { data, isLoading } = useContentTree()
-  const setContentModal = useStore(contentModalStoreSelector)
+  const [, setContentModalOpened] = useAtom(setContentModalOpenedAtom)
 
   function openNewContentModal() {
-    setContentModal(true)
+    setContentModalOpened(true)
   }
 
   if (isLoading) {
@@ -88,14 +86,14 @@ const ShimmerNode: React.FC<ShimmerNodeProps> = ({ depth }) => {
 }
 
 const Folder: React.FC<FolderProps> = ({ contentType, depth = 1, folder, selectedId, style }) => {
-  const setFolderModalOpened = useStore(folderModalStoreSelector)
+  const [, setFolderModal] = useAtom(folderModalAtom)
 
   function openEditModal() {
-    setFolderModalOpened(true, 'update', folder)
+    setFolderModal({ opened: true, action: 'update', data: folder })
   }
 
   function openDeleteModal() {
-    setFolderModalOpened(true, 'delete', folder)
+    setFolderModal({ opened: true, action: 'delete', data: folder })
   }
 
   return (
@@ -132,14 +130,14 @@ const Folder: React.FC<FolderProps> = ({ contentType, depth = 1, folder, selecte
 }
 
 const Content: React.FC<ContentProps> = ({ content, contentType, depth = 0, selectedId }) => {
-  const setContentModalOpened = useStore(contentModalStoreSelector)
+  const [, setContentModal] = useAtom(contentModalAtom)
 
   function openEditModal() {
-    setContentModalOpened(true, 'update', content)
+    setContentModal({ opened: true, action: 'update', data: content })
   }
 
   function openDeleteModal() {
-    setContentModalOpened(true, 'delete', content)
+    setContentModal({ opened: true, action: 'delete', data: content })
   }
 
   return (

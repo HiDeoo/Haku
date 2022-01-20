@@ -1,15 +1,13 @@
+import { useAtom } from 'jotai'
 import { useMemo } from 'react'
 
+import { ContentType, contentTypeAtom } from 'atoms/contentType'
 import { capitalize } from 'libs/string'
-import { ContentType } from 'stores/contentType'
-import { useStore, type StoreState } from 'stores'
 
-export { ContentType } from 'stores/contentType'
-
-const contentTypeStoreSelector = (state: StoreState) => state.contentType
+export { ContentType } from 'atoms/contentType'
 
 export default function useContentType(): UseContentTypeReturnValue {
-  const contentType = useStore(contentTypeStoreSelector)
+  const [contentType] = useAtom(contentTypeAtom)
 
   return useMemo(() => {
     return getContentType(contentType)

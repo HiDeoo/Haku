@@ -1,7 +1,9 @@
+import { useAtom } from 'jotai'
 import { useEffect } from 'react'
 import { type NestedValue, useForm } from 'react-hook-form'
 import { RiFolderAddLine } from 'react-icons/ri'
 
+import { folderModalAtom, setFolderModalOpenedAtom } from 'atoms/modal'
 import Alert from 'components/Alert'
 import Button from 'components/Button'
 import FolderPicker, { ROOT_FOLDER_ID } from 'components/FolderPicker'
@@ -11,9 +13,6 @@ import Modal from 'components/Modal'
 import TextInput from 'components/TextInput'
 import useFolderMutation, { type FolderMutation } from 'hooks/useFolderMutation'
 import { type FolderData } from 'libs/db/folder'
-import { useStore, type StoreState } from 'stores'
-
-const storeSelector = (state: StoreState) => [state.folderModal, state.setFolderModal] as const
 
 const NewFolderModal: React.FC = () => {
   const {
@@ -25,7 +24,8 @@ const NewFolderModal: React.FC = () => {
   } = useForm<FormFields>()
 
   const { error, isLoading, mutate } = useFolderMutation()
-  const [{ action, data: folder, opened }, setOpened] = useStore(storeSelector)
+  const [{ action, data: folder, opened }] = useAtom(folderModalAtom)
+  const [, setOpened] = useAtom(setFolderModalOpenedAtom)
 
   const isUpdating = action === 'update' && typeof folder !== 'undefined'
   const isRemoving = action === 'delete' && typeof folder !== 'undefined'
