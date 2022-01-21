@@ -1,32 +1,32 @@
-import { atom } from 'jotai'
+import { atom, type WritableAtom } from 'jotai'
 
 import { type MutationAction } from 'libs/api/client'
 import { type FolderData } from 'libs/db/folder'
 import { type NoteMetadata } from 'libs/db/note'
 import { type TodoMetadata } from 'libs/db/todo'
 
-export const contentModalAtom = atom<MutationModal<NoteMetadata | TodoMetadata>>({
-  action: undefined,
-  data: undefined,
-  opened: false,
-})
+export const [folderModalAtom, setFolderModalOpenedAtom] = createMutationModalAtom<FolderData>()
+export const [contentModalAtom, setContentModalOpenedAtom] = createMutationModalAtom<NoteMetadata | TodoMetadata>()
 
-export const setContentModalOpenedAtom = atom(null, (get, set, opened: boolean) => {
-  return set(contentModalAtom, { ...get(contentModalAtom), action: 'insert', data: undefined, opened })
-})
+function createMutationModalAtom<TData>(): [
+  WritableAtom<MutationModal<TData>, MutationModal<TData>>,
+  WritableAtom<null, boolean>
+] {
+  const modalAtom = atom<MutationModal<TData>>({
+    action: 'insert',
+    data: undefined,
+    opened: false,
+  })
 
-export const folderModalAtom = atom<MutationModal<FolderData>>({
-  action: undefined,
-  data: undefined,
-  opened: false,
-})
+  const setModalOpenedAtom: WritableAtom<null, boolean> = atom(null, (get, set, opened: boolean) => {
+    return set(modalAtom, { ...get(modalAtom), action: 'insert', data: undefined, opened })
+  })
 
-export const setFolderModalOpenedAtom = atom(null, (get, set, opened: boolean) => {
-  return set(folderModalAtom, { ...get(folderModalAtom), action: 'insert', data: undefined, opened })
-})
+  return [modalAtom, setModalOpenedAtom]
+}
 
 interface MutationModal<TData> {
-  action: MutationAction | undefined
+  action: MutationAction
   data: TData | undefined
   opened: boolean
 }

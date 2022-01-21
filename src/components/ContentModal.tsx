@@ -1,4 +1,5 @@
 import { useAtom } from 'jotai'
+import { useUpdateAtom } from 'jotai/utils'
 import { useEffect } from 'react'
 import { type NestedValue, useForm } from 'react-hook-form'
 import { RiFileAddLine } from 'react-icons/ri'
@@ -28,7 +29,7 @@ const NewContentModal: React.FC = () => {
 
   const { error, isLoading, mutate } = useMetadataMutation()
   const [{ action, data: content, opened }] = useAtom(contentModalAtom)
-  const [, setOpened] = useAtom(setContentModalOpenedAtom)
+  const setOpened = useUpdateAtom(setContentModalOpenedAtom)
 
   const isUpdating = action === 'update' && typeof content !== 'undefined'
   const isRemoving = action === 'delete' && typeof content !== 'undefined'
