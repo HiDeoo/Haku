@@ -199,7 +199,7 @@ function getNestedTodoNodeIds(id: TodoNodeData['id'], nodes: TodoNodeDataMap, id
   return ids
 }
 
-type TodoNodeDataMap = Record<TodoNodeData['id'], TodoNodeData & { parentId?: TodoNodeData['id'] }>
+export type TodoNodeDataMap = Record<TodoNodeData['id'], TodoNodeData & { parentId?: TodoNodeData['id'] }>
 
 interface UpdateTodoNodesData {
   mutations: {
