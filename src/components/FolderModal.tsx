@@ -1,5 +1,4 @@
-import { useAtom } from 'jotai'
-import { useUpdateAtom } from 'jotai/utils'
+import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { useEffect } from 'react'
 import { type NestedValue, useForm } from 'react-hook-form'
 import { RiFolderAddLine } from 'react-icons/ri'
@@ -25,7 +24,7 @@ const NewFolderModal: React.FC = () => {
   } = useForm<FormFields>()
 
   const { error, isLoading, mutate } = useFolderMutation()
-  const [{ action, data: folder, opened }] = useAtom(folderModalAtom)
+  const { action, data: folder, opened } = useAtomValue(folderModalAtom)
   const setOpened = useUpdateAtom(setFolderModalOpenedAtom)
 
   const isUpdating = action === 'update' && typeof folder !== 'undefined'

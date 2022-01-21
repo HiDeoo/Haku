@@ -1,4 +1,4 @@
-import { useAtom } from 'jotai'
+import { useAtomValue } from 'jotai/utils'
 import { useMemo } from 'react'
 
 import { ContentType, contentTypeAtom } from 'atoms/contentType'
@@ -7,7 +7,7 @@ import { capitalize } from 'libs/string'
 export { ContentType } from 'atoms/contentType'
 
 export default function useContentType(): UseContentTypeReturnValue {
-  const [contentType] = useAtom(contentTypeAtom)
+  const contentType = useAtomValue(contentTypeAtom)
 
   return useMemo(() => {
     return getContentType(contentType)
