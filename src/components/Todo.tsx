@@ -22,17 +22,8 @@ const Todo: React.FC = () => {
       // TODO(HiDeoo)
       setEnabled(false)
 
-      // FIXME(HiDeoo)
-      const id = root[0]!
-      const node = nodes[id]!
-
-      const node1 = { ...node, id: `${node.id}-1`, content: 'content1' }
-      const node2 = { ...node, id: `${node.id}-2`, content: 'content2' }
-
-      console.log('node ', node)
-
-      setTodoRoot([...root, node1.id, node2.id])
-      setTodoNodes({ ...nodes, [node1.id]: node1, [node2.id]: node2 })
+      setTodoRoot(root)
+      setTodoNodes(nodes)
     },
   })
 

@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { memo, useRef } from 'react'
 import { useEditable } from 'use-editable'
 
 import { type TodoNodeData } from 'libs/db/todoNodes'
@@ -7,13 +7,15 @@ import useTodoNode from 'hooks/useTodoNode'
 const TodoNodeItem: React.FC<TodoNodeItemProps> = ({ id, level = 0 }) => {
   const contentRef = useRef<HTMLDivElement>(null)
 
-  const { node, updateContent } = useTodoNode(id)
+  const { addNode, node, updateContent } = useTodoNode(id)
 
   useEditable(contentRef, updateContent)
 
   function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     if (event.key === 'Enter') {
       event.preventDefault()
+
+      addNode(node?.parentId)
     }
   }
 
@@ -34,7 +36,7 @@ const TodoNodeItem: React.FC<TodoNodeItemProps> = ({ id, level = 0 }) => {
   )
 }
 
-export default TodoNodeItem
+export default memo(TodoNodeItem)
 
 interface TodoNodeItemProps {
   id: TodoNodeData['id']

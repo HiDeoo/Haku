@@ -1,38 +1,52 @@
-import { atom, useAtom } from 'jotai'
-import { selectAtom, useAtomValue } from 'jotai/utils'
-import { useCallback, useMemo } from 'react'
+import cuid from 'cuid'
+import { selectAtom, useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useCallback } from 'react'
 
-import { todoNodesAtom, todoNodeUpdatesAtom } from 'atoms/todos'
-import { TodoNodeDataMap, type TodoNodeData } from 'libs/db/todoNodes'
+import { todoNodeMutations, todoNodesAtom, todoRootAtom } from 'atoms/todos'
+import { type TodoNodeData } from 'libs/db/todoNodes'
 
 export default function useTodoNode(id: TodoNodeData['id']) {
-  const getTodoNodeById = useCallback((nodesMap: TodoNodeDataMap) => nodesMap[id], [id])
-
-  const baseNode = useAtomValue(selectAtom(todoNodesAtom, getTodoNodeById))
-
-  const updatedNodeAtom = useMemo(
-    () =>
-      atom<TodoNodeData | undefined, TodoNodeData>(
-        (get) => get(todoNodeUpdatesAtom)[id],
-        (get, set, newValue) => {
-          set(todoNodeUpdatesAtom, { ...get(todoNodeUpdatesAtom), [newValue.id]: newValue })
-        }
-      ),
+  const getById = useCallback(
+    <TData>(nodesMap: Record<TodoNodeData['id'], TData>, nodeId = id) => nodesMap[nodeId],
     [id]
   )
 
-  const [updatedNode, setUpdatedNode] = useAtom(updatedNodeAtom)
-
-  const node = updatedNode ?? baseNode
+  const node = useAtomValue(selectAtom(todoNodesAtom, getById))
+  const setNodes = useUpdateAtom(todoNodesAtom)
+  const mutation = useAtomValue(selectAtom(todoNodeMutations, getById))
+  const setMutations = useUpdateAtom(todoNodeMutations)
+  const setRoot = useUpdateAtom(todoRootAtom)
 
   const updateContent = useCallback(
     (content: string) => {
       if (node) {
-        setUpdatedNode({ ...node, content })
+        setNodes((prevNodes) => ({ ...prevNodes, [node.id]: { ...node, content } }))
+
+        if (!mutation) {
+          setMutations((prevMutations) => ({ ...prevMutations, [node.id]: 'update' }))
+        }
       }
     },
-    [node, setUpdatedNode]
+    [mutation, node, setMutations, setNodes]
   )
 
-  return { node, updateContent }
+  // TODO(HiDeoo) Based on the current caret position, we should either add before, after or split the current node.
+  const addNode = useCallback(
+    (parentId?: TodoNodeData['id']) => {
+      const newNodeId = cuid()
+
+      setNodes((prevNodes) => ({ ...prevNodes, [newNodeId]: { id: newNodeId, content: '', children: [], parentId } }))
+      setMutations((prevMutations) => ({ ...prevMutations, [newNodeId]: 'insert' }))
+
+      if (!parentId) {
+        // TODO(HiDeoo) Add at proper position
+        setRoot((prevRoot) => [...prevRoot, newNodeId])
+      } else {
+        // TODO(HiDeoo) Update parent of current node (ID passed down as parameter)
+      }
+    },
+    [setMutations, setNodes, setRoot]
+  )
+
+  return { addNode, node, updateContent }
 }
