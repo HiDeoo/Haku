@@ -32,6 +32,9 @@ const Todo: React.FC = () => {
     return <div>Loading…</div>
   }
 
+  // FIXME(HiDeoo)
+  console.log('#### rendering Todo')
+
   return (
     <>
       {todoRoot.map((rootId) => (
