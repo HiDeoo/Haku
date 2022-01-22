@@ -23,39 +23,62 @@ export default function useTodoNode(id: TodoNodeData['id']) {
         return
       }
 
-      setNodes((prevNodes) => ({ ...prevNodes, [node.id]: { ...node, content } }))
-
       if (!mutation) {
         setMutations((prevMutations) => ({ ...prevMutations, [node.id]: 'update' }))
       }
+
+      setNodes((prevNodes) => ({ ...prevNodes, [node.id]: { ...node, content } }))
     },
     [mutation, node, setMutations, setNodes]
   )
 
   // TODO(HiDeoo) Based on the current caret position, we should either add before, after or split the current node.
-  const addNode = useCallback(
-    (parentId?: TodoNodeData['id']) => {
-      if (!node) {
-        return
-      }
+  const addNode = useCallback(() => {
+    if (!node) {
+      return
+    }
 
-      const newNodeId = cuid()
+    const newNodeId = cuid()
 
-      setNodes((prevNodes) => ({ ...prevNodes, [newNodeId]: { id: newNodeId, content: '', children: [], parentId } }))
-      setMutations((prevMutations) => ({ ...prevMutations, [newNodeId]: 'insert' }))
+    setMutations((prevMutations) => ({ ...prevMutations, [newNodeId]: 'insert' }))
+    setNodes((prevNodes) => ({
+      ...prevNodes,
+      [newNodeId]: { id: newNodeId, content: '', children: [], parentId: node.parentId },
+    }))
 
-      if (!parentId) {
-        setRoot((prevRoot) => {
-          const nodeIndex = prevRoot.indexOf(node.id) + 1
+    if (!node.parentId) {
+      setRoot((prevRoot) => {
+        const newNodeIndex = prevRoot.indexOf(node.id) + 1
 
-          return [...prevRoot.slice(0, nodeIndex), newNodeId, ...prevRoot.slice(nodeIndex)]
-        })
-      } else {
-        // TODO(HiDeoo) Update parent of current node (ID passed down as parameter)
-      }
-    },
-    [node, setMutations, setNodes, setRoot]
-  )
+        return [...prevRoot.slice(0, newNodeIndex), newNodeId, ...prevRoot.slice(newNodeIndex)]
+      })
+    } else {
+      // TODO(HiDeoo) Update parent of current node
+    }
+  }, [node, setMutations, setNodes, setRoot])
 
-  return { addNode, node, updateContent }
+  const removeNode = useCallback(() => {
+    if (!node) {
+      return
+    }
+
+    setMutations((prevMutations) => ({ ...prevMutations, [node.id]: 'delete' }))
+    setNodes((prevNodes) => {
+      const { [node.id]: nodeToDelete, ...otherNodes } = prevNodes
+
+      return otherNodes
+    })
+
+    if (!node.parentId) {
+      setRoot((prevRoot) => {
+        const nodeIndex = prevRoot.indexOf(node.id)
+
+        return [...prevRoot.slice(0, nodeIndex), ...prevRoot.slice(nodeIndex + 1)]
+      })
+    } else {
+      // TODO(HiDeoo) Update parent of current node
+    }
+  }, [node, setMutations, setNodes, setRoot])
+
+  return { addNode, node, removeNode, updateContent }
 }

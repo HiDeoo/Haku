@@ -7,15 +7,26 @@ import useTodoNode from 'hooks/useTodoNode'
 const TodoNodeItem: React.FC<TodoNodeItemProps> = ({ id, level = 0 }) => {
   const contentRef = useRef<HTMLDivElement>(null)
 
-  const { addNode, node, updateContent } = useTodoNode(id)
+  const { addNode, node, removeNode, updateContent } = useTodoNode(id)
 
   useEditable(contentRef, updateContent)
 
   function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
-    if (event.key === 'Enter') {
-      event.preventDefault()
+    switch (event.key) {
+      case 'Enter': {
+        event.preventDefault()
 
-      addNode(node?.parentId)
+        addNode()
+
+        break
+      }
+      case 'Backspace': {
+        if (event.metaKey) {
+          removeNode()
+        }
+
+        break
+      }
     }
   }
 
