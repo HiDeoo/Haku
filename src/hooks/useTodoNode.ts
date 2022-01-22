@@ -19,12 +19,14 @@ export default function useTodoNode(id: TodoNodeData['id']) {
 
   const updateContent = useCallback(
     (content: string) => {
-      if (node) {
-        setNodes((prevNodes) => ({ ...prevNodes, [node.id]: { ...node, content } }))
+      if (!node) {
+        return
+      }
 
-        if (!mutation) {
-          setMutations((prevMutations) => ({ ...prevMutations, [node.id]: 'update' }))
-        }
+      setNodes((prevNodes) => ({ ...prevNodes, [node.id]: { ...node, content } }))
+
+      if (!mutation) {
+        setMutations((prevMutations) => ({ ...prevMutations, [node.id]: 'update' }))
       }
     },
     [mutation, node, setMutations, setNodes]
@@ -33,19 +35,26 @@ export default function useTodoNode(id: TodoNodeData['id']) {
   // TODO(HiDeoo) Based on the current caret position, we should either add before, after or split the current node.
   const addNode = useCallback(
     (parentId?: TodoNodeData['id']) => {
+      if (!node) {
+        return
+      }
+
       const newNodeId = cuid()
 
       setNodes((prevNodes) => ({ ...prevNodes, [newNodeId]: { id: newNodeId, content: '', children: [], parentId } }))
       setMutations((prevMutations) => ({ ...prevMutations, [newNodeId]: 'insert' }))
 
       if (!parentId) {
-        // TODO(HiDeoo) Add at proper position
-        setRoot((prevRoot) => [...prevRoot, newNodeId])
+        setRoot((prevRoot) => {
+          const nodeIndex = prevRoot.indexOf(node.id) + 1
+
+          return [...prevRoot.slice(0, nodeIndex), newNodeId, ...prevRoot.slice(nodeIndex)]
+        })
       } else {
         // TODO(HiDeoo) Update parent of current node (ID passed down as parameter)
       }
     },
-    [setMutations, setNodes, setRoot]
+    [node, setMutations, setNodes, setRoot]
   )
 
   return { addNode, node, updateContent }
