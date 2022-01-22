@@ -7,7 +7,7 @@ import useTodoNode from 'hooks/useTodoNode'
 const TodoNodeItem: React.FC<TodoNodeItemProps> = ({ id, level = 0 }) => {
   const contentRef = useRef<HTMLDivElement>(null)
 
-  const { addNode, deleteNode, node, updateContent } = useTodoNode(id)
+  const { addNode, deleteNode, nestNode, node, updateContent } = useTodoNode(id)
 
   const onChangeContent = useCallback(
     (content: string) => {
@@ -37,6 +37,13 @@ const TodoNodeItem: React.FC<TodoNodeItemProps> = ({ id, level = 0 }) => {
         if (event.metaKey) {
           deleteNode({ id: node.id, parentId: node.parentId })
         }
+
+        break
+      }
+      case 'Tab': {
+        event.preventDefault()
+
+        nestNode({ id: node.id, parentId: node.parentId })
 
         break
       }

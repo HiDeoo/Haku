@@ -16,16 +16,12 @@ export const updateContentAtom = atom(null, (get, set, { content, id }: UpdateCo
     return
   }
 
-  const nodeMutation = get(todoNodeMutations)[id]
-
-  if (!nodeMutation) {
-    set(todoNodeMutations, (prevMutations) => ({ ...prevMutations, [id]: 'update' }))
-  }
+  set(todoNodeMutations, (prevMutations) => ({ ...prevMutations, [id]: prevMutations[id] ?? 'update' }))
 
   set(todoNodesAtom, (prevNodes) => ({ ...prevNodes, [id]: { ...node, content } }))
 })
 
-export const addNodeAtom = atom(null, (_get, set, { id, parentId }: AddNodeAtomUpdate) => {
+export const addNodeAtom = atom(null, (_get, set, { id, parentId }: AtomUpdateWithParentId) => {
   const newNodeId = cuid()
 
   set(todoNodeMutations, (prevMutations) => ({ ...prevMutations, [newNodeId]: 'insert' }))
@@ -46,7 +42,7 @@ export const addNodeAtom = atom(null, (_get, set, { id, parentId }: AddNodeAtomU
   }
 })
 
-export const deleteNodeAtom = atom(null, (_get, set, { id, parentId }: DeleteNodeAtomUpdate) => {
+export const deleteNodeAtom = atom(null, (_get, set, { id, parentId }: AtomUpdateWithParentId) => {
   set(todoNodeMutations, (prevMutations) => ({ ...prevMutations, [id]: 'delete' }))
 
   set(todoNodesAtom, (prevNodes) => {
@@ -66,17 +62,44 @@ export const deleteNodeAtom = atom(null, (_get, set, { id, parentId }: DeleteNod
   }
 })
 
+export const nestNodeAtom = atom(null, (get, set, { id, parentId }: AtomUpdateWithParentId) => {
+  if (!parentId) {
+    const root = get(todoRootAtom)
+    const nodeIndex = root.indexOf(id)
+    const sibblingId = root[nodeIndex - 1]
+
+    if (!sibblingId) {
+      return
+    }
+
+    const nodes = get(todoNodesAtom)
+    const node = nodes[id]
+    const sibbling = nodes[sibblingId]
+
+    if (!node || !sibbling) {
+      return
+    }
+
+    set(todoRootAtom, (prevRoot) => [...prevRoot.slice(0, nodeIndex), ...prevRoot.slice(nodeIndex + 1)])
+
+    set(todoNodesAtom, (prevNodes) => ({
+      ...prevNodes,
+      [sibblingId]: { ...sibbling, children: [...sibbling.children, id] },
+      [id]: { ...node, parentId: sibblingId },
+    }))
+
+    set(todoNodeMutations, (prevMutations) => ({ ...prevMutations, [id]: prevMutations[id] ?? 'update' }))
+  } else {
+    // TODO(HiDeoo) Handle not at root
+  }
+})
+
 interface UpdateContentAtomUpdate {
   content: string
   id: TodoNodeData['id']
 }
 
-interface AddNodeAtomUpdate {
-  id: TodoNodeData['id']
-  parentId?: TodoNodeData['id']
-}
-
-interface DeleteNodeAtomUpdate {
+interface AtomUpdateWithParentId {
   id: TodoNodeData['id']
   parentId?: TodoNodeData['id']
 }
