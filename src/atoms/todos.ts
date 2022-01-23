@@ -3,7 +3,7 @@ import { atom } from 'jotai'
 
 import { type TodoNodeData, type TodoNodesData } from 'libs/db/todoNodes'
 
-export const todoRootAtom = atom<TodoNodesData['root']>([])
+export const todoChildrenAtom = atom<TodoNodesData['children']>({ root: [] })
 
 export const todoNodesAtom = atom<TodoNodesData['nodes']>({})
 
@@ -28,14 +28,18 @@ export const addNodeAtom = atom(null, (_get, set, { id, parentId }: AtomUpdateWi
 
   set(todoNodesAtom, (prevNodes) => ({
     ...prevNodes,
-    [newNodeId]: { id: newNodeId, content: '', children: [], parentId: parentId },
+    [newNodeId]: { id: newNodeId, content: '', parentId: parentId },
   }))
 
   if (!parentId) {
-    set(todoRootAtom, (prevRoot) => {
-      const newNodeIndex = prevRoot.indexOf(id) + 1
+    set(todoChildrenAtom, (prevChildren) => {
+      const newNodeIndex = prevChildren.root.indexOf(id) + 1
 
-      return [...prevRoot.slice(0, newNodeIndex), newNodeId, ...prevRoot.slice(newNodeIndex)]
+      return {
+        ...prevChildren,
+        root: [...prevChildren.root.slice(0, newNodeIndex), newNodeId, ...prevChildren.root.slice(newNodeIndex)],
+        [newNodeId]: [],
+      }
     })
   } else {
     // TODO(HiDeoo) Update parent of current node
@@ -52,10 +56,13 @@ export const deleteNodeAtom = atom(null, (_get, set, { id, parentId }: AtomUpdat
   })
 
   if (!parentId) {
-    set(todoRootAtom, (prevRoot) => {
-      const nodeIndex = prevRoot.indexOf(id)
+    set(todoChildrenAtom, (prevChildren) => {
+      const nodeIndex = prevChildren.root.indexOf(id)
 
-      return [...prevRoot.slice(0, nodeIndex), ...prevRoot.slice(nodeIndex + 1)]
+      return {
+        ...prevChildren,
+        root: [...prevChildren.root.slice(0, nodeIndex), ...prevChildren.root.slice(nodeIndex + 1)],
+      }
     })
   } else {
     // TODO(HiDeoo) Update parent of current node
@@ -64,7 +71,7 @@ export const deleteNodeAtom = atom(null, (_get, set, { id, parentId }: AtomUpdat
 
 export const nestNodeAtom = atom(null, (get, set, { id, parentId }: AtomUpdateWithParentId) => {
   if (!parentId) {
-    const root = get(todoRootAtom)
+    const root = get(todoChildrenAtom).root
     const nodeIndex = root.indexOf(id)
     const sibblingId = root[nodeIndex - 1]
 
@@ -74,17 +81,23 @@ export const nestNodeAtom = atom(null, (get, set, { id, parentId }: AtomUpdateWi
 
     const nodes = get(todoNodesAtom)
     const node = nodes[id]
-    const sibbling = nodes[sibblingId]
 
-    if (!node || !sibbling) {
+    if (!node) {
       return
     }
 
-    set(todoRootAtom, (prevRoot) => [...prevRoot.slice(0, nodeIndex), ...prevRoot.slice(nodeIndex + 1)])
+    set(todoChildrenAtom, (prevChildren) => {
+      const sibblingChildren = prevChildren[sibblingId]
+
+      return {
+        ...prevChildren,
+        root: [...prevChildren.root.slice(0, nodeIndex), ...prevChildren.root.slice(nodeIndex + 1)],
+        [sibblingId]: [...(sibblingChildren ?? []), id],
+      }
+    })
 
     set(todoNodesAtom, (prevNodes) => ({
       ...prevNodes,
-      [sibblingId]: { ...sibbling, children: [...sibbling.children, id] },
       [id]: { ...node, parentId: sibblingId },
     }))
 

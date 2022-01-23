@@ -5,12 +5,12 @@ import { addNodeAtom, deleteNodeAtom, nestNodeAtom, todoNodesAtom, updateContent
 import { type TodoNodeData } from 'libs/db/todoNodes'
 
 export default function useTodoNode(id: TodoNodeData['id']) {
-  const getById = useCallback(
+  const getNodeById = useCallback(
     <TData>(nodesMap: Record<TodoNodeData['id'], TData>, nodeId = id) => nodesMap[nodeId],
     [id]
   )
 
-  const node = useAtomValue(selectAtom(todoNodesAtom, getById))
+  const node = useAtomValue(selectAtom(todoNodesAtom, getNodeById))
 
   const updateContent = useUpdateAtom(updateContentAtom)
   const addNode = useUpdateAtom(addNodeAtom)

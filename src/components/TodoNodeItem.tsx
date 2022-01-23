@@ -1,8 +1,9 @@
 import { memo, useCallback, useRef } from 'react'
 import { useEditable } from 'use-editable'
 
-import { type TodoNodeData } from 'libs/db/todoNodes'
+import TodoNodeChildren from 'components/TodoNodeChildren'
 import useTodoNode from 'hooks/useTodoNode'
+import { type TodoNodeData } from 'libs/db/todoNodes'
 
 const TodoNodeItem: React.FC<TodoNodeItemProps> = ({ id, level = 0 }) => {
   const contentRef = useRef<HTMLDivElement>(null)
@@ -63,9 +64,7 @@ const TodoNodeItem: React.FC<TodoNodeItemProps> = ({ id, level = 0 }) => {
       <div className="bg-blue-200 text-black" ref={contentRef} onKeyDown={onKeyDown}>
         {node.content}
       </div>
-      {node.children.map((childId) => (
-        <TodoNodeItem key={childId} id={childId} level={level + 1} />
-      ))}
+      <TodoNodeChildren id={id} level={level + 1} />
     </div>
   )
 }
@@ -74,5 +73,5 @@ export default memo(TodoNodeItem)
 
 interface TodoNodeItemProps {
   id: TodoNodeData['id']
-  level?: number
+  level: number
 }

@@ -51,8 +51,8 @@ describe('todo nodes', () => {
           const res = await fetch({ method: HttpMethod.GET })
           const json = await res.json<TodoNodesData>()
 
-          expect(json.root.length).toBe(1)
-          expect(json.root[0]).toBe(root[0])
+          expect(json.children.root.length).toBe(1)
+          expect(json.children.root[0]).toBe(root[0])
 
           assert(root[0])
 
@@ -76,8 +76,8 @@ describe('todo nodes', () => {
           const res = await fetch({ method: HttpMethod.GET })
           const json = await res.json<TodoNodesData>()
 
-          expect(json.root.length).toBe(1)
-          expect(json.root[0]).toBe(root[0])
+          expect(json.children.root.length).toBe(1)
+          expect(json.children.root[0]).toBe(root[0])
 
           assert(root[0])
 
@@ -128,49 +128,49 @@ describe('todo nodes', () => {
           const res = await fetch({ method: HttpMethod.GET })
           const json = await res.json<TodoNodesData>()
 
-          expect(json.root.length).toBe(3)
-          expect(json.root[0]).toBe(node_0.id)
-          expect(json.root[1]).toBe(node_1.id)
-          expect(json.root[2]).toBe(node_2.id)
+          expect(json.children.root.length).toBe(3)
+          expect(json.children.root[0]).toBe(node_0.id)
+          expect(json.children.root[1]).toBe(node_1.id)
+          expect(json.children.root[2]).toBe(node_2.id)
 
           expect(Object.keys(json.nodes).length).toBe(8)
 
-          function isEqualTodoNode(
-            todoNodeA: TodoNodeData | TodoNode | undefined,
-            todoNodeB: TodoNodeData | TodoNode | undefined
-          ) {
+          function isEqualTodoNode(todoNodeAId: TodoNodeData['id'], todoNodeB: TodoNode) {
+            const todoNodeA = json.nodes[todoNodeAId]
+            const todoNodeAChildren = json.children[todoNodeAId]
+
             return (
               todoNodeA &&
               todoNodeB &&
               todoNodeA.id === todoNodeB.id &&
               todoNodeA.content === todoNodeB.content &&
-              todoNodeA.children.length === todoNodeB.children.length &&
-              todoNodeA.children.every((child, index) => child === todoNodeB.children[index])
+              todoNodeAChildren?.length === todoNodeB.children.length &&
+              todoNodeAChildren?.every((child, index) => child === todoNodeB.children[index])
             )
           }
 
-          expect(isEqualTodoNode(json.nodes[node_0_1_0.id], node_0_1_0)).toBe(true)
+          expect(isEqualTodoNode(node_0_1_0.id, node_0_1_0)).toBe(true)
           expect(json.nodes[node_0_1_0.id]?.parentId).toBe(node_0_1.id)
 
-          expect(isEqualTodoNode(json.nodes[node_0_1_1.id], node_0_1_1)).toBe(true)
+          expect(isEqualTodoNode(node_0_1_1.id, node_0_1_1)).toBe(true)
           expect(json.nodes[node_0_1_1.id]?.parentId).toBe(node_0_1.id)
 
-          expect(isEqualTodoNode(json.nodes[node_0_0.id], node_0_0)).toBe(true)
+          expect(isEqualTodoNode(node_0_0.id, node_0_0)).toBe(true)
           expect(json.nodes[node_0_0.id]?.parentId).toBe(node_0.id)
 
-          expect(isEqualTodoNode(json.nodes[node_0_1.id], node_0_1)).toBe(true)
+          expect(isEqualTodoNode(node_0_1.id, node_0_1)).toBe(true)
           expect(json.nodes[node_0_1.id]?.parentId).toBe(node_0.id)
 
-          expect(isEqualTodoNode(json.nodes[node_0_2.id], node_0_2)).toBe(true)
+          expect(isEqualTodoNode(node_0_2.id, node_0_2)).toBe(true)
           expect(json.nodes[node_0_2.id]?.parentId).toBe(node_0.id)
 
-          expect(isEqualTodoNode(json.nodes[node_0.id], node_0)).toBe(true)
+          expect(isEqualTodoNode(node_0.id, node_0)).toBe(true)
           expect(json.nodes[node_0.id]?.parentId).toBeUndefined()
 
-          expect(isEqualTodoNode(json.nodes[node_1.id], node_1)).toBe(true)
+          expect(isEqualTodoNode(node_1.id, node_1)).toBe(true)
           expect(json.nodes[node_0.id]?.parentId).toBeUndefined()
 
-          expect(isEqualTodoNode(json.nodes[node_2.id], node_2)).toBe(true)
+          expect(isEqualTodoNode(node_2.id, node_2)).toBe(true)
           expect(json.nodes[node_0.id]?.parentId).toBeUndefined()
         },
         { dynamicRouteParams: { id } }
@@ -205,7 +205,7 @@ describe('todo nodes', () => {
 
           const res = await fetch({
             method: HttpMethod.PATCH,
-            body: JSON.stringify({ mutations: baseMutation, root: [...root, nodeId] }),
+            body: JSON.stringify({ children: { root: [...root, nodeId] }, mutations: baseMutation }),
           })
           const json = await res.json<ApiErrorResponse>()
 
@@ -226,7 +226,7 @@ describe('todo nodes', () => {
 
           await fetch({
             method: HttpMethod.PATCH,
-            body: JSON.stringify({ mutations: baseMutation, root: [...root, nodeId] }),
+            body: JSON.stringify({ children: { root: [...root, nodeId] }, mutations: baseMutation }),
           })
 
           const testTodo = await getTestTodo(id)
@@ -251,7 +251,7 @@ describe('todo nodes', () => {
 
           await fetch({
             method: HttpMethod.PATCH,
-            body: JSON.stringify({ mutations: baseMutation, root: [nodeId, ...root] }),
+            body: JSON.stringify({ children: { root: [nodeId, ...root] }, mutations: baseMutation }),
           })
 
           const testTodo = await getTestTodo(id)
@@ -276,7 +276,7 @@ describe('todo nodes', () => {
 
           await fetch({
             method: HttpMethod.PATCH,
-            body: JSON.stringify({ mutations: baseMutation, root: [nodeId] }),
+            body: JSON.stringify({ children: { root: [nodeId] }, mutations: baseMutation }),
           })
 
           const testTodo = await getTestTodo(id)
@@ -300,7 +300,7 @@ describe('todo nodes', () => {
           await fetch({
             method: HttpMethod.PATCH,
             body: JSON.stringify({
-              root: [newTodoNode.id],
+              children: { root: [newTodoNode.id] },
               mutations: { ...baseMutation, insert: { [newTodoNode.id]: newTodoNode } },
             }),
           })
@@ -325,7 +325,7 @@ describe('todo nodes', () => {
 
           const res = await fetch({
             method: HttpMethod.PATCH,
-            body: JSON.stringify({ mutations: baseMutation, root: [nodeId] }),
+            body: JSON.stringify({ children: { root: [nodeId] }, mutations: baseMutation }),
           })
           const json = await res.json<ApiErrorResponse>()
 
@@ -347,8 +347,8 @@ describe('todo nodes', () => {
           await fetch({
             method: HttpMethod.PATCH,
             body: JSON.stringify({
+              children: { root },
               mutations: { ...baseMutation, insert: { [newTodoNode.id]: newTodoNode } },
-              root,
             }),
           })
 
@@ -377,13 +377,12 @@ describe('todo nodes', () => {
           assert(newTodoNodeChildId)
 
           const newTodoNode = getFakeTodoNode()
-          newTodoNode.children = [newTodoNodeChildId]
 
           await fetch({
             method: HttpMethod.PATCH,
             body: JSON.stringify({
+              children: { root, [newTodoNode.id]: [newTodoNodeChildId] },
               mutations: { ...baseMutation, insert: { [newTodoNode.id]: newTodoNode } },
-              root,
             }),
           })
 
@@ -405,16 +404,15 @@ describe('todo nodes', () => {
         async ({ fetch }) => {
           const newTodoNode = getFakeTodoNode()
           const newTodoNodeChild = getFakeTodoNode()
-          newTodoNode.children = [newTodoNodeChild.id]
 
           await fetch({
             method: HttpMethod.PATCH,
             body: JSON.stringify({
+              children: { root, [newTodoNode.id]: [newTodoNodeChild.id] },
               mutations: {
                 ...baseMutation,
                 insert: { [newTodoNode.id]: newTodoNode, [newTodoNodeChild.id]: newTodoNodeChild },
               },
-              root,
             }),
           })
 
@@ -437,21 +435,22 @@ describe('todo nodes', () => {
           const newTodoNode_0 = getFakeTodoNode()
           const newTodoNode_0_0 = getFakeTodoNode()
 
-          newTodoNode_0.children = [newTodoNode_0_0.id]
-
           const rootNode = nodes[0]
 
           assert(rootNode)
 
+          const rootNode_children = [...rootNode.children, newTodoNode_0.id]
+          const newTodoNode_0_children = [newTodoNode_0_0.id]
+
           await fetch({
             method: HttpMethod.PATCH,
             body: JSON.stringify({
+              children: { root, [newTodoNode_0.id]: newTodoNode_0_children, [rootNode.id]: rootNode_children },
               mutations: {
                 ...baseMutation,
                 insert: { [newTodoNode_0.id]: newTodoNode_0, [newTodoNode_0_0.id]: newTodoNode_0_0 },
-                update: { [rootNode.id]: { ...rootNode, children: [...rootNode.children, newTodoNode_0.id] } },
+                update: { [rootNode.id]: { ...rootNode } },
               },
-              root,
             }),
           })
 
@@ -464,19 +463,18 @@ describe('todo nodes', () => {
           expect(testTodoNode_0).toBeDefined()
           expect(testTodoNode_0?.todoId).toBe(id)
           expect(testTodoNode_0?.content).toBe(newTodoNode_0.content)
-          expect(testTodoNode_0?.children).toEqual(newTodoNode_0.children)
+          expect(testTodoNode_0?.children).toEqual(newTodoNode_0_children)
 
           const testTodoNode_0_0 = await getTestTodoNode(newTodoNode_0_0.id)
 
           expect(testTodoNode_0_0).toBeDefined()
           expect(testTodoNode_0_0?.todoId).toBe(id)
           expect(testTodoNode_0_0?.content).toBe(newTodoNode_0_0.content)
-          expect(testTodoNode_0_0?.children).toEqual(newTodoNode_0_0.children)
+          expect(testTodoNode_0_0?.children).toEqual([])
 
           const testRootTodoNode = await getTestTodoNode(rootNode.id)
 
-          expect(testRootTodoNode?.children.length).toBe(1)
-          expect(testRootTodoNode?.children[0]).toBe(newTodoNode_0.id)
+          expect(testRootTodoNode?.children).toEqual(rootNode_children)
         },
         { dynamicRouteParams: { id } }
       )
@@ -497,12 +495,12 @@ describe('todo nodes', () => {
           await fetch({
             method: HttpMethod.PATCH,
             body: JSON.stringify({
+              children: { root, [rootNode.id]: [...rootNode.children, newTodoNode.id] },
               mutations: {
                 ...baseMutation,
                 insert: { [newTodoNode.id]: newTodoNode },
-                update: { [rootNode.id]: { ...rootNode, children: [...rootNode.children, newTodoNode.id] } },
+                update: { [rootNode.id]: { ...rootNode } },
               },
-              root,
             }),
           })
 
@@ -536,8 +534,8 @@ describe('todo nodes', () => {
           const res = await fetch({
             method: HttpMethod.PATCH,
             body: JSON.stringify({
+              children: { root },
               mutations: { ...baseMutation, insert: { [newTodoNode.id]: newTodoNode } },
-              root,
             }),
           })
           const json = await res.json<ApiErrorResponse>()
@@ -556,13 +554,12 @@ describe('todo nodes', () => {
         idHandler,
         async ({ fetch }) => {
           const newTodoNode = getFakeTodoNode()
-          newTodoNode.children = ['nonexistingChildId']
 
           const res = await fetch({
             method: HttpMethod.PATCH,
             body: JSON.stringify({
+              children: { root, [newTodoNode.id]: ['nonexistingChildId'] },
               mutations: { ...baseMutation, insert: { [newTodoNode.id]: newTodoNode } },
-              root,
             }),
           })
           const json = await res.json<ApiErrorResponse>()
@@ -583,17 +580,16 @@ describe('todo nodes', () => {
           const deletedTodoNode = await createTestTodoNode({ todoId: id })
 
           const newTodoNode = getFakeTodoNode()
-          newTodoNode.children = [deletedTodoNode.id]
 
           const res = await fetch({
             method: HttpMethod.PATCH,
             body: JSON.stringify({
+              children: { root, [newTodoNode.id]: [deletedTodoNode.id] },
               mutations: {
                 ...baseMutation,
                 insert: { [newTodoNode.id]: newTodoNode },
                 delete: [deletedTodoNode.id],
               },
-              root,
             }),
           })
           const json = await res.json<ApiErrorResponse>()
@@ -621,8 +617,8 @@ describe('todo nodes', () => {
           await fetch({
             method: HttpMethod.PATCH,
             body: JSON.stringify({
+              children: { root },
               mutations: { ...baseMutation, update: { [updatedTodoNode.id]: updatedTodoNode } },
-              root,
             }),
           })
 
@@ -652,13 +648,12 @@ describe('todo nodes', () => {
           assert(updatedTodoNodeId)
 
           const updatedTodoNode = getFakeTodoNode({ id: updatedTodoNodeId })
-          updatedTodoNode.children = [childTodoNode.id]
 
           await fetch({
             method: HttpMethod.PATCH,
             body: JSON.stringify({
+              children: { root, [updatedTodoNode.id]: [childTodoNode.id] },
               mutations: { ...baseMutation, update: { [updatedTodoNode.id]: updatedTodoNode } },
-              root,
             }),
           })
 
@@ -685,17 +680,16 @@ describe('todo nodes', () => {
           const childTodoNode = getFakeTodoNode()
 
           const updatedTodoNode = getFakeTodoNode({ id: updatedTodoNodeId })
-          updatedTodoNode.children = [childTodoNode.id]
 
           await fetch({
             method: HttpMethod.PATCH,
             body: JSON.stringify({
+              children: { root, [updatedTodoNode.id]: [childTodoNode.id] },
               mutations: {
                 ...baseMutation,
                 update: { [updatedTodoNode.id]: updatedTodoNode },
                 insert: { [childTodoNode.id]: childTodoNode },
               },
-              root,
             }),
           })
 
@@ -725,11 +719,11 @@ describe('todo nodes', () => {
           await fetch({
             method: HttpMethod.PATCH,
             body: JSON.stringify({
+              children: { root, [updatedTodoNode.id]: [todoNode_1.id, todoNode_0.id] },
               mutations: {
                 ...baseMutation,
-                update: { [updatedTodoNode.id]: { ...updatedTodoNode, children: [todoNode_1.id, todoNode_0.id] } },
+                update: { [updatedTodoNode.id]: { ...updatedTodoNode } },
               },
-              root,
             }),
           })
 
@@ -757,8 +751,8 @@ describe('todo nodes', () => {
           const res = await fetch({
             method: HttpMethod.PATCH,
             body: JSON.stringify({
+              children: { root },
               mutations: { ...baseMutation, update: { [updatedTodoNode.id]: updatedTodoNode } },
-              root,
             }),
           })
           const json = await res.json<ApiErrorResponse>()
@@ -781,13 +775,12 @@ describe('todo nodes', () => {
           assert(updatedTodoNodeId)
 
           const updatedTodoNode = getFakeTodoNode({ id: updatedTodoNodeId })
-          updatedTodoNode.children = ['nonexistingChildId']
 
           const res = await fetch({
             method: HttpMethod.PATCH,
             body: JSON.stringify({
+              children: { root, [updatedTodoNode.id]: ['nonexistingChildId'] },
               mutations: { ...baseMutation, update: { [updatedTodoNode.id]: updatedTodoNode } },
-              root,
             }),
           })
           const json = await res.json<ApiErrorResponse>()
@@ -805,24 +798,23 @@ describe('todo nodes', () => {
       return testApiRoute(
         idHandler,
         async ({ fetch }) => {
-          const deletedTodoNode = createTestTodoNode({ todoId: id })
+          const deletedTodoNode = await createTestTodoNode({ todoId: id })
 
           const updatedTodoNodeId = nodes[0]?.id
 
           assert(updatedTodoNodeId)
 
           const updatedTodoNode = getFakeTodoNode({ id: updatedTodoNodeId })
-          updatedTodoNode.children = [(await deletedTodoNode).id]
 
           const res = await fetch({
             method: HttpMethod.PATCH,
             body: JSON.stringify({
+              children: { root, [updatedTodoNode.id]: [deletedTodoNode.id] },
               mutations: {
                 ...baseMutation,
                 update: { [updatedTodoNode.id]: updatedTodoNode },
-                delete: [(await deletedTodoNode).id],
+                delete: [deletedTodoNode.id],
               },
-              root,
             }),
           })
           const json = await res.json<ApiErrorResponse>()
@@ -844,7 +836,7 @@ describe('todo nodes', () => {
 
           await fetch({
             method: HttpMethod.PATCH,
-            body: JSON.stringify({ mutations: { ...baseMutation, delete: [deletedTodoNode.id] }, root }),
+            body: JSON.stringify({ children: { root }, mutations: { ...baseMutation, delete: [deletedTodoNode.id] } }),
           })
 
           const testTodoNode = await getTestTodoNode(deletedTodoNode.id)
@@ -856,7 +848,7 @@ describe('todo nodes', () => {
     })
 
     test('should delete a root todo node', async () => {
-      const { id, nodes, root } = await createTestTodo()
+      const { id, nodes } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -867,17 +859,16 @@ describe('todo nodes', () => {
 
           assert(rootNode)
 
-          await updateTestTodoNodeChildren(rootNode.id, [deletedTodoNode.id])
+          await updateTestTodoRoot(id, [deletedTodoNode.id])
 
           await fetch({
             method: HttpMethod.PATCH,
             body: JSON.stringify({
+              children: { root: [rootNode.id] },
               mutations: {
                 ...baseMutation,
                 delete: [deletedTodoNode.id],
-                update: { [rootNode.id]: { ...rootNode, children: [] } },
               },
-              root,
             }),
           })
 
@@ -912,12 +903,12 @@ describe('todo nodes', () => {
           await fetch({
             method: HttpMethod.PATCH,
             body: JSON.stringify({
+              children: { root, [rootNode.id]: [] },
               mutations: {
                 ...baseMutation,
                 delete: [todoNode_0.id],
-                update: { [rootNode.id]: { ...rootNode, children: [] } },
+                update: { [rootNode.id]: { ...rootNode } },
               },
-              root,
             }),
           })
 
@@ -957,11 +948,11 @@ describe('todo nodes', () => {
           const res = await fetch({
             method: HttpMethod.PATCH,
             body: JSON.stringify({
+              children: { root: [] },
               mutations: {
                 ...baseMutation,
                 delete: [deletedRootNode.id],
               },
-              root: [],
             }),
           })
           const json = await res.json<ApiErrorResponse>()
@@ -990,8 +981,8 @@ describe('todo nodes', () => {
           const res = await fetch({
             method: HttpMethod.PATCH,
             body: JSON.stringify({
+              children: { root },
               mutations: { ...baseMutation, delete: [todoNode_0.id] },
-              root,
             }),
           })
           const json = await res.json<ApiErrorResponse>()
@@ -1015,7 +1006,7 @@ describe('todo nodes', () => {
 
           const res = await fetch({
             method: HttpMethod.PATCH,
-            body: JSON.stringify({ mutations: { ...baseMutation, delete: [deletedTodoNodeId] }, root }),
+            body: JSON.stringify({ children: { root }, mutations: { ...baseMutation, delete: [deletedTodoNodeId] } }),
           })
           const json = await res.json<ApiErrorResponse>()
 
@@ -1038,7 +1029,10 @@ describe('todo nodes', () => {
 
           const res = await fetch({
             method: HttpMethod.PATCH,
-            body: JSON.stringify({ mutations: { ...baseMutation, delete: ['nonexistingTodoNodeId'] }, root }),
+            body: JSON.stringify({
+              children: { root },
+              mutations: { ...baseMutation, delete: ['nonexistingTodoNodeId'] },
+            }),
           })
           const json = await res.json<ApiErrorResponse>()
 
@@ -1062,12 +1056,12 @@ describe('todo nodes', () => {
           const res = await fetch({
             method: HttpMethod.PATCH,
             body: JSON.stringify({
+              children: { root },
               mutations: {
                 ...baseMutation,
                 delete: [deletedTodoNode.id],
                 update: { [deletedTodoNode.id]: deletedTodoNode },
               },
-              root,
             }),
           })
           const json = await res.json<ApiErrorResponse>()
@@ -1155,19 +1149,23 @@ describe('todo nodes', () => {
           await fetch({
             method: HttpMethod.PATCH,
             body: JSON.stringify({
+              children: {
+                root: [node_0.id, node_0_3.id, node_3.id, node_2.id],
+                [node_0.id]: [node_1.id, node_0_0.id, node_0_2.id],
+                [node_0_0.id]: [node_0_0_0_inserted.id],
+              },
               mutations: {
                 ...baseMutation,
                 delete: [node_0_1.id],
                 update: {
                   [node_1_0_0.id]: { ...node_1_0_0, content: node_1_0_0_new_name },
-                  [node_0.id]: { ...node_0, children: [node_1.id, node_0_0.id, node_0_2.id] },
-                  [node_0_0.id]: { ...node_0_0, children: [node_0_0_0_inserted.id] },
+                  [node_0.id]: { ...node_0 },
+                  [node_0_0.id]: { ...node_0_0 },
                 },
                 insert: {
                   [node_0_0_0_inserted.id]: node_0_0_0_inserted,
                 },
               },
-              root: [node_0.id, node_0_3.id, node_3.id, node_2.id],
             }),
           })
 
@@ -1256,7 +1254,6 @@ describe('todo nodes', () => {
 function getFakeTodoNode(options?: Partial<TodoNodeData>): TodoNodeData {
   return {
     id: options?.id ?? cuid(),
-    children: [],
     content: options?.content ?? faker.lorem.words(),
   }
 }

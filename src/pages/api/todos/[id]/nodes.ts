@@ -8,7 +8,6 @@ import { getTodoNodes, type TodoNodesData, updateTodoNodes } from 'libs/db/todoN
 const mutationMapSchema = z.record(
   z.object({
     id: z.string(),
-    children: z.string().array(),
     content: z.string(),
   })
 )
@@ -19,7 +18,7 @@ const patchBodySchema = z.object({
     insert: mutationMapSchema,
     update: mutationMapSchema,
   }),
-  root: z.string().array(),
+  children: z.object({ root: z.string().array() }).and(z.record(z.string().array())),
 })
 
 const route = createApiRoute(
