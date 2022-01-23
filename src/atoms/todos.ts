@@ -9,6 +9,9 @@ export const todoNodesAtom = atom<TodoNodesData['nodes']>({})
 
 export const todoNodeMutations = atom<Record<TodoNodeData['id'], 'insert' | 'update' | 'delete'>>({})
 
+// TODO(HiDeoo) When done with all possible mutations, make sure to review all entities marked as mutated and to include
+// all of them.
+
 export const updateContentAtom = atom(null, (get, set, { content, id }: UpdateContentAtomUpdate) => {
   const node = get(todoNodesAtom)[id]
 
@@ -105,6 +108,46 @@ export const nestNodeAtom = atom(null, (get, set, { id, parentId }: AtomUpdateWi
   } else {
     // TODO(HiDeoo) Handle not at root
   }
+})
+
+export const unnestNodeAtom = atom(null, (get, set, { id, parentId }: AtomUpdateWithParentId) => {
+  if (!parentId) {
+    return
+  }
+
+  const nodes = get(todoNodesAtom)
+  const node = nodes[id]
+  const parent = nodes[parentId]
+
+  if (!node || !parent) {
+    return
+  }
+
+  if (!parent.parentId) {
+    set(todoChildrenAtom, (prevChildren) => {
+      const parentChildren = prevChildren[parentId]
+
+      if (!parentChildren) {
+        return prevChildren
+      }
+
+      const nodeIndex = parentChildren.indexOf(id)
+      const parentIndex = prevChildren.root.indexOf(parentId)
+
+      return {
+        ...prevChildren,
+        [parentId]: [...parentChildren.slice(0, nodeIndex), ...parentChildren.slice(nodeIndex + 1)],
+        root: [...prevChildren.root.slice(0, parentIndex + 1), id, ...prevChildren.root.slice(parentIndex + 1)],
+      }
+    })
+
+    set(todoNodesAtom, (prevNodes) => ({ ...prevNodes, [id]: { ...node, parentId: undefined } }))
+  } else {
+    // TODO(HiDeoo) Handle not at root + 1
+  }
+
+  // TODO(HiDeoo) Refactor / extract
+  set(todoNodeMutations, (prevMutations) => ({ ...prevMutations, [id]: prevMutations[id] ?? 'update' }))
 })
 
 interface UpdateContentAtomUpdate {

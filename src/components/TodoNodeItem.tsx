@@ -8,7 +8,7 @@ import { type TodoNodeData } from 'libs/db/todoNodes'
 const TodoNodeItem: React.FC<TodoNodeItemProps> = ({ id, level = 0 }) => {
   const contentRef = useRef<HTMLDivElement>(null)
 
-  const { addNode, deleteNode, nestNode, node, updateContent } = useTodoNode(id)
+  const { addNode, deleteNode, nestNode, node, unnestNode, updateContent } = useTodoNode(id)
 
   const onChangeContent = useCallback(
     (content: string) => {
@@ -26,17 +26,19 @@ const TodoNodeItem: React.FC<TodoNodeItemProps> = ({ id, level = 0 }) => {
       return
     }
 
+    const update = { id: node.id, parentId: node.parentId }
+
     switch (event.key) {
       case 'Enter': {
         event.preventDefault()
 
-        addNode({ id: node.id, parentId: node.parentId })
+        addNode(update)
 
         break
       }
       case 'Backspace': {
         if (event.metaKey) {
-          deleteNode({ id: node.id, parentId: node.parentId })
+          deleteNode(update)
         }
 
         break
@@ -44,7 +46,11 @@ const TodoNodeItem: React.FC<TodoNodeItemProps> = ({ id, level = 0 }) => {
       case 'Tab': {
         event.preventDefault()
 
-        nestNode({ id: node.id, parentId: node.parentId })
+        if (event.shiftKey) {
+          unnestNode(update)
+        } else {
+          nestNode(update)
+        }
 
         break
       }
