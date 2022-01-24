@@ -247,46 +247,133 @@ describe('useTodoNode', () => {
       expect(todoMutations.current[0][newTodoNodeId]).toBe('insert')
       expect(todoMutations.current[0][node.id]).toBe('insert')
     })
+
+    test('should add a new nested todo node to the nested reference', () => {
+      const { children, nodes } = setFakeTodoNodes([{ children: [{}, {}, {}] }])
+      const node = getTodoNodeFromIndexes(nodes, children, 0, 1)
+      const parent = getTodoNodeFromIndexes(nodes, children, 0)
+      const previousSibbling = getTodoNodeFromIndexes(nodes, children, 0, 0)
+      const nextSibbling = getTodoNodeFromIndexes(nodes, children, 0, 2)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoNodes } = renderHook(() => useAtomValue(todoNodesAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+
+      act(() => {
+        result.current.addNode({ id: node.id, parentId: node.parentId })
+      })
+
+      expect(todoChildren.current.root.length).toBe(1)
+      expect(todoChildren.current.root[0]).toBe(parent.id)
+
+      expect(todoChildren.current[node.id]?.length).toBe(0)
+
+      expect(todoChildren.current[parent.id]?.length).toBe(4)
+      expect(todoChildren.current[parent.id]?.[0]).toBe(previousSibbling.id)
+      expect(todoChildren.current[parent.id]?.[1]).toBe(node.id)
+      expect(todoChildren.current[parent.id]?.[3]).toBe(nextSibbling.id)
+
+      const newTodoNodeId = todoChildren.current[parent.id]?.[2]
+      assert(newTodoNodeId)
+
+      expect(todoChildren.current[newTodoNodeId]).toEqual([])
+
+      expect(todoNodes.current[newTodoNodeId]).toBeDefined()
+      expect(todoNodes.current[newTodoNodeId]?.id).toBeDefined()
+      expect(todoNodes.current[newTodoNodeId]?.content).toBe('')
+      expect(todoNodes.current[newTodoNodeId]?.parentId).toBe(parent.id)
+
+      expect(todoMutations.current[newTodoNodeId]).toBe('insert')
+      expect(todoMutations.current[parent.id]).toBe('update')
+    })
   })
 
-  test('should add a new nested todo node to the nested reference', () => {
-    const { children, nodes } = setFakeTodoNodes([{ children: [{}, {}, {}] }])
-    const node = getTodoNodeFromIndexes(nodes, children, 0, 1)
-    const parent = getTodoNodeFromIndexes(nodes, children, 0)
-    const previousSibbling = getTodoNodeFromIndexes(nodes, children, 0, 0)
-    const nextSibbling = getTodoNodeFromIndexes(nodes, children, 0, 2)
+  describe('deleteNode', () => {
+    test('should delete a todo node at the root', () => {
+      const { children, nodes } = setFakeTodoNodes([{}, {}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+      const nextSibbling = getTodoNodeFromIndexes(nodes, children, 1)
 
-    const { result } = renderHook(() => useTodoNode(node.id))
-    const { result: todoNodes } = renderHook(() => useAtomValue(todoNodesAtom))
-    const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
-    const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoNodes } = renderHook(() => useAtomValue(todoNodesAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
 
-    act(() => {
-      result.current.addNode({ id: node.id, parentId: node.parentId })
+      act(() => {
+        result.current.deleteNode({ id: node.id, parentId: node.parentId })
+      })
+
+      expect(result.current.node).toBeUndefined()
+      expect(todoNodes.current[node.id]).toBeUndefined()
+
+      expect(todoChildren.current.root.length).toBe(1)
+      expect(todoChildren.current.root[0]).toBe(nextSibbling.id)
+
+      expect(todoMutations.current[node.id]).toBe('delete')
     })
 
-    expect(todoChildren.current.root.length).toBe(1)
-    expect(todoChildren.current.root[0]).toBe(parent.id)
+    test('should delete a nested todo node in an existing todo node', () => {
+      const { children, nodes } = setFakeTodoNodes([{ children: [{}, {}, {}] }])
+      const node = getTodoNodeFromIndexes(nodes, children, 0, 1)
+      const parent = getTodoNodeFromIndexes(nodes, children, 0)
+      const prevSibbling = getTodoNodeFromIndexes(nodes, children, 0, 0)
+      const nextSibbling = getTodoNodeFromIndexes(nodes, children, 0, 2)
 
-    expect(todoChildren.current[node.id]?.length).toBe(0)
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoNodes } = renderHook(() => useAtomValue(todoNodesAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
 
-    expect(todoChildren.current[parent.id]?.length).toBe(4)
-    expect(todoChildren.current[parent.id]?.[0]).toBe(previousSibbling.id)
-    expect(todoChildren.current[parent.id]?.[1]).toBe(node.id)
-    expect(todoChildren.current[parent.id]?.[3]).toBe(nextSibbling.id)
+      act(() => {
+        result.current.deleteNode({ id: node.id, parentId: node.parentId })
+      })
 
-    const newTodoNodeId = todoChildren.current[parent.id]?.[2]
-    assert(newTodoNodeId)
+      expect(result.current.node).toBeUndefined()
+      expect(todoNodes.current[node.id]).toBeUndefined()
 
-    expect(todoChildren.current[newTodoNodeId]).toEqual([])
+      expect(todoChildren.current.root.length).toBe(1)
+      expect(todoChildren.current.root[0]).toBe(parent.id)
 
-    expect(todoNodes.current[newTodoNodeId]).toBeDefined()
-    expect(todoNodes.current[newTodoNodeId]?.id).toBeDefined()
-    expect(todoNodes.current[newTodoNodeId]?.content).toBe('')
-    expect(todoNodes.current[newTodoNodeId]?.parentId).toBe(parent.id)
+      expect(todoChildren.current[parent.id]?.length).toBe(2)
+      expect(todoChildren.current[parent.id]?.[0]).toBe(prevSibbling.id)
+      expect(todoChildren.current[parent.id]?.[1]).toBe(nextSibbling.id)
 
-    expect(todoMutations.current[newTodoNodeId]).toBe('insert')
-    expect(todoMutations.current[parent.id]).toBe('update')
+      expect(todoMutations.current[node.id]).toBe('delete')
+      expect(todoMutations.current[parent.id]).toBe('update')
+    })
+
+    test('should persist the mutation type when deleting a nested todo node in a new todo node', () => {
+      const { children, nodes } = setFakeTodoNodes([{ children: [{}, {}, {}] }])
+      const node = getTodoNodeFromIndexes(nodes, children, 0, 1)
+      const parent = getTodoNodeFromIndexes(nodes, children, 0)
+      const prevSibbling = getTodoNodeFromIndexes(nodes, children, 0, 0)
+      const nextSibbling = getTodoNodeFromIndexes(nodes, children, 0, 2)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoNodes } = renderHook(() => useAtomValue(todoNodesAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
+
+      act(() => {
+        todoMutations.current[1]((prevMutations) => ({ ...prevMutations, [parent.id]: 'insert' }))
+
+        result.current.deleteNode({ id: node.id, parentId: node.parentId })
+      })
+
+      expect(result.current.node).toBeUndefined()
+      expect(todoNodes.current[node.id]).toBeUndefined()
+
+      expect(todoChildren.current.root.length).toBe(1)
+      expect(todoChildren.current.root[0]).toBe(parent.id)
+
+      expect(todoChildren.current[parent.id]?.length).toBe(2)
+      expect(todoChildren.current[parent.id]?.[0]).toBe(prevSibbling.id)
+      expect(todoChildren.current[parent.id]?.[1]).toBe(nextSibbling.id)
+
+      expect(todoMutations.current[0][node.id]).toBe('delete')
+      expect(todoMutations.current[0][parent.id]).toBe('insert')
+    })
   })
 })
 

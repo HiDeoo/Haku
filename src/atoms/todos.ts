@@ -37,28 +37,26 @@ export const addNodeAtom = atom(null, (get, set, { id, parentId }: AtomUpdateWit
     [newNodeId]: { id: newNodeId, content: '', parentId: addAsChildren ? id : parentId },
   }))
 
-  if (addAsChildren) {
-    set(todoChildrenAtom, (prevChildren) => ({
+  set(todoChildrenAtom, (prevChildren) => {
+    if (addAsChildren) {
+      parentId = id
+    } else if (!parentId) {
+      parentId = 'root'
+    }
+
+    const parentChildren = prevChildren[parentId] ?? []
+    const newNodeIndex = parentChildren.indexOf(id) + 1
+
+    const newParentChildren = addAsChildren
+      ? [newNodeId, ...(prevChildren[id] ?? [])]
+      : [...parentChildren.slice(0, newNodeIndex), newNodeId, ...parentChildren.slice(newNodeIndex)]
+
+    return {
       ...prevChildren,
       [newNodeId]: [],
-      [id]: [newNodeId, ...(prevChildren[id] ?? [])],
-    }))
-  } else {
-    set(todoChildrenAtom, (prevChildren) => {
-      if (!parentId) {
-        parentId = 'root'
-      }
-
-      const parentChildren = prevChildren[parentId] ?? []
-      const newNodeIndex = parentChildren.indexOf(id) + 1
-
-      return {
-        ...prevChildren,
-        [parentId]: [...parentChildren.slice(0, newNodeIndex), newNodeId, ...parentChildren.slice(newNodeIndex)],
-        [newNodeId]: [],
-      }
-    })
-  }
+      [parentId]: newParentChildren,
+    }
+  })
 
   set(todoNodeMutations, (prevMutations) => {
     const newState: typeof prevMutations = { ...prevMutations, [newNodeId]: 'insert' }
@@ -71,26 +69,37 @@ export const addNodeAtom = atom(null, (get, set, { id, parentId }: AtomUpdateWit
 })
 
 export const deleteNodeAtom = atom(null, (_get, set, { id, parentId }: AtomUpdateWithParentId) => {
-  set(todoNodeMutations, (prevMutations) => ({ ...prevMutations, [id]: 'delete' }))
-
   set(todoNodesAtom, (prevNodes) => {
     const { [id]: nodeToDelete, ...otherNodes } = prevNodes
 
     return otherNodes
   })
 
-  if (!parentId) {
-    set(todoChildrenAtom, (prevChildren) => {
-      const nodeIndex = prevChildren.root.indexOf(id)
+  set(todoChildrenAtom, (prevChildren) => {
+    if (!parentId) {
+      parentId = 'root'
+    }
 
-      return {
-        ...prevChildren,
-        root: [...prevChildren.root.slice(0, nodeIndex), ...prevChildren.root.slice(nodeIndex + 1)],
-      }
-    })
-  } else {
-    // TODO(HiDeoo) Update parent of current node
-  }
+    const parentChildren = prevChildren[parentId] ?? []
+    const nodeIndex = prevChildren[parentId]?.indexOf(id) ?? -1
+
+    const newParentChildren = [...parentChildren.slice(0, nodeIndex), ...parentChildren.slice(nodeIndex + 1)]
+
+    return {
+      ...prevChildren,
+      [parentId]: newParentChildren,
+    }
+  })
+
+  set(todoNodeMutations, (prevMutations) => {
+    const newState: typeof prevMutations = { ...prevMutations, [id]: 'delete' }
+
+    if (parentId && parentId !== 'root') {
+      newState[parentId] = newState[parentId] ?? 'update'
+    }
+
+    return newState
+  })
 })
 
 export const nestNodeAtom = atom(null, (get, set, { id, parentId }: AtomUpdateWithParentId) => {
