@@ -109,14 +109,14 @@ export const deleteNodeAtom = atom(null, (get, set, { id, parentId = 'root' }: A
 })
 
 export const nestNodeAtom = atom(null, (get, set, { id, parentId = 'root' }: AtomUpdateWithParentId) => {
-  const root = get(todoChildrenAtom)[parentId]
+  const parentChildren = get(todoChildrenAtom)[parentId]
 
-  if (!root) {
+  if (!parentChildren) {
     return
   }
 
-  const nodeIndex = root.indexOf(id)
-  const sibblingId = root[nodeIndex - 1]
+  const nodeIndex = parentChildren.indexOf(id)
+  const sibblingId = parentChildren[nodeIndex - 1]
   const nodes = get(todoNodesAtom)
   const node = nodes[id]
 
@@ -125,7 +125,6 @@ export const nestNodeAtom = atom(null, (get, set, { id, parentId = 'root' }: Ato
   }
 
   set(todoChildrenAtom, (prevChildren) => {
-    const parentChildren = prevChildren[parentId] ?? []
     const sibblingChildren = prevChildren[sibblingId]
 
     return {
@@ -204,9 +203,45 @@ export const unnestNodeAtom = atom(null, (get, set, { id, parentId }: AtomUpdate
   })
 })
 
+export const moveNodeAtom = atom(null, (get, set, { direction, id, parentId = 'root' }: MoveNodeAtomUpdate) => {
+  const parentChildren = get(todoChildrenAtom)[parentId]
+
+  if (!parentChildren) {
+    return
+  }
+
+  const nodeIndex = parentChildren.indexOf(id)
+  const sibblingId = parentChildren[nodeIndex + (direction === 'up' ? -1 : 1)]
+
+  if (!sibblingId) {
+    return
+  }
+
+  set(todoChildrenAtom, (prevChildren) => {
+    return {
+      ...prevChildren,
+      [parentId]:
+        direction === 'up'
+          ? [...parentChildren.slice(0, nodeIndex - 1), id, sibblingId, ...parentChildren.slice(nodeIndex + 1)]
+          : [...parentChildren.slice(0, nodeIndex), sibblingId, id, ...parentChildren.slice(nodeIndex + 2)],
+    }
+  })
+
+  if (parentId !== 'root') {
+    set(todoNodeMutations, (prevMutations) => ({
+      ...prevMutations,
+      [parentId]: prevMutations[parentId] ?? 'update',
+    }))
+  }
+})
+
 interface UpdateContentAtomUpdate {
   content: string
   id: TodoNodeData['id']
+}
+
+interface MoveNodeAtomUpdate extends AtomUpdateWithParentId {
+  direction: 'down' | 'up'
 }
 
 interface AtomUpdateWithParentId {

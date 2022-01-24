@@ -662,6 +662,210 @@ describe('useTodoNode', () => {
       expect(todoMutations.current[0][grandParent.id]).toBe('insert')
     })
   })
+
+  describe('move', () => {
+    test('should move up a todo node at the root', () => {
+      const { children, nodes } = setFakeTodoNodes([{}, {}, {}, {}])
+      const node = getTodoNodeFromIndexes(nodes, children, 1)
+      const prevSibbling = getTodoNodeFromIndexes(nodes, children, 0)
+      const nextSibbling = getTodoNodeFromIndexes(nodes, children, 2)
+      const lastSibbling = getTodoNodeFromIndexes(nodes, children, 3)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+
+      act(() => {
+        result.current.moveNode({ direction: 'up', id: node.id, parentId: node.parentId })
+      })
+
+      expect(todoChildren.current.root.length).toBe(4)
+      expect(todoChildren.current.root[0]).toBe(node.id)
+      expect(todoChildren.current.root[1]).toBe(prevSibbling.id)
+      expect(todoChildren.current.root[2]).toBe(nextSibbling.id)
+      expect(todoChildren.current.root[3]).toBe(lastSibbling.id)
+
+      expect(todoMutations.current[node.id]).toBeUndefined()
+      expect(todoMutations.current[prevSibbling.id]).toBeUndefined()
+      expect(todoMutations.current[nextSibbling.id]).toBeUndefined()
+      expect(todoMutations.current[lastSibbling.id]).toBeUndefined()
+    })
+
+    test('should move down a todo node at the root', () => {
+      const { children, nodes } = setFakeTodoNodes([{}, {}, {}, {}])
+      const node = getTodoNodeFromIndexes(nodes, children, 1)
+      const prevSibbling = getTodoNodeFromIndexes(nodes, children, 0)
+      const nextSibbling = getTodoNodeFromIndexes(nodes, children, 2)
+      const lastSibbling = getTodoNodeFromIndexes(nodes, children, 3)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+
+      act(() => {
+        result.current.moveNode({ direction: 'down', id: node.id, parentId: node.parentId })
+      })
+
+      expect(todoChildren.current.root.length).toBe(4)
+      expect(todoChildren.current.root[0]).toBe(prevSibbling.id)
+      expect(todoChildren.current.root[1]).toBe(nextSibbling.id)
+      expect(todoChildren.current.root[2]).toBe(node.id)
+      expect(todoChildren.current.root[3]).toBe(lastSibbling.id)
+
+      expect(todoMutations.current[node.id]).toBeUndefined()
+      expect(todoMutations.current[prevSibbling.id]).toBeUndefined()
+      expect(todoMutations.current[nextSibbling.id]).toBeUndefined()
+      expect(todoMutations.current[lastSibbling.id]).toBeUndefined()
+    })
+
+    test('should move up a nested todo node', () => {
+      const { children, nodes } = setFakeTodoNodes([{ children: [{}, {}, {}, {}] }])
+      const node = getTodoNodeFromIndexes(nodes, children, 0, 1)
+      const parent = getTodoNodeFromIndexes(nodes, children, 0)
+      const prevSibbling = getTodoNodeFromIndexes(nodes, children, 0, 0)
+      const nextSibbling = getTodoNodeFromIndexes(nodes, children, 0, 2)
+      const lastSibbling = getTodoNodeFromIndexes(nodes, children, 0, 3)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+
+      act(() => {
+        result.current.moveNode({ direction: 'up', id: node.id, parentId: node.parentId })
+      })
+
+      expect(todoChildren.current.root.length).toBe(1)
+      expect(todoChildren.current.root[0]).toBe(parent.id)
+
+      expect(todoChildren.current[parent.id]?.length).toBe(4)
+      expect(todoChildren.current[parent.id]?.[0]).toBe(node.id)
+      expect(todoChildren.current[parent.id]?.[1]).toBe(prevSibbling.id)
+      expect(todoChildren.current[parent.id]?.[2]).toBe(nextSibbling.id)
+      expect(todoChildren.current[parent.id]?.[3]).toBe(lastSibbling.id)
+
+      expect(todoMutations.current[node.id]).toBeUndefined()
+      expect(todoMutations.current[prevSibbling.id]).toBeUndefined()
+      expect(todoMutations.current[nextSibbling.id]).toBeUndefined()
+      expect(todoMutations.current[lastSibbling.id]).toBeUndefined()
+      expect(todoMutations.current[parent.id]).toBe('update')
+    })
+
+    test('should move down a nested todo node', () => {
+      const { children, nodes } = setFakeTodoNodes([{ children: [{}, {}, {}, {}] }])
+      const node = getTodoNodeFromIndexes(nodes, children, 0, 1)
+      const parent = getTodoNodeFromIndexes(nodes, children, 0)
+      const prevSibbling = getTodoNodeFromIndexes(nodes, children, 0, 0)
+      const nextSibbling = getTodoNodeFromIndexes(nodes, children, 0, 2)
+      const lastSibbling = getTodoNodeFromIndexes(nodes, children, 0, 3)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+
+      act(() => {
+        result.current.moveNode({ direction: 'down', id: node.id, parentId: node.parentId })
+      })
+
+      expect(todoChildren.current.root.length).toBe(1)
+      expect(todoChildren.current.root[0]).toBe(parent.id)
+
+      expect(todoChildren.current[parent.id]?.length).toBe(4)
+      expect(todoChildren.current[parent.id]?.[0]).toBe(prevSibbling.id)
+      expect(todoChildren.current[parent.id]?.[1]).toBe(nextSibbling.id)
+      expect(todoChildren.current[parent.id]?.[2]).toBe(node.id)
+      expect(todoChildren.current[parent.id]?.[3]).toBe(lastSibbling.id)
+
+      expect(todoMutations.current[node.id]).toBeUndefined()
+      expect(todoMutations.current[prevSibbling.id]).toBeUndefined()
+      expect(todoMutations.current[nextSibbling.id]).toBeUndefined()
+      expect(todoMutations.current[lastSibbling.id]).toBeUndefined()
+      expect(todoMutations.current[parent.id]).toBe('update')
+    })
+
+    test('should persist the mutation type when moving a todo node', () => {
+      const { children, nodes } = setFakeTodoNodes([{ children: [{}, {}, {}] }])
+      const node = getTodoNodeFromIndexes(nodes, children, 0, 1)
+      const parent = getTodoNodeFromIndexes(nodes, children, 0)
+      const prevSibbling = getTodoNodeFromIndexes(nodes, children, 0, 0)
+      const nextSibbling = getTodoNodeFromIndexes(nodes, children, 0, 2)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
+
+      act(() => {
+        todoMutations.current[1]((prevMutations) => ({ ...prevMutations, [node.id]: 'insert' }))
+        todoMutations.current[1]((prevMutations) => ({ ...prevMutations, [parent.id]: 'insert' }))
+
+        result.current.moveNode({ direction: 'up', id: node.id, parentId: node.parentId })
+      })
+
+      expect(todoChildren.current.root.length).toBe(1)
+      expect(todoChildren.current.root[0]).toBe(parent.id)
+
+      expect(todoChildren.current[parent.id]?.length).toBe(3)
+      expect(todoChildren.current[parent.id]?.[0]).toBe(node.id)
+      expect(todoChildren.current[parent.id]?.[1]).toBe(prevSibbling.id)
+      expect(todoChildren.current[parent.id]?.[2]).toBe(nextSibbling.id)
+
+      expect(todoMutations.current[0][node.id]).toBe('insert')
+      expect(todoMutations.current[0][prevSibbling.id]).toBeUndefined()
+      expect(todoMutations.current[0][nextSibbling.id]).toBeUndefined()
+      expect(todoMutations.current[0][parent.id]).toBe('insert')
+    })
+
+    test('should not move up a todo node which already is the first child of its parent', () => {
+      const { children, nodes } = setFakeTodoNodes([{ children: [{}, {}] }])
+      const node = getTodoNodeFromIndexes(nodes, children, 0, 0)
+      const parent = getTodoNodeFromIndexes(nodes, children, 0)
+      const nextSibbling = getTodoNodeFromIndexes(nodes, children, 0, 1)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+
+      act(() => {
+        result.current.moveNode({ direction: 'up', id: node.id, parentId: node.parentId })
+      })
+
+      expect(todoChildren.current.root.length).toBe(1)
+      expect(todoChildren.current.root[0]).toBe(parent.id)
+
+      expect(todoChildren.current[parent.id]?.length).toBe(2)
+      expect(todoChildren.current[parent.id]?.[0]).toBe(node.id)
+      expect(todoChildren.current[parent.id]?.[1]).toBe(nextSibbling.id)
+
+      expect(todoMutations.current[node.id]).toBeUndefined()
+      expect(todoMutations.current[nextSibbling.id]).toBeUndefined()
+      expect(todoMutations.current[parent.id]).toBeUndefined()
+    })
+
+    test('should not move down a todo node which already is the last child of its parent', () => {
+      const { children, nodes } = setFakeTodoNodes([{ children: [{}, {}] }])
+      const node = getTodoNodeFromIndexes(nodes, children, 0, 1)
+      const parent = getTodoNodeFromIndexes(nodes, children, 0)
+      const prevSibbling = getTodoNodeFromIndexes(nodes, children, 0, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+
+      act(() => {
+        result.current.moveNode({ direction: 'down', id: node.id, parentId: node.parentId })
+      })
+
+      expect(todoChildren.current.root.length).toBe(1)
+      expect(todoChildren.current.root[0]).toBe(parent.id)
+
+      expect(todoChildren.current[parent.id]?.length).toBe(2)
+      expect(todoChildren.current[parent.id]?.[0]).toBe(prevSibbling.id)
+      expect(todoChildren.current[parent.id]?.[1]).toBe(node.id)
+
+      expect(todoMutations.current[node.id]).toBeUndefined()
+      expect(todoMutations.current[prevSibbling.id]).toBeUndefined()
+      expect(todoMutations.current[parent.id]).toBeUndefined()
+    })
+  })
 })
 
 function getTodoNodeFromIndexes(

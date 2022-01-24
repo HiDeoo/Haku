@@ -4,6 +4,7 @@ import { useCallback } from 'react'
 import {
   addNodeAtom,
   deleteNodeAtom,
+  moveNodeAtom,
   nestNodeAtom,
   todoNodesAtom,
   unnestNodeAtom,
@@ -24,6 +25,7 @@ export default function useTodoNode(id: TodoNodeData['id']) {
   const deleteNode = useUpdateAtom(deleteNodeAtom)
   const nestNode = useUpdateAtom(nestNodeAtom)
   const unnestNode = useUpdateAtom(unnestNodeAtom)
+  const moveNode = useUpdateAtom(moveNodeAtom)
 
-  return { addNode, deleteNode, nestNode, node, unnestNode, updateContent }
+  return { addNode, deleteNode, moveNode, nestNode, node, unnestNode, updateContent }
 }
