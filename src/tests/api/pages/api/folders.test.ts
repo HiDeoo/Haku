@@ -1,7 +1,7 @@
 import { FolderType } from '@prisma/client'
 import StatusCode from 'status-code-enum'
 
-import { getTestUser, testApiRoute } from 'tests/integration'
+import { getTestUser, testApiRoute } from 'tests/api'
 import {
   createTestNote,
   createTestNoteFolder,
@@ -11,7 +11,7 @@ import {
   getTestFolders,
   getTestNotes,
   getTestTodos,
-} from 'tests/integration/db'
+} from 'tests/api/db'
 import { HttpMethod } from 'libs/http'
 import indexHandler from 'pages/api/folders'
 import idHandler from 'pages/api/folders/[id]'

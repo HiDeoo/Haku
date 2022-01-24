@@ -8,7 +8,7 @@
     "build:analyze": "ANALYZE=true pnpm build",
     "start": "next start",
     "lint": "next lint -d . --max-warnings=0 && tsc --noEmit",
-    "test:integration": "TEST_TYPE=integration jest -i",
+    "test:api": "TEST_TYPE=api jest -i",
     "prepare": "husky install",
     "preinstall": "npx only-allow pnpm"
   },

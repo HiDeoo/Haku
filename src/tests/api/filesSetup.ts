@@ -1,5 +1,5 @@
-import { server } from 'tests/integration/mocks/http'
-import { TEST_USER_COUNT } from 'tests/integration'
+import { server } from 'tests/api/mocks/http'
+import { TEST_USER_COUNT } from 'tests/api'
 import { prisma } from 'libs/db'
 
 let tableNames: { tableName: string }[]

@@ -3,7 +3,7 @@ import assert from 'assert'
 import StatusCode from 'status-code-enum'
 import slug from 'url-slug'
 
-import { getTestUser, testApiRoute } from 'tests/integration'
+import { getTestUser, testApiRoute } from 'tests/api'
 import {
   createTestNoteFolder,
   createTestTodo,
@@ -11,7 +11,7 @@ import {
   getTestTodo,
   getTestTodoNode,
   getTestTodos,
-} from 'tests/integration/db'
+} from 'tests/api/db'
 import { HttpMethod } from 'libs/http'
 import indexHandler from 'pages/api/todos'
 import idHandler from 'pages/api/todos/[id]'

@@ -1,14 +1,8 @@
 import StatusCode from 'status-code-enum'
 import slug from 'url-slug'
 
-import { getTestUser, testApiRoute } from 'tests/integration'
-import {
-  createTestNote,
-  createTestNoteFolder,
-  createTestTodoFolder,
-  getTestNote,
-  getTestNotes,
-} from 'tests/integration/db'
+import { getTestUser, testApiRoute } from 'tests/api'
+import { createTestNote, createTestNoteFolder, createTestTodoFolder, getTestNote, getTestNotes } from 'tests/api/db'
 import { HttpMethod } from 'libs/http'
 import indexHandler from 'pages/api/notes'
 import idHandler from 'pages/api/notes/[id]'

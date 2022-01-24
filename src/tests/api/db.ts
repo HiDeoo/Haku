@@ -7,7 +7,7 @@ import { type FolderData } from 'libs/db/folder'
 import { type NoteMetadata } from 'libs/db/note'
 import { type TodoMetadata } from 'libs/db/todo'
 import { type TodoNodeData } from 'libs/db/todoNodes'
-import { getTestUser } from 'tests/integration'
+import { getTestUser } from 'tests/api'
 
 function createTestFolder(options: TestFolderOptions) {
   return prisma.folder.create({
