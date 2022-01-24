@@ -17,6 +17,7 @@ specifiers:
   '@react-aria/button': 3.3.4
   '@react-aria/textfield': 3.5.0
   '@react-aria/utils': 3.11.0
+  '@testing-library/react-hooks': 7.0.2
   '@tiptap/core': 2.0.0-beta.163
   '@tiptap/extension-code-block-lowlight': 2.0.0-beta.65
   '@tiptap/extension-highlight': 2.0.0-beta.32
@@ -63,6 +64,7 @@ specifiers:
   react-hook-form: 7.21.0
   react-icons: 4.3.1
   react-query: 3.34.2
+  react-test-renderer: 17.0.2
   status-code-enum: 1.0.0
   tailwind-merge: 1.1.1
   tailwindcss: 3.0.7
@@ -119,6 +121,7 @@ devDependencies:
   '@faker-js/faker': 6.0.0-alpha.2
   '@jcoreio/wait-for-postgres': 2.0.0
   '@next/bundle-analyzer': 12.0.7
+  '@testing-library/react-hooks': 7.0.2_fc2bb8a5b006d3f25c5f84ea777e678d
   '@types/faker': 5.5.9
   '@types/fuzzaldrin-plus': 0.6.2
   '@types/jest': 27.0.3
@@ -143,6 +146,7 @@ devDependencies:
   postcss: 8.4.4
   prettier: 2.5.0
   prisma: 3.6.0
+  react-test-renderer: 17.0.2_react@17.0.2
   tailwindcss: 3.0.7_64e95eea492b78ba1be305e2672c4e19
   ts-node: 10.4.0_68212d3c5f342a0c59715bbaaf1875e7
   tsconfig-paths: 3.12.0
@@ -1652,6 +1656,29 @@ packages:
       '@sinonjs/commons': 1.8.3
     dev: true
 
+  /@testing-library/react-hooks/7.0.2_fc2bb8a5b006d3f25c5f84ea777e678d:
+    resolution: {integrity: sha512-dYxpz8u9m4q1TuzfcUApqi8iFfR6R0FaMbr2hjZJy1uC8z+bO/K4v8Gs9eogGKYQop7QsrBTFkv/BCF7MzD2Cg==}
+    engines: {node: '>=12'}
+    peerDependencies:
+      react: '>=16.9.0'
+      react-dom: '>=16.9.0'
+      react-test-renderer: '>=16.9.0'
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
+      react-test-renderer:
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.16.3
+      '@types/react': 17.0.37
+      '@types/react-dom': 17.0.11
+      '@types/react-test-renderer': 17.0.1
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+      react-error-boundary: 3.1.4_react@17.0.2
+      react-test-renderer: 17.0.2_react@17.0.2
+    dev: true
+
   /@tiptap/core/2.0.0-beta.163:
     resolution: {integrity: sha512-Rg2UaAhmb9z6eunQ5D6dSEO/e4zK2cfIuYJniB87o8nLogaNBNKkhy6Q2kZB1PpYLIpbl0C/DdHIQ7QYy92ZAg==}
     dependencies:
@@ -2131,6 +2158,12 @@ packages:
 
   /@types/react-dom/17.0.11:
     resolution: {integrity: sha512-f96K3k+24RaLGVu/Y2Ng3e1EbZ8/cVJvypZWd7cy0ofCBaf2lcM46xNhycMZ2xGwbBjRql7hOlZ+e2WlJ5MH3Q==}
+    dependencies:
+      '@types/react': 17.0.37
+    dev: true
+
+  /@types/react-test-renderer/17.0.1:
+    resolution: {integrity: sha512-3Fi2O6Zzq/f3QR9dRnlnHso9bMl7weKCviFmfF6B4LS1Uat6Hkm15k0ZAQuDz+UBq6B3+g+NM6IT2nr5QgPzCw==}
     dependencies:
       '@types/react': 17.0.37
     dev: true
@@ -5972,7 +6005,6 @@ packages:
     dependencies:
       '@babel/runtime': 7.16.3
       react: 17.0.2
-    dev: false
 
   /react-hook-form/7.21.0_react@17.0.2:
     resolution: {integrity: sha512-aekCf+dedYFIg+7nCK2acMvZ+s6Ohw2I7UNQ+zNIadBl1SoXow2Tl6c3F49xF8GFCdn5jeK43JHH26rmtdRyLQ==}
@@ -6056,6 +6088,16 @@ packages:
       use-sidecar: 1.0.5_react@17.0.2
     dev: false
 
+  /react-shallow-renderer/16.14.1_react@17.0.2:
+    resolution: {integrity: sha512-rkIMcQi01/+kxiTE9D3fdS959U1g7gs+/rborw++42m1O9FAQiNI/UNRZExVUoAOprn4umcXf+pFRou8i4zuBg==}
+    peerDependencies:
+      react: ^16.0.0 || ^17.0.0
+    dependencies:
+      object-assign: 4.1.1
+      react: 17.0.2
+      react-is: 17.0.2
+    dev: true
+
   /react-style-singleton/2.1.1_cfedea9b3ed0faf0dded75c187406c5e:
     resolution: {integrity: sha512-jNRp07Jza6CBqdRKNgGhT3u9umWvils1xsuMOjZlghBDH2MU0PL2WZor4PGYjXpnRCa9DQSlHMs/xnABWOwYbA==}
     engines: {node: '>=8.5.0'}
@@ -6072,6 +6114,18 @@ packages:
       react: 17.0.2
       tslib: 1.14.1
     dev: false
+
+  /react-test-renderer/17.0.2_react@17.0.2:
+    resolution: {integrity: sha512-yaQ9cB89c17PUb0x6UfWRs7kQCorVdHlutU1boVPEsB8IDZH6n9tHxMacc3y0JoXOJUsZb/t/Mb8FUWMKaM7iQ==}
+    peerDependencies:
+      react: 17.0.2
+    dependencies:
+      object-assign: 4.1.1
+      react: 17.0.2
+      react-is: 17.0.2
+      react-shallow-renderer: 16.14.1_react@17.0.2
+      scheduler: 0.20.2
+    dev: true
 
   /react/17.0.2:
     resolution: {integrity: sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA==}
@@ -6223,7 +6277,6 @@ packages:
     dependencies:
       loose-envify: 1.4.0
       object-assign: 4.1.1
-    dev: false
 
   /semver/6.3.0:
     resolution: {integrity: sha512-b39TBaTSfV6yBrapU89p5fKekE2m/NwnDocOVruQFS1/veMgdzuPcnOM34M6CwxW8jH/lxEa5rBoDeUwu5HHTw==}

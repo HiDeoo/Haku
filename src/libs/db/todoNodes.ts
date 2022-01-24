@@ -218,9 +218,9 @@ function getNestedTodoNodeIds(
 }
 
 type TodoNodeChildrenMap = Record<TodoNodeData['id'], TodoNodeDataWithChildren['children']>
-type TodoNodeChildrenMapWithRoot = TodoNodeChildrenMap & { root: TodoNodeData['id'][] }
-type TodoNodeDataWithParentId = TodoNodeData & { parentId?: TodoNodeData['id'] }
-type TodoNodeDataMap = Record<TodoNodeData['id'], TodoNodeDataWithParentId>
+export type TodoNodeChildrenMapWithRoot = TodoNodeChildrenMap & { root: TodoNodeData['id'][] }
+export type TodoNodeDataWithParentId = TodoNodeData & { parentId?: TodoNodeData['id'] }
+export type TodoNodeDataMap = Record<TodoNodeData['id'], TodoNodeDataWithParentId>
 
 interface UpdateTodoNodesData {
   children: TodoNodeChildrenMapWithRoot
