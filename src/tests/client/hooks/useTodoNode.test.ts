@@ -374,6 +374,27 @@ describe('useTodoNode', () => {
       expect(todoMutations.current[0][node.id]).toBe('delete')
       expect(todoMutations.current[0][parent.id]).toBe('insert')
     })
+
+    test('should not delete the last todo node at the root', () => {
+      const { children, nodes } = setFakeTodoNodes([{}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+
+      act(() => {
+        result.current.deleteNode({ id: node.id, parentId: node.parentId })
+      })
+
+      expect(result.current.node).toBeDefined()
+      expect(result.current.node?.id).toBe(node.id)
+
+      expect(todoChildren.current.root.length).toBe(1)
+      expect(todoChildren.current.root[0]).toBe(node.id)
+
+      expect(todoMutations.current[node.id]).toBeUndefined()
+    })
   })
 })
 

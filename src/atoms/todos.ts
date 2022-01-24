@@ -68,7 +68,15 @@ export const addNodeAtom = atom(null, (get, set, { id, parentId }: AtomUpdateWit
   })
 })
 
-export const deleteNodeAtom = atom(null, (_get, set, { id, parentId }: AtomUpdateWithParentId) => {
+export const deleteNodeAtom = atom(null, (get, set, { id, parentId }: AtomUpdateWithParentId) => {
+  if (!parentId) {
+    const root = get(todoChildrenAtom).root
+
+    if (root.length - 1 === 0) {
+      return
+    }
+  }
+
   set(todoNodesAtom, (prevNodes) => {
     const { [id]: nodeToDelete, ...otherNodes } = prevNodes
 
