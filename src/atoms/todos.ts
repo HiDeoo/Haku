@@ -24,29 +24,50 @@ export const updateContentAtom = atom(null, (get, set, { content, id }: UpdateCo
   set(todoNodesAtom, (prevNodes) => ({ ...prevNodes, [id]: { ...node, content } }))
 })
 
-export const addNodeAtom = atom(null, (_get, set, { id, parentId }: AtomUpdateWithParentId) => {
+export const addNodeAtom = atom(null, (get, set, { id, parentId }: AtomUpdateWithParentId) => {
   const newNodeId = cuid()
 
-  set(todoNodeMutations, (prevMutations) => ({ ...prevMutations, [newNodeId]: 'insert' }))
+  const children = get(todoChildrenAtom)
+  const nodeChildrenIds = children[id]
+
+  const addAsChildren = nodeChildrenIds && nodeChildrenIds.length > 0
 
   set(todoNodesAtom, (prevNodes) => ({
     ...prevNodes,
-    [newNodeId]: { id: newNodeId, content: '', parentId: parentId },
+    [newNodeId]: { id: newNodeId, content: '', parentId: addAsChildren ? id : parentId },
   }))
 
-  if (!parentId) {
+  if (addAsChildren) {
+    set(todoChildrenAtom, (prevChildren) => ({
+      ...prevChildren,
+      [newNodeId]: [],
+      [id]: [newNodeId, ...(prevChildren[id] ?? [])],
+    }))
+  } else {
     set(todoChildrenAtom, (prevChildren) => {
-      const newNodeIndex = prevChildren.root.indexOf(id) + 1
+      if (!parentId) {
+        parentId = 'root'
+      }
+
+      const parentChildren = prevChildren[parentId] ?? []
+      const newNodeIndex = parentChildren.indexOf(id) + 1
 
       return {
         ...prevChildren,
-        root: [...prevChildren.root.slice(0, newNodeIndex), newNodeId, ...prevChildren.root.slice(newNodeIndex)],
+        [parentId]: [...parentChildren.slice(0, newNodeIndex), newNodeId, ...parentChildren.slice(newNodeIndex)],
         [newNodeId]: [],
       }
     })
-  } else {
-    // TODO(HiDeoo) Update parent of current node
   }
+
+  set(todoNodeMutations, (prevMutations) => {
+    const newState: typeof prevMutations = { ...prevMutations, [newNodeId]: 'insert' }
+    const idToUpdate = addAsChildren ? id : parentId ?? 'root'
+
+    newState[idToUpdate] = newState[idToUpdate] ?? 'update'
+
+    return newState
+  })
 })
 
 export const deleteNodeAtom = atom(null, (_get, set, { id, parentId }: AtomUpdateWithParentId) => {

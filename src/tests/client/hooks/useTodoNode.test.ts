@@ -1,3 +1,5 @@
+import assert from 'assert'
+
 import faker from '@faker-js/faker'
 import cuid from 'cuid'
 import { useAtom } from 'jotai'
@@ -144,6 +146,147 @@ describe('useTodoNode', () => {
       expect(result.current.node).toBeUndefined()
       expect(todoMutations.current[0][node.id]).toBe('delete')
     })
+  })
+
+  describe('addNode', () => {
+    test('should add a new todo node at the root if the reference todo node does not have any children', () => {
+      const { children, nodes } = setFakeTodoNodes([{}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoNodes } = renderHook(() => useAtomValue(todoNodesAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+
+      act(() => {
+        result.current.addNode({ id: node.id, parentId: node.parentId })
+      })
+
+      expect(todoChildren.current.root.length).toBe(2)
+      expect(todoChildren.current.root[0]).toBe(node.id)
+
+      const newTodoNodeId = todoChildren.current.root[1]
+      assert(newTodoNodeId)
+
+      expect(todoChildren.current[newTodoNodeId]).toEqual([])
+
+      expect(todoNodes.current[newTodoNodeId]).toBeDefined()
+      expect(todoNodes.current[newTodoNodeId]?.id).toBeDefined()
+      expect(todoNodes.current[newTodoNodeId]?.content).toBe('')
+      expect(todoNodes.current[newTodoNodeId]?.parentId).toBeUndefined()
+
+      expect(todoMutations.current[newTodoNodeId]).toBe('insert')
+    })
+
+    test('should add a new child todo node if the existing reference has children', () => {
+      const { children, nodes } = setFakeTodoNodes([{ children: [{}] }])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+      const existingChild = getTodoNodeFromIndexes(nodes, children, 0, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoNodes } = renderHook(() => useAtomValue(todoNodesAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+
+      act(() => {
+        result.current.addNode({ id: node.id, parentId: node.parentId })
+      })
+
+      expect(todoChildren.current.root.length).toBe(1)
+      expect(todoChildren.current.root[0]).toBe(node.id)
+
+      expect(todoChildren.current[node.id]?.length).toBe(2)
+      expect(todoChildren.current[node.id]?.[1]).toBe(existingChild.id)
+
+      const newTodoNodeId = todoChildren.current[node.id]?.[0]
+      assert(newTodoNodeId)
+
+      expect(todoChildren.current[newTodoNodeId]).toEqual([])
+
+      expect(todoNodes.current[newTodoNodeId]).toBeDefined()
+      expect(todoNodes.current[newTodoNodeId]?.id).toBeDefined()
+      expect(todoNodes.current[newTodoNodeId]?.content).toBe('')
+      expect(todoNodes.current[newTodoNodeId]?.parentId).toBe(node.id)
+
+      expect(todoMutations.current[newTodoNodeId]).toBe('insert')
+      expect(todoMutations.current[node.id]).toBe('update')
+    })
+
+    test('should persist the mutation type when adding a new child todo node if the new reference has children', () => {
+      const { children, nodes } = setFakeTodoNodes([{ children: [{}] }])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+      const existingChild = getTodoNodeFromIndexes(nodes, children, 0, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoNodes } = renderHook(() => useAtomValue(todoNodesAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
+
+      act(() => {
+        todoMutations.current[1]((prevMutations) => ({ ...prevMutations, [node.id]: 'insert' }))
+
+        result.current.addNode({ id: node.id, parentId: node.parentId })
+      })
+
+      expect(todoChildren.current.root.length).toBe(1)
+      expect(todoChildren.current.root[0]).toBe(node.id)
+
+      expect(todoChildren.current[node.id]?.length).toBe(2)
+      expect(todoChildren.current[node.id]?.[1]).toBe(existingChild.id)
+
+      const newTodoNodeId = todoChildren.current[node.id]?.[0]
+      assert(newTodoNodeId)
+
+      expect(todoChildren.current[newTodoNodeId]).toEqual([])
+
+      expect(todoNodes.current[newTodoNodeId]).toBeDefined()
+      expect(todoNodes.current[newTodoNodeId]?.id).toBeDefined()
+      expect(todoNodes.current[newTodoNodeId]?.content).toBe('')
+      expect(todoNodes.current[newTodoNodeId]?.parentId).toBe(node.id)
+
+      expect(todoMutations.current[0][newTodoNodeId]).toBe('insert')
+      expect(todoMutations.current[0][node.id]).toBe('insert')
+    })
+  })
+
+  test('should add a new nested todo node to the nested reference', () => {
+    const { children, nodes } = setFakeTodoNodes([{ children: [{}, {}, {}] }])
+    const node = getTodoNodeFromIndexes(nodes, children, 0, 1)
+    const parent = getTodoNodeFromIndexes(nodes, children, 0)
+    const previousSibbling = getTodoNodeFromIndexes(nodes, children, 0, 0)
+    const nextSibbling = getTodoNodeFromIndexes(nodes, children, 0, 2)
+
+    const { result } = renderHook(() => useTodoNode(node.id))
+    const { result: todoNodes } = renderHook(() => useAtomValue(todoNodesAtom))
+    const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+    const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+
+    act(() => {
+      result.current.addNode({ id: node.id, parentId: node.parentId })
+    })
+
+    expect(todoChildren.current.root.length).toBe(1)
+    expect(todoChildren.current.root[0]).toBe(parent.id)
+
+    expect(todoChildren.current[node.id]?.length).toBe(0)
+
+    expect(todoChildren.current[parent.id]?.length).toBe(4)
+    expect(todoChildren.current[parent.id]?.[0]).toBe(previousSibbling.id)
+    expect(todoChildren.current[parent.id]?.[1]).toBe(node.id)
+    expect(todoChildren.current[parent.id]?.[3]).toBe(nextSibbling.id)
+
+    const newTodoNodeId = todoChildren.current[parent.id]?.[2]
+    assert(newTodoNodeId)
+
+    expect(todoChildren.current[newTodoNodeId]).toEqual([])
+
+    expect(todoNodes.current[newTodoNodeId]).toBeDefined()
+    expect(todoNodes.current[newTodoNodeId]?.id).toBeDefined()
+    expect(todoNodes.current[newTodoNodeId]?.content).toBe('')
+    expect(todoNodes.current[newTodoNodeId]?.parentId).toBe(parent.id)
+
+    expect(todoMutations.current[newTodoNodeId]).toBe('insert')
+    expect(todoMutations.current[parent.id]).toBe('update')
   })
 })
 
