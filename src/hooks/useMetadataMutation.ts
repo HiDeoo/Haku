@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
 import { useMutation, useQueryClient } from 'react-query'
 
-import client, { handleApiError, type Mutation } from 'libs/api/client'
+import client, { type Mutation } from 'libs/api/client'
 import { type AddNoteBody } from 'pages/api/notes'
 import { type AddTodoBody } from 'pages/api/todos'
 import { type NoteMetadata } from 'libs/db/note'
@@ -18,14 +18,14 @@ export default function useMetadataMutation() {
   const { lcType, type, urlPath } = useContentType()
   const queryClient = useQueryClient()
 
-  const mutation = useMutation<NoteMetadata | TodoMetadata | void, unknown, MetadataMutation>(
+  return useMutation<NoteMetadata | TodoMetadata | void, unknown, MetadataMutation>(
     (data) => {
       if (!type) {
-        throw new Error(`Missing content type to ${data.mutationType} metadata.`)
+        throw new Error(`Missing content type to ${data.action} metadata.`)
       }
 
-      switch (data.mutationType) {
-        case 'add': {
+      switch (data.action) {
+        case 'insert': {
           return type === ContentType.NOTE ? addNote(data) : addTodo(data)
         }
         case 'update': {
@@ -33,7 +33,7 @@ export default function useMetadataMutation() {
 
           return updateFn({ id: data.id, name: data.name, folderId: data.folderId })
         }
-        case 'remove': {
+        case 'delete': {
           const removeFn = type === ContentType.NOTE ? removeNote : removeTodo
 
           return removeFn({ id: data.id })
@@ -49,19 +49,15 @@ export default function useMetadataMutation() {
 
         if (
           newMetadata &&
-          (variables.mutationType === 'add' || (variables.mutationType === 'update' && variables.id === contentId))
+          (variables.action === 'insert' || (variables.action === 'update' && variables.id === contentId))
         ) {
           push(`${urlPath}/${newMetadata.id}/${newMetadata.slug}`)
-        } else if (variables.mutationType === 'remove' && variables.id === contentId) {
+        } else if (variables.action === 'delete' && variables.id === contentId) {
           push(urlPath)
         }
       },
     }
   )
-
-  handleApiError(mutation)
-
-  return mutation
 }
 
 function addNote(data: AddNoteBody) {
@@ -93,6 +89,6 @@ type UpdateMetadata = Omit<UpdateNoteBody, 'type'> & UpdateNoteQuery
 type RemoveMetadata = RemoveNoteQuery | RemoveTodoQuery
 
 export type MetadataMutation =
-  | Mutation<AddMetadata, 'add'>
+  | Mutation<AddMetadata, 'insert'>
   | Mutation<UpdateMetadata, 'update'>
-  | Mutation<RemoveMetadata, 'remove'>
+  | Mutation<RemoveMetadata, 'delete'>

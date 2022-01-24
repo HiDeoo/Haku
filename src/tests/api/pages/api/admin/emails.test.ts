@@ -1,8 +1,8 @@
 import { type EmailAllowList } from '@prisma/client'
 import StatusCode from 'status-code-enum'
 
-import { testApiRoute } from 'tests/integration'
-import { createTestEmailAllowList, getTestEmailAllowList, getTestEmailAllowLists } from 'tests/integration/db'
+import { testApiRoute } from 'tests/api'
+import { createTestEmailAllowList, getTestEmailAllowList, getTestEmailAllowLists } from 'tests/api/db'
 import indexHandler from 'pages/api/admin/emails'
 import idHandler from 'pages/api/admin/emails/[id]'
 import { HttpMethod } from 'libs/http'

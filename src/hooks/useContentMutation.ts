@@ -1,20 +1,20 @@
 import { useMutation } from 'react-query'
 
-import client, { handleApiError, type Mutation } from 'libs/api/client'
+import client, { type Mutation } from 'libs/api/client'
 import { type NoteData } from 'libs/db/note'
 import useContentType, { ContentType } from 'hooks/useContentType'
-import { type TodoData } from 'libs/db/todo'
+import { type TodoNodesData } from 'libs/db/todoNodes'
 import { type UpdateNoteBody, type UpdateNoteQuery } from 'pages/api/notes/[id]'
 
 export default function useContentMutation() {
   const { lcType, type } = useContentType()
 
-  const mutation = useMutation<NoteData | TodoData | void, unknown, ContentMutation>((data) => {
+  return useMutation<NoteData | TodoNodesData | void, unknown, ContentMutation>((data) => {
     if (!type) {
-      throw new Error(`Missing content type to ${data.mutationType} content.`)
+      throw new Error(`Missing content type to ${data.action} content.`)
     }
 
-    switch (data.mutationType) {
+    switch (data.action) {
       case 'update': {
         if (type === ContentType.TODO) {
           // TODO(HiDeoo)
@@ -28,10 +28,6 @@ export default function useContentMutation() {
       }
     }
   })
-
-  handleApiError(mutation)
-
-  return mutation
 }
 
 function updateNote({ id, ...data }: UpdateData) {

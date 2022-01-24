@@ -45,5 +45,8 @@ jobs:
       - name: Lint
         run: pnpm lint
 
-      - name: Test
-        run: pnpm test:integration
+      - name: Test API
+        run: pnpm test:api
+
+      - name: Test Client
+        run: pnpm test:client

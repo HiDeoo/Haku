@@ -1,20 +1,18 @@
+import { useAtom } from 'jotai'
 import { signIn, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
+import { ContentType, contentTypeAtom } from 'atoms/contentType'
 import Spinner from 'components/Spinner'
-import { useStore, type StoreState } from 'stores'
-import { ContentType } from 'stores/contentType'
 
 const unsecureRoutes = ['/auth/error', '/auth/login', '/auth/verify']
-
-const contentTypeStoreSelector = (state: StoreState) => [state.contentType, state.setContentType] as const
 
 const Route: React.FC = ({ children }) => {
   const { push, query, route } = useRouter()
   const { status } = useSession()
 
-  const [contentType, setContentType] = useStore(contentTypeStoreSelector)
+  const [contentType, setContentType] = useAtom(contentTypeAtom)
 
   const isAuthenticated = status === 'authenticated'
   const isSecureRoute = !unsecureRoutes.includes(route)

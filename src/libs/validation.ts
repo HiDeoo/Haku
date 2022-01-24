@@ -5,16 +5,11 @@ export { z } from 'zod'
 
 export const zEmail = z.string().email()
 
-export const zStringAsNumber = z
-  .string()
-  .refine((str) => {
-    const num = Number(str)
-
-    return Number.isFinite(num) && !Number.isNaN(num)
-  })
-  .transform(Number)
-
 export const zFolderType = z.nativeEnum(FolderType)
+
+export const zQuerySchemaWithId = z.object({
+  id: z.string(),
+})
 
 export function zAtLeastOneOf<TShape extends z.ZodRawShape>(objectSchema: z.ZodObject<TShape>) {
   const keys = Object.keys(objectSchema._def.shape())

@@ -75,7 +75,7 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
     const html = editor.getHTML()
     const text = editor.getText()
 
-    mutate({ mutationType: 'update', id: noteId, html, text }, { onSettled: onSettledMutation })
+    mutate({ action: 'update', id: noteId, html, text }, { onSettled: onSettledMutation })
   }
 
   function toggleBold() {

@@ -1,7 +1,9 @@
+import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { useEffect } from 'react'
 import { type NestedValue, useForm } from 'react-hook-form'
 import { RiFolderAddLine } from 'react-icons/ri'
 
+import { folderModalAtom, setFolderModalOpenedAtom } from 'atoms/modal'
 import Alert from 'components/Alert'
 import Button from 'components/Button'
 import FolderPicker, { ROOT_FOLDER_ID } from 'components/FolderPicker'
@@ -11,9 +13,6 @@ import Modal from 'components/Modal'
 import TextInput from 'components/TextInput'
 import useFolderMutation, { type FolderMutation } from 'hooks/useFolderMutation'
 import { type FolderData } from 'libs/db/folder'
-import { useStore, type StoreState } from 'stores'
-
-const storeSelector = (state: StoreState) => [state.folder, state.setFolderModal] as const
 
 const NewFolderModal: React.FC = () => {
   const {
@@ -25,10 +24,11 @@ const NewFolderModal: React.FC = () => {
   } = useForm<FormFields>()
 
   const { error, isLoading, mutate } = useFolderMutation()
-  const [{ data: folder, mutationType, opened }, setOpened] = useStore(storeSelector)
+  const { action, data: folder, opened } = useAtomValue(folderModalAtom)
+  const setOpened = useUpdateAtom(setFolderModalOpenedAtom)
 
-  const isUpdating = mutationType === 'update' && typeof folder !== 'undefined'
-  const isRemoving = mutationType === 'remove' && typeof folder !== 'undefined'
+  const isUpdating = action === 'update' && typeof folder !== 'undefined'
+  const isRemoving = action === 'delete' && typeof folder !== 'undefined'
 
   useEffect(() => {
     reset()
@@ -38,15 +38,15 @@ const NewFolderModal: React.FC = () => {
     const parentId = parentFolder.id === ROOT_FOLDER_ID ? null : parentFolder.id
 
     const mutationData: FolderMutation = isUpdating
-      ? { ...data, mutationType: 'update', id: folder.id, parentId }
-      : { ...data, mutationType: 'add', parentId }
+      ? { ...data, action: 'update', id: folder.id, parentId }
+      : { ...data, action: 'insert', parentId }
 
     mutate(mutationData, { onSuccess: onSuccessfulMutation })
   })
 
   function onConfirmDelete() {
     if (isRemoving) {
-      mutate({ mutationType: 'remove', id: folder.id }, { onSuccess: onSuccessfulMutation })
+      mutate({ action: 'delete', id: folder.id }, { onSuccess: onSuccessfulMutation })
     }
   }
 

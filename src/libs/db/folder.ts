@@ -1,9 +1,10 @@
-import { type Folder, FolderType } from '@prisma/client'
+import { type Folder, type FolderType } from '@prisma/client'
 
 import {
   ApiError,
   API_ERROR_FOLDER_ALREADY_EXISTS,
   API_ERROR_FOLDER_DOES_NOT_EXIST,
+  API_ERROR_FOLDER_INVALID_TYPE,
   API_ERROR_FOLDER_PARENT_DOES_NOT_EXIST,
   API_ERROR_FOLDER_PARENT_INVALID_TYPE,
 } from 'libs/api/routes/errors'
@@ -85,22 +86,38 @@ export function removeFolder(id: FolderData['id'], userId: UserId) {
   })
 }
 
-export function getFolderById(id: number, userId: UserId): Promise<Folder | null> {
-  return prisma.folder.findFirst({ where: { id, userId } })
+export async function validateFolder(folderId: FolderData['parentId'] | undefined, userId: UserId, type: FolderType) {
+  if (folderId) {
+    const folder = await getFolderById(folderId, userId)
+
+    if (!folder) {
+      throw new ApiError(API_ERROR_FOLDER_DOES_NOT_EXIST)
+    }
+
+    if (folder.type !== type) {
+      throw new ApiError(API_ERROR_FOLDER_INVALID_TYPE)
+    }
+  }
 }
 
 async function validateParentFolder(parentId: FolderData['parentId'] | undefined, userId: UserId, type: FolderType) {
-  if (parentId) {
-    const parentFolder = await getFolderById(parentId, userId)
-
-    if (!parentFolder) {
-      throw new ApiError(API_ERROR_FOLDER_PARENT_DOES_NOT_EXIST)
+  try {
+    await validateFolder(parentId, userId, type)
+  } catch (error) {
+    if (error instanceof ApiError) {
+      if (error.message === API_ERROR_FOLDER_DOES_NOT_EXIST) {
+        throw new ApiError(API_ERROR_FOLDER_PARENT_DOES_NOT_EXIST)
+      } else if (error.message === API_ERROR_FOLDER_INVALID_TYPE) {
+        throw new ApiError(API_ERROR_FOLDER_PARENT_INVALID_TYPE)
+      }
     }
 
-    if (parentFolder.type !== type) {
-      throw new ApiError(API_ERROR_FOLDER_PARENT_INVALID_TYPE)
-    }
+    throw error
   }
+}
+
+function getFolderById(id: Folder['id'], userId: UserId): Promise<Folder | null> {
+  return prisma.folder.findFirst({ where: { id, userId } })
 }
 
 type UpdateFolderData = Partial<Pick<FolderData, 'name' | 'parentId'>>

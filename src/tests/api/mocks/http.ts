@@ -1,6 +1,6 @@
 import { setupServer } from 'msw/node'
 
-import authHandlers from 'tests/integration/mocks/auth'
+import authHandlers from 'tests/api/mocks/auth'
 
 export { rest } from 'msw'
 

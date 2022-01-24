@@ -42,10 +42,7 @@ const Note: React.FC = () => {
   const [editorState, setEditorState] = useState<EditorState>({ pristine: true })
 
   const contentId = useContentId()
-  const { data, isLoading } = useNote(contentId, {
-    refetchOnReconnect: editorState.pristine,
-    refetchOnWindowFocus: editorState.pristine,
-  })
+  const { data, isLoading } = useNote(contentId, { enabled: editorState.pristine })
 
   const editorClasses = clst('h-full p-3 outline-none', styles.editor)
 

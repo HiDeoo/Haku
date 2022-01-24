@@ -2,7 +2,7 @@ import { type NextApiHandler } from 'next'
 import { type Session } from 'next-auth'
 import { testApiHandler, type TestParameters } from 'next-test-api-route-handler'
 
-import { getTestApiUrl, rest, server } from 'tests/integration/mocks/http'
+import { getTestApiUrl, rest, server } from 'tests/api/mocks/http'
 
 // The test users will have sequential numbered IDs starting at `0`.
 export const TEST_USER_COUNT = 2

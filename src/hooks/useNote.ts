@@ -1,10 +1,10 @@
 import { useQuery, type UseQueryOptions } from 'react-query'
 
-import client, { handleApiError } from 'libs/api/client'
+import client, { isNetworkError } from 'libs/api/client'
 import { type NoteData } from 'libs/db/note'
 
 export default function useNote(id?: NoteData['id'], options?: UseQueryOptions<NoteData>) {
-  const query = useQuery<NoteData>(
+  return useQuery<NoteData>(
     ['note', id],
     () => {
       if (!id) {
@@ -13,12 +13,8 @@ export default function useNote(id?: NoteData['id'], options?: UseQueryOptions<N
 
       return getNote(id)
     },
-    options
+    { useErrorBoundary: isNetworkError, ...options }
   )
-
-  handleApiError(query, true)
-
-  return query
 }
 
 function getNote(id: NoteData['id']) {

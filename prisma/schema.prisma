@@ -10,7 +10,7 @@ datasource db {
 }
 
 model EmailAllowList {
-  id    Int    @id @default(autoincrement())
+  id    String @id @default(cuid())
   email String @unique
 }
 
@@ -23,6 +23,7 @@ model User {
   sessions Session[]
   folders  Folder[]
   notes    Note[]
+  todos    Todo[]
 }
 
 model Session {
@@ -43,18 +44,19 @@ model VerificationToken {
 }
 
 model Folder {
-  id   Int        @id @default(autoincrement())
+  id   String     @id @default(cuid())
   name String     @db.Citext
   type FolderType
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  parentId Int?
+  parentId String?
   parent   Folder?  @relation("FolderToFolder", fields: [parentId], references: [id])
   children Folder[] @relation("FolderToFolder")
 
   notes Note[]
+  todos Todo[]
 
   @@unique([parentId, type, userId, name], map: "Folder_parentId_type_userId_name_unique_constraint")
   @@index([parentId, type, userId], name: "Folder_parentId_type_userId_index")
@@ -66,7 +68,7 @@ enum FolderType {
 }
 
 model Note {
-  id   Int    @id @default(autoincrement())
+  id   String @id @default(cuid())
   name String @db.Citext
   slug String
 
@@ -76,8 +78,36 @@ model Note {
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  folderId Int?
+  folderId String?
   folder   Folder? @relation(fields: [folderId], references: [id], onDelete: Cascade)
 
   @@unique([folderId, userId, name], map: "Note_folderId_userId_name_unique_constraint")
+}
+
+model Todo {
+  id   String @id @default(cuid())
+  name String @db.Citext
+  slug String
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  folderId String?
+  folder   Folder? @relation(fields: [folderId], references: [id], onDelete: Cascade)
+
+  root String[]
+
+  nodes TodoNode[]
+
+  @@unique([folderId, userId, name], map: "Todo_folderId_userId_name_unique_constraint")
+}
+
+model TodoNode {
+  id      String @id @default(cuid())
+  content String
+
+  children String[]
+
+  todoId String?
+  todo   Todo?   @relation(fields: [todoId], references: [id])
 }

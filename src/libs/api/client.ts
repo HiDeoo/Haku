@@ -1,5 +1,5 @@
 import ky, { HTTPError, TimeoutError } from 'ky'
-import { type DefaultOptions, type UseMutationResult, type UseQueryResult } from 'react-query'
+import { type DefaultOptions } from 'react-query'
 
 const client = ky.create({ prefixUrl: '/api', retry: 0 })
 
@@ -9,7 +9,7 @@ export function getQueryClientDefaultOptions(): DefaultOptions {
   return {
     queries: {
       retry(failureCount: number, error: unknown) {
-        if (is404(error)) {
+        if (isClientNotFoundError(error)) {
           return false
         }
 
@@ -19,22 +19,7 @@ export function getQueryClientDefaultOptions(): DefaultOptions {
   }
 }
 
-export function handleApiError<TData = unknown, TError = unknown, TVariables = void, TContext = unknown>(
-  { error }: UseQueryResult<TData, TError> | UseMutationResult<TData, TError, TVariables, TContext>,
-  throwOnNetworkError = false
-) {
-  if (!error) {
-    return
-  }
-
-  if (!throwOnNetworkError && isNetworkError(error)) {
-    return
-  }
-
-  throw error
-}
-
-function isNetworkError(error: unknown) {
+export function isNetworkError(error: unknown) {
   return (
     error instanceof HTTPError ||
     error instanceof TimeoutError ||
@@ -42,9 +27,9 @@ function isNetworkError(error: unknown) {
   )
 }
 
-function is404(error: unknown) {
+function isClientNotFoundError(error: unknown) {
   return error instanceof HTTPError && error.response.status === 404
 }
 
-export type MutationType = 'add' | 'update' | 'remove'
-export type Mutation<TData, TType extends MutationType> = TData & { mutationType: TType }
+export type MutationAction = 'insert' | 'update' | 'delete'
+export type Mutation<TData, TAction extends MutationAction> = TData & { action: TAction }

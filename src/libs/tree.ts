@@ -4,7 +4,7 @@ export function hierarchicalListToTree<TFolder extends HierarchicalListFolder, T
   items: Map<TItem['folderId'], TItem[]>
 ): Tree<TFolder, TItem> {
   const hierarchyError = new Error('Unable to generate tree from an unordered hierarchical list')
-  const indexMap: Record<number, number> = {}
+  const indexMap: Record<string, number> = {}
   const tree: Tree<TFolder, TItem> = []
   let treeFolder: TreeFolder<TFolder, TItem>
 
@@ -83,8 +83,8 @@ function addItemsToFolder<TFolder extends HierarchicalListFolder, TItem extends 
   }
 }
 
-export type HierarchicalListItem = { id: number; folderId: number | null }
-export type HierarchicalListFolder = { id: number; parentId: number | null }
+export type HierarchicalListItem = { id: string; folderId: string | null }
+export type HierarchicalListFolder = { id: string; parentId: string | null }
 
 export type TreeFolder<TFolder extends HierarchicalListFolder, TItem extends HierarchicalListItem> = TFolder & {
   children: TreeFolder<TFolder, TItem>[]

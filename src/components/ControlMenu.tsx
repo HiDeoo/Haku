@@ -70,9 +70,9 @@ const ControlMenu = <TItem,>({
 
             return (
               <li
+                key={`${itemToString(item)}-${index}`}
                 {...getItemProps({ item, index })}
                 className={menuItemClasses}
-                key={`${itemToString(item)}-${index}`}
                 dangerouslySetInnerHTML={itemToInnerHtml ? { __html: itemToInnerHtml(item, isHighlighted) } : undefined}
               >
                 {itemToInnerHtml ? null : itemToString(item)}

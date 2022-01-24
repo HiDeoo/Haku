@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { getTestApiUrl } from 'tests/integration/mocks/http'
+import { getTestApiUrl } from 'tests/api/mocks/http'
 
 const handlers = [
   rest.get(getTestApiUrl('auth/session'), (_req, res, ctx) =>

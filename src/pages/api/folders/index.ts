@@ -7,7 +7,7 @@ import { addFolder, type FolderData } from 'libs/db/folder'
 
 const postBodySchema = z.object({
   name: z.string(),
-  parentId: z.number().nullable().optional(),
+  parentId: z.string().nullable().optional(),
   type: zFolderType,
 })
 
@@ -22,6 +22,7 @@ export default route
 
 async function postHandler(req: ValidatedApiRequest<{ body: AddFolderBody }>, res: NextApiResponse<FolderData>) {
   const { userId } = getApiRequestUser(req)
+
   const folder = await addFolder(userId, req.body.type, req.body.name, req.body.parentId)
 
   return res.status(200).json(folder)
