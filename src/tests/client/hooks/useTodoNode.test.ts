@@ -396,6 +396,159 @@ describe('useTodoNode', () => {
       expect(todoMutations.current[node.id]).toBeUndefined()
     })
   })
+
+  describe('nestNode', () => {
+    test('should nest a todo node at the root', () => {
+      const { children, nodes } = setFakeTodoNodes([{}, {}])
+      const node = getTodoNodeFromIndexes(nodes, children, 1)
+      const prevSibbling = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+
+      act(() => {
+        result.current.nestNode({ id: node.id, parentId: node.parentId })
+      })
+
+      expect(result.current.node?.parentId).toBe(prevSibbling.id)
+
+      expect(todoChildren.current.root.length).toBe(1)
+      expect(todoChildren.current.root[0]).toBe(prevSibbling.id)
+
+      expect(todoChildren.current[prevSibbling.id]?.length).toBe(1)
+      expect(todoChildren.current[prevSibbling.id]?.[0]).toBe(node.id)
+
+      expect(todoMutations.current[node.id]).toBe('update')
+      expect(todoMutations.current[prevSibbling.id]).toBe('update')
+    })
+
+    test('should not nest a todo node at the root without a previous sibbling', () => {
+      const { children, nodes } = setFakeTodoNodes([{}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+
+      act(() => {
+        result.current.nestNode({ id: node.id, parentId: node.parentId })
+      })
+
+      expect(result.current.node?.parentId).toBe(node.parentId)
+
+      expect(todoChildren.current.root.length).toBe(1)
+      expect(todoChildren.current.root[0]).toBe(node.id)
+
+      expect(todoMutations.current[node.id]).toBeUndefined()
+    })
+
+    test('should nest a nested todo node', () => {
+      const { children, nodes } = setFakeTodoNodes([{ children: [{}, {}] }])
+      const node = getTodoNodeFromIndexes(nodes, children, 0, 1)
+      const parent = getTodoNodeFromIndexes(nodes, children, 0)
+      const prevSibbling = getTodoNodeFromIndexes(nodes, children, 0, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+
+      act(() => {
+        result.current.nestNode({ id: node.id, parentId: node.parentId })
+      })
+
+      expect(result.current.node?.parentId).toBe(prevSibbling.id)
+
+      expect(todoChildren.current.root.length).toBe(1)
+      expect(todoChildren.current.root[0]).toBe(parent.id)
+
+      expect(todoChildren.current[prevSibbling.id]?.length).toBe(1)
+      expect(todoChildren.current[prevSibbling.id]?.[0]).toBe(node.id)
+
+      expect(todoMutations.current[node.id]).toBe('update')
+      expect(todoMutations.current[prevSibbling.id]).toBe('update')
+      expect(todoMutations.current[parent.id]).toBe('update')
+    })
+
+    test('should not nest a nested todo node without a previous sibbling', () => {
+      const { children, nodes } = setFakeTodoNodes([{ children: [{}] }])
+      const node = getTodoNodeFromIndexes(nodes, children, 0, 0)
+      const parent = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+
+      act(() => {
+        result.current.nestNode({ id: node.id, parentId: node.parentId })
+      })
+
+      expect(result.current.node?.parentId).toBe(parent.id)
+
+      expect(todoChildren.current.root.length).toBe(1)
+
+      expect(todoChildren.current[parent.id]?.length).toBe(1)
+      expect(todoChildren.current[parent.id]?.[0]).toBe(node.id)
+
+      expect(todoMutations.current[node.id]).toBeUndefined()
+      expect(todoMutations.current[parent.id]).toBeUndefined()
+    })
+
+    test('should persist the mutation type when nesting a new todo node', () => {
+      const { children, nodes } = setFakeTodoNodes([{}, {}])
+      const node = getTodoNodeFromIndexes(nodes, children, 1)
+      const prevSibbling = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
+
+      act(() => {
+        todoMutations.current[1]((prevMutations) => ({ ...prevMutations, [node.id]: 'insert' }))
+        todoMutations.current[1]((prevMutations) => ({ ...prevMutations, [prevSibbling.id]: 'insert' }))
+
+        result.current.nestNode({ id: node.id, parentId: node.parentId })
+      })
+
+      expect(result.current.node?.parentId).toBe(prevSibbling.id)
+
+      expect(todoChildren.current.root.length).toBe(1)
+      expect(todoChildren.current.root[0]).toBe(prevSibbling.id)
+
+      expect(todoChildren.current[prevSibbling.id]?.length).toBe(1)
+      expect(todoChildren.current[prevSibbling.id]?.[0]).toBe(node.id)
+
+      expect(todoMutations.current[0][node.id]).toBe('insert')
+      expect(todoMutations.current[0][prevSibbling.id]).toBe('insert')
+    })
+
+    test('should nest a todo node by adding it at the end of the previous sibbling children', () => {
+      const { children, nodes } = setFakeTodoNodes([{ children: [{}] }, {}])
+      const node = getTodoNodeFromIndexes(nodes, children, 1)
+      const prevSibbling = getTodoNodeFromIndexes(nodes, children, 0)
+      const prevSibblingFirstChild = getTodoNodeFromIndexes(nodes, children, 0, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+
+      act(() => {
+        result.current.nestNode({ id: node.id, parentId: node.parentId })
+      })
+
+      expect(result.current.node?.parentId).toBe(prevSibbling.id)
+
+      expect(todoChildren.current.root.length).toBe(1)
+      expect(todoChildren.current.root[0]).toBe(prevSibbling.id)
+
+      expect(todoChildren.current[prevSibbling.id]?.length).toBe(2)
+      expect(todoChildren.current[prevSibbling.id]?.[0]).toBe(prevSibblingFirstChild.id)
+      expect(todoChildren.current[prevSibbling.id]?.[1]).toBe(node.id)
+
+      expect(todoMutations.current[node.id]).toBe('update')
+      expect(todoMutations.current[prevSibbling.id]).toBe('update')
+    })
+  })
 })
 
 function getTodoNodeFromIndexes(
