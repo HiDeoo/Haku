@@ -47,3 +47,6 @@ jobs:
 
       - name: Test API
         run: pnpm test:api
+
+      - name: Test Client
+        run: pnpm test:client
