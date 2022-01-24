@@ -1,5 +1,3 @@
-import assert from 'assert'
-
 import faker from '@faker-js/faker'
 import cuid from 'cuid'
 import { useAtom } from 'jotai'
@@ -33,135 +31,159 @@ describe('useTodoNode', () => {
 
     test('should return a root todo node', () => {
       const { children, nodes } = setFakeTodoNodes([{}])
-      const id = children.root[0]
-      assert(id)
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
 
-      const { result } = renderHook(() => useTodoNode(id))
+      const { result } = renderHook(() => useTodoNode(node.id))
 
-      expect(isEqualTodoNode(nodes, id, result.current.node)).toBe(true)
+      expect(isEqualTodoNode(nodes, node.id, result.current.node)).toBe(true)
     })
 
     test('should return a nested todo node', () => {
       const { children, nodes } = setFakeTodoNodes([{ children: [{}] }])
-      const id = children[children.root[0] ?? '']?.[0]
-      assert(id)
+      const node = getTodoNodeFromIndexes(nodes, children, 0, 0)
 
-      const { result } = renderHook(() => useTodoNode(id))
+      const { result } = renderHook(() => useTodoNode(node.id))
 
-      expect(isEqualTodoNode(nodes, id, result.current.node)).toBe(true)
+      expect(isEqualTodoNode(nodes, node.id, result.current.node)).toBe(true)
     })
   })
 
   describe('updateContent', () => {
     test('should update a root todo node content', () => {
-      const { children } = setFakeTodoNodes([{}])
-      const id = children.root[0]
-      assert(id)
+      const { children, nodes } = setFakeTodoNodes([{}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
 
       const newContent = 'new content'
 
-      const { result } = renderHook(() => useTodoNode(id))
+      const { result } = renderHook(() => useTodoNode(node.id))
 
       act(() => {
-        result.current.updateContent({ id, content: newContent })
+        result.current.updateContent({ id: node.id, content: newContent })
       })
 
       expect(result.current.node?.content).toBe(newContent)
     })
 
     test('should update a nested todo node content', () => {
-      const { children } = setFakeTodoNodes([{ children: [{}] }])
-      const id = children[children.root[0] ?? '']?.[0]
-      assert(id)
+      const { children, nodes } = setFakeTodoNodes([{ children: [{}] }])
+      const node = getTodoNodeFromIndexes(nodes, children, 0, 0)
 
       const newContent = 'new content'
 
-      const { result } = renderHook(() => useTodoNode(id))
+      const { result } = renderHook(() => useTodoNode(node.id))
 
       act(() => {
-        result.current.updateContent({ id, content: newContent })
+        result.current.updateContent({ id: node.id, content: newContent })
       })
 
       expect(result.current.node?.content).toBe(newContent)
     })
 
     test('should mark an existing todo node as updated', () => {
-      const { children } = setFakeTodoNodes([{}])
-      const id = children.root[0]
-      assert(id)
+      const { children, nodes } = setFakeTodoNodes([{}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
 
-      const { result } = renderHook(() => useTodoNode(id))
+      const { result } = renderHook(() => useTodoNode(node.id))
       const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
 
       act(() => {
-        result.current.updateContent({ id, content: 'new content' })
+        result.current.updateContent({ id: node.id, content: 'new content' })
       })
 
-      expect(todoMutations.current[id]).toBe('update')
+      expect(todoMutations.current[node.id]).toBe('update')
     })
 
     test('should not mark a new todo node as updated', () => {
-      const { children } = setFakeTodoNodes([{}])
-      const id = children.root[0]
-      assert(id)
+      const { children, nodes } = setFakeTodoNodes([{}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
 
-      const { result } = renderHook(() => useTodoNode(id))
+      const { result } = renderHook(() => useTodoNode(node.id))
       const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
 
       act(() => {
-        todoMutations.current[1]((prevMutations) => ({ ...prevMutations, [id]: 'insert' }))
+        todoMutations.current[1]((prevMutations) => ({ ...prevMutations, [node.id]: 'insert' }))
 
-        result.current.updateContent({ id, content: 'new content' })
+        result.current.updateContent({ id: node.id, content: 'new content' })
       })
 
-      expect(todoMutations.current[0][id]).toBe('insert')
+      expect(todoMutations.current[0][node.id]).toBe('insert')
     })
 
     test('should not update a nonexisting todo node content', () => {
       const { children, nodes } = setFakeTodoNodes([{}])
-      const id = children.root[0]
-      assert(id)
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
 
       const newContent = 'new content'
 
-      const { result } = renderHook(() => useTodoNode(id))
+      const { result } = renderHook(() => useTodoNode(node.id))
 
       act(() => {
         result.current.updateContent({ id: 'nonexistingId', content: newContent })
       })
 
-      expect(result.current.node?.content).toBe(nodes[id]?.content)
+      expect(result.current.node?.content).toBe(nodes[node.id]?.content)
     })
 
     test('should not update a deleted todo node content', () => {
-      const { children } = setFakeTodoNodes([{}])
-      const id = children.root[0]
-      assert(id)
+      const { children, nodes } = setFakeTodoNodes([{}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
 
-      const { result } = renderHook(() => useTodoNode(id))
+      const { result } = renderHook(() => useTodoNode(node.id))
       const { result: todoNodes } = renderHook(() => useAtom(todoNodesAtom))
       const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
 
       act(() => {
-        const { [id]: nodeToDelete, ...otherNodes } = todoNodes.current[0]
+        const { [node.id]: nodeToDelete, ...otherNodes } = todoNodes.current[0]
         todoNodes.current[1](otherNodes)
 
-        todoMutations.current[1]((prevMutations) => ({ ...prevMutations, [id]: 'delete' }))
+        todoMutations.current[1]((prevMutations) => ({ ...prevMutations, [node.id]: 'delete' }))
 
-        result.current.updateContent({ id, content: 'new content' })
+        result.current.updateContent({ id: node.id, content: 'new content' })
       })
 
       expect(result.current.node).toBeUndefined()
-      expect(todoMutations.current[0][id]).toBe('delete')
+      expect(todoMutations.current[0][node.id]).toBe('delete')
     })
   })
 })
 
-function isEqualTodoNode(
+function getTodoNodeFromIndexes(
   nodes: TodoNodeDataMap,
-  id: TodoNodeData['id'] | undefined,
-  node: TodoNodeDataWithParentId | undefined
-) {
+  children: TodoNodeChildrenMapWithRoot,
+  ...indexes: number[]
+): TodoNodeDataWithParentId {
+  const error = new Error(`Unable to find todo node at indexes: ${indexes.join(' - ')}.`)
+
+  const [rootIndex, ...nestedIndexes] = indexes
+  const rootId = children.root[rootIndex ?? -1]
+
+  if (!rootId) {
+    throw error
+  }
+
+  let currentNodeId: string = rootId
+
+  for (const nestedIndex of nestedIndexes) {
+    const nestedChildren = children[currentNodeId]
+    const childId = nestedChildren?.[nestedIndex]
+
+    if (!childId) {
+      throw error
+    }
+
+    currentNodeId = childId
+  }
+
+  const node = nodes[currentNodeId]
+
+  if (!node) {
+    throw error
+  }
+
+  return node
+}
+
+function isEqualTodoNode(nodes: TodoNodeDataMap, id: TodoNodeData['id'], node: TodoNodeDataWithParentId | undefined) {
   if (!id || !node) {
     return false
   }
