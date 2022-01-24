@@ -161,31 +161,47 @@ export const unnestNodeAtom = atom(null, (get, set, { id, parentId }: AtomUpdate
     return
   }
 
-  if (!parent.parentId) {
-    set(todoChildrenAtom, (prevChildren) => {
-      const parentChildren = prevChildren[parentId]
+  set(todoChildrenAtom, (prevChildren) => {
+    const parentChildren = prevChildren[parentId]
 
-      if (!parentChildren) {
-        return prevChildren
-      }
+    if (!parentChildren) {
+      return prevChildren
+    }
 
-      const nodeIndex = parentChildren.indexOf(id)
-      const parentIndex = prevChildren.root.indexOf(parentId)
+    const nodeIndex = parentChildren.indexOf(id)
+    const grandParentId = parent.parentId ?? 'root'
+    const grandParentChildren = prevChildren[grandParentId] ?? []
+    const parentIndex = grandParentChildren.indexOf(parentId)
 
-      return {
-        ...prevChildren,
-        [parentId]: [...parentChildren.slice(0, nodeIndex), ...parentChildren.slice(nodeIndex + 1)],
-        root: [...prevChildren.root.slice(0, parentIndex + 1), id, ...prevChildren.root.slice(parentIndex + 1)],
-      }
-    })
+    return {
+      ...prevChildren,
+      [parentId]: [...parentChildren.slice(0, nodeIndex), ...parentChildren.slice(nodeIndex + 1)],
+      [grandParentId]: [
+        ...grandParentChildren.slice(0, parentIndex + 1),
+        id,
+        ...grandParentChildren.slice(parentIndex + 1),
+      ],
+    }
+  })
 
-    set(todoNodesAtom, (prevNodes) => ({ ...prevNodes, [id]: { ...node, parentId: undefined } }))
-  } else {
-    // TODO(HiDeoo) Handle not at root + 1
-  }
+  set(todoNodesAtom, (prevNodes) => ({
+    ...prevNodes,
+    [id]: { ...node, parentId: parent.parentId },
+  }))
 
-  // TODO(HiDeoo) Refactor / extract
-  set(todoNodeMutations, (prevMutations) => ({ ...prevMutations, [id]: prevMutations[id] ?? 'update' }))
+  set(todoNodeMutations, (prevMutations) => {
+    const newState: typeof prevMutations = {
+      ...prevMutations,
+      [id]: prevMutations[id] ?? 'update',
+      [parentId]: prevMutations[parentId] ?? 'update',
+    }
+
+    if (parent.parentId) {
+      newState[parent.parentId] = newState[parent.parentId] ?? 'update'
+    }
+
+    return newState
+  })
 })
 
 interface UpdateContentAtomUpdate {
