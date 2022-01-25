@@ -9,9 +9,6 @@ export const todoNodesAtom = atom<TodoNodesData['nodes']>({})
 
 export const todoNodeMutations = atom<Record<TodoNodeData['id'], 'insert' | 'update' | 'delete'>>({})
 
-// TODO(HiDeoo) When done with all possible mutations, make sure to review all entities marked as mutated and to include
-// all of them.
-
 export const updateContentAtom = atom(null, (get, set, { content, id }: UpdateContentAtomUpdate) => {
   const node = get(todoNodesAtom)[id]
 
