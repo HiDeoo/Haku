@@ -36,4 +36,4 @@ function updateNote({ id, ...data }: UpdateData) {
 
 type UpdateData = Required<Pick<UpdateNoteBody, 'html' | 'text'>> & UpdateNoteQuery
 
-export type ContentMutation = Mutation<UpdateData, 'update'>
+type ContentMutation = Mutation<UpdateData, 'update'>

@@ -37,10 +37,10 @@ const ContentTypeSwitch: React.FC = () => {
       <Tooltip content={`Switch to ${altContentType.cType}s`}>
         <Root checked={isBrowsingNotes} onCheckedChange={onCheckedChange} className={rootClasses}>
           <Thumb asChild>
-            <div className="grid gap-1.5 grid-cols-2 relative">
+            <div className="relative grid grid-cols-2 gap-1.5">
               <Icon icon={RiBookletLine} className={leftNodeClasses} label="Notes" />
               <Icon icon={RiTodoLine} className={rightNodeClasses} label="Todos" />
-              <div className="absolute grid gap-1.5 grid-cols-2 opacity-20 group-hover:text-blue-600 group-hover:opacity-100">
+              <div className="absolute grid grid-cols-2 gap-1.5 opacity-20 group-hover:text-blue-600 group-hover:opacity-100">
                 <Icon icon={RiBookletLine} className="top-0 left-0" />
                 <Icon icon={RiTodoLine} className="top-0 right-0" />
               </div>
@@ -48,7 +48,7 @@ const ContentTypeSwitch: React.FC = () => {
           </Thumb>
         </Root>
       </Tooltip>
-      <div className="mr-1.5 border-l border-l-zinc-600/30 border-r border-r-black/25" />
+      <div className="mr-1.5 border-l border-r border-l-zinc-600/30 border-r-black/25" />
     </>
   )
 }

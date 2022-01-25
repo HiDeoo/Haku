@@ -47,8 +47,8 @@ const ContentTree: React.FC = () => {
 
   return (
     <Root orientation="vertical" asChild>
-      <Flex as="nav" direction="col" flex className="overflow-y-auto relative">
-        <div className="absolute inset-0 pointer-events-none shadow-[inset_-1px_0_1px_0_rgba(0,0,0,0.4)]" />
+      <Flex as="nav" direction="col" flex className="relative overflow-y-auto">
+        <div className="pointer-events-none absolute inset-0 shadow-[inset_-1px_0_1px_0_rgba(0,0,0,0.4)]" />
         {data?.length == 0 ? (
           <Flex
             fullWidth
@@ -56,7 +56,7 @@ const ContentTree: React.FC = () => {
             direction="col"
             alignItems="center"
             justifyContent="center"
-            className="text-center gap-6 p-3"
+            className="gap-6 p-3 text-center"
           >
             <span>Start by creating a new {contentType.lcType}.</span>
             <Button onPress={openNewContentModal} primary>

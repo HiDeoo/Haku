@@ -13,7 +13,7 @@
   }
 
   h1 {
-    @apply text-4xl font-bold mt-0;
+    @apply mt-0 text-4xl font-bold;
   }
 
   h2 {
@@ -45,7 +45,7 @@
   }
 
   blockquote {
-    @apply pl-3 border-l-[3px] border-l-zinc-600 italic;
+    @apply border-l-[3px] border-l-zinc-600 pl-3 italic;
   }
 
   ol {
@@ -62,7 +62,7 @@
     @apply relative;
 
     &::before {
-      @apply align-top absolute text-zinc-500;
+      @apply absolute align-top text-zinc-500;
     }
   }
 
@@ -70,7 +70,7 @@
     counter-increment: li;
 
     &::before {
-      @apply -left-9 -top-0 text-right w-8;
+      @apply -left-9 -top-0 w-8 text-right;
 
       content: '.' counter(li);
       direction: rtl;
@@ -89,19 +89,19 @@
   }
 
   code:not(pre > code) {
-    @apply rounded px-[0.2rem] py-px bg-zinc-600;
+    @apply rounded bg-zinc-600 px-[0.2rem] py-px;
   }
 
   mark {
-    @apply rounded px-[0.2rem] py-px bg-amber-300 text-zinc-900;
+    @apply rounded bg-amber-300 px-[0.2rem] py-px text-zinc-900;
   }
 
   a {
-    @apply underline underline-offset-1 text-blue-200 cursor-pointer hover:no-underline;
+    @apply cursor-pointer text-blue-200 underline underline-offset-1 hover:no-underline;
   }
 
   pre {
-    @apply rounded rounded-tr-none px-2 py-1.5 bg-zinc-700 mt-8;
+    @apply mt-8 rounded rounded-tr-none bg-zinc-700 px-2 py-1.5;
 
     /**
      * Based on GitHub Dark.

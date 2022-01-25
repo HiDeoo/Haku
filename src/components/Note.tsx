@@ -117,7 +117,7 @@ const Note: React.FC = () => {
           ))}
         </Shimmer>
       ) : (
-        <EditorContent editor={editor} className="grid w-full h-full overflow-y-auto" />
+        <EditorContent editor={editor} className="grid h-full w-full overflow-y-auto" />
       )}
       <NoteInspector
         editor={editor}

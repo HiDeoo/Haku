@@ -63,11 +63,11 @@ div#__next {
 }
 
 body {
-  @apply bg-zinc-800 text-blue-50 text-sm caret-blue-400;
+  @apply bg-zinc-800 text-sm text-blue-50 caret-blue-400;
 }
 
 div#__next {
-  @apply flex justify-center items-center overflow-hidden;
+  @apply flex items-center justify-center overflow-hidden;
 }
 
 ::selection {

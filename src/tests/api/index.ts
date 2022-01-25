@@ -46,11 +46,9 @@ function mapDynamicRouteParams(params: TestApiRouteOptions['dynamicRouteParams']
     return
   }
 
-  return Object.entries(params).reduce((acc, [key, value]) => {
-    acc[key] = typeof value === 'number' ? value.toString() : value
-
-    return acc
-  }, {} as NonNullable<TestParameters['params']>)
+  return Object.fromEntries(
+    Object.entries(params).map(([key, value]) => [key, typeof value === 'number' ? value.toString() : value])
+  )
 }
 
 interface TestApiRouteOptions {

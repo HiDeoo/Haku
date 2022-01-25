@@ -66,7 +66,7 @@ function isDbErrorMetaWithFieldName(meta: unknown): meta is DbErrorMetaWithField
 }
 
 // Multi-column constraints should be identified using a string being an underscore separated list of columns.
-export interface DbErrorHandlerOptions {
+interface DbErrorHandlerOptions {
   delete?: string
   fKey?: Record<string, string>
   unique?: Record<string, string>

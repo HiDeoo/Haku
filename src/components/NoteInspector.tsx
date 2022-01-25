@@ -148,7 +148,7 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
             Save
           </Inspector.Button>
           <div className={syncClasses}>{syncText}</div>
-          <div className="basis-full h-0" />
+          <div className="h-0 basis-full" />
           <Inspector.IconButton
             tooltip="Undo"
             onPress={undo}
@@ -260,7 +260,7 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
             title="Table of contents"
             titleClassName="pt-2 pb-1.5 px-3 mb-0"
             sectionClassName="shrink p-0 min-h-[150px]"
-            className="flex-col gap-1.5 overflow-y-auto flex-nowrap pt-1 pb-3 px-3"
+            className="flex-col flex-nowrap gap-1.5 overflow-y-auto px-3 pt-1 pb-3"
           >
             {editorState.toc.map((entry) => (
               <TocEntry key={entry.id} entry={entry} editor={editor} />
@@ -288,7 +288,7 @@ const TocEntry: React.FC<TocEntryProps> = ({ editor, entry }) => {
   return (
     <Flex
       alignItems="center"
-      className="text-blue-100/90 w-full"
+      className="w-full text-blue-100/90"
       style={{ paddingLeft: `calc(0.625rem * (${entry.level - 1}))` }}
     >
       <Icon icon={RiArrowDropRightFill} className="mr-0.5 mt-px shrink-0" />

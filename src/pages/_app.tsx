@@ -20,6 +20,7 @@ function Haku({ Component, pageProps: { session, ...pageProps } }: AppPropsWithL
     <ErrorBoundary>
       <Head>
         <title>Haku</title>
+        <meta name="color-scheme" content="dark" />
       </Head>
       <QueryClientProvider client={queryClient}>
         <SessionProvider session={session}>

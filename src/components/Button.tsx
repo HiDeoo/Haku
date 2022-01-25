@@ -68,7 +68,7 @@ const Button = forwardRef<HTMLButtonElement, React.PropsWithChildren<ButtonProps
       >
         {loading ? (
           <Flex justifyContent="center">
-            <Spinner className="h-4 w-4 my-0.5" color="text-blue-50/80" />
+            <Spinner className="my-0.5 h-4 w-4" color="text-blue-50/80" />
           </Flex>
         ) : (
           children

@@ -9,7 +9,7 @@ import clst from 'styles/clst'
 
 const Inspector: InspectorComponent = ({ children, disabled }) => {
   return (
-    <Flex direction="col" className="shrink-0 w-[15.2rem] overflow-y-auto bg-zinc-900 border-l border-zinc-600/50">
+    <Flex direction="col" className="w-[15.2rem] shrink-0 overflow-y-auto border-l border-zinc-600/50 bg-zinc-900">
       {Children.map(children, (child) => {
         if (!isValidElement(child)) {
           return null
@@ -144,7 +144,7 @@ const InspectorIconMenu: React.FC<InspectorIconButtonMenuProps> = ({ children, d
         />
       </Trigger>
       <Content loop onCloseAutoFocus={onCloseAutoFocus}>
-        <Flex direction="col" className="rounded-md mt-[2px] bg-zinc-700 shadow-sm shadow-black/50">
+        <Flex direction="col" className="mt-[2px] rounded-md bg-zinc-700 shadow-sm shadow-black/50">
           {children}
         </Flex>
       </Content>
