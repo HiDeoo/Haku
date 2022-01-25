@@ -1,6 +1,7 @@
 import cuid from 'cuid'
 import { atom } from 'jotai'
 
+import { addAtIndex, removeAtIndex } from 'libs/array'
 import { type TodoNodeData, type TodoNodesData } from 'libs/db/todoNodes'
 
 export const todoChildrenAtom = atom<TodoNodesData['children']>({ root: [] })
@@ -48,7 +49,7 @@ export const addNodeAtom = atom(null, (get, set, { id, parentId = 'root' }: Atom
 
     const newParentChildren = addAsChildren
       ? [newNodeId, ...(prevChildren[id] ?? [])]
-      : [...parentChildren.slice(0, newNodeIndex), newNodeId, ...parentChildren.slice(newNodeIndex)]
+      : addAtIndex(parentChildren, newNodeIndex, newNodeId)
 
     return {
       ...prevChildren,
@@ -86,7 +87,7 @@ export const deleteNodeAtom = atom(null, (get, set, { id, parentId = 'root' }: A
     const parentChildren = prevChildren[parentId] ?? []
     const nodeIndex = prevChildren[parentId]?.indexOf(id) ?? -1
 
-    const newParentChildren = [...parentChildren.slice(0, nodeIndex), ...parentChildren.slice(nodeIndex + 1)]
+    const newParentChildren = removeAtIndex(parentChildren, nodeIndex)
 
     return {
       ...prevChildren,
@@ -126,7 +127,7 @@ export const nestNodeAtom = atom(null, (get, set, { id, parentId = 'root' }: Ato
 
     return {
       ...prevChildren,
-      [parentId]: [...parentChildren.slice(0, nodeIndex), ...parentChildren.slice(nodeIndex + 1)],
+      [parentId]: removeAtIndex(parentChildren, nodeIndex),
       [sibblingId]: [...(sibblingChildren ?? []), id],
     }
   })
@@ -171,12 +172,8 @@ export const unnestNodeAtom = atom(null, (get, set, { id, parentId }: AtomUpdate
 
     return {
       ...prevChildren,
-      [parentId]: [...parentChildren.slice(0, nodeIndex), ...parentChildren.slice(nodeIndex + 1)],
-      [grandParentId]: [
-        ...grandParentChildren.slice(0, parentIndex + 1),
-        id,
-        ...grandParentChildren.slice(parentIndex + 1),
-      ],
+      [parentId]: removeAtIndex(parentChildren, nodeIndex),
+      [grandParentId]: addAtIndex(grandParentChildren, parentIndex + 1, id),
     }
   })
 
