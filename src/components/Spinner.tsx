@@ -19,7 +19,7 @@ const Spinner: React.FC<SpinnerProps> = ({ className, color, delay }) => {
         r="20"
         fill="none"
         strokeWidth="5"
-        className="stroke-current motion-safe:animate-dash [stroke-linecap:round]"
+        className="stroke-current [stroke-linecap:round] motion-safe:animate-dash"
       ></circle>
     </svg>
   )

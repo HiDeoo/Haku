@@ -22,7 +22,7 @@ const Modal: ModalComponent = ({ children, contentClassName, disabled, onOpenCha
     <Root open={opened} onOpenChange={onOpenChange}>
       {trigger ? <Trigger asChild>{trigger}</Trigger> : null}
       <Portal>
-        <Overlay className="z-40 fixed inset-0 flex flex-col  p-10 animate-modal-overlay overflow-y-auto bg-zinc-900/80">
+        <Overlay className="animate-modal-overlay fixed inset-0 z-40 flex  flex-col overflow-y-auto bg-zinc-900/80 p-10">
           <Content
             className={contentClasses}
             onEscapeKeyDown={onCloseInteraction}
@@ -33,7 +33,7 @@ const Modal: ModalComponent = ({ children, contentClassName, disabled, onOpenCha
               as="header"
               alignItems="center"
               justifyContent="between"
-              className="p-0 pl-4 pr-2 py-2.5 bg-zinc-900 border-b border-black/10 font-bold"
+              className="border-b border-black/10 bg-zinc-900 p-0 py-2.5 pl-4 pr-2 font-bold"
             >
               {title}
               <Close asChild>
@@ -42,7 +42,7 @@ const Modal: ModalComponent = ({ children, contentClassName, disabled, onOpenCha
                   tooltip="Close"
                   icon={RiCloseLine}
                   disabled={disabled}
-                  className="rounded-full p-1 ml-2.5"
+                  className="ml-2.5 rounded-full p-1"
                 />
               </Close>
             </Flex>

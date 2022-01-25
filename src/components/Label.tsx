@@ -8,7 +8,7 @@ const Label: React.FC<LabelProps> = ({ children, disabled, errorMessage, errorMe
       <label {...props} className="inline-block w-full">
         {children}
         {errorMessage ? (
-          <span {...errorMessageProps} className="ml-1.5 text-xs relative -top-px text-red-400 italic">
+          <span {...errorMessageProps} className="relative -top-px ml-1.5 text-xs italic text-red-400">
             ({errorMessage})
           </span>
         ) : null}

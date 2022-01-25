@@ -16,7 +16,7 @@ const ContextMenu: ContextMenuComponent = ({ children, trigger }) => {
   return (
     <Root>
       <Trigger asChild>{trigger}</Trigger>
-      <Content className="bg-zinc-700 shadow shadow-black/75 rounded-md overflow-hidden min-w-[8rem] p-1.5">
+      <Content className="min-w-[8rem] overflow-hidden rounded-md bg-zinc-700 p-1.5 shadow shadow-black/75">
         {children}
       </Content>
     </Root>
@@ -50,7 +50,7 @@ const Label: React.FC<LabelProps> = ({ text }) => {
 ContextMenu.Label = Label
 
 const Separator: React.FC = () => {
-  return <MenuSeparator className="h-px my-1 bg-blue-50/25" />
+  return <MenuSeparator className="my-1 h-px bg-blue-50/25" />
 }
 
 ContextMenu.Separator = Separator
