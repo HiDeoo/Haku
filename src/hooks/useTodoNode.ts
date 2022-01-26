@@ -11,6 +11,7 @@ import {
   todoNodesAtom,
   unnestNodeAtom,
   updateContentAtom,
+  getClosestNode,
 } from 'atoms/todos'
 import { type TodoNodeData } from 'libs/db/todoNodes'
 
@@ -25,18 +26,11 @@ export default function useTodoNode(id: TodoNodeData['id']) {
   )
 
   const getClosestNodeId = useAtomCallback(
-    useCallback((get, _set, { direction, id, parentId = 'root' }: AtomParamsWithDirection) => {
-      const parentChildren = get(todoChildrenAtom)[parentId]
-
-      if (!parentChildren) {
-        return
-      }
-
-      const nodeIndex = parentChildren.indexOf(id)
-      const sibblingId = parentChildren[nodeIndex + (direction === 'up' ? -1 : 1)]
-
-      return sibblingId
-    }, [])
+    useCallback(
+      (get, _set, params: AtomParamsWithDirection) =>
+        getClosestNode(params, get(todoNodesAtom), get(todoChildrenAtom))?.id,
+      []
+    )
   )
 
   const node = useAtomValue(selectAtom(todoNodesAtom, getNodeById))

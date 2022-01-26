@@ -29,12 +29,12 @@ export function getElementSelectionPosition(element: HTMLElement): SelectionPosi
 
       selectionRect = range.getBoundingClientRect()
 
-      tmpNode.remove()
-
       // If we still don't have a valid bounding rectangle, bail out.
       if (range.getClientRects().length === 0) {
         return selectionPosition
       }
+
+      tmpNode.remove()
     }
   }
 

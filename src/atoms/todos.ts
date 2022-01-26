@@ -2,7 +2,7 @@ import cuid from 'cuid'
 import { atom } from 'jotai'
 
 import { addAtIndex, removeAtIndex } from 'libs/array'
-import { type TodoNodeData, type TodoNodesData } from 'libs/db/todoNodes'
+import { type TodoNodeDataWithParentId, type TodoNodeData, type TodoNodesData } from 'libs/db/todoNodes'
 
 export const todoChildrenAtom = atom<TodoNodesData['children']>({ root: [] })
 
@@ -228,6 +228,61 @@ export const moveNodeAtom = atom(null, (get, set, { direction, id, parentId = 'r
     }))
   }
 })
+
+export function getClosestNode(
+  { direction, id, parentId = 'root' }: AtomParamsWithDirection,
+  nodes: TodoNodesData['nodes'],
+  children: TodoNodesData['children'],
+  skipChildren = false
+): TodoNodeDataWithParentId | undefined {
+  if (!skipChildren && direction === 'down') {
+    const nodeChildren = children[id]
+    const firstChildId = nodeChildren?.[0]
+
+    if (firstChildId) {
+      return nodes[firstChildId]
+    }
+  }
+
+  const parentChildren = children[parentId]
+
+  if (!parentChildren) {
+    return
+  }
+
+  const nodeIndex = parentChildren.indexOf(id)
+  const sibblingId = parentChildren[nodeIndex + (direction === 'up' ? -1 : 1)]
+
+  if (!sibblingId) {
+    if (direction === 'up') {
+      return nodes[parentId]
+    } else if (direction === 'down' && parentId !== 'root') {
+      return getClosestNode({ direction, id: parentId, parentId: nodes[parentId]?.parentId }, nodes, children, true)
+    }
+
+    return
+  }
+
+  return direction === 'up' ? getLastNestedChildren(sibblingId, nodes, children) : nodes[sibblingId]
+}
+
+function getLastNestedChildren(
+  from: TodoNodeData['id'],
+  nodes: TodoNodesData['nodes'],
+  children: TodoNodesData['children']
+): TodoNodeDataWithParentId | undefined {
+  const nodeChildren = children[from]
+
+  if (nodeChildren) {
+    const lastChildId = nodeChildren[nodeChildren.length - 1]
+
+    if (lastChildId) {
+      return getLastNestedChildren(lastChildId, nodes, children)
+    }
+  }
+
+  return nodes[from]
+}
 
 interface AtomParamsContentUpdate {
   content: string
