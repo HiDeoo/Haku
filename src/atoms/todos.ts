@@ -10,7 +10,7 @@ export const todoNodesAtom = atom<TodoNodesData['nodes']>({})
 
 export const todoNodeMutations = atom<Record<TodoNodeData['id'], 'insert' | 'update' | 'delete'>>({})
 
-export const updateContentAtom = atom(null, (get, set, { content, id }: UpdateContentAtomUpdate) => {
+export const updateContentAtom = atom(null, (get, set, { content, id }: AtomParamsContentUpdate) => {
   const node = get(todoNodesAtom)[id]
 
   if (!node) {
@@ -22,7 +22,7 @@ export const updateContentAtom = atom(null, (get, set, { content, id }: UpdateCo
   set(todoNodesAtom, (prevNodes) => ({ ...prevNodes, [id]: { ...node, content } }))
 })
 
-export const addNodeAtom = atom(null, (get, set, { id, parentId = 'root' }: AtomUpdateWithParentId) => {
+export const addNodeAtom = atom(null, (get, set, { id, parentId = 'root' }: AtomParamsWithParentId) => {
   const newNodeId = cuid()
 
   const children = get(todoChildrenAtom)
@@ -68,7 +68,7 @@ export const addNodeAtom = atom(null, (get, set, { id, parentId = 'root' }: Atom
   })
 })
 
-export const deleteNodeAtom = atom(null, (get, set, { id, parentId = 'root' }: AtomUpdateWithParentId) => {
+export const deleteNodeAtom = atom(null, (get, set, { id, parentId = 'root' }: AtomParamsWithParentId) => {
   if (parentId === 'root') {
     const root = get(todoChildrenAtom).root
 
@@ -106,7 +106,7 @@ export const deleteNodeAtom = atom(null, (get, set, { id, parentId = 'root' }: A
   })
 })
 
-export const nestNodeAtom = atom(null, (get, set, { id, parentId = 'root' }: AtomUpdateWithParentId) => {
+export const nestNodeAtom = atom(null, (get, set, { id, parentId = 'root' }: AtomParamsWithParentId) => {
   const parentChildren = get(todoChildrenAtom)[parentId]
 
   if (!parentChildren) {
@@ -145,7 +145,7 @@ export const nestNodeAtom = atom(null, (get, set, { id, parentId = 'root' }: Ato
   }))
 })
 
-export const unnestNodeAtom = atom(null, (get, set, { id, parentId }: AtomUpdateWithParentId) => {
+export const unnestNodeAtom = atom(null, (get, set, { id, parentId }: AtomParamsWithParentId) => {
   if (!parentId) {
     return
   }
@@ -197,7 +197,7 @@ export const unnestNodeAtom = atom(null, (get, set, { id, parentId }: AtomUpdate
   })
 })
 
-export const moveNodeAtom = atom(null, (get, set, { direction, id, parentId = 'root' }: MoveNodeAtomUpdate) => {
+export const moveNodeAtom = atom(null, (get, set, { direction, id, parentId = 'root' }: AtomParamsWithDirection) => {
   const parentChildren = get(todoChildrenAtom)[parentId]
 
   if (!parentChildren) {
@@ -229,16 +229,16 @@ export const moveNodeAtom = atom(null, (get, set, { direction, id, parentId = 'r
   }
 })
 
-interface UpdateContentAtomUpdate {
+interface AtomParamsContentUpdate {
   content: string
   id: TodoNodeData['id']
 }
 
-interface MoveNodeAtomUpdate extends AtomUpdateWithParentId {
+export interface AtomParamsWithDirection extends AtomParamsWithParentId {
   direction: 'down' | 'up'
 }
 
-interface AtomUpdateWithParentId {
+interface AtomParamsWithParentId {
   id: TodoNodeData['id']
   parentId?: TodoNodeData['id']
 }
