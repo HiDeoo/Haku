@@ -5,7 +5,7 @@ import { type AtomParamsWithDirection } from 'atoms/todos'
 import TodoNodeChildren from 'components/TodoNodeChildren'
 import useTodoNode, { TodoContext } from 'hooks/useTodoNode'
 import { type TodoNodeData } from 'libs/db/todoNodes'
-import { getElementSelectionPosition, isEventWithoutKeyboardModifier } from 'libs/html'
+import { getElementSelectionPosition, isEventWithoutModifier } from 'libs/html'
 
 const TodoNodeItem: React.FC<TodoNodeItemProps> = ({ id, level = 0 }) => {
   const contentRef = useRef<HTMLDivElement>()
@@ -48,7 +48,7 @@ const TodoNodeItem: React.FC<TodoNodeItemProps> = ({ id, level = 0 }) => {
     } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
       const direction = event.key === 'ArrowUp' ? 'up' : 'down'
 
-      if (isEventWithoutKeyboardModifier(event) && contentRef.current) {
+      if (isEventWithoutModifier(event) && contentRef.current) {
         const selectionPosition = getElementSelectionPosition(contentRef.current)
 
         if (

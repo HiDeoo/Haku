@@ -1,4 +1,4 @@
-export function isEventWithoutKeyboardModifier(event: React.KeyboardEvent<HTMLElement>) {
+export function isEventWithoutModifier(event: React.KeyboardEvent<HTMLElement>) {
   return !event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey
 }
 
