@@ -52,8 +52,8 @@ const TodoNodeItem: React.FC<TodoNodeItemProps> = ({ id, level = 0 }) => {
         const selectionPosition = getElementSelectionPosition(contentRef.current)
 
         if (
-          (direction === 'up' && selectionPosition.firstLine) ||
-          (direction === 'down' && selectionPosition.lastLine)
+          (direction === 'up' && selectionPosition.atFirstLine) ||
+          (direction === 'down' && selectionPosition.atLastLine)
         ) {
           // TODO(HiDeoo)
           event.preventDefault()
@@ -98,8 +98,6 @@ const TodoNodeItem: React.FC<TodoNodeItemProps> = ({ id, level = 0 }) => {
     [getClosestNodeId, refs]
   )
 
-  console.log('refs. ', refs.size)
-
   if (!node) {
     return null
   }
@@ -110,7 +108,11 @@ const TodoNodeItem: React.FC<TodoNodeItemProps> = ({ id, level = 0 }) => {
   return (
     <div style={{ paddingLeft: level * 20 }} className="m-3">
       <div>{id}</div>
-      <div ref={setContentRef} onKeyDown={onKeyDownContent} className="bg-blue-200 text-black focus:bg-red-200">
+      <div
+        ref={setContentRef}
+        onKeyDown={onKeyDownContent}
+        className="bg-blue-200 text-black caret-red-800 outline-none focus:bg-yellow-200"
+      >
         {node.content}
       </div>
       <TodoNodeChildren id={id} level={level + 1} />

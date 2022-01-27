@@ -3,50 +3,70 @@ export function isEventWithoutKeyboardModifier(event: React.KeyboardEvent<HTMLEl
 }
 
 export function getElementSelectionPosition(element: HTMLElement): SelectionPosition {
-  const selectionPosition = { firstLine: false, lastLine: false }
+  const selectionPosition = { atFirstLine: false, atLastLine: false }
 
-  if (document.activeElement !== element) {
+  const selection = document.getSelection()
+
+  if (!selection || selection.rangeCount === 0) {
     return selectionPosition
   }
 
-  const range = document.getSelection()?.getRangeAt(0).cloneRange()
+  const selectionRange = selection.getRangeAt(0).cloneRange()
+  selectionRange.collapse()
 
-  if (!range) {
+  if (!element.contains(selectionRange.startContainer)) {
     return selectionPosition
   }
 
-  const elementRect = element.getBoundingClientRect()
-  let selectionRect = range.getBoundingClientRect()
+  const range = document.createRange()
+  range.setStart(selectionRange.startContainer, selectionRange.startOffset)
+  range.setEnd(element, element.childNodes.length)
 
-  if (range.getClientRects().length === 0) {
-    // We may get an empty collection of bounding rectangles right after creating a new node. This means that
-    // `selectionRect` would be a zero bounding rect.
-    // To prevent this issue, we temporarily insert a zero-width space character, fetch the bounding rectanle again and
-    // remove it.
-    if (range.collapsed && selectionRect.top === 0 && selectionRect.left === 0) {
-      const tmpNode = document.createTextNode('\ufeff')
-      range.insertNode(tmpNode)
+  const rangeRects = range.getClientRects()
+  let rangeRect = rangeRects[0]
 
-      selectionRect = range.getBoundingClientRect()
-
-      // If we still don't have a valid bounding rectangle, bail out.
-      if (range.getClientRects().length === 0) {
-        return selectionPosition
-      }
-
-      tmpNode.remove()
-    }
+  if (rangeRect && rangeRect.width === 0 && rangeRects.length > 1) {
+    rangeRect = rangeRects[1]
   }
 
-  const lineHeight = parseFloat(window.getComputedStyle(element, null).getPropertyValue('line-height'))
+  // To check if the selection is at the first or last line of the element and avoid various browser implementation
+  // issues (specially regarding new lines), we add empty inline elements at the beginning and end of the selection and
+  // then compare the position of these elements with the position of the original element.
+  const startElement = document.createElement('span')
+  const endElement = document.createElement('span')
+  const lineBreakElement = document.createElement('br')
 
-  return {
-    firstLine: Math.abs(selectionRect.y - elementRect.y) < lineHeight,
-    lastLine: Math.abs(selectionRect.bottom - elementRect.bottom) < lineHeight,
+  range.insertNode(startElement)
+  startElement.parentNode?.insertBefore(endElement, startElement.nextSibling)
+
+  const endRect = endElement.getBoundingClientRect()
+  const atNewLine = rangeRect && rangeRect.top >= endRect.bottom
+
+  // If the element text is automatically wrapped and we position the caret at the beginning of the second line, the
+  // reported position will be the same as the first line, and thus incorrect. To prevent this, we need to insert a line
+  // break element.
+  if (atNewLine) {
+    endElement.parentNode?.insertBefore(lineBreakElement, endElement)
   }
+
+  const lineOffsetHeight = endElement.offsetHeight
+  const medianLineOffsetHeight = lineOffsetHeight / 2
+
+  selectionPosition.atFirstLine = startElement.offsetTop - element.offsetTop < medianLineOffsetHeight
+  selectionPosition.atLastLine =
+    element.offsetTop + element.offsetHeight - (endElement.offsetTop + lineOffsetHeight) < medianLineOffsetHeight
+
+  startElement.remove()
+  endElement.remove()
+  lineBreakElement.remove()
+  element.normalize()
+
+  startElement.remove()
+
+  return selectionPosition
 }
 
 interface SelectionPosition {
-  firstLine: boolean
-  lastLine: boolean
+  atFirstLine: boolean
+  atLastLine: boolean
 }
