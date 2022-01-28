@@ -13,9 +13,10 @@ import {
   updateContentAtom,
   getClosestNode,
 } from 'atoms/todos'
+import { type TodoNodeItemHandle } from 'components/TodoNodeItem'
 import { type TodoNodeData } from 'libs/db/todoNodes'
 
-export const todoNodeContentRefs = new Map()
+export const todoNodeContentRefs = new Map<TodoNodeData['id'], TodoNodeItemHandle>()
 
 export const TodoContext = createContext(todoNodeContentRefs)
 

@@ -2,20 +2,65 @@ export function isEventWithoutModifier(event: React.KeyboardEvent<HTMLElement>) 
   return !event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey
 }
 
-export function getElementSelectionPosition(element: HTMLElement): SelectionPosition {
-  const selectionPosition = { atFirstLine: false, atLastLine: false }
+export function setContentEditableCaretPosition(element: HTMLElement, position: CaretPosition) {
+  const text = element.textContent
 
+  if (!text || !element.firstChild) {
+    return
+  }
+
+  const elementRect = element.getBoundingClientRect()
+
+  const containerElement = document.createElement('div')
+  containerElement.style.height = `${elementRect.height}px`
+  containerElement.style.width = `${elementRect.width}px`
+
+  const textElement = document.createElement('span')
+  textElement.style.display = 'inline-block'
+  containerElement.appendChild(textElement)
+
+  document.body.appendChild(containerElement)
+
+  let index = 1
+  let currentOffset = position.left
+
+  for (index; index < text.length; index++) {
+    textElement.textContent = text.slice(0, index)
+
+    const offset = Math.abs(position.left - textElement.clientWidth)
+
+    if (offset > currentOffset) {
+      break
+    }
+
+    currentOffset = offset
+  }
+
+  const textNode = element.firstChild
+
+  const range = document.createRange()
+  range.setStart(textNode, index - 1)
+  range.setEnd(textNode, index - 1)
+
+  window.getSelection()?.removeAllRanges()
+  window.getSelection()?.addRange(range)
+
+  textElement.remove()
+  containerElement.remove()
+}
+
+export function getContentEditableCaretPosition(element: HTMLElement): CaretPosition | undefined {
   const selection = document.getSelection()
 
   if (!selection || selection.rangeCount === 0) {
-    return selectionPosition
+    return
   }
 
   const selectionRange = selection.getRangeAt(0).cloneRange()
   selectionRange.collapse()
 
   if (!element.contains(selectionRange.startContainer)) {
-    return selectionPosition
+    return
   }
 
   const range = document.createRange()
@@ -52,8 +97,15 @@ export function getElementSelectionPosition(element: HTMLElement): SelectionPosi
   const lineOffsetHeight = endElement.offsetHeight
   const medianLineOffsetHeight = lineOffsetHeight / 2
 
-  selectionPosition.atFirstLine = startElement.offsetTop - element.offsetTop < medianLineOffsetHeight
-  selectionPosition.atLastLine =
+  const caretPosition = {
+    atFirstLine: startElement.offsetTop - element.offsetTop < medianLineOffsetHeight,
+    atLastLine:
+      element.offsetTop + element.offsetHeight - (endElement.offsetTop + lineOffsetHeight) < medianLineOffsetHeight,
+    left: startElement.offsetLeft - element.offsetLeft,
+  }
+
+  caretPosition.atFirstLine = startElement.offsetTop - element.offsetTop < medianLineOffsetHeight
+  caretPosition.atLastLine =
     element.offsetTop + element.offsetHeight - (endElement.offsetTop + lineOffsetHeight) < medianLineOffsetHeight
 
   startElement.remove()
@@ -63,10 +115,11 @@ export function getElementSelectionPosition(element: HTMLElement): SelectionPosi
 
   startElement.remove()
 
-  return selectionPosition
+  return caretPosition
 }
 
-interface SelectionPosition {
+export interface CaretPosition {
   atFirstLine: boolean
   atLastLine: boolean
+  left: number
 }

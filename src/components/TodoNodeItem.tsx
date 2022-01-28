@@ -1,14 +1,24 @@
-import { memo, useCallback, useContext, useRef } from 'react'
+import { forwardRef, memo, useCallback, useContext, useImperativeHandle, useRef } from 'react'
 import { useEditable } from 'use-editable'
 
 import { type AtomParamsWithDirection } from 'atoms/todos'
 import TodoNodeChildren from 'components/TodoNodeChildren'
 import useTodoNode, { TodoContext } from 'hooks/useTodoNode'
 import { type TodoNodeData } from 'libs/db/todoNodes'
-import { getElementSelectionPosition, isEventWithoutModifier } from 'libs/html'
+import {
+  getContentEditableCaretPosition,
+  isEventWithoutModifier,
+  setContentEditableCaretPosition,
+  type CaretPosition,
+} from 'libs/html'
 
-const TodoNodeItem: React.FC<TodoNodeItemProps> = ({ id, level = 0 }) => {
-  const contentRef = useRef<HTMLDivElement>()
+const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeItemProps> = (
+  { id, level = 0 },
+  forwardedRef
+) => {
+  useImperativeHandle(forwardedRef, () => ({ focus }))
+
+  const contentRef = useRef<HTMLDivElement>(null)
   const refs = useContext(TodoContext)
 
   const { addNode, deleteNode, getClosestNodeId, moveNode, nestNode, node, unnestNode, updateContent } = useTodoNode(id)
@@ -49,16 +59,16 @@ const TodoNodeItem: React.FC<TodoNodeItemProps> = ({ id, level = 0 }) => {
       const direction = event.key === 'ArrowUp' ? 'up' : 'down'
 
       if (isEventWithoutModifier(event) && contentRef.current) {
-        const selectionPosition = getElementSelectionPosition(contentRef.current)
+        const caretPosition = getContentEditableCaretPosition(contentRef.current)
 
         if (
-          (direction === 'up' && selectionPosition.atFirstLine) ||
-          (direction === 'down' && selectionPosition.atLastLine)
+          caretPosition &&
+          ((direction === 'up' && caretPosition.atFirstLine) || (direction === 'down' && caretPosition.atLastLine))
         ) {
           // TODO(HiDeoo)
           event.preventDefault()
 
-          focusClosestNode({ ...update, direction })
+          focusClosestNode({ ...update, direction, caretPosition })
         }
       } else if (event.metaKey) {
         event.preventDefault()
@@ -68,22 +78,9 @@ const TodoNodeItem: React.FC<TodoNodeItemProps> = ({ id, level = 0 }) => {
     }
   }
 
-  const setContentRef = useCallback(
-    (node: HTMLDivElement) => {
-      contentRef.current = node
-
-      if (!node) {
-        refs.delete(id)
-      } else {
-        refs.set(id, node)
-      }
-    },
-    [id, refs]
-  )
-
   const focusClosestNode = useCallback(
-    async (update: AtomParamsWithDirection) => {
-      const closestNodeId = await getClosestNodeId(update)
+    async ({ caretPosition, direction, id, parentId }: TodoNodeItemFocusClosestNodeParams) => {
+      const closestNodeId = await getClosestNodeId({ direction, id, parentId })
 
       if (!closestNodeId) {
         return
@@ -92,11 +89,20 @@ const TodoNodeItem: React.FC<TodoNodeItemProps> = ({ id, level = 0 }) => {
       const closestNode = refs.get(closestNodeId)
 
       if (closestNode) {
-        closestNode.focus()
+        closestNode.focus(caretPosition, level)
       }
     },
-    [getClosestNodeId, refs]
+    [getClosestNodeId, level, refs]
   )
+
+  function focus(caretPosition: CaretPosition, originLevel: TodoNodeItemProps['level']) {
+    if (contentRef.current) {
+      contentRef.current.focus()
+
+      // TODO(HiDeoo) Handle level offset
+      setContentEditableCaretPosition(contentRef.current, caretPosition)
+    }
+  }
 
   if (!node) {
     return null
@@ -109,7 +115,7 @@ const TodoNodeItem: React.FC<TodoNodeItemProps> = ({ id, level = 0 }) => {
     <div style={{ paddingLeft: level * 20 }} className="m-3">
       <div>{id}</div>
       <div
-        ref={setContentRef}
+        ref={contentRef}
         onKeyDown={onKeyDownContent}
         className="bg-blue-200 text-black caret-red-800 outline-none focus:bg-yellow-200"
       >
@@ -120,9 +126,17 @@ const TodoNodeItem: React.FC<TodoNodeItemProps> = ({ id, level = 0 }) => {
   )
 }
 
-export default memo(TodoNodeItem)
+export default memo(forwardRef(TodoNodeItem))
 
 interface TodoNodeItemProps {
   id: TodoNodeData['id']
   level: number
+}
+
+interface TodoNodeItemFocusClosestNodeParams extends AtomParamsWithDirection {
+  caretPosition: CaretPosition
+}
+
+export interface TodoNodeItemHandle {
+  focus: (caretPosition: CaretPosition, originLevel: TodoNodeItemProps['level']) => void
 }
