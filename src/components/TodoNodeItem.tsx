@@ -10,6 +10,7 @@ import {
   isEventWithoutModifier,
   setContentEditableCaretPosition,
   type CaretPosition,
+  type CaretDirection,
 } from 'libs/html'
 
 const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeItemProps> = (
@@ -89,18 +90,18 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
       const closestNode = refs.get(closestNodeId)
 
       if (closestNode) {
-        closestNode.focus(caretPosition, level)
+        closestNode.focus(caretPosition, level, direction)
       }
     },
     [getClosestNodeId, level, refs]
   )
 
-  function focus(caretPosition: CaretPosition, originLevel: TodoNodeItemProps['level']) {
+  function focus(caretPosition: CaretPosition, _originLevel: TodoNodeItemProps['level'], direction: CaretDirection) {
     if (contentRef.current) {
       contentRef.current.focus()
 
       // TODO(HiDeoo) Handle level offset
-      setContentEditableCaretPosition(contentRef.current, caretPosition)
+      setContentEditableCaretPosition(contentRef.current, caretPosition, direction)
     }
   }
 
@@ -138,5 +139,5 @@ interface TodoNodeItemFocusClosestNodeParams extends AtomParamsWithDirection {
 }
 
 export interface TodoNodeItemHandle {
-  focus: (caretPosition: CaretPosition, originLevel: TodoNodeItemProps['level']) => void
+  focus: (caretPosition: CaretPosition, originLevel: TodoNodeItemProps['level'], direction: CaretDirection) => void
 }

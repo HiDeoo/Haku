@@ -3,6 +3,7 @@ import { atom } from 'jotai'
 
 import { addAtIndex, removeAtIndex } from 'libs/array'
 import { type TodoNodeDataWithParentId, type TodoNodeData, type TodoNodesData } from 'libs/db/todoNodes'
+import { type CaretDirection } from 'libs/html'
 
 export const todoChildrenAtom = atom<TodoNodesData['children']>({ root: [] })
 
@@ -290,7 +291,7 @@ interface AtomParamsContentUpdate {
 }
 
 export interface AtomParamsWithDirection extends AtomParamsWithParentId {
-  direction: 'down' | 'up'
+  direction: CaretDirection
 }
 
 interface AtomParamsWithParentId {

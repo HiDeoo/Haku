@@ -2,10 +2,21 @@ export function isEventWithoutModifier(event: React.KeyboardEvent<HTMLElement>) 
   return !event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey
 }
 
-export function setContentEditableCaretPosition(element: HTMLElement, position: CaretPosition) {
-  const text = element.textContent
+export function setContentEditableCaretPosition(
+  element: HTMLElement,
+  position: CaretPosition,
+  direction: CaretDirection
+) {
+  if (!element.firstChild) {
+    return
+  }
 
-  if (!text || !element.firstChild) {
+  const lines = getContentEditableLines(element)
+  const isGoingDown = direction === 'down'
+
+  const line = lines[isGoingDown ? 0 : lines.length - 1]
+
+  if (!line || (line.range[0] === 0 && line.range[1] === 0)) {
     return
   }
 
@@ -21,26 +32,33 @@ export function setContentEditableCaretPosition(element: HTMLElement, position: 
 
   document.body.appendChild(containerElement)
 
-  let index = 1
-  let currentOffset = position.left
+  let textIndex = 0
+  let textOffset = position.left
 
-  for (index; index < text.length; index++) {
-    textElement.textContent = text.slice(0, index)
+  for (let index = 0; index < line.text.length; index++) {
+    textElement.textContent = line.text.slice(0, index)
 
     const offset = Math.abs(position.left - textElement.clientWidth)
 
-    if (offset > currentOffset) {
+    if (offset > textOffset) {
       break
     }
 
-    currentOffset = offset
+    textIndex = index
+    textOffset = offset
+
+    if (index === line.text.length - 1) {
+      textIndex += 1
+    }
   }
 
-  const textNode = element.firstChild
+  if (!isGoingDown) {
+    textIndex += line.range[0]
+  }
 
   const range = document.createRange()
-  range.setStart(textNode, index - 1)
-  range.setEnd(textNode, index - 1)
+  range.setStart(element.firstChild, textIndex)
+  range.setEnd(element.firstChild, textIndex)
 
   window.getSelection()?.removeAllRanges()
   window.getSelection()?.addRange(range)
@@ -59,63 +77,70 @@ export function getContentEditableCaretPosition(element: HTMLElement): CaretPosi
   const selectionRange = selection.getRangeAt(0).cloneRange()
   selectionRange.collapse()
 
-  if (!element.contains(selectionRange.startContainer)) {
-    return
+  const lines = getContentEditableLines(element)
+
+  const firstLine = lines[0]
+  const lastLine = lines[lines.length - 1]
+
+  if (!firstLine || !lastLine) {
+    return { atFirstLine: true, atLastLine: true, left: 0 }
   }
 
-  const range = document.createRange()
-  range.setStart(selectionRange.startContainer, selectionRange.startOffset)
-  range.setEnd(element, element.childNodes.length)
+  const left = selectionRange.getBoundingClientRect().left - element.offsetLeft
 
-  const rangeRects = range.getClientRects()
-  let rangeRect = rangeRects[0]
-
-  if (rangeRect && rangeRect.width === 0 && rangeRects.length > 1) {
-    rangeRect = rangeRects[1]
+  if (lines.length === 1) {
+    return { atFirstLine: true, atLastLine: true, left }
   }
 
-  // To check if the selection is at the first or last line of the element and avoid various browser implementation
-  // issues (specially regarding new lines), we add empty inline elements at the beginning and end of the selection and
-  // then compare the position of these elements with the position of the original element.
-  const startElement = document.createElement('span')
-  const endElement = document.createElement('span')
-  const lineBreakElement = document.createElement('br')
+  return {
+    atFirstLine: firstLine.range[0] <= selectionRange.startOffset && selectionRange.startOffset < firstLine.range[1],
+    atLastLine: lastLine.range[0] < selectionRange.startOffset && selectionRange.startOffset <= lastLine.range[1],
+    left,
+  }
+}
 
-  range.insertNode(startElement)
-  startElement.parentNode?.insertBefore(endElement, startElement.nextSibling)
-
-  const endRect = endElement.getBoundingClientRect()
-  const atNewLine = rangeRect && rangeRect.top >= endRect.bottom
-
-  // If the element text is automatically wrapped and we position the caret at the beginning of the second line, the
-  // reported position will be the same as the first line, and thus incorrect. To prevent this, we need to insert a line
-  // break element.
-  if (atNewLine) {
-    endElement.parentNode?.insertBefore(lineBreakElement, endElement)
+function getContentEditableLines(element: HTMLElement): ContentEditableLine[] {
+  if (!element.firstChild || !element.textContent) {
+    return []
   }
 
-  const lineOffsetHeight = endElement.offsetHeight
-  const medianLineOffsetHeight = lineOffsetHeight / 2
-
-  const caretPosition = {
-    atFirstLine: startElement.offsetTop - element.offsetTop < medianLineOffsetHeight,
-    atLastLine:
-      element.offsetTop + element.offsetHeight - (endElement.offsetTop + lineOffsetHeight) < medianLineOffsetHeight,
-    left: startElement.offsetLeft - element.offsetLeft,
+  if (element.textContent === '\n') {
+    return [{ text: element.textContent, range: [0, 0] }]
   }
 
-  caretPosition.atFirstLine = startElement.offsetTop - element.offsetTop < medianLineOffsetHeight
-  caretPosition.atLastLine =
-    element.offsetTop + element.offsetHeight - (endElement.offsetTop + lineOffsetHeight) < medianLineOffsetHeight
+  const elementRange = document.createRange()
+  elementRange.selectNodeContents(element)
+  elementRange.collapse()
 
-  startElement.remove()
-  endElement.remove()
-  lineBreakElement.remove()
-  element.normalize()
+  const lineRange = elementRange.cloneRange()
+  lineRange.setEnd(element.firstChild, 1)
 
-  startElement.remove()
+  let lineHeight
+  let prevLineHeight = lineRange.getBoundingClientRect().height
 
-  return caretPosition
+  const lines: ContentEditableLine[] = []
+
+  // Increase the range progressively by looping through each characters to detect line height changes.
+  for (let index = 0; index < element.textContent.length; index++) {
+    elementRange.setEnd(element.firstChild, index)
+    lineRange.setEnd(element.firstChild, index)
+
+    lineHeight = lineRange.getBoundingClientRect().height
+
+    if (lineHeight > prevLineHeight || index === element.textContent.length - 1) {
+      // When hitting a new line, revert to the previous range to get the complete line (ignoring the end of text).
+      elementRange.setEnd(element.firstChild, index - (index !== element.textContent.length - 1 ? 1 : 0))
+
+      lines.push({ range: [elementRange.startOffset, elementRange.endOffset], text: elementRange.toString() })
+
+      // Continue at the end of the previous line.
+      elementRange.setStart(element.firstChild, index - 1)
+
+      prevLineHeight = lineHeight
+    }
+  }
+
+  return lines
 }
 
 export interface CaretPosition {
@@ -123,3 +148,10 @@ export interface CaretPosition {
   atLastLine: boolean
   left: number
 }
+
+interface ContentEditableLine {
+  range: [number, number]
+  text: string
+}
+
+export type CaretDirection = 'down' | 'up'
