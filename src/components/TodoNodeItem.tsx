@@ -113,9 +113,6 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     return null
   }
 
-  // FIXME(HiDeoo)
-  console.log(`#### rendering TodoNodeItem - ${node.id}`)
-
   return (
     <>
       <div style={{ paddingLeft: level * levelOffsetInPixels }} className="my-3">
