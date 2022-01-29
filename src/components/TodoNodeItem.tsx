@@ -38,12 +38,17 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
   useEditable(contentRef, onChangeContent)
 
   const focusClosestNode = useCallback(
-    async ({ caretPosition, direction, id, parentId }: TodoNodeItemFocusClosestNodeParams) => {
+    async (
+      { caretPosition, direction, id, parentId }: TodoNodeItemFocusClosestNodeParams,
+      event?: React.KeyboardEvent
+    ) => {
       const closestNodeId = await getClosestNodeId({ direction, id, parentId })
 
       if (!closestNodeId) {
         return
       }
+
+      event?.preventDefault()
 
       refs.get(closestNodeId)?.focusContent(caretPosition, direction, level)
     },
@@ -81,10 +86,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
           caretPosition &&
           ((direction === 'up' && caretPosition.atFirstLine) || (direction === 'down' && caretPosition.atLastLine))
         ) {
-          // TODO(HiDeoo)
-          event.preventDefault()
-
-          focusClosestNode({ ...update, direction, caretPosition })
+          focusClosestNode({ ...update, direction, caretPosition }, event)
         }
       } else if (event.metaKey) {
         event.preventDefault()
