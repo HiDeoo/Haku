@@ -13,11 +13,13 @@ import {
   type CaretDirection,
 } from 'libs/html'
 
+const levelOffsetInPixels = 20
+
 const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeItemProps> = (
   { id, level = 0 },
   forwardedRef
 ) => {
-  useImperativeHandle(forwardedRef, () => ({ focus }))
+  useImperativeHandle(forwardedRef, () => ({ focusContent }))
 
   const contentRef = useRef<HTMLDivElement>(null)
   const refs = useContext(TodoContext)
@@ -34,6 +36,19 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
   )
 
   useEditable(contentRef, onChangeContent)
+
+  const focusClosestNode = useCallback(
+    async ({ caretPosition, direction, id, parentId }: TodoNodeItemFocusClosestNodeParams) => {
+      const closestNodeId = await getClosestNodeId({ direction, id, parentId })
+
+      if (!closestNodeId) {
+        return
+      }
+
+      refs.get(closestNodeId)?.focusContent(caretPosition, direction, level)
+    },
+    [getClosestNodeId, level, refs]
+  )
 
   function onKeyDownContent(event: React.KeyboardEvent<HTMLDivElement>) {
     if (!node) {
@@ -79,29 +94,18 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     }
   }
 
-  const focusClosestNode = useCallback(
-    async ({ caretPosition, direction, id, parentId }: TodoNodeItemFocusClosestNodeParams) => {
-      const closestNodeId = await getClosestNodeId({ direction, id, parentId })
-
-      if (!closestNodeId) {
-        return
-      }
-
-      const closestNode = refs.get(closestNodeId)
-
-      if (closestNode) {
-        closestNode.focus(caretPosition, level, direction)
-      }
-    },
-    [getClosestNodeId, level, refs]
-  )
-
-  function focus(caretPosition: CaretPosition, _originLevel: TodoNodeItemProps['level'], direction: CaretDirection) {
+  function focusContent(
+    caretPosition: CaretPosition,
+    direction: CaretDirection,
+    fromLevel: TodoNodeItemProps['level']
+  ) {
     if (contentRef.current) {
       contentRef.current.focus()
 
-      // TODO(HiDeoo) Handle level offset
-      setContentEditableCaretPosition(contentRef.current, caretPosition, direction)
+      // Adjust the caret left position based on the level offset difference between the previous and current levels.
+      const left = Math.max(0, caretPosition.left + fromLevel * levelOffsetInPixels - level * levelOffsetInPixels)
+
+      setContentEditableCaretPosition(contentRef.current, { ...caretPosition, left }, direction)
     }
   }
 
@@ -113,17 +117,19 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
   console.log(`#### rendering TodoNodeItem - ${node.id}`)
 
   return (
-    <div style={{ paddingLeft: level * 20 }} className="m-3">
-      <div>{id}</div>
-      <div
-        ref={contentRef}
-        onKeyDown={onKeyDownContent}
-        className="bg-blue-200 text-black caret-red-800 outline-none focus:bg-yellow-200"
-      >
-        {node.content}
+    <>
+      <div style={{ paddingLeft: level * levelOffsetInPixels }} className="my-3">
+        <div>{id}</div>
+        <div
+          ref={contentRef}
+          onKeyDown={onKeyDownContent}
+          className="bg-blue-200 text-black caret-red-800 outline-none focus:bg-yellow-200"
+        >
+          {node.content}
+        </div>
       </div>
       <TodoNodeChildren id={id} level={level + 1} />
-    </div>
+    </>
   )
 }
 
@@ -139,5 +145,5 @@ interface TodoNodeItemFocusClosestNodeParams extends AtomParamsWithDirection {
 }
 
 export interface TodoNodeItemHandle {
-  focus: (caretPosition: CaretPosition, originLevel: TodoNodeItemProps['level'], direction: CaretDirection) => void
+  focusContent: (caretPosition: CaretPosition, direction: CaretDirection, fromLevel: TodoNodeItemProps['level']) => void
 }
