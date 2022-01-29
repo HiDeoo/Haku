@@ -1,4 +1,3 @@
-import cuid from 'cuid'
 import { atom } from 'jotai'
 
 import { addAtIndex, removeAtIndex } from 'libs/array'
@@ -23,9 +22,7 @@ export const updateContentAtom = atom(null, (get, set, { content, id }: AtomPara
   set(todoNodesAtom, (prevNodes) => ({ ...prevNodes, [id]: { ...node, content } }))
 })
 
-export const addNodeAtom = atom(null, (get, set, { id, parentId = 'root' }: AtomParamsWithParentId) => {
-  const newNodeId = cuid()
-
+export const addNodeAtom = atom(null, (get, set, { id, newId, parentId = 'root' }: AtomParamsNodeAddition) => {
   const children = get(todoChildrenAtom)
   const nodeChildrenIds = children[id]
 
@@ -33,8 +30,8 @@ export const addNodeAtom = atom(null, (get, set, { id, parentId = 'root' }: Atom
 
   set(todoNodesAtom, (prevNodes) => ({
     ...prevNodes,
-    [newNodeId]: {
-      id: newNodeId,
+    [newId]: {
+      id: newId,
       content: '',
       parentId: addAsChildren ? id : parentId === 'root' ? undefined : parentId,
     },
@@ -49,18 +46,18 @@ export const addNodeAtom = atom(null, (get, set, { id, parentId = 'root' }: Atom
     const newNodeIndex = parentChildren.indexOf(id) + 1
 
     const newParentChildren = addAsChildren
-      ? [newNodeId, ...(prevChildren[id] ?? [])]
-      : addAtIndex(parentChildren, newNodeIndex, newNodeId)
+      ? [newId, ...(prevChildren[id] ?? [])]
+      : addAtIndex(parentChildren, newNodeIndex, newId)
 
     return {
       ...prevChildren,
-      [newNodeId]: [],
+      [newId]: [],
       [parentId]: newParentChildren,
     }
   })
 
   set(todoNodeMutations, (prevMutations) => {
-    const newState: typeof prevMutations = { ...prevMutations, [newNodeId]: 'insert' }
+    const newState: typeof prevMutations = { ...prevMutations, [newId]: 'insert' }
     const idToUpdate = addAsChildren ? id : parentId
 
     newState[idToUpdate] = newState[idToUpdate] ?? 'update'
@@ -283,6 +280,10 @@ function getLastNestedChildren(
   }
 
   return nodes[from]
+}
+
+interface AtomParamsNodeAddition extends AtomParamsWithParentId {
+  newId: TodoNodeData['id']
 }
 
 interface AtomParamsContentUpdate {

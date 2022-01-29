@@ -1,3 +1,4 @@
+import cuid from 'cuid'
 import { forwardRef, memo, useCallback, useContext, useImperativeHandle, useRef } from 'react'
 import { useEditable } from 'use-editable'
 
@@ -65,7 +66,13 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     if (event.key === 'Enter') {
       event.preventDefault()
 
-      addNode(update)
+      const newId = cuid()
+
+      addNode({ ...update, newId })
+
+      requestAnimationFrame(() => {
+        refs.get(newId)?.focusContent()
+      })
     } else if (event.key === 'Backspace' && event.metaKey) {
       deleteNode(update)
     } else if (event.key === 'Tab') {
@@ -97,17 +104,19 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
   }
 
   function focusContent(
-    caretPosition: CaretPosition,
-    direction: CaretDirection,
-    fromLevel: TodoNodeItemProps['level']
+    caretPosition?: CaretPosition,
+    direction?: CaretDirection,
+    fromLevel?: TodoNodeItemProps['level']
   ) {
     if (contentRef.current) {
       contentRef.current.focus()
 
-      // Adjust the caret left position based on the level offset difference between the previous and current levels.
-      const left = Math.max(0, caretPosition.left + fromLevel * levelOffsetInPixels - level * levelOffsetInPixels)
+      if (caretPosition && direction && fromLevel) {
+        // Adjust the caret left position based on the level offset difference between the previous and current levels.
+        const left = Math.max(0, caretPosition.left + fromLevel * levelOffsetInPixels - level * levelOffsetInPixels)
 
-      setContentEditableCaretPosition(contentRef.current, { ...caretPosition, left }, direction)
+        setContentEditableCaretPosition(contentRef.current, { ...caretPosition, left }, direction)
+      }
     }
   }
 
@@ -144,5 +153,9 @@ interface TodoNodeItemFocusClosestNodeParams extends AtomParamsWithDirection {
 }
 
 export interface TodoNodeItemHandle {
-  focusContent: (caretPosition: CaretPosition, direction: CaretDirection, fromLevel: TodoNodeItemProps['level']) => void
+  focusContent: (
+    caretPosition?: CaretPosition,
+    direction?: CaretDirection,
+    fromLevel?: TodoNodeItemProps['level']
+  ) => void
 }
