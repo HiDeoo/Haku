@@ -7,12 +7,13 @@ import TodoNodeChildren from 'components/TodoNodeChildren'
 import useTodoNode, { TodoContext } from 'hooks/useTodoNode'
 import { type TodoNodeData } from 'libs/db/todoNodes'
 import {
-  getContentEditableCaretPosition,
-  isEventWithoutModifier,
-  setContentEditableCaretPosition,
   type CaretPosition,
   type CaretDirection,
+  getContentEditableCaretIndex,
+  getContentEditableCaretPosition,
+  isEventWithoutModifier,
   setContentEditableCaretIndex,
+  setContentEditableCaretPosition,
 } from 'libs/html'
 
 const levelOffsetInPixels = 20
@@ -83,11 +84,17 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     } else if (event.key === 'Tab') {
       event.preventDefault()
 
+      const caretIndex = contentRef.current ? getContentEditableCaretIndex(contentRef.current) : undefined
+
       if (event.shiftKey) {
         unnestNode(update)
       } else {
         nestNode(update)
       }
+
+      requestAnimationFrame(() => {
+        refs.get(node.id)?.focusContent(caretIndex)
+      })
     } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
       const direction = event.key === 'ArrowUp' ? 'up' : 'down'
 
@@ -109,20 +116,31 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
   }
 
   function focusContent(
-    caretPosition?: CaretPosition,
+    caretPositionOrIndex?: CaretPosition | number,
     direction?: CaretDirection,
     fromLevel?: TodoNodeItemProps['level']
   ) {
     if (contentRef.current) {
       contentRef.current.focus()
 
-      if (caretPosition && direction && typeof fromLevel !== 'undefined') {
+      if (
+        caretPositionOrIndex &&
+        typeof caretPositionOrIndex !== 'number' &&
+        direction &&
+        typeof fromLevel !== 'undefined'
+      ) {
         // Adjust the caret left position based on the level offset difference between the previous and current levels.
-        const left = Math.max(0, caretPosition.left + fromLevel * levelOffsetInPixels - level * levelOffsetInPixels)
+        const left = Math.max(
+          0,
+          caretPositionOrIndex.left + fromLevel * levelOffsetInPixels - level * levelOffsetInPixels
+        )
 
-        setContentEditableCaretPosition(contentRef.current, { ...caretPosition, left }, direction)
+        setContentEditableCaretPosition(contentRef.current, { ...caretPositionOrIndex, left }, direction)
       } else {
-        setContentEditableCaretIndex(contentRef.current, node?.content.length)
+        setContentEditableCaretIndex(
+          contentRef.current,
+          typeof caretPositionOrIndex === 'number' ? caretPositionOrIndex : node?.content.length
+        )
       }
     }
   }
@@ -161,7 +179,7 @@ interface TodoNodeItemFocusClosestNodeParams extends AtomParamsWithDirection {
 
 export interface TodoNodeItemHandle {
   focusContent: (
-    caretPosition?: CaretPosition,
+    caretPositionOrIndex?: CaretPosition | number,
     direction?: CaretDirection,
     fromLevel?: TodoNodeItemProps['level']
   ) => void

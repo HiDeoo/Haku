@@ -2,6 +2,20 @@ export function isEventWithoutModifier(event: React.KeyboardEvent<HTMLElement>) 
   return !event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey
 }
 
+export function getContentEditableCaretIndex(element: HTMLElement): number | undefined {
+  const range = window.getSelection()?.getRangeAt(0)
+
+  if (!range) {
+    return
+  }
+
+  const selectionRange = range.cloneRange()
+  selectionRange.selectNodeContents(element)
+  selectionRange.setEnd(range.endContainer, range.endOffset)
+
+  return selectionRange.toString().length
+}
+
 export function setContentEditableCaretIndex(element: HTMLElement, index = 0) {
   if (!element.firstChild) {
     return
