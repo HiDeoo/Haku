@@ -58,7 +58,7 @@ export function setContentEditableCaretPosition(
   let textIndex = 0
   let textOffset = position.left
 
-  for (let index = 0; index < line.text.length; index++) {
+  for (let index = 0; index <= line.text.length; index++) {
     textElement.textContent = line.text.slice(0, index)
 
     const offset = Math.abs(position.left - textElement.clientWidth)
@@ -69,10 +69,6 @@ export function setContentEditableCaretPosition(
 
     textIndex = index
     textOffset = offset
-
-    if (index === line.text.length - 1) {
-      textIndex += 1
-    }
   }
 
   if (!isGoingDown) {
@@ -122,10 +118,6 @@ function getContentEditableLines(element: HTMLElement): ContentEditableLine[] {
     return []
   }
 
-  if (element.textContent === '\n') {
-    return [{ text: element.textContent, range: [0, 0] }]
-  }
-
   const elementRange = document.createRange()
   elementRange.selectNodeContents(element)
   elementRange.collapse()
@@ -147,12 +139,14 @@ function getContentEditableLines(element: HTMLElement): ContentEditableLine[] {
 
     if (lineHeight > prevLineHeight || index === element.textContent.length - 1) {
       // When hitting a new line, revert to the previous range to get the complete line (ignoring the end of text).
-      elementRange.setEnd(element.firstChild, index - (index !== element.textContent.length - 1 ? 1 : 0))
+      elementRange.setEnd(element.firstChild, index - (index !== element.textContent.length - 1 ? 1 : -1))
 
       lines.push({ range: [elementRange.startOffset, elementRange.endOffset], text: elementRange.toString() })
 
-      // Continue at the end of the previous line.
-      elementRange.setStart(element.firstChild, index - 1)
+      // Continue at the end of the previous line (ignoring the end of text).
+      if (index !== element.textContent.length - 1) {
+        elementRange.setStart(element.firstChild, index - 1)
+      }
 
       prevLineHeight = lineHeight
     }
