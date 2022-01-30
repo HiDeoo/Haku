@@ -30,7 +30,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
   const onChangeContent = useCallback(
     (content: string) => {
       if (node?.id) {
-        updateContent({ id: node?.id, content })
+        updateContent({ id: node.id, content: content.replace(/\n$/, '') })
       }
     },
     [node?.id, updateContent]
