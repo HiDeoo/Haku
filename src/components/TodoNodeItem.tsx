@@ -12,6 +12,7 @@ import {
   setContentEditableCaretPosition,
   type CaretPosition,
   type CaretDirection,
+  setContentEditableCaretIndex,
 } from 'libs/html'
 
 const levelOffsetInPixels = 20
@@ -74,6 +75,10 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
         refs.get(newId)?.focusContent()
       })
     } else if (event.key === 'Backspace' && event.metaKey) {
+      event.preventDefault()
+
+      focusClosestNode({ ...update, direction: 'up' })
+
       deleteNode(update)
     } else if (event.key === 'Tab') {
       event.preventDefault()
@@ -116,6 +121,8 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
         const left = Math.max(0, caretPosition.left + fromLevel * levelOffsetInPixels - level * levelOffsetInPixels)
 
         setContentEditableCaretPosition(contentRef.current, { ...caretPosition, left }, direction)
+      } else {
+        setContentEditableCaretIndex(contentRef.current, node?.content.length)
       }
     }
   }
@@ -149,7 +156,7 @@ interface TodoNodeItemProps {
 }
 
 interface TodoNodeItemFocusClosestNodeParams extends AtomParamsWithDirection {
-  caretPosition: CaretPosition
+  caretPosition?: CaretPosition
 }
 
 export interface TodoNodeItemHandle {

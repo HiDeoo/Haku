@@ -2,15 +2,24 @@ export function isEventWithoutModifier(event: React.KeyboardEvent<HTMLElement>) 
   return !event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey
 }
 
+export function setContentEditableCaretIndex(element: HTMLElement, index = 0) {
+  if (!element.firstChild) {
+    return
+  }
+
+  const range = document.createRange()
+  range.setStart(element.firstChild, index)
+  range.setEnd(element.firstChild, index)
+
+  document.getSelection()?.removeAllRanges()
+  document.getSelection()?.addRange(range)
+}
+
 export function setContentEditableCaretPosition(
   element: HTMLElement,
   position: CaretPosition,
   direction: CaretDirection
 ) {
-  if (!element.firstChild) {
-    return
-  }
-
   const lines = getContentEditableLines(element)
   const isGoingDown = direction === 'down'
 
@@ -56,12 +65,7 @@ export function setContentEditableCaretPosition(
     textIndex += line.range[0]
   }
 
-  const range = document.createRange()
-  range.setStart(element.firstChild, textIndex)
-  range.setEnd(element.firstChild, textIndex)
-
-  window.getSelection()?.removeAllRanges()
-  window.getSelection()?.addRange(range)
+  setContentEditableCaretIndex(element, textIndex)
 
   textElement.remove()
   containerElement.remove()
