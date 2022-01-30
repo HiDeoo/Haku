@@ -977,9 +977,7 @@ describe('useTodoNode', () => {
     test('should return the parent when going up if the node has no sibbling', async () => {
       const { children, nodes } = setFakeTodoNodes([{}, { children: [{}] }])
       const node = getTodoNodeFromIndexes(nodes, children, 1, 0)
-      console.log('node ', node)
       const closestNode = getTodoNodeFromIndexes(nodes, children, 1)
-      console.log('closestNode ', closestNode)
 
       const { result } = renderHook(() => useTodoNode(node.id))
 
@@ -1022,7 +1020,6 @@ describe('useTodoNode', () => {
       const { children, nodes } = setFakeTodoNodes([{ children: [{ children: [{}, { children: [{}, {}] }] }] }, {}])
       const node = getTodoNodeFromIndexes(nodes, children, 1)
       const closestNode = getTodoNodeFromIndexes(nodes, children, 0, 0, 1, 1)
-      console.log('closestNode ', closestNode)
 
       const { result } = renderHook(() => useTodoNode(node.id))
 
