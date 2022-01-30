@@ -158,8 +158,10 @@ describe('useTodoNode', () => {
       const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
       const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
 
+      const newId = cuid()
+
       act(() => {
-        result.current.addNode({ id: node.id, parentId: node.parentId })
+        result.current.addNode({ id: node.id, newId, parentId: node.parentId })
       })
 
       expect(todoChildren.current.root.length).toBe(2)
@@ -171,7 +173,7 @@ describe('useTodoNode', () => {
       expect(todoChildren.current[newTodoNodeId]).toEqual([])
 
       expect(todoNodes.current[newTodoNodeId]).toBeDefined()
-      expect(todoNodes.current[newTodoNodeId]?.id).toBeDefined()
+      expect(todoNodes.current[newTodoNodeId]?.id).toBe(newId)
       expect(todoNodes.current[newTodoNodeId]?.content).toBe('')
       expect(todoNodes.current[newTodoNodeId]?.parentId).toBeUndefined()
 
@@ -188,8 +190,10 @@ describe('useTodoNode', () => {
       const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
       const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
 
+      const newId = cuid()
+
       act(() => {
-        result.current.addNode({ id: node.id, parentId: node.parentId })
+        result.current.addNode({ id: node.id, newId, parentId: node.parentId })
       })
 
       expect(todoChildren.current.root.length).toBe(1)
@@ -204,7 +208,7 @@ describe('useTodoNode', () => {
       expect(todoChildren.current[newTodoNodeId]).toEqual([])
 
       expect(todoNodes.current[newTodoNodeId]).toBeDefined()
-      expect(todoNodes.current[newTodoNodeId]?.id).toBeDefined()
+      expect(todoNodes.current[newTodoNodeId]?.id).toBe(newId)
       expect(todoNodes.current[newTodoNodeId]?.content).toBe('')
       expect(todoNodes.current[newTodoNodeId]?.parentId).toBe(node.id)
 
@@ -222,10 +226,12 @@ describe('useTodoNode', () => {
       const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
       const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
 
+      const newId = cuid()
+
       act(() => {
         todoMutations.current[1]((prevMutations) => ({ ...prevMutations, [node.id]: 'insert' }))
 
-        result.current.addNode({ id: node.id, parentId: node.parentId })
+        result.current.addNode({ id: node.id, newId, parentId: node.parentId })
       })
 
       expect(todoChildren.current.root.length).toBe(1)
@@ -240,7 +246,7 @@ describe('useTodoNode', () => {
       expect(todoChildren.current[newTodoNodeId]).toEqual([])
 
       expect(todoNodes.current[newTodoNodeId]).toBeDefined()
-      expect(todoNodes.current[newTodoNodeId]?.id).toBeDefined()
+      expect(todoNodes.current[newTodoNodeId]?.id).toBe(newId)
       expect(todoNodes.current[newTodoNodeId]?.content).toBe('')
       expect(todoNodes.current[newTodoNodeId]?.parentId).toBe(node.id)
 
@@ -260,8 +266,10 @@ describe('useTodoNode', () => {
       const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
       const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
 
+      const newId = cuid()
+
       act(() => {
-        result.current.addNode({ id: node.id, parentId: node.parentId })
+        result.current.addNode({ id: node.id, newId, parentId: node.parentId })
       })
 
       expect(todoChildren.current.root.length).toBe(1)
@@ -280,7 +288,7 @@ describe('useTodoNode', () => {
       expect(todoChildren.current[newTodoNodeId]).toEqual([])
 
       expect(todoNodes.current[newTodoNodeId]).toBeDefined()
-      expect(todoNodes.current[newTodoNodeId]?.id).toBeDefined()
+      expect(todoNodes.current[newTodoNodeId]?.id).toBe(newId)
       expect(todoNodes.current[newTodoNodeId]?.content).toBe('')
       expect(todoNodes.current[newTodoNodeId]?.parentId).toBe(parent.id)
 
