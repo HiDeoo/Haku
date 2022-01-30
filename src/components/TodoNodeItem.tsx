@@ -84,16 +84,12 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     } else if (event.key === 'Tab') {
       event.preventDefault()
 
-      const caretIndex = contentRef.current ? getContentEditableCaretIndex(contentRef.current) : undefined
-
-      if (event.shiftKey) {
-        unnestNode(update)
-      } else {
-        nestNode(update)
-      }
-
-      requestAnimationFrame(() => {
-        refs.get(node.id)?.focusContent(caretIndex)
+      preserveCaret(() => {
+        if (event.shiftKey) {
+          unnestNode(update)
+        } else {
+          nestNode(update)
+        }
       })
     } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
       const direction = event.key === 'ArrowUp' ? 'up' : 'down'
@@ -110,9 +106,25 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
       } else if (event.metaKey) {
         event.preventDefault()
 
-        moveNode({ ...update, direction })
+        preserveCaret(() => {
+          moveNode({ ...update, direction })
+        })
       }
     }
+  }
+
+  function preserveCaret(callback: () => void) {
+    if (!node) {
+      return
+    }
+
+    const caretIndex = contentRef.current ? getContentEditableCaretIndex(contentRef.current) : undefined
+
+    callback()
+
+    requestAnimationFrame(() => {
+      refs.get(node.id)?.focusContent(caretIndex)
+    })
   }
 
   function focusContent(
@@ -137,6 +149,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
 
         setContentEditableCaretPosition(contentRef.current, { ...caretPositionOrIndex, left }, direction)
       } else {
+        // Focus the passed down caret index or fallback to the end of the text content.
         setContentEditableCaretIndex(
           contentRef.current,
           typeof caretPositionOrIndex === 'number' ? caretPositionOrIndex : node?.content.length
