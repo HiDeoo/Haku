@@ -158,8 +158,10 @@ describe('useTodoNode', () => {
       const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
       const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
 
+      const newId = cuid()
+
       act(() => {
-        result.current.addNode({ id: node.id, parentId: node.parentId })
+        result.current.addNode({ id: node.id, newId, parentId: node.parentId })
       })
 
       expect(todoChildren.current.root.length).toBe(2)
@@ -171,7 +173,7 @@ describe('useTodoNode', () => {
       expect(todoChildren.current[newTodoNodeId]).toEqual([])
 
       expect(todoNodes.current[newTodoNodeId]).toBeDefined()
-      expect(todoNodes.current[newTodoNodeId]?.id).toBeDefined()
+      expect(todoNodes.current[newTodoNodeId]?.id).toBe(newId)
       expect(todoNodes.current[newTodoNodeId]?.content).toBe('')
       expect(todoNodes.current[newTodoNodeId]?.parentId).toBeUndefined()
 
@@ -188,8 +190,10 @@ describe('useTodoNode', () => {
       const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
       const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
 
+      const newId = cuid()
+
       act(() => {
-        result.current.addNode({ id: node.id, parentId: node.parentId })
+        result.current.addNode({ id: node.id, newId, parentId: node.parentId })
       })
 
       expect(todoChildren.current.root.length).toBe(1)
@@ -204,7 +208,7 @@ describe('useTodoNode', () => {
       expect(todoChildren.current[newTodoNodeId]).toEqual([])
 
       expect(todoNodes.current[newTodoNodeId]).toBeDefined()
-      expect(todoNodes.current[newTodoNodeId]?.id).toBeDefined()
+      expect(todoNodes.current[newTodoNodeId]?.id).toBe(newId)
       expect(todoNodes.current[newTodoNodeId]?.content).toBe('')
       expect(todoNodes.current[newTodoNodeId]?.parentId).toBe(node.id)
 
@@ -222,10 +226,12 @@ describe('useTodoNode', () => {
       const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
       const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
 
+      const newId = cuid()
+
       act(() => {
         todoMutations.current[1]((prevMutations) => ({ ...prevMutations, [node.id]: 'insert' }))
 
-        result.current.addNode({ id: node.id, parentId: node.parentId })
+        result.current.addNode({ id: node.id, newId, parentId: node.parentId })
       })
 
       expect(todoChildren.current.root.length).toBe(1)
@@ -240,7 +246,7 @@ describe('useTodoNode', () => {
       expect(todoChildren.current[newTodoNodeId]).toEqual([])
 
       expect(todoNodes.current[newTodoNodeId]).toBeDefined()
-      expect(todoNodes.current[newTodoNodeId]?.id).toBeDefined()
+      expect(todoNodes.current[newTodoNodeId]?.id).toBe(newId)
       expect(todoNodes.current[newTodoNodeId]?.content).toBe('')
       expect(todoNodes.current[newTodoNodeId]?.parentId).toBe(node.id)
 
@@ -260,8 +266,10 @@ describe('useTodoNode', () => {
       const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
       const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
 
+      const newId = cuid()
+
       act(() => {
-        result.current.addNode({ id: node.id, parentId: node.parentId })
+        result.current.addNode({ id: node.id, newId, parentId: node.parentId })
       })
 
       expect(todoChildren.current.root.length).toBe(1)
@@ -280,7 +288,7 @@ describe('useTodoNode', () => {
       expect(todoChildren.current[newTodoNodeId]).toEqual([])
 
       expect(todoNodes.current[newTodoNodeId]).toBeDefined()
-      expect(todoNodes.current[newTodoNodeId]?.id).toBeDefined()
+      expect(todoNodes.current[newTodoNodeId]?.id).toBe(newId)
       expect(todoNodes.current[newTodoNodeId]?.content).toBe('')
       expect(todoNodes.current[newTodoNodeId]?.parentId).toBe(parent.id)
 
@@ -864,6 +872,211 @@ describe('useTodoNode', () => {
       expect(todoMutations.current[node.id]).toBeUndefined()
       expect(todoMutations.current[prevSibbling.id]).toBeUndefined()
       expect(todoMutations.current[parent.id]).toBeUndefined()
+    })
+  })
+
+  describe('getClosestNodeId', () => {
+    test('should not return an ID with a single root node', async () => {
+      const { children, nodes } = setFakeTodoNodes([{}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      await act(async () => {
+        let id = await result.current.getClosestNodeId({ direction: 'down', id: node.id, parentId: node.parentId })
+
+        expect(id).toBeUndefined()
+
+        id = await result.current.getClosestNodeId({ direction: 'up', id: node.id, parentId: node.parentId })
+
+        expect(id).toBeUndefined()
+      })
+    })
+
+    test('should return proper values with two root nodes', async () => {
+      const { children, nodes } = setFakeTodoNodes([{}, {}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+      const closestNode = getTodoNodeFromIndexes(nodes, children, 1)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      await act(async () => {
+        let id = await result.current.getClosestNodeId({ direction: 'down', id: node.id, parentId: node.parentId })
+
+        expect(id).toBe(closestNode.id)
+
+        id = await result.current.getClosestNodeId({ direction: 'up', id: node.id, parentId: node.parentId })
+
+        expect(id).toBeUndefined()
+      })
+    })
+
+    test('should return proper values with two nested nodes', async () => {
+      const { children, nodes } = setFakeTodoNodes([{ children: [{}, {}] }])
+      const node = getTodoNodeFromIndexes(nodes, children, 0, 0)
+      const closestNode = getTodoNodeFromIndexes(nodes, children, 0, 1)
+      const rootNode = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      await act(async () => {
+        let id = await result.current.getClosestNodeId({ direction: 'down', id: node.id, parentId: node.parentId })
+
+        expect(id).toBe(closestNode.id)
+
+        id = await result.current.getClosestNodeId({ direction: 'up', id: node.id, parentId: node.parentId })
+
+        expect(id).toBe(rootNode.id)
+      })
+    })
+
+    test('should return proper values with more than two root nodes', async () => {
+      const { children, nodes } = setFakeTodoNodes([{}, {}, {}])
+      const node = getTodoNodeFromIndexes(nodes, children, 1)
+      const prevSibbling = getTodoNodeFromIndexes(nodes, children, 0)
+      const nextSibbling = getTodoNodeFromIndexes(nodes, children, 2)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      await act(async () => {
+        let id = await result.current.getClosestNodeId({ direction: 'down', id: node.id, parentId: node.parentId })
+
+        expect(id).toBe(nextSibbling.id)
+
+        id = await result.current.getClosestNodeId({ direction: 'up', id: node.id, parentId: node.parentId })
+
+        expect(id).toBe(prevSibbling.id)
+      })
+    })
+
+    test('should return proper values with more than two nested nodes', async () => {
+      const { children, nodes } = setFakeTodoNodes([{ children: [{}, {}, {}] }])
+      const node = getTodoNodeFromIndexes(nodes, children, 0, 1)
+      const prevSibbling = getTodoNodeFromIndexes(nodes, children, 0, 0)
+      const nextSibbling = getTodoNodeFromIndexes(nodes, children, 0, 2)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      await act(async () => {
+        let id = await result.current.getClosestNodeId({ direction: 'down', id: node.id, parentId: node.parentId })
+
+        expect(id).toBe(nextSibbling.id)
+
+        id = await result.current.getClosestNodeId({ direction: 'up', id: node.id, parentId: node.parentId })
+
+        expect(id).toBe(prevSibbling.id)
+      })
+    })
+
+    test('should return the first children if it exists when going down', async () => {
+      const { children, nodes } = setFakeTodoNodes([{ children: [{ children: [{}] }] }, {}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+      const closestNode = getTodoNodeFromIndexes(nodes, children, 0, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      await act(async () => {
+        const id = await result.current.getClosestNodeId({ direction: 'down', id: node.id, parentId: node.parentId })
+
+        expect(id).toBe(closestNode.id)
+      })
+    })
+
+    test('should return the parent when going up if the node has no sibbling', async () => {
+      const { children, nodes } = setFakeTodoNodes([{}, { children: [{}] }])
+      const node = getTodoNodeFromIndexes(nodes, children, 1, 0)
+      const closestNode = getTodoNodeFromIndexes(nodes, children, 1)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      await act(async () => {
+        const id = await result.current.getClosestNodeId({ direction: 'up', id: node.id, parentId: node.parentId })
+
+        expect(id).toBe(closestNode.id)
+      })
+    })
+
+    test('should return the last children of the previous sibbling when going up', async () => {
+      const { children, nodes } = setFakeTodoNodes([{ children: [{ children: [{}] }] }, {}])
+      const node = getTodoNodeFromIndexes(nodes, children, 1)
+      const closestNode = getTodoNodeFromIndexes(nodes, children, 0, 0, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      await act(async () => {
+        const id = await result.current.getClosestNodeId({ direction: 'up', id: node.id, parentId: node.parentId })
+
+        expect(id).toBe(closestNode.id)
+      })
+    })
+
+    test('should walk up the tree to the root when going down', async () => {
+      const { children, nodes } = setFakeTodoNodes([{ children: [{ children: [{}, {}] }] }, {}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0, 0, 1)
+      const closestNode = getTodoNodeFromIndexes(nodes, children, 1)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      await act(async () => {
+        const id = await result.current.getClosestNodeId({ direction: 'down', id: node.id, parentId: node.parentId })
+
+        expect(id).toBe(closestNode.id)
+      })
+    })
+
+    test('should walk down the tree from the root when going up', async () => {
+      const { children, nodes } = setFakeTodoNodes([{ children: [{ children: [{}, { children: [{}, {}] }] }] }, {}])
+      const node = getTodoNodeFromIndexes(nodes, children, 1)
+      const closestNode = getTodoNodeFromIndexes(nodes, children, 0, 0, 1, 1)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      await act(async () => {
+        const id = await result.current.getClosestNodeId({ direction: 'up', id: node.id, parentId: node.parentId })
+
+        expect(id).toBe(closestNode.id)
+      })
+    })
+
+    test('should walk up the tree when going down', async () => {
+      const { children, nodes } = setFakeTodoNodes([{ children: [{ children: [{}, {}] }, {}] }, {}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0, 0, 1)
+      const closestNode = getTodoNodeFromIndexes(nodes, children, 0, 1)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      await act(async () => {
+        const id = await result.current.getClosestNodeId({ direction: 'down', id: node.id, parentId: node.parentId })
+
+        expect(id).toBe(closestNode.id)
+      })
+    })
+
+    test('should walk down the tree when going up', async () => {
+      const { children, nodes } = setFakeTodoNodes([{ children: [{ children: [{}, {}] }, { children: [{}, {}] }] }])
+      const node = getTodoNodeFromIndexes(nodes, children, 0, 1, 0)
+      const closestNode = getTodoNodeFromIndexes(nodes, children, 0, 1)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      await act(async () => {
+        const id = await result.current.getClosestNodeId({ direction: 'up', id: node.id, parentId: node.parentId })
+
+        expect(id).toBe(closestNode.id)
+      })
+    })
+
+    test('should not return an ID when walking up the tree when going down from the last node', async () => {
+      const { children, nodes } = setFakeTodoNodes([{ children: [{ children: [{}, {}] }] }])
+      const node = getTodoNodeFromIndexes(nodes, children, 0, 0, 1)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      await act(async () => {
+        const id = await result.current.getClosestNodeId({ direction: 'down', id: node.id, parentId: node.parentId })
+
+        expect(id).toBeUndefined()
+      })
     })
   })
 })
