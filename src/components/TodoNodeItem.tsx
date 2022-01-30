@@ -111,7 +111,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     if (contentRef.current) {
       contentRef.current.focus()
 
-      if (caretPosition && direction && fromLevel) {
+      if (caretPosition && direction && typeof fromLevel !== 'undefined') {
         // Adjust the caret left position based on the level offset difference between the previous and current levels.
         const left = Math.max(0, caretPosition.left + fromLevel * levelOffsetInPixels - level * levelOffsetInPixels)
 
