@@ -16,7 +16,7 @@ import {
   setContentEditableCaretPosition,
 } from 'libs/html'
 
-const levelOffsetInPixels = 20
+export const TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS = 20
 
 const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeItemProps> = (
   { id, level = 0 },
@@ -162,7 +162,9 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
         // Adjust the caret left position based on the level offset difference between the previous and current levels.
         const left = Math.max(
           0,
-          caretPositionOrIndex.left + fromLevel * levelOffsetInPixels - level * levelOffsetInPixels
+          caretPositionOrIndex.left +
+            fromLevel * TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS -
+            level * TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS
         )
 
         setContentEditableCaretPosition(contentRef.current, { ...caretPositionOrIndex, left }, direction)
@@ -188,7 +190,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
 
   return (
     <>
-      <div style={{ paddingLeft: level * levelOffsetInPixels }} className="my-3">
+      <div style={{ paddingLeft: level * TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS }}>
         <div>{id}</div>
         <div
           ref={contentRef}
