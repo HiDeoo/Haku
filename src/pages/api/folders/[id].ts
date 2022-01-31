@@ -8,7 +8,7 @@ import { type FolderData, updateFolder, removeFolder } from 'libs/db/folder'
 const patchBodySchema = zAtLeastOneOf(
   z.object({
     name: z.string(),
-    parentId: z.string().nullable(),
+    parentId: z.string().cuid().nullable(),
   })
 )
 

@@ -1,5 +1,6 @@
 import assert from 'assert'
 
+import cuid from 'cuid'
 import StatusCode from 'status-code-enum'
 import slug from 'url-slug'
 
@@ -479,7 +480,7 @@ describe('todos', () => {
     test('should not add a new todo inside a nonexisting folder', () =>
       testApiRoute(indexHandler, async ({ fetch }) => {
         const name = 'todo'
-        const folderId = 'nonexistingFolderId'
+        const folderId = cuid()
 
         const res = await fetch({
           method: HttpMethod.POST,
@@ -714,7 +715,7 @@ describe('todos', () => {
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
-            body: JSON.stringify({ folderId: 'nonexistingFolderId' }),
+            body: JSON.stringify({ folderId: cuid() }),
           })
           const json = await res.json<ApiErrorResponse>()
 
@@ -855,7 +856,7 @@ describe('todos', () => {
 
           expect(testTodos.length).toBe(0)
         },
-        { dynamicRouteParams: { id: 1 } }
+        { dynamicRouteParams: { id: cuid() } }
       )
     })
   })
@@ -898,7 +899,7 @@ describe('todos', () => {
     })
 
     test('should not remove a nonexisting todo', () => {
-      const id = 'nonexistingTodoId'
+      const id = cuid()
 
       return testApiRoute(
         idHandler,

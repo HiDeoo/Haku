@@ -8,7 +8,7 @@ export const zEmail = z.string().email()
 export const zFolderType = z.nativeEnum(FolderType)
 
 export const zQuerySchemaWithId = z.object({
-  id: z.string(),
+  id: z.string().cuid(),
 })
 
 export function zAtLeastOneOf<TShape extends z.ZodRawShape>(objectSchema: z.ZodObject<TShape>) {

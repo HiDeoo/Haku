@@ -746,7 +746,7 @@ describe('todo nodes', () => {
       return testApiRoute(
         idHandler,
         async ({ fetch }) => {
-          const updatedTodoNode = getFakeTodoNode({ id: 'nonexistingTodoNodeId', content: 'updated todo node' })
+          const updatedTodoNode = getFakeTodoNode({ id: cuid(), content: 'updated todo node' })
 
           const res = await fetch({
             method: HttpMethod.PATCH,

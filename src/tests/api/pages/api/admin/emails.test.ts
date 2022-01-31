@@ -1,4 +1,5 @@
 import { type EmailAllowList } from '@prisma/client'
+import cuid from 'cuid'
 import StatusCode from 'status-code-enum'
 
 import { testApiRoute } from 'tests/api'
@@ -114,7 +115,7 @@ describe('admin/emails', () => {
           expect(res.status).toBe(StatusCode.ClientErrorForbidden)
           expect(json.error).toBe(API_ERROR_EMAIL_DOES_NOT_EXISTS)
         },
-        { dynamicRouteParams: { id: 1 } }
+        { dynamicRouteParams: { id: cuid() } }
       )
     })
   })

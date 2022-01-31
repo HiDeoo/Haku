@@ -8,7 +8,7 @@ import { type NoteMetadata, removeNote, updateNote, type NoteData, getNote } fro
 const patchBodySchema = zAtLeastOneOf(
   z.object({
     name: z.string(),
-    folderId: z.string().nullable(),
+    folderId: z.string().cuid().nullable(),
     html: z.string(),
     text: z.string(),
   })
