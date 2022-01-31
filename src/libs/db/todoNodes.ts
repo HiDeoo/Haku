@@ -1,4 +1,4 @@
-import { type TodoNode } from '@prisma/client'
+import { Prisma } from '@prisma/client'
 
 import { handleDbError, prisma } from 'libs/db'
 import { getTodoById, type TodoMetadata } from 'libs/db/todo'
@@ -21,7 +21,7 @@ import {
 } from 'libs/api/routes/errors'
 import { hasKey } from 'libs/object'
 
-type TodoNodeDataWithChildren = Pick<TodoNode, 'id' | 'content' | 'children'>
+type TodoNodeDataWithChildren = Prisma.TodoNodeGetPayload<{ select: typeof todoNodeDataSelect }>
 export type TodoNodeData = Omit<TodoNodeDataWithChildren, 'children'>
 
 export interface TodoNodesData {
@@ -29,7 +29,11 @@ export interface TodoNodesData {
   nodes: TodoNodeDataMap
 }
 
-const todoNodeDataSelect = { id: true, content: true, children: true }
+const todoNodeDataSelect = Prisma.validator<Prisma.TodoNodeSelect>()({
+  id: true,
+  children: true,
+  content: true,
+})
 
 export async function getTodoNodes(todoId: TodoMetadata['id'], userId: UserId): Promise<TodoNodesData> {
   const result = await prisma.todo.findFirst({

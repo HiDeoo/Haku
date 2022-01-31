@@ -1,4 +1,4 @@
-import { type Folder, type FolderType } from '@prisma/client'
+import { Prisma, type Folder, type FolderType } from '@prisma/client'
 
 import {
   ApiError,
@@ -11,9 +11,13 @@ import {
 import { handleDbError, prisma } from 'libs/db'
 import { getTreeChildrenFolderIds } from 'libs/db/tree'
 
-export type FolderData = Pick<Folder, 'id' | 'parentId' | 'name'>
+export type FolderData = Prisma.FolderGetPayload<{ select: typeof folderDataSelect }>
 
-const folderDataSelect = { id: true, name: true, parentId: true }
+const folderDataSelect = Prisma.validator<Prisma.FolderSelect>()({
+  id: true,
+  name: true,
+  parentId: true,
+})
 
 export function addFolder(
   userId: UserId,

@@ -7,7 +7,7 @@ import { getTodoNodes, type TodoNodesData, updateTodoNodes } from 'libs/db/todoN
 
 const mutationMapSchema = z.record(
   z.object({
-    id: z.string(),
+    id: z.string().cuid(),
     content: z.string(),
   })
 )

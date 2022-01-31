@@ -8,7 +8,7 @@ import { addTodo, type TodoMetadata } from 'libs/db/todo'
 
 const postBodySchema = z.object({
   name: z.string(),
-  folderId: z.string().optional(),
+  folderId: z.string().cuid().optional(),
 })
 
 const route = createApiRoute(

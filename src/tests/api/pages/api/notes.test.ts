@@ -1,3 +1,4 @@
+import cuid from 'cuid'
 import StatusCode from 'status-code-enum'
 import slug from 'url-slug'
 
@@ -413,7 +414,7 @@ describe('notes', () => {
             expect(res.status).toBe(StatusCode.ClientErrorNotFound)
             expect(json.error).toBe(API_ERROR_NOTE_DOES_NOT_EXIST)
           },
-          { dynamicRouteParams: { id: 1 } }
+          { dynamicRouteParams: { id: cuid() } }
         )
       })
 
@@ -512,7 +513,7 @@ describe('notes', () => {
     test('should not add a new note inside a nonexisting folder', () =>
       testApiRoute(indexHandler, async ({ fetch }) => {
         const name = 'note'
-        const folderId = 'nonexistingFolderId'
+        const folderId = cuid()
 
         const res = await fetch({
           method: HttpMethod.POST,
@@ -756,7 +757,7 @@ describe('notes', () => {
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
-            body: JSON.stringify({ folderId: 'nonexistingFolderId' }),
+            body: JSON.stringify({ folderId: cuid() }),
           })
           const json = await res.json<ApiErrorResponse>()
 
@@ -903,7 +904,7 @@ describe('notes', () => {
 
           expect(testNotes.length).toBe(0)
         },
-        { dynamicRouteParams: { id: 1 } }
+        { dynamicRouteParams: { id: cuid() } }
       )
     })
 
@@ -1029,7 +1030,7 @@ describe('notes', () => {
     })
 
     test('should not remove a nonexisting note', () => {
-      const id = 'nonexistingNoteId'
+      const id = cuid()
 
       return testApiRoute(
         idHandler,

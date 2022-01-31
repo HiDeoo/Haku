@@ -8,7 +8,7 @@ import { removeTodo, updateTodo, type TodoMetadata } from 'libs/db/todo'
 const patchBodySchema = zAtLeastOneOf(
   z.object({
     name: z.string(),
-    folderId: z.string().nullable(),
+    folderId: z.string().cuid().nullable(),
   })
 )
 

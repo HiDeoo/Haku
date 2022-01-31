@@ -1,4 +1,4 @@
-import { FolderType, Note } from '@prisma/client'
+import { FolderType, Note, Prisma } from '@prisma/client'
 import { StatusCode } from 'status-code-enum'
 import slug from 'url-slug'
 
@@ -11,11 +11,19 @@ import {
   API_ERROR_NOTE_HTML_OR_TEXT_MISSING,
 } from 'libs/api/routes/errors'
 
-export type NoteMetadata = Pick<Note, 'id' | 'folderId' | 'name' | 'slug'>
-export type NoteData = NoteMetadata & Pick<Note, 'html'>
+export type NoteMetadata = Prisma.NoteGetPayload<{ select: typeof noteMetadataSelect }>
+export type NoteData = Prisma.NoteGetPayload<{ select: typeof noteDataSelect }>
 
-const noteMetadataSelect = { id: true, name: true, folderId: true, slug: true }
-const noteDataSelect = { ...noteMetadataSelect, html: true }
+const noteMetadataSelect = Prisma.validator<Prisma.NoteSelect>()({
+  id: true,
+  name: true,
+  folderId: true,
+  slug: true,
+})
+const noteDataSelect = Prisma.validator<Prisma.NoteSelect>()({
+  ...noteMetadataSelect,
+  html: true,
+})
 
 export async function addNote(
   userId: UserId,

@@ -1,5 +1,5 @@
 import cuid from 'cuid'
-import { forwardRef, memo, useCallback, useContext, useImperativeHandle, useRef } from 'react'
+import React, { forwardRef, memo, useCallback, useContext, useImperativeHandle, useRef } from 'react'
 import { useEditable } from 'use-editable'
 
 import { type AtomParamsWithDirection } from 'atoms/todos'
@@ -32,7 +32,8 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
   const onChangeContent = useCallback(
     (content: string) => {
       if (node?.id) {
-        updateContent({ id: node.id, content: content.replace(/\n$/, '') })
+        // Remove the trailing line break automatically added in the content editable element.
+        updateContent({ id: node.id, content: content.slice(0, -1) })
       }
     },
     [node?.id, updateContent]
@@ -113,6 +114,23 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     }
   }
 
+  function onPasteCaptureContent(event: React.ClipboardEvent) {
+    event.preventDefault()
+    event.stopPropagation()
+
+    const text = event.clipboardData.getData('text/plain').replaceAll(/\n/gm, ' ')
+
+    if (node?.id) {
+      updateContent({ id: node.id, content: text.replaceAll(/\n/gm, ' ') })
+    }
+
+    // Pasting large content may lead to a loss of focus, we can safely prevent that by refocusing the current node and
+    // having the caret being placed at the end of the content text node.
+    requestAnimationFrame(() => {
+      focusContent(text.length)
+    })
+  }
+
   function preserveCaret(callback: () => void) {
     if (!node) {
       return
@@ -158,6 +176,12 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     }
   }
 
+  function getContent() {
+    // Editing behaves best when rendering a trailing newline.
+    // https://github.com/FormidableLabs/use-editable/issues/8#issuecomment-817390829
+    return `${node?.content}\n`
+  }
+
   if (!node) {
     return null
   }
@@ -169,9 +193,10 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
         <div
           ref={contentRef}
           onKeyDown={onKeyDownContent}
+          onPasteCapture={onPasteCaptureContent}
           className="bg-blue-200 text-black caret-red-800 outline-none focus:bg-yellow-200"
         >
-          {node.content}
+          {getContent()}
         </div>
       </div>
       <TodoNodeChildren id={id} level={level + 1} />

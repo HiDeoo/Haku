@@ -1,4 +1,5 @@
 import { FolderType } from '@prisma/client'
+import cuid from 'cuid'
 import StatusCode from 'status-code-enum'
 
 import { getTestUser, testApiRoute } from 'tests/api'
@@ -68,7 +69,7 @@ describe('folders', () => {
       testApiRoute(indexHandler, async ({ fetch }) => {
         const name = 'folder'
         const type = FolderType.NOTE
-        const parentId = 'nonexistingFolderId'
+        const parentId = cuid()
 
         const res = await fetch({
           method: HttpMethod.POST,
@@ -301,7 +302,7 @@ describe('folders', () => {
         async ({ fetch }) => {
           const res = await fetch({
             method: HttpMethod.PATCH,
-            body: JSON.stringify({ parentId: 'nonexistingParentId' }),
+            body: JSON.stringify({ parentId: cuid() }),
           })
           const json = await res.json<ApiErrorResponse>()
 
@@ -440,7 +441,7 @@ describe('folders', () => {
           expect(testNoteFolders.length).toBe(0)
           expect(testTodoFolders.length).toBe(0)
         },
-        { dynamicRouteParams: { id: 1 } }
+        { dynamicRouteParams: { id: cuid() } }
       )
     })
   })
@@ -597,7 +598,7 @@ describe('folders', () => {
     })
 
     test('should not remove a nonexisting folder', () => {
-      const id = 'nonexistingFolderId'
+      const id = cuid()
 
       return testApiRoute(
         idHandler,
