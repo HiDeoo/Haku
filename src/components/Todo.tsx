@@ -58,7 +58,7 @@ const Todo: React.FC = () => {
 
   return (
     <Flex direction="col" fullHeight className="relative overflow-hidden">
-      <TodoNavbar disabled={isLoading} />
+      <TodoNavbar disabled={isLoading} todoId={contentId} />
       {isLoading ? (
         <Shimmer>
           {shimmerClassesAndLevels.map(([classes, level], index) => (

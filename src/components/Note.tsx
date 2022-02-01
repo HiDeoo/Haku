@@ -121,7 +121,7 @@ const Note: React.FC = () => {
       )}
       <NoteInspector
         editor={editor}
-        noteId={data?.id}
+        noteId={contentId}
         disabled={isLoading}
         onMutation={onMutation}
         editorState={editorState}
