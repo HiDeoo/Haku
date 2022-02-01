@@ -6,13 +6,13 @@ import clst from 'styles/clst'
 
 const Navbar: NavbarComponent = ({ children, disabled }) => {
   return (
-    <Flex className="border-b border-zinc-600/50 bg-zinc-900 px-2 py-2 text-sm">
+    <Flex alignItems="center" className="gap-3 border-b border-zinc-600/50 bg-zinc-900 px-2 py-2 text-sm">
       {Children.map(children, (child) => {
         if (!isValidElement(child)) {
           return null
         }
 
-        return cloneElement(child, { ...child.props, disabled })
+        return cloneElement(child, { ...child.props, disabled: child.props.disabled || disabled })
       })}
     </Flex>
   )

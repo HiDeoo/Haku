@@ -1,5 +1,7 @@
 import { atom } from 'jotai'
+import { atomWithReset } from 'jotai/utils'
 
+import { type SyncStatus } from 'components/SyncReport'
 import { addAtIndex, removeAtIndex } from 'libs/array'
 import { type TodoNodeDataWithParentId, type TodoNodeData, type TodoNodesData } from 'libs/db/todoNodes'
 import { type CaretDirection } from 'libs/html'
@@ -8,7 +10,24 @@ export const todoChildrenAtom = atom<TodoNodesData['children']>({ root: [] })
 
 export const todoNodesAtom = atom<TodoNodesData['nodes']>({})
 
-export const todoNodeMutations = atom<Record<TodoNodeData['id'], 'insert' | 'update' | 'delete'>>({})
+export const todoNodeMutations = atomWithReset<Record<TodoNodeData['id'], 'insert' | 'update' | 'delete'>>({})
+
+const todoEditorSyncStatusAtom = atom<SyncStatus>({})
+
+export const todoEditorStateAtom = atom<TodoEditorState, SyncStatus>(
+  (get) => {
+    const state = get(todoEditorSyncStatusAtom)
+    const mutations = get(todoNodeMutations)
+
+    return {
+      ...state,
+      pristine: Object.keys(mutations).length === 0,
+    }
+  },
+  (_get, set, syncStatus: SyncStatus) => {
+    set(todoEditorSyncStatusAtom, syncStatus)
+  }
+)
 
 export const updateContentAtom = atom(null, (get, set, { content, id }: AtomParamsContentUpdate) => {
   const node = get(todoNodesAtom)[id]
@@ -298,4 +317,8 @@ export interface AtomParamsWithDirection extends AtomParamsWithParentId {
 interface AtomParamsWithParentId {
   id: TodoNodeData['id']
   parentId?: TodoNodeData['id']
+}
+
+export interface TodoEditorState extends SyncStatus {
+  pristine: boolean
 }

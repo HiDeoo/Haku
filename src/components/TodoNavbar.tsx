@@ -1,12 +1,17 @@
-import { useAtomCallback } from 'jotai/utils'
+import { useAtom } from 'jotai'
+import { useAtomCallback, useResetAtom } from 'jotai/utils'
 import { useCallback } from 'react'
 
-import { todoChildrenAtom, todoNodeMutations, todoNodesAtom } from 'atoms/todos'
+import { todoChildrenAtom, todoEditorStateAtom, todoNodeMutations, todoNodesAtom } from 'atoms/todos'
 import Navbar from 'components/Navbar'
+import SyncReport from 'components/SyncReport'
 import useContentMutation, { type ContentMutation } from 'hooks/useContentMutation'
 import { type TodoMetadata } from 'libs/db/todo'
 
 const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, todoId }) => {
+  const [editorState, setEditorState] = useAtom(todoEditorStateAtom)
+  const resetMutations = useResetAtom(todoNodeMutations)
+
   const { isLoading, mutate } = useContentMutation()
 
   const navbarDisabled = disabled || isLoading
@@ -52,13 +57,22 @@ const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, todoId }) => {
       }
     })
 
-    mutate(mutationData)
+    mutate(mutationData, { onSettled: onSettledMutation, onSuccess: onSuccessMutation })
+  }
+
+  function onSettledMutation(_: unknown, error: unknown) {
+    setEditorState({ error, lastSync: error ? undefined : new Date() })
+  }
+
+  function onSuccessMutation() {
+    resetMutations()
   }
 
   return (
     <Navbar disabled={navbarDisabled}>
       <Navbar.Spacer />
-      <Navbar.Button primary onPress={save} loading={isLoading}>
+      <SyncReport isLoading={isLoading} error={editorState.error} lastSync={editorState.lastSync} />
+      <Navbar.Button primary onPress={save} loading={isLoading} disabled={editorState.pristine}>
         Save
       </Navbar.Button>
     </Navbar>

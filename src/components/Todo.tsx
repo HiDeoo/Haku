@@ -1,7 +1,7 @@
-import { useUpdateAtom } from 'jotai/utils'
-import { useEffect, useState } from 'react'
+import { selectAtom, useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useEffect } from 'react'
 
-import { todoChildrenAtom, todoNodesAtom } from 'atoms/todos'
+import { todoChildrenAtom, TodoEditorState, todoEditorStateAtom, todoNodesAtom } from 'atoms/todos'
 import Flex from 'components/Flex'
 import Shimmer from 'components/Shimmer'
 import TodoNavbar from 'components/TodoNavbar'
@@ -30,21 +30,20 @@ const shimmerClassesAndLevels = [
   ['w-4/6', 2],
 ] as const
 
+function pristineStateSelector(state: TodoEditorState) {
+  return state.pristine
+}
+
 const Todo: React.FC = () => {
-  // TODO(HiDeoo)
-  const [enabled, setEnabled] = useState(true)
+  const pristine = useAtomValue(selectAtom(todoEditorStateAtom, pristineStateSelector))
 
   const setTodoChildren = useUpdateAtom(todoChildrenAtom)
   const setTodoNodes = useUpdateAtom(todoNodesAtom)
 
   const contentId = useContentId()
   const { isLoading } = useTodo(contentId, {
-    // TODO(HiDeoo)
-    enabled,
+    enabled: pristine,
     onSuccess: ({ children, nodes }) => {
-      // TODO(HiDeoo)
-      setEnabled(false)
-
       setTodoChildren(children)
       setTodoNodes(nodes)
     },

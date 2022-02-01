@@ -2,8 +2,8 @@ import { selectAtom, useAtomCallback, useAtomValue, useUpdateAtom } from 'jotai/
 import { createContext, useCallback } from 'react'
 
 import {
-  addNodeAtom,
   type AtomParamsWithDirection,
+  addNodeAtom,
   deleteNodeAtom,
   moveNodeAtom,
   nestNodeAtom,

@@ -29,7 +29,8 @@ import Inspector from 'components/Inspector'
 import EditorLinkModal from 'components/EditorLinkModal'
 import Flex from 'components/Flex'
 import Icon from 'components/Icon'
-import { type EditorState } from 'components/Note'
+import { type NoteEditorState } from 'components/Note'
+import SyncReport from 'components/SyncReport'
 import useContentMutation from 'hooks/useContentMutation'
 import { type NoteData } from 'libs/db/note'
 import clst from 'styles/clst'
@@ -133,13 +134,6 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
     onMutation(error)
   }
 
-  const syncText = editorState.lastSync ? `Synced at ${editorState.lastSync.toLocaleTimeString()}` : 'Sync issue'
-  const syncClasses = clst('grow text-xs italic', {
-    hidden: (!editorState.error && !editorState.lastSync) || isLoading,
-    'text-zinc-500': editorState.lastSync,
-    'text-red-500 font-semibold': editorState.error,
-  })
-
   return (
     <>
       <Inspector disabled={inspectorDisabled}>
@@ -147,7 +141,7 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
           <Inspector.Button onPress={save} primary loading={isLoading} disabled={editorState.pristine}>
             Save
           </Inspector.Button>
-          <div className={syncClasses}>{syncText}</div>
+          <SyncReport isLoading={isLoading} error={editorState.error} lastSync={editorState.lastSync} />
           <div className="h-0 basis-full" />
           <Inspector.IconButton
             tooltip="Undo"
@@ -302,12 +296,12 @@ const TocEntry: React.FC<TocEntryProps> = ({ editor, entry }) => {
 interface NoteInspectorProps {
   disabled?: boolean
   editor: Editor | null
-  editorState: EditorState
+  editorState: NoteEditorState
   noteId?: NoteData['id']
   onMutation: (error?: unknown) => void
 }
 
 interface TocEntryProps {
   editor: Editor | null
-  entry: NonNullable<EditorState['toc']>[number]
+  entry: NonNullable<NoteEditorState['toc']>[number]
 }
