@@ -10,6 +10,7 @@ import EditorCodeBlock, { CODE_BLOCK_DEFAULT_LANGUAGE } from 'components/EditorC
 import Flex from 'components/Flex'
 import NoteInspector from 'components/NoteInspector'
 import Shimmer from 'components/Shimmer'
+import { type SyncStatus } from 'components/SyncReport'
 import useContentId from 'hooks/useContentId'
 import useNote from 'hooks/useNote'
 import { getLowlight, getToc, HeadingWithId, type ToC } from 'libs/editor'
@@ -39,7 +40,7 @@ const anchorHeadingRegExp = /^#.*-(?<pos>\d+)$/
 
 const Note: React.FC = () => {
   const editorRef = useRef<Editor | null>(null)
-  const [editorState, setEditorState] = useState<EditorState>({ pristine: true })
+  const [editorState, setEditorState] = useState<NoteEditorState>({ pristine: true })
 
   const contentId = useContentId()
   const { data, isLoading } = useNote(contentId, { enabled: editorState.pristine })
@@ -121,7 +122,7 @@ const Note: React.FC = () => {
       )}
       <NoteInspector
         editor={editor}
-        noteId={data?.id}
+        noteId={contentId}
         disabled={isLoading}
         onMutation={onMutation}
         editorState={editorState}
@@ -136,9 +137,7 @@ function addCodeBlockLowlightNodeView() {
   return ReactNodeViewRenderer(EditorCodeBlock)
 }
 
-export interface EditorState {
-  error?: unknown
+export interface NoteEditorState extends SyncStatus {
   pristine: boolean
-  lastSync?: Date
   toc?: ToC
 }

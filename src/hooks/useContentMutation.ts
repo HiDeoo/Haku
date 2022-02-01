@@ -5,6 +5,7 @@ import { type NoteData } from 'libs/db/note'
 import useContentType, { ContentType } from 'hooks/useContentType'
 import { type TodoNodesData } from 'libs/db/todoNodes'
 import { type UpdateNoteBody, type UpdateNoteQuery } from 'pages/api/notes/[id]'
+import { type UpdateTodoNodesBody, type UpdateTodoNodesQuery } from 'pages/api/todos/[id]/nodes'
 
 export default function useContentMutation() {
   const { lcType, type } = useContentType()
@@ -16,12 +17,15 @@ export default function useContentMutation() {
 
     switch (data.action) {
       case 'update': {
-        if (type === ContentType.TODO) {
-          // TODO(HiDeoo)
-          throw new Error('Unimplemented')
-        }
+        const isTodoData = isUpdateTodoData(data)
 
-        return updateNote({ id: data.id, html: data.html, text: data.text })
+        if (type === ContentType.TODO && isTodoData) {
+          return updateTodo({ id: data.id, children: data.children, mutations: data.mutations })
+        } else if (type === ContentType.NOTE && !isTodoData) {
+          return updateNote({ id: data.id, html: data.html, text: data.text })
+        } else {
+          throw new Error(`Invalid ${lcType} content mutation data.`)
+        }
       }
       default: {
         throw new Error(`Unsupported ${lcType} content mutation type.`)
@@ -30,10 +34,24 @@ export default function useContentMutation() {
   })
 }
 
-function updateNote({ id, ...data }: UpdateData) {
+function updateNote({ id, ...data }: UpdateNoteData) {
   return client.patch(`notes/${id}`, { json: data }).json<NoteData>()
 }
 
-type UpdateData = Required<Pick<UpdateNoteBody, 'html' | 'text'>> & UpdateNoteQuery
+async function updateTodo({ id, ...data }: UpdateTodoData) {
+  await client.patch(`todos/${id}/nodes`, { json: data })
+}
 
-type ContentMutation = Mutation<UpdateData, 'update'>
+function isUpdateTodoData(data: UpdateData): data is UpdateTodoData {
+  return (
+    typeof (data as UpdateTodoData).children !== 'undefined' &&
+    typeof (data as UpdateTodoData).mutations !== 'undefined'
+  )
+}
+
+type UpdateNoteData = Required<Pick<UpdateNoteBody, 'html' | 'text'>> & UpdateNoteQuery
+type UpdateTodoData = UpdateTodoNodesBody & UpdateTodoNodesQuery
+
+type UpdateData = UpdateNoteData | UpdateTodoData
+
+export type ContentMutation = Mutation<UpdateData, 'update'>

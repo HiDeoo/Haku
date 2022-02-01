@@ -12,6 +12,8 @@ import {
   unnestNodeAtom,
   updateContentAtom,
   getClosestNode,
+  type TodoSyncStatus,
+  todoSyncStatusAtom,
 } from 'atoms/todos'
 import { type TodoNodeItemHandle } from 'components/TodoNodeItem'
 import { type TodoNodeData } from 'libs/db/todoNodes'
@@ -20,11 +22,17 @@ export const todoNodeContentRefs = new Map<TodoNodeData['id'], TodoNodeItemHandl
 
 export const TodoContext = createContext(todoNodeContentRefs)
 
+function isLoadingSyncStatusSelector(syncStatus: TodoSyncStatus) {
+  return syncStatus.isLoading
+}
+
 export default function useTodoNode(id: TodoNodeData['id']) {
   const getNodeById = useCallback(
     <TData>(nodesMap: Record<TodoNodeData['id'], TData>, nodeId = id) => nodesMap[nodeId],
     [id]
   )
+
+  const isLoading = useAtomValue(selectAtom(todoSyncStatusAtom, isLoadingSyncStatusSelector))
 
   const getClosestNodeId = useAtomCallback(
     useCallback(
@@ -43,5 +51,5 @@ export default function useTodoNode(id: TodoNodeData['id']) {
   const unnestNode = useUpdateAtom(unnestNodeAtom)
   const moveNode = useUpdateAtom(moveNodeAtom)
 
-  return { addNode, deleteNode, getClosestNodeId, moveNode, nestNode, node, unnestNode, updateContent }
+  return { addNode, deleteNode, getClosestNodeId, isLoading, moveNode, nestNode, node, unnestNode, updateContent }
 }
