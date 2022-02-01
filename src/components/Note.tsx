@@ -11,8 +11,8 @@ import Flex from 'components/Flex'
 import NoteInspector from 'components/NoteInspector'
 import Shimmer from 'components/Shimmer'
 import { type SyncStatus } from 'components/SyncReport'
-import useContentId from 'hooks/useContentId'
 import useNote from 'hooks/useNote'
+import { type TodoMetadata } from 'libs/db/todo'
 import { getLowlight, getToc, HeadingWithId, type ToC } from 'libs/editor'
 import clst from 'styles/clst'
 import styles from 'styles/Note.module.css'
@@ -38,12 +38,11 @@ const shimmerClasses = [
 
 const anchorHeadingRegExp = /^#.*-(?<pos>\d+)$/
 
-const Note: React.FC = () => {
+const Note: React.FC<NoteProps> = ({ id }) => {
   const editorRef = useRef<Editor | null>(null)
   const [editorState, setEditorState] = useState<NoteEditorState>({ pristine: true })
 
-  const contentId = useContentId()
-  const { data, isLoading } = useNote(contentId, { enabled: editorState.pristine })
+  const { data, isLoading } = useNote(id, { enabled: editorState.pristine })
 
   const editorClasses = clst('h-full p-3 outline-none', styles.editor)
 
@@ -121,8 +120,8 @@ const Note: React.FC = () => {
         <EditorContent editor={editor} className="grid h-full w-full overflow-y-auto" />
       )}
       <NoteInspector
+        noteId={id}
         editor={editor}
-        noteId={contentId}
         disabled={isLoading}
         onMutation={onMutation}
         editorState={editorState}
@@ -140,4 +139,8 @@ function addCodeBlockLowlightNodeView() {
 export interface NoteEditorState extends SyncStatus {
   pristine: boolean
   toc?: ToC
+}
+
+interface NoteProps {
+  id: TodoMetadata['id']
 }

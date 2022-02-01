@@ -1,15 +1,15 @@
-import { selectAtom, useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { selectAtom, useAtomValue, useResetAtom, useUpdateAtom } from 'jotai/utils'
 import { useEffect } from 'react'
 
-import { todoChildrenAtom, TodoEditorState, todoEditorStateAtom, todoNodesAtom } from 'atoms/todos'
+import { resetTodoAtomsAtom, todoChildrenAtom, TodoEditorState, todoEditorStateAtom, todoNodesAtom } from 'atoms/todos'
 import Flex from 'components/Flex'
 import Shimmer from 'components/Shimmer'
 import TodoNavbar from 'components/TodoNavbar'
 import TodoNodeChildren from 'components/TodoNodeChildren'
 import { TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS } from 'components/TodoNodeItem'
-import useContentId from 'hooks/useContentId'
 import useTodo from 'hooks/useTodo'
 import { TodoContext, todoNodeContentRefs } from 'hooks/useTodoNode'
+import { type TodoMetadata } from 'libs/db/todo'
 
 const shimmerClassesAndLevels = [
   ['w-2/5', 0],
@@ -34,14 +34,14 @@ function pristineStateSelector(state: TodoEditorState) {
   return state.pristine
 }
 
-const Todo: React.FC = () => {
+const Todo: React.FC<TodoProps> = ({ id }) => {
   const pristine = useAtomValue(selectAtom(todoEditorStateAtom, pristineStateSelector))
+  const resetTodoAtoms = useResetAtom(resetTodoAtomsAtom)
 
   const setTodoChildren = useUpdateAtom(todoChildrenAtom)
   const setTodoNodes = useUpdateAtom(todoNodesAtom)
 
-  const contentId = useContentId()
-  const { isLoading } = useTodo(contentId, {
+  const { isLoading } = useTodo(id, {
     enabled: pristine,
     onSuccess: ({ children, nodes }) => {
       setTodoChildren(children)
@@ -52,12 +52,13 @@ const Todo: React.FC = () => {
   useEffect(() => {
     return () => {
       todoNodeContentRefs.clear()
+      resetTodoAtoms()
     }
-  }, [])
+  }, [resetTodoAtoms])
 
   return (
     <Flex direction="col" fullHeight className="relative overflow-hidden">
-      <TodoNavbar disabled={isLoading} todoId={contentId} />
+      <TodoNavbar disabled={isLoading} todoId={id} />
       {isLoading ? (
         <Shimmer>
           {shimmerClassesAndLevels.map(([classes, level], index) => (
@@ -80,3 +81,7 @@ const Todo: React.FC = () => {
 }
 
 export default Todo
+
+interface TodoProps {
+  id: TodoMetadata['id']
+}

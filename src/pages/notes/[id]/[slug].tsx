@@ -10,7 +10,11 @@ const Note = dynamic(import('components/Note'), {
 const NotePage: Page = () => {
   const contentId = useContentId()
 
-  return <Note key={contentId} />
+  if (!contentId) {
+    throw new Error('Missing ID to render a note.')
+  }
+
+  return <Note key={contentId} id={contentId} />
 }
 
 export default NotePage
