@@ -11,6 +11,7 @@ import Flex from 'components/Flex'
 import NoteInspector from 'components/NoteInspector'
 import Shimmer from 'components/Shimmer'
 import { type SyncStatus } from 'components/SyncReport'
+import useNavigationPrompt from 'hooks/useNavigationPrompt'
 import useNote from 'hooks/useNote'
 import { type TodoMetadata } from 'libs/db/todo'
 import { getLowlight, getToc, HeadingWithId, type ToC } from 'libs/editor'
@@ -41,6 +42,8 @@ const anchorHeadingRegExp = /^#.*-(?<pos>\d+)$/
 const Note: React.FC<NoteProps> = ({ id }) => {
   const editorRef = useRef<Editor | null>(null)
   const [editorState, setEditorState] = useState<NoteEditorState>({ pristine: true })
+
+  useNavigationPrompt(!editorState.pristine)
 
   const { data, isLoading } = useNote(id, { enabled: editorState.pristine })
 
