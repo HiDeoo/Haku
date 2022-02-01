@@ -12,11 +12,11 @@ export const todoNodesAtom = atom<TodoNodesData['nodes']>({})
 
 export const todoNodeMutations = atomWithReset<Record<TodoNodeData['id'], 'insert' | 'update' | 'delete'>>({})
 
-const todoEditorSyncStatusAtom = atom<SyncStatus>({})
+export const todoSyncStatusAtom = atom<TodoSyncStatus>({ isLoading: false })
 
-export const todoEditorStateAtom = atom<TodoEditorState, SyncStatus>(
+export const todoEditorStateAtom = atom<TodoEditorState, TodoSyncStatus>(
   (get) => {
-    const state = get(todoEditorSyncStatusAtom)
+    const state = get(todoSyncStatusAtom)
     const mutations = get(todoNodeMutations)
 
     return {
@@ -24,8 +24,8 @@ export const todoEditorStateAtom = atom<TodoEditorState, SyncStatus>(
       pristine: Object.keys(mutations).length === 0,
     }
   },
-  (_get, set, syncStatus: SyncStatus) => {
-    set(todoEditorSyncStatusAtom, syncStatus)
+  (_get, set, syncStatus: TodoSyncStatus) => {
+    set(todoSyncStatusAtom, syncStatus)
   }
 )
 
@@ -319,6 +319,10 @@ interface AtomParamsWithParentId {
   parentId?: TodoNodeData['id']
 }
 
-export interface TodoEditorState extends SyncStatus {
+export interface TodoSyncStatus extends SyncStatus {
+  isLoading: boolean
+}
+
+export interface TodoEditorState extends TodoSyncStatus {
   pristine: boolean
 }

@@ -15,6 +15,7 @@ import {
   setContentEditableCaretIndex,
   setContentEditableCaretPosition,
 } from 'libs/html'
+import clst from 'styles/clst'
 
 export const TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS = 20
 
@@ -27,7 +28,8 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
   const contentRef = useRef<HTMLDivElement>(null)
   const refs = useContext(TodoContext)
 
-  const { addNode, deleteNode, getClosestNodeId, moveNode, nestNode, node, unnestNode, updateContent } = useTodoNode(id)
+  const { addNode, deleteNode, getClosestNodeId, isLoading, moveNode, nestNode, node, unnestNode, updateContent } =
+    useTodoNode(id)
 
   const onChangeContent = useCallback(
     (content: string) => {
@@ -39,7 +41,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     [node?.id, updateContent]
   )
 
-  useEditable(contentRef, onChangeContent)
+  useEditable(contentRef, onChangeContent, { disabled: isLoading })
 
   const focusClosestNode = useCallback(
     async (
@@ -188,15 +190,19 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     return null
   }
 
+  const contentClasses = clst('bg-blue-200 text-black caret-red-800 outline-none focus:bg-yellow-200', {
+    'bg-red-600': isLoading,
+  })
+
   return (
     <>
       <div style={{ paddingLeft: level * TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS }}>
         <div>{id}</div>
         <div
           ref={contentRef}
+          className={contentClasses}
           onKeyDown={onKeyDownContent}
           onPasteCapture={onPasteCaptureContent}
-          className="bg-blue-200 text-black caret-red-800 outline-none focus:bg-yellow-200"
         >
           {getContent()}
         </div>

@@ -57,11 +57,13 @@ const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, todoId }) => {
       }
     })
 
+    setEditorState({ isLoading: true })
+
     mutate(mutationData, { onSettled: onSettledMutation, onSuccess: onSuccessMutation })
   }
 
   function onSettledMutation(_: unknown, error: unknown) {
-    setEditorState({ error, lastSync: error ? undefined : new Date() })
+    setEditorState({ error, isLoading: false, lastSync: error ? undefined : new Date() })
   }
 
   function onSuccessMutation() {
