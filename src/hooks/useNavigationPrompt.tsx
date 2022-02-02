@@ -1,6 +1,8 @@
 import { useRouter } from 'next/router'
 import { useEffect, useRef } from 'react'
 
+import useRouteChange from './useRouteChange'
+
 // https://github.com/vercel/next.js/issues/2476#issuecomment-850030407
 export default function useNavigationPrompt(
   enabled: boolean,
@@ -10,17 +12,9 @@ export default function useNavigationPrompt(
 
   const prevHistoryState = useRef(window.history.state)
 
-  useEffect(() => {
-    function saveHistoryState() {
-      prevHistoryState.current = window.history.state
-    }
-
-    router.events.on('routeChangeComplete', saveHistoryState)
-
-    return () => {
-      router.events.off('routeChangeComplete', saveHistoryState)
-    }
-  }, [router])
+  useRouteChange(() => {
+    prevHistoryState.current = window.history.state
+  })
 
   useEffect(() => {
     let prompted = false
