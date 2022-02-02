@@ -1,8 +1,11 @@
 import cuid from 'cuid'
 import React, { forwardRef, memo, useCallback, useContext, useImperativeHandle, useRef } from 'react'
+import { RiCheckboxBlankCircleFill } from 'react-icons/ri'
 import { useEditable } from 'use-editable'
 
 import { type AtomParamsWithDirection } from 'atoms/todos'
+import Flex from 'components/Flex'
+import Icon from 'components/Icon'
 import TodoNodeChildren from 'components/TodoNodeChildren'
 import useTodoNode, { TodoContext } from 'hooks/useTodoNode'
 import { type TodoNodeData } from 'libs/db/todoNodes'
@@ -147,6 +150,14 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     })
   }
 
+  function onFocusContent() {
+    contentRef.current?.setAttribute('spellcheck', 'true')
+  }
+
+  function onBlurContent() {
+    contentRef.current?.setAttribute('spellcheck', 'false')
+  }
+
   function focusContent(
     caretPositionOrIndex?: CaretPosition | number,
     direction?: CaretDirection,
@@ -190,23 +201,28 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     return null
   }
 
-  const contentClasses = clst('bg-blue-200 text-black caret-red-800 outline-none focus:bg-yellow-200', {
+  const contentClasses = clst('outline-none grow leading-relaxed', {
     'bg-red-600': isLoading,
   })
 
   return (
     <>
-      <div style={{ paddingLeft: level * TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS }}>
-        <div>{id}</div>
+      <Flex
+        className="px-2 focus-within:bg-zinc-700"
+        style={{ paddingLeft: `calc(${level * TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS}px + 0.5rem)` }}
+      >
+        <Icon icon={RiCheckboxBlankCircleFill} className="mt-2.5 mr-2 h-1.5 w-1.5 shrink-0 text-zinc-300" />
         <div
           ref={contentRef}
           className={contentClasses}
           onKeyDown={onKeyDownContent}
+          onFocus={onFocusContent}
+          onBlur={onBlurContent}
           onPasteCapture={onPasteCaptureContent}
         >
           {getContent()}
         </div>
-      </div>
+      </Flex>
       <TodoNodeChildren id={id} level={level + 1} />
     </>
   )
