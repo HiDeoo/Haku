@@ -9,6 +9,7 @@ const mutationMapSchema = z.record(
   z.object({
     id: z.string().cuid(),
     content: z.string(),
+    completed: z.boolean(),
   })
 )
 

@@ -103,8 +103,9 @@ model Todo {
 }
 
 model TodoNode {
-  id      String @id @default(cuid())
-  content String
+  id        String  @id @default(cuid())
+  content   String
+  completed Boolean @default(false)
 
   children String[]
 
