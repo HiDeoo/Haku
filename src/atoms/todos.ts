@@ -48,6 +48,18 @@ export const updateContentAtom = atom(null, (get, set, { content, id }: AtomPara
   set(todoNodesAtom, (prevNodes) => ({ ...prevNodes, [id]: { ...node, content } }))
 })
 
+export const toggleCompletedAtom = atom(null, (get, set, { id }: AtomParamsWithParentId) => {
+  const node = get(todoNodesAtom)[id]
+
+  if (!node) {
+    return
+  }
+
+  set(todoNodeMutations, (prevMutations) => ({ ...prevMutations, [id]: prevMutations[id] ?? 'update' }))
+
+  set(todoNodesAtom, (prevNodes) => ({ ...prevNodes, [id]: { ...node, completed: !node.completed } }))
+})
+
 export const addNodeAtom = atom(null, (get, set, { id, newId, parentId = 'root' }: AtomParamsNodeAddition) => {
   const children = get(todoChildrenAtom)
   const nodeChildrenIds = children[id]
@@ -58,6 +70,7 @@ export const addNodeAtom = atom(null, (get, set, { id, newId, parentId = 'root' 
     ...prevNodes,
     [newId]: {
       id: newId,
+      completed: false,
       content: '',
       parentId: addAsChildren ? id : parentId === 'root' ? undefined : parentId,
     },
