@@ -7,6 +7,7 @@ import { type AtomParamsWithDirection } from 'atoms/todos'
 import Flex from 'components/Flex'
 import Icon from 'components/Icon'
 import TodoNodeChildren from 'components/TodoNodeChildren'
+import TodoNodeItemNote from 'components/TodoNodeItemNote'
 import useTodoNode, { TodoContext } from 'hooks/useTodoNode'
 import { type TodoNodeData } from 'libs/db/todoNodes'
 import {
@@ -43,6 +44,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     toggleCompleted,
     unnestNode,
     updateContent,
+    updateNote,
   } = useTodoNode(id)
 
   const onChangeContent = useCallback(
@@ -224,14 +226,14 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     return null
   }
 
-  const containerClasses = clst(node.completed && styles.completed)
+  const containerClasses = clst(styles.container, node.completed && styles.completed)
 
-  const contentClasses = clst('outline-none grow leading-relaxed', {
+  const contentClasses = clst(styles.content, 'outline-none grow leading-relaxed', {
     'cursor-not-allowed': isLoading,
     'line-through text-zinc-400': node.completed,
   })
 
-  const circleClasses = clst('mt-2.5 mr-2 h-1.5 w-1.5 shrink-0 text-zinc-300', {
+  const circleClasses = clst('mt-[0.57rem] mr-2 h-1.5 w-1.5 shrink-0 text-zinc-300', {
     'text-zinc-400': node.completed,
   })
 
@@ -242,15 +244,19 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
         style={{ paddingLeft: `calc(${level * TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS}px + 0.5rem)` }}
       >
         <Icon icon={RiCheckboxBlankCircleFill} className={circleClasses} />
-        <div
-          ref={contentRef}
-          onBlur={onBlurContent}
-          onFocus={onFocusContent}
-          className={contentClasses}
-          onKeyDown={onKeyDownContent}
-          onPasteCapture={onPasteCaptureContent}
-        >
-          {getContent()}
+        <div className="w-full">
+          <div
+            ref={contentRef}
+            onBlur={onBlurContent}
+            onFocus={onFocusContent}
+            className={contentClasses}
+            onKeyDown={onKeyDownContent}
+            onPasteCapture={onPasteCaptureContent}
+          >
+            {getContent()}
+          </div>
+          <TodoNodeItemNote node={node} onChange={updateNote} />
+          {/* {node.note && node.note.length > 0 ? <TodoNodeItemNote node={node} /> : null} */}
         </div>
       </Flex>
       <TodoNodeChildren id={id} level={level + 1} />

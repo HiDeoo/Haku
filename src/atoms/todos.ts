@@ -343,7 +343,7 @@ interface AtomParamsContentUpdate {
   id: TodoNodeData['id']
 }
 
-interface AtomParamsNoteUpdate {
+export interface AtomParamsNoteUpdate {
   id: TodoNodeData['id']
   note: string
 }
