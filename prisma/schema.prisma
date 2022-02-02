@@ -106,6 +106,7 @@ model TodoNode {
   id        String  @id @default(cuid())
   content   String
   completed Boolean @default(false)
+  note      String?
 
   children String[]
 
