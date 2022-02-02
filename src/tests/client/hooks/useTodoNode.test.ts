@@ -1171,6 +1171,104 @@ describe('useTodoNode', () => {
       expect(todoMutations.current[0][node.id]).toBe('delete')
     })
   })
+
+  describe('updateNote', () => {
+    test('should update a root todo node note', () => {
+      const { children, nodes } = setFakeTodoNodes([{}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const newNote = 'new note'
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      act(() => {
+        result.current.updateNote({ id: node.id, note: newNote })
+      })
+
+      expect(result.current.node?.note).toBe(newNote)
+    })
+
+    test('should update a nested todo node note', () => {
+      const { children, nodes } = setFakeTodoNodes([{ children: [{}] }])
+      const node = getTodoNodeFromIndexes(nodes, children, 0, 0)
+
+      const newNote = 'new note'
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      act(() => {
+        result.current.updateNote({ id: node.id, note: newNote })
+      })
+
+      expect(result.current.node?.note).toBe(newNote)
+    })
+
+    test('should mark an existing todo node as updated after updating its note', () => {
+      const { children, nodes } = setFakeTodoNodes([{}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+
+      act(() => {
+        result.current.updateNote({ id: node.id, note: 'new note' })
+      })
+
+      expect(todoMutations.current[node.id]).toBe('update')
+    })
+
+    test('should not mark a new todo node as updated after updating its note', () => {
+      const { children, nodes } = setFakeTodoNodes([{}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
+
+      act(() => {
+        todoMutations.current[1]((prevMutations) => ({ ...prevMutations, [node.id]: 'insert' }))
+
+        result.current.updateNote({ id: node.id, note: 'new note' })
+      })
+
+      expect(todoMutations.current[0][node.id]).toBe('insert')
+    })
+
+    test('should not update a nonexisting todo node note', () => {
+      const { children, nodes } = setFakeTodoNodes([{}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const newNote = 'new note'
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      act(() => {
+        result.current.updateNote({ id: 'nonexistingId', note: newNote })
+      })
+
+      expect(result.current.node?.note).toBe(nodes[node.id]?.note)
+    })
+
+    test('should not update a deleted todo node note', () => {
+      const { children, nodes } = setFakeTodoNodes([{}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoNodes } = renderHook(() => useAtom(todoNodesAtom))
+      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
+
+      act(() => {
+        const { [node.id]: nodeToDelete, ...otherNodes } = todoNodes.current[0]
+        todoNodes.current[1](otherNodes)
+
+        todoMutations.current[1]((prevMutations) => ({ ...prevMutations, [node.id]: 'delete' }))
+
+        result.current.updateNote({ id: node.id, note: 'new note' })
+      })
+
+      expect(result.current.node).toBeUndefined()
+      expect(todoMutations.current[0][node.id]).toBe('delete')
+    })
+  })
 })
 
 function getTodoNodeFromIndexes(
@@ -1272,6 +1370,7 @@ function getFakeTodoNode(parentId: TodoNodeDataWithParentId['parentId']): TodoNo
     id: cuid(),
     content: faker.lorem.words(),
     completed: faker.datatype.boolean(),
+    note: faker.datatype.boolean() ? faker.lorem.sentences() : null,
     parentId,
   }
 }

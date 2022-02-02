@@ -60,6 +60,18 @@ export const toggleCompletedAtom = atom(null, (get, set, { id }: AtomParamsWithP
   set(todoNodesAtom, (prevNodes) => ({ ...prevNodes, [id]: { ...node, completed: !node.completed } }))
 })
 
+export const updateNoteAtom = atom(null, (get, set, { id, note }: AtomParamsNoteUpdate) => {
+  const node = get(todoNodesAtom)[id]
+
+  if (!node) {
+    return
+  }
+
+  set(todoNodeMutations, (prevMutations) => ({ ...prevMutations, [id]: prevMutations[id] ?? 'update' }))
+
+  set(todoNodesAtom, (prevNodes) => ({ ...prevNodes, [id]: { ...node, note } }))
+})
+
 export const addNodeAtom = atom(null, (get, set, { id, newId, parentId = 'root' }: AtomParamsNodeAddition) => {
   const children = get(todoChildrenAtom)
   const nodeChildrenIds = children[id]
@@ -72,6 +84,7 @@ export const addNodeAtom = atom(null, (get, set, { id, newId, parentId = 'root' 
       id: newId,
       completed: false,
       content: '',
+      note: null,
       parentId: addAsChildren ? id : parentId === 'root' ? undefined : parentId,
     },
   }))
@@ -328,6 +341,11 @@ interface AtomParamsNodeAddition extends AtomParamsWithParentId {
 interface AtomParamsContentUpdate {
   content: string
   id: TodoNodeData['id']
+}
+
+interface AtomParamsNoteUpdate {
+  id: TodoNodeData['id']
+  note: string
 }
 
 export interface AtomParamsWithDirection extends AtomParamsWithParentId {
