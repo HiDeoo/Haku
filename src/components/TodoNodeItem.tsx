@@ -19,8 +19,9 @@ import {
   setContentEditableCaretPosition,
 } from 'libs/html'
 import clst from 'styles/clst'
+import styles from 'styles/TodoNodeItem.module.css'
 
-export const TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS = 20
+export const TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS = 16
 
 const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeItemProps> = (
   { id, level = 0 },
@@ -31,8 +32,18 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
   const contentRef = useRef<HTMLDivElement>(null)
   const refs = useContext(TodoContext)
 
-  const { addNode, deleteNode, getClosestNodeId, isLoading, moveNode, nestNode, node, unnestNode, updateContent } =
-    useTodoNode(id)
+  const {
+    addNode,
+    deleteNode,
+    getClosestNodeId,
+    isLoading,
+    moveNode,
+    nestNode,
+    node,
+    toggleCompleted,
+    unnestNode,
+    updateContent,
+  } = useTodoNode(id)
 
   const onChangeContent = useCallback(
     (content: string) => {
@@ -74,13 +85,25 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     if (event.key === 'Enter') {
       event.preventDefault()
 
-      const newId = cuid()
+      if (isEventWithoutModifier(event)) {
+        const newId = cuid()
 
-      addNode({ ...update, newId })
+        addNode({ ...update, newId })
 
-      requestAnimationFrame(() => {
-        refs.get(newId)?.focusContent()
-      })
+        requestAnimationFrame(() => {
+          refs.get(newId)?.focusContent()
+        })
+      } else if (event.metaKey) {
+        if (node.completed) {
+          preserveCaret(() => {
+            toggleCompleted(update)
+          })
+        } else {
+          toggleCompleted(update)
+
+          focusClosestNode({ ...update, direction: 'down' })
+        }
+      }
     } else if (event.key === 'Backspace' && event.metaKey) {
       event.preventDefault()
 
@@ -201,30 +224,37 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     return null
   }
 
+  const containerClasses = clst(node.completed && styles.completed)
+
   const contentClasses = clst('outline-none grow leading-relaxed', {
-    'bg-red-600': isLoading,
+    'cursor-not-allowed': isLoading,
+    'line-through text-zinc-400': node.completed,
+  })
+
+  const circleClasses = clst('mt-2.5 mr-2 h-1.5 w-1.5 shrink-0 text-zinc-300', {
+    'text-zinc-400': node.completed,
   })
 
   return (
-    <>
+    <div className={containerClasses}>
       <Flex
-        className="px-2 focus-within:bg-zinc-700"
+        className="focus-within:bg-zinc-700"
         style={{ paddingLeft: `calc(${level * TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS}px + 0.5rem)` }}
       >
-        <Icon icon={RiCheckboxBlankCircleFill} className="mt-2.5 mr-2 h-1.5 w-1.5 shrink-0 text-zinc-300" />
+        <Icon icon={RiCheckboxBlankCircleFill} className={circleClasses} />
         <div
           ref={contentRef}
+          onBlur={onBlurContent}
+          onFocus={onFocusContent}
           className={contentClasses}
           onKeyDown={onKeyDownContent}
-          onFocus={onFocusContent}
-          onBlur={onBlurContent}
           onPasteCapture={onPasteCaptureContent}
         >
           {getContent()}
         </div>
       </Flex>
       <TodoNodeChildren id={id} level={level + 1} />
-    </>
+    </div>
   )
 }
 

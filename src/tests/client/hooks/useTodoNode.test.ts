@@ -81,7 +81,7 @@ describe('useTodoNode', () => {
       expect(result.current.node?.content).toBe(newContent)
     })
 
-    test('should mark an existing todo node as updated', () => {
+    test('should mark an existing todo node as updated after updating its content', () => {
       const { children, nodes } = setFakeTodoNodes([{}])
       const node = getTodoNodeFromIndexes(nodes, children, 0)
 
@@ -95,7 +95,7 @@ describe('useTodoNode', () => {
       expect(todoMutations.current[node.id]).toBe('update')
     })
 
-    test('should not mark a new todo node as updated', () => {
+    test('should not mark a new todo node as updated after updating its content', () => {
       const { children, nodes } = setFakeTodoNodes([{}])
       const node = getTodoNodeFromIndexes(nodes, children, 0)
 
@@ -1079,6 +1079,98 @@ describe('useTodoNode', () => {
       })
     })
   })
+
+  describe('updateCompleted', () => {
+    test('should toggle completed a root todo node', () => {
+      const { children, nodes } = setFakeTodoNodes([{}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      act(() => {
+        result.current.toggleCompleted({ id: node.id })
+      })
+
+      expect(result.current.node?.completed).toBe(!node.completed)
+    })
+
+    test('should toggle completed a nested todo node', () => {
+      const { children, nodes } = setFakeTodoNodes([{ children: [{}] }])
+      const node = getTodoNodeFromIndexes(nodes, children, 0, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      act(() => {
+        result.current.toggleCompleted({ id: node.id })
+      })
+
+      expect(result.current.node?.completed).toBe(!node.completed)
+    })
+
+    test('should mark an existing todo node as updated after toggling its completion', () => {
+      const { children, nodes } = setFakeTodoNodes([{}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+
+      act(() => {
+        result.current.toggleCompleted({ id: node.id })
+      })
+
+      expect(todoMutations.current[node.id]).toBe('update')
+    })
+
+    test('should not mark a new todo node as updated after toggling its completion', () => {
+      const { children, nodes } = setFakeTodoNodes([{}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
+
+      act(() => {
+        todoMutations.current[1]((prevMutations) => ({ ...prevMutations, [node.id]: 'insert' }))
+
+        result.current.toggleCompleted({ id: node.id })
+      })
+
+      expect(todoMutations.current[0][node.id]).toBe('insert')
+    })
+
+    test('should not toggle completed a nonexisting todo node', () => {
+      const { children, nodes } = setFakeTodoNodes([{}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      act(() => {
+        result.current.toggleCompleted({ id: 'nonexistingId' })
+      })
+
+      expect(result.current.node?.completed).toBe(nodes[node.id]?.completed)
+    })
+
+    test('should not toggle completed a deleted todo node', () => {
+      const { children, nodes } = setFakeTodoNodes([{}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoNodes } = renderHook(() => useAtom(todoNodesAtom))
+      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
+
+      act(() => {
+        const { [node.id]: nodeToDelete, ...otherNodes } = todoNodes.current[0]
+        todoNodes.current[1](otherNodes)
+
+        todoMutations.current[1]((prevMutations) => ({ ...prevMutations, [node.id]: 'delete' }))
+
+        result.current.toggleCompleted({ id: node.id })
+      })
+
+      expect(result.current.node).toBeUndefined()
+      expect(todoMutations.current[0][node.id]).toBe('delete')
+    })
+  })
 })
 
 function getTodoNodeFromIndexes(
@@ -1179,6 +1271,7 @@ function getFakeTodoNode(parentId: TodoNodeDataWithParentId['parentId']): TodoNo
   return {
     id: cuid(),
     content: faker.lorem.words(),
+    completed: faker.datatype.boolean(),
     parentId,
   }
 }

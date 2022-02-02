@@ -78,7 +78,7 @@ const Todo: React.FC<TodoProps> = ({ id }) => {
         </Shimmer>
       ) : (
         <TodoContext.Provider value={todoNodeContentRefs}>
-          <Flex fullHeight fullWidth direction="col" className="gap-1 overflow-y-auto">
+          <Flex fullHeight fullWidth direction="col" className="overflow-y-auto">
             <TodoNodeChildren />
           </Flex>
         </TodoContext.Provider>
