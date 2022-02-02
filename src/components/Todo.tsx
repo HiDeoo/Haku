@@ -8,6 +8,7 @@ import TodoNavbar from 'components/TodoNavbar'
 import TodoNodeChildren from 'components/TodoNodeChildren'
 import { TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS } from 'components/TodoNodeItem'
 import useNavigationPrompt from 'hooks/useNavigationPrompt'
+import useRouteChange from 'hooks/useRouteChange'
 import useTodo from 'hooks/useTodo'
 import { TodoContext, todoNodeContentRefs } from 'hooks/useTodoNode'
 import { type TodoMetadata } from 'libs/db/todo'
@@ -55,12 +56,15 @@ const Todo: React.FC<TodoProps> = ({ id }) => {
   useEffect(() => {
     return () => {
       todoNodeContentRefs.clear()
-      resetTodoAtoms()
     }
-  }, [resetTodoAtoms])
+  }, [])
+
+  useRouteChange(() => {
+    resetTodoAtoms()
+  })
 
   return (
-    <Flex direction="col" fullHeight className="relative overflow-hidden">
+    <Flex direction="col" fullHeight className="overflow-hidden">
       <TodoNavbar disabled={isLoading} todoId={id} />
       {isLoading ? (
         <Shimmer>
@@ -74,9 +78,9 @@ const Todo: React.FC<TodoProps> = ({ id }) => {
         </Shimmer>
       ) : (
         <TodoContext.Provider value={todoNodeContentRefs}>
-          <div className="h-full w-full overflow-y-auto">
+          <Flex fullHeight fullWidth direction="col" className="gap-1 overflow-y-auto">
             <TodoNodeChildren />
-          </div>
+          </Flex>
         </TodoContext.Provider>
       )}
     </Flex>
