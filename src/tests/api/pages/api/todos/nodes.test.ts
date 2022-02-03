@@ -403,7 +403,8 @@ describe('todo nodes', () => {
       return testApiRoute(
         idHandler,
         async ({ fetch }) => {
-          const newTodoNode = getFakeTodoNode({ noteHtml: null, noteText: 'todo node note text\n\n' })
+          const newTodoNode = getFakeTodoNode({ noteText: 'todo node note text\n\n' })
+          newTodoNode.noteHtml = null
 
           const res = await fetch({
             method: HttpMethod.PATCH,
