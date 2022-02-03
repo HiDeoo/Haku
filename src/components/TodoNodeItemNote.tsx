@@ -1,11 +1,16 @@
-import { EditorContent, type EditorEvents, useEditor } from '@tiptap/react'
+import { EditorContent, type EditorEvents, useEditor, Extension } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import { useCallback } from 'react'
+import { forwardRef, useCallback, useImperativeHandle } from 'react'
 
 import { type AtomParamsNoteUpdate } from 'atoms/todos'
 import { type TodoNodeDataWithParentId } from 'libs/db/todoNodes'
 
-const TodoNodeItemNote: React.FC<TodoNodeItemNoteProps> = ({ node, onChange }) => {
+const TodoNodeItemNote: React.ForwardRefRenderFunction<TodoNodeItemNoteHandle, TodoNodeItemNoteProps> = (
+  { node, onBlur, onChange, onShiftEnter },
+  forwardedRef
+) => {
+  useImperativeHandle(forwardedRef, () => ({ focusNote }))
+
   const onEditorUpdate = useCallback(
     ({ editor }: EditorEvents['update']) => {
       onChange({ id: node.id, note: editor.getHTML() })
@@ -13,13 +18,20 @@ const TodoNodeItemNote: React.FC<TodoNodeItemNoteProps> = ({ node, onChange }) =
     [node.id, onChange]
   )
 
-  const editor = useEditor({
-    editable: typeof node.content === 'string',
-    // TODO(HiDeoo)
-    extensions: [StarterKit],
-    content: node.note,
-    onUpdate: onEditorUpdate,
-  })
+  const editor = useEditor(
+    {
+      // TODO(HiDeoo)
+      extensions: [StarterKit, shiftEnterExtension.configure({ callback: onShiftEnter })],
+      content: node.note,
+      onBlur,
+      onUpdate: onEditorUpdate,
+    },
+    [node.content]
+  )
+
+  function focusNote() {
+    editor?.commands.focus(node.note?.length)
+  }
 
   if (!node) {
     return null
@@ -28,9 +40,28 @@ const TodoNodeItemNote: React.FC<TodoNodeItemNoteProps> = ({ node, onChange }) =
   return <EditorContent editor={editor} />
 }
 
-export default TodoNodeItemNote
+export default forwardRef(TodoNodeItemNote)
+
+const shiftEnterExtension = Extension.create<{ callback: () => void }>({
+  name: 'shiftEnterExtension',
+  addKeyboardShortcuts() {
+    return {
+      'Shift-Enter': () => {
+        this.options.callback()
+
+        return true
+      },
+    }
+  },
+})
 
 interface TodoNodeItemNoteProps {
   node: TodoNodeDataWithParentId
+  onBlur: () => void
   onChange: (update: AtomParamsNoteUpdate) => void
+  onShiftEnter: () => void
+}
+
+export interface TodoNodeItemNoteHandle {
+  focusNote: () => void
 }

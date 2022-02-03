@@ -1,5 +1,5 @@
 import cuid from 'cuid'
-import React, { forwardRef, memo, useCallback, useContext, useImperativeHandle, useRef } from 'react'
+import { forwardRef, memo, useCallback, useContext, useImperativeHandle, useRef, useState } from 'react'
 import { RiCheckboxBlankCircleFill } from 'react-icons/ri'
 import { useEditable } from 'use-editable'
 
@@ -7,7 +7,7 @@ import { type AtomParamsWithDirection } from 'atoms/todos'
 import Flex from 'components/Flex'
 import Icon from 'components/Icon'
 import TodoNodeChildren from 'components/TodoNodeChildren'
-import TodoNodeItemNote from 'components/TodoNodeItemNote'
+import TodoNodeItemNote, { type TodoNodeItemNoteHandle } from 'components/TodoNodeItemNote'
 import useTodoNode, { TodoContext } from 'hooks/useTodoNode'
 import { type TodoNodeData } from 'libs/db/todoNodes'
 import {
@@ -30,7 +30,11 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
 ) => {
   useImperativeHandle(forwardedRef, () => ({ focusContent }))
 
+  const [shouldFocusNote, setShouldFocusNote] = useState(false)
+
   const contentRef = useRef<HTMLDivElement>(null)
+  const noteRef = useRef<TodoNodeItemNoteHandle>(null)
+
   const todoNodeItems = useContext(TodoContext)
 
   const {
@@ -57,7 +61,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     [node?.id, updateContent]
   )
 
-  useEditable(contentRef, onChangeContent, { disabled: isLoading })
+  useEditable(contentRef, onChangeContent, { disabled: isLoading || shouldFocusNote })
 
   const focusClosestNode = useCallback(
     async (
@@ -105,6 +109,12 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
 
           focusClosestNode({ ...update, direction: 'down' })
         }
+      } else if (event.shiftKey) {
+        setShouldFocusNote((prevIsNoteFocused) => !prevIsNoteFocused)
+
+        requestAnimationFrame(() => {
+          noteRef.current?.focusNote()
+        })
       }
     } else if (event.key === 'Backspace' && event.metaKey) {
       event.preventDefault()
@@ -183,6 +193,18 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     contentRef.current?.setAttribute('spellcheck', 'false')
   }
 
+  function onBlurNote() {
+    setShouldFocusNote(false)
+  }
+
+  function onShiftEnterNote() {
+    setShouldFocusNote(false)
+
+    requestAnimationFrame(() => {
+      focusContent()
+    })
+  }
+
   function focusContent(
     caretPositionOrIndex?: CaretPosition | number,
     direction?: CaretDirection,
@@ -216,15 +238,16 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     }
   }
 
-  function getContent() {
-    // Editing behaves best when rendering a trailing newline.
-    // https://github.com/FormidableLabs/use-editable/issues/8#issuecomment-817390829
-    return `${node?.content}\n`
-  }
-
   if (!node) {
     return null
   }
+
+  // Editing behaves best when rendering a trailing newline.
+  // https://github.com/FormidableLabs/use-editable/issues/8#issuecomment-817390829
+  const content = `${node?.content}\n`
+
+  // FIXME(HiDeoo) This should be based on the raw text, not the HTML.
+  const isNoteVisible = shouldFocusNote || (node.note && node.note.length > 0)
 
   const containerClasses = clst(styles.container, node.completed && styles.completed)
 
@@ -253,10 +276,17 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
             onKeyDown={onKeyDownContent}
             onPasteCapture={onPasteCaptureContent}
           >
-            {getContent()}
+            {content}
           </div>
-          <TodoNodeItemNote node={node} onChange={updateNote} />
-          {/* {node.note && node.note.length > 0 ? <TodoNodeItemNote node={node} /> : null} */}
+          {isNoteVisible ? (
+            <TodoNodeItemNote
+              ref={noteRef}
+              node={node}
+              onBlur={onBlurNote}
+              onChange={updateNote}
+              onShiftEnter={onShiftEnterNote}
+            />
+          ) : null}
         </div>
       </Flex>
       <TodoNodeChildren id={id} level={level + 1} />
