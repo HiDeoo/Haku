@@ -1,10 +1,10 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import Flex from 'components/Flex'
 import NoteInspector from 'components/NoteInspector'
 import Shimmer from 'components/Shimmer'
 import { type SyncStatus } from 'components/SyncReport'
-import { EditorContent, useEditor } from 'hooks/useEditor'
+import { EditorContent, EditorEvents, useEditor } from 'hooks/useEditor'
 import useNavigationPrompt from 'hooks/useNavigationPrompt'
 import useNote from 'hooks/useNote'
 import { type TodoMetadata } from 'libs/db/todo'
@@ -32,41 +32,41 @@ const shimmerClasses = [
 const anchorHeadingRegExp = /^#.*-(?<pos>\d+)$/
 
 const Note: React.FC<NoteProps> = ({ id }) => {
-  const editorRef = useRef<ReturnType<typeof useEditor>>(null)
   const [editorState, setEditorState] = useState<NoteEditorState>({ pristine: true })
 
   useNavigationPrompt(!editorState.pristine)
 
   const { data, isLoading } = useNote(id, { enabled: editorState.pristine })
 
-  const updateToc = useCallback((emitUpdate = true) => {
-    if (editorRef.current) {
-      const toc = getToc(editorRef.current)
+  const updateToc = useCallback(({ editor }: EditorEvents['create'], emitUpdate = true) => {
+    const toc = getToc(editor as NonNullable<ReturnType<typeof useEditor>>)
 
-      setEditorState((prevEditorState) => ({ ...prevEditorState, pristine: !emitUpdate, toc }))
-    }
+    setEditorState((prevEditorState) => ({ ...prevEditorState, pristine: !emitUpdate, toc }))
   }, [])
 
-  const onEditorCreate = useCallback(() => {
-    if (location.hash.length !== 0) {
-      const heading = document.querySelector(location.hash)
+  const onEditorCreate = useCallback(
+    ({ editor }: EditorEvents['create']) => {
+      if (location.hash.length !== 0) {
+        const heading = document.querySelector(location.hash)
 
-      if (heading) {
-        const matches = anchorHeadingRegExp.exec(location.hash)
-        const pos = matches?.groups?.pos
+        if (heading) {
+          const matches = anchorHeadingRegExp.exec(location.hash)
+          const pos = matches?.groups?.pos
 
-        if (editorRef.current && pos) {
-          const headingPos = parseInt(pos, 10)
+          if (pos) {
+            const headingPos = parseInt(pos, 10)
 
-          editorRef.current?.chain().setTextSelection(headingPos).focus().run()
+            editor.chain().setTextSelection(headingPos).focus().run()
 
-          heading.scrollIntoView()
+            heading.scrollIntoView()
+          }
         }
       }
-    }
 
-    updateToc(false)
-  }, [updateToc])
+      updateToc({ editor }, false)
+    },
+    [updateToc]
+  )
 
   const editor = useEditor(
     {
@@ -79,8 +79,6 @@ const Note: React.FC<NoteProps> = ({ id }) => {
     },
     [data?.html]
   )
-
-  editorRef.current = editor
 
   function onMutation(error?: unknown) {
     setEditorState((prevEditorState) => ({
