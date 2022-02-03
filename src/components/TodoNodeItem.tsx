@@ -31,7 +31,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
   useImperativeHandle(forwardedRef, () => ({ focusContent }))
 
   const contentRef = useRef<HTMLDivElement>(null)
-  const refs = useContext(TodoContext)
+  const todoNodeItems = useContext(TodoContext)
 
   const {
     addNode,
@@ -72,9 +72,9 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
 
       event?.preventDefault()
 
-      refs.get(closestNodeId)?.focusContent(caretPosition, direction, level)
+      todoNodeItems.get(closestNodeId)?.focusContent(caretPosition, direction, level)
     },
-    [getClosestNodeId, level, refs]
+    [getClosestNodeId, level, todoNodeItems]
   )
 
   function onKeyDownContent(event: React.KeyboardEvent<HTMLDivElement>) {
@@ -93,7 +93,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
         addNode({ ...update, newId })
 
         requestAnimationFrame(() => {
-          refs.get(newId)?.focusContent()
+          todoNodeItems.get(newId)?.focusContent()
         })
       } else if (event.metaKey) {
         if (node.completed) {
@@ -171,7 +171,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     callback()
 
     requestAnimationFrame(() => {
-      refs.get(node.id)?.focusContent(caretIndex)
+      todoNodeItems.get(node.id)?.focusContent(caretIndex)
     })
   }
 
