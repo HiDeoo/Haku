@@ -13,6 +13,7 @@ import {
   API_ERROR_TODO_NODE_DOES_NOT_EXIST,
   API_ERROR_TODO_NODE_INSERT_CHILD_DELETE_CONFLICT,
   API_ERROR_TODO_NODE_INSERT_CHILD_DOES_NOT_EXIST,
+  API_ERROR_TODO_NODE_NOTE_HTML_OR_TEXT_MISSING,
   API_ERROR_TODO_NODE_ROOT_NODE_DOES_NOT_EXIST,
   API_ERROR_TODO_NODE_ROOT_NODE_EMPTY,
   API_ERROR_TODO_NODE_UPDATE_CHILD_DELETE_CONFLICT,
@@ -34,7 +35,8 @@ const todoNodeDataSelect = Prisma.validator<Prisma.TodoNodeSelect>()({
   children: true,
   content: true,
   completed: true,
-  note: true,
+  noteHtml: true,
+  noteText: true,
 })
 
 export async function getTodoNodes(todoId: TodoMetadata['id'], userId: UserId): Promise<TodoNodesData> {
@@ -144,6 +146,13 @@ async function validateMutations(todoId: TodoMetadata['id'], update: UpdateTodoN
   })
 
   for (const insertedTodoNode of Object.values(update.mutations.insert)) {
+    if (
+      (insertedTodoNode.noteHtml && !insertedTodoNode.noteText) ||
+      (insertedTodoNode.noteText && !insertedTodoNode.noteHtml)
+    ) {
+      throw new ApiError(API_ERROR_TODO_NODE_NOTE_HTML_OR_TEXT_MISSING)
+    }
+
     update.children[insertedTodoNode.id]?.forEach((childrenId) => {
       if (!hasKey(nodesMap, childrenId) && !hasKey(update.mutations.insert, childrenId)) {
         throw new ApiError(API_ERROR_TODO_NODE_INSERT_CHILD_DOES_NOT_EXIST)
@@ -156,6 +165,11 @@ async function validateMutations(todoId: TodoMetadata['id'], update: UpdateTodoN
   for (const updatedTodoNode of Object.values(update.mutations.update)) {
     if (!hasKey(nodesMap, updatedTodoNode.id)) {
       throw new ApiError(API_ERROR_TODO_NODE_UPDATE_DOES_NOT_EXIST)
+    } else if (
+      (updatedTodoNode.noteHtml && !updatedTodoNode.noteText) ||
+      (updatedTodoNode.noteText && !updatedTodoNode.noteHtml)
+    ) {
+      throw new ApiError(API_ERROR_TODO_NODE_NOTE_HTML_OR_TEXT_MISSING)
     }
 
     update.children[updatedTodoNode.id]?.forEach((childrenId) => {

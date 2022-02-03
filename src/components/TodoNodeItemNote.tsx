@@ -13,7 +13,7 @@ const TodoNodeItemNote: React.ForwardRefRenderFunction<TodoNodeItemNoteHandle, T
 
   const onEditorUpdate = useCallback(
     ({ editor }: EditorEvents['update']) => {
-      onChange({ id: node.id, note: editor.getHTML() })
+      onChange({ id: node.id, noteHtml: editor.getHTML(), noteText: editor.getText() })
     },
     [node.id, onChange]
   )
@@ -22,7 +22,7 @@ const TodoNodeItemNote: React.ForwardRefRenderFunction<TodoNodeItemNoteHandle, T
     {
       // TODO(HiDeoo)
       extensions: [StarterKit, shiftEnterExtension.configure({ callback: onShiftEnter })],
-      content: node.note,
+      content: node.noteHtml,
       onBlur,
       onUpdate: onEditorUpdate,
     },
@@ -30,7 +30,7 @@ const TodoNodeItemNote: React.ForwardRefRenderFunction<TodoNodeItemNoteHandle, T
   )
 
   function focusNote() {
-    editor?.commands.focus(node.note?.length)
+    editor?.commands.focus('end')
   }
 
   if (!node) {

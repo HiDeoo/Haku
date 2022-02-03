@@ -246,8 +246,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
   // https://github.com/FormidableLabs/use-editable/issues/8#issuecomment-817390829
   const content = `${node?.content}\n`
 
-  // FIXME(HiDeoo) This should be based on the raw text, not the HTML.
-  const isNoteVisible = shouldFocusNote || (node.note && node.note.length > 0)
+  const isNoteVisible = shouldFocusNote || (node.noteText && node.noteText.length > 0)
 
   const containerClasses = clst(styles.container, node.completed && styles.completed)
 
