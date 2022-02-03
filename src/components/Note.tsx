@@ -1,22 +1,14 @@
-import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
-import Highlight from '@tiptap/extension-highlight'
-import Link from '@tiptap/extension-link'
-import Strike from '@tiptap/extension-strike'
-import { useEditor, EditorContent, ReactNodeViewRenderer, type Editor } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
 import { useCallback, useRef, useState } from 'react'
 
-import EditorCodeBlock, { CODE_BLOCK_DEFAULT_LANGUAGE } from 'components/EditorCodeBlock'
 import Flex from 'components/Flex'
 import NoteInspector from 'components/NoteInspector'
 import Shimmer from 'components/Shimmer'
 import { type SyncStatus } from 'components/SyncReport'
+import { EditorContent, useEditor } from 'hooks/useEditor'
 import useNavigationPrompt from 'hooks/useNavigationPrompt'
 import useNote from 'hooks/useNote'
 import { type TodoMetadata } from 'libs/db/todo'
-import { getLowlight, getToc, HeadingWithId, type ToC } from 'libs/editor'
-import clst from 'styles/clst'
-import styles from 'styles/Note.module.css'
+import { getToc, HeadingWithId, type ToC } from 'libs/editor'
 
 const shimmerClasses = [
   'w-2/5 h-12',
@@ -40,14 +32,12 @@ const shimmerClasses = [
 const anchorHeadingRegExp = /^#.*-(?<pos>\d+)$/
 
 const Note: React.FC<NoteProps> = ({ id }) => {
-  const editorRef = useRef<Editor | null>(null)
+  const editorRef = useRef<ReturnType<typeof useEditor>>(null)
   const [editorState, setEditorState] = useState<NoteEditorState>({ pristine: true })
 
   useNavigationPrompt(!editorState.pristine)
 
   const { data, isLoading } = useNote(id, { enabled: editorState.pristine })
-
-  const editorClasses = clst('h-full p-3 outline-none', styles.editor)
 
   const updateToc = useCallback((emitUpdate = true) => {
     if (editorRef.current) {
@@ -81,19 +71,9 @@ const Note: React.FC<NoteProps> = ({ id }) => {
   const editor = useEditor(
     {
       autofocus: 'start',
+      className: 'h-full p-3',
       content: data?.html,
-      editorProps: { attributes: { class: editorClasses, spellcheck: 'false' } },
-      extensions: [
-        StarterKit.configure({ codeBlock: false, strike: false }),
-        Highlight,
-        Strike,
-        Link,
-        CodeBlockLowlight.extend({ addNodeView: addCodeBlockLowlightNodeView }).configure({
-          defaultLanguage: CODE_BLOCK_DEFAULT_LANGUAGE,
-          lowlight: getLowlight(),
-        }),
-        HeadingWithId,
-      ],
+      extensions: [HeadingWithId],
       onCreate: onEditorCreate,
       onUpdate: updateToc,
     },
@@ -134,10 +114,6 @@ const Note: React.FC<NoteProps> = ({ id }) => {
 }
 
 export default Note
-
-function addCodeBlockLowlightNodeView() {
-  return ReactNodeViewRenderer(EditorCodeBlock)
-}
 
 export interface NoteEditorState extends SyncStatus {
   pristine: boolean

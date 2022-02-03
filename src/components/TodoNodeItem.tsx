@@ -262,7 +262,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
   return (
     <div className={containerClasses}>
       <Flex
-        className="focus-within:bg-zinc-700"
+        className="pr-2 focus-within:bg-zinc-700"
         style={{ paddingLeft: `calc(${level * TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS}px + 0.5rem)` }}
       >
         <Icon icon={RiCheckboxBlankCircleFill} className={circleClasses} />

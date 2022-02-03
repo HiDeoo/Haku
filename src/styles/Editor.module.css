@@ -3,6 +3,8 @@
     overflow-wrap: anywhere;
   }
 
+  @apply outline-none;
+
   h1,
   h2,
   h3,
@@ -38,6 +40,14 @@
 
   p {
     @apply my-4;
+  }
+
+  & > p:first-child {
+    @apply mt-0;
+  }
+
+  & > p:last-child {
+    @apply mb-0;
   }
 
   hr {
