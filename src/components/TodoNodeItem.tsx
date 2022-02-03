@@ -250,7 +250,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
 
   const containerClasses = clst(styles.container, node.completed && styles.completed)
 
-  const contentClasses = clst(styles.content, 'outline-none grow leading-relaxed', {
+  const contentClasses = clst(styles.content, 'pr-2 break-words outline-none grow leading-relaxed', {
     'cursor-not-allowed': isLoading,
     'line-through text-zinc-400': node.completed,
   })
@@ -262,7 +262,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
   return (
     <div className={containerClasses}>
       <Flex
-        className="pr-2 focus-within:bg-zinc-700"
+        className="pr-2 focus-within:bg-zinc-600/30"
         style={{ paddingLeft: `calc(${level * TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS}px + 0.5rem)` }}
       >
         <Icon icon={RiCheckboxBlankCircleFill} className={circleClasses} />

@@ -40,6 +40,8 @@
 
   p {
     @apply my-4;
+
+    color: var(--editor-text-color);
   }
 
   & > p:first-child {

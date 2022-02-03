@@ -36,7 +36,17 @@ const TodoNodeItemNote: React.ForwardRefRenderFunction<TodoNodeItemNoteHandle, T
     return null
   }
 
-  return <EditorContent editor={editor} className="pr-2" />
+  return (
+    <EditorContent
+      editor={editor}
+      className="pr-2 text-[0.84rem] leading-[1.2rem]"
+      style={{
+        '--editor-text-color': node.completed
+          ? 'var(--todo-node-completed-note-editor-text-color)'
+          : 'var(--todo-node-note-editor-text-color)',
+      }}
+    />
+  )
 }
 
 export default forwardRef(TodoNodeItemNote)

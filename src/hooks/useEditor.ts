@@ -32,7 +32,7 @@ const defaultExtensions: Extensions = [
 export function useEditor(options: UseEditorOptions, deps?: DependencyList): Editor | null {
   const { className, extensions, spellcheck, starterKitOptions, ...editorOptions } = options
 
-  const editorClasses = clst(className, styles.editor)
+  const editorClasses = clst(styles.editor, className)
 
   const editor = useTipTap(
     {
