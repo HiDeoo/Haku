@@ -1,4 +1,4 @@
-import { Node, type Editor } from '@tiptap/react'
+import { Extension, Node, type Editor } from '@tiptap/react'
 import { type LanguageFn } from 'highlight.js'
 import bash from 'highlight.js/lib/languages/bash'
 import css from 'highlight.js/lib/languages/css'
@@ -102,6 +102,19 @@ export const HeadingWithId = Node.create({
         },
       },
     ]
+  },
+})
+
+export const ShiftEnter = Extension.create<{ callback: () => void }>({
+  name: 'shiftEnterExtension',
+  addKeyboardShortcuts() {
+    return {
+      'Shift-Enter': () => {
+        this.options.callback()
+
+        return true
+      },
+    }
   },
 })
 

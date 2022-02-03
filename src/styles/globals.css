@@ -74,3 +74,9 @@ div#__next {
   color: theme('colors.blue.50');
   background-color: theme('colors.blue.600');
 }
+
+:root {
+  --editor-text-color: theme('colors.blue.50');
+  --todo-node-note-editor-text-color: theme('colors.zinc.400');
+  --todo-node-completed-note-editor-text-color: theme('colors.zinc.500');
+}

@@ -1171,6 +1171,113 @@ describe('useTodoNode', () => {
       expect(todoMutations.current[0][node.id]).toBe('delete')
     })
   })
+
+  describe('updateNote', () => {
+    test('should update a root todo node note', () => {
+      const { children, nodes } = setFakeTodoNodes([{}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const newNote = 'new note'
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      act(() => {
+        result.current.updateNote({ id: node.id, noteHtml: newNote, noteText: newNote })
+      })
+
+      expect(result.current.node?.noteHtml).toBe(newNote)
+      expect(result.current.node?.noteText).toBe(newNote)
+    })
+
+    test('should update a nested todo node note', () => {
+      const { children, nodes } = setFakeTodoNodes([{ children: [{}] }])
+      const node = getTodoNodeFromIndexes(nodes, children, 0, 0)
+
+      const newNote = 'new note'
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      act(() => {
+        result.current.updateNote({ id: node.id, noteHtml: newNote, noteText: newNote })
+      })
+
+      expect(result.current.node?.noteHtml).toBe(newNote)
+      expect(result.current.node?.noteText).toBe(newNote)
+    })
+
+    test('should mark an existing todo node as updated after updating its note', () => {
+      const { children, nodes } = setFakeTodoNodes([{}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+
+      const newNote = 'new note'
+
+      act(() => {
+        result.current.updateNote({ id: node.id, noteHtml: newNote, noteText: newNote })
+      })
+
+      expect(todoMutations.current[node.id]).toBe('update')
+    })
+
+    test('should not mark a new todo node as updated after updating its note', () => {
+      const { children, nodes } = setFakeTodoNodes([{}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
+
+      const newNote = 'new note'
+
+      act(() => {
+        todoMutations.current[1]((prevMutations) => ({ ...prevMutations, [node.id]: 'insert' }))
+
+        result.current.updateNote({ id: node.id, noteHtml: newNote, noteText: newNote })
+      })
+
+      expect(todoMutations.current[0][node.id]).toBe('insert')
+    })
+
+    test('should not update a nonexisting todo node note', () => {
+      const { children, nodes } = setFakeTodoNodes([{}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const newNote = 'new note'
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      act(() => {
+        result.current.updateNote({ id: 'nonexistingId', noteHtml: newNote, noteText: newNote })
+      })
+
+      expect(result.current.node?.noteHtml).toBe(nodes[node.id]?.noteHtml)
+      expect(result.current.node?.noteText).toBe(nodes[node.id]?.noteText)
+    })
+
+    test('should not update a deleted todo node note', () => {
+      const { children, nodes } = setFakeTodoNodes([{}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoNodes } = renderHook(() => useAtom(todoNodesAtom))
+      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
+
+      const newNote = 'new note'
+
+      act(() => {
+        const { [node.id]: nodeToDelete, ...otherNodes } = todoNodes.current[0]
+        todoNodes.current[1](otherNodes)
+
+        todoMutations.current[1]((prevMutations) => ({ ...prevMutations, [node.id]: 'delete' }))
+
+        result.current.updateNote({ id: node.id, noteHtml: newNote, noteText: newNote })
+      })
+
+      expect(result.current.node).toBeUndefined()
+      expect(todoMutations.current[0][node.id]).toBe('delete')
+    })
+  })
 })
 
 function getTodoNodeFromIndexes(
@@ -1268,10 +1375,14 @@ function parseFakeTodoNodes(
 }
 
 function getFakeTodoNode(parentId: TodoNodeDataWithParentId['parentId']): TodoNodeDataWithParentId {
+  const data = faker.datatype.boolean() ? faker.lorem.sentences() : null
+
   return {
     id: cuid(),
     content: faker.lorem.words(),
     completed: faker.datatype.boolean(),
+    noteHtml: data,
+    noteText: data,
     parentId,
   }
 }

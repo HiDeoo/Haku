@@ -7,7 +7,7 @@ import { TodoContext } from 'hooks/useTodoNode'
 import { type TodoNodeData, type TodoNodesData } from 'libs/db/todoNodes'
 
 const TodoNodeChildren: React.FC<TodoNodeChildren> = ({ id = 'root', level = 0 }) => {
-  const refs = useContext(TodoContext)
+  const todoNodeItems = useContext(TodoContext)
 
   const children = useAtomValue(
     selectAtom(
@@ -19,12 +19,12 @@ const TodoNodeChildren: React.FC<TodoNodeChildren> = ({ id = 'root', level = 0 }
   const setTodoNodeItemRef = useCallback(
     (id: TodoNodeData['id'], item: TodoNodeItemHandle | null) => {
       if (item) {
-        refs.set(id, item)
+        todoNodeItems.set(id, item)
       } else {
-        refs.delete(id)
+        todoNodeItems.delete(id)
       }
     },
-    [refs]
+    [todoNodeItems]
   )
 
   return (

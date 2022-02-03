@@ -111,12 +111,16 @@ export function getTestTodoNode(id: TodoNodeData['id']) {
 }
 
 export function createTestTodoNode(options?: TestTodoNodeOptions) {
+  const data = faker.datatype.boolean() ? faker.lorem.sentences() : null
+
   return prisma.todoNode.create({
     data: {
       id: options?.id,
       children: options?.children,
       completed: options?.completed ?? faker.datatype.boolean(),
       content: options?.content ?? faker.lorem.words(),
+      noteHtml: options?.noteHtml ?? data,
+      noteText: options?.noteText ?? data,
       todoId: options?.todoId,
     },
   })
@@ -178,6 +182,8 @@ interface TestTodoNodeOptions {
   id?: TodoNode['id']
   children?: TodoNode['children']
   content?: TodoNode['content']
+  noteHtml?: TodoNode['noteHtml']
+  noteText?: TodoNode['noteText']
   completed?: TodoNode['completed']
   todoId?: TodoNode['todoId']
 }

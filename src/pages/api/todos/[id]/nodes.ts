@@ -10,6 +10,8 @@ const mutationMapSchema = z.record(
     id: z.string().cuid(),
     content: z.string(),
     completed: z.boolean(),
+    noteHtml: z.string().nullable(),
+    noteText: z.string().nullable(),
   })
 )
 

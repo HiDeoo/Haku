@@ -15,6 +15,7 @@ import {
   type TodoSyncStatus,
   todoSyncStatusAtom,
   toggleCompletedAtom,
+  updateNoteAtom,
 } from 'atoms/todos'
 import { type TodoNodeItemHandle } from 'components/TodoNodeItem'
 import { type TodoNodeData } from 'libs/db/todoNodes'
@@ -47,6 +48,7 @@ export default function useTodoNode(id: TodoNodeData['id']) {
 
   const updateContent = useUpdateAtom(updateContentAtom)
   const toggleCompleted = useUpdateAtom(toggleCompletedAtom)
+  const updateNote = useUpdateAtom(updateNoteAtom)
   const addNode = useUpdateAtom(addNodeAtom)
   const deleteNode = useUpdateAtom(deleteNodeAtom)
   const nestNode = useUpdateAtom(nestNodeAtom)
@@ -64,5 +66,6 @@ export default function useTodoNode(id: TodoNodeData['id']) {
     toggleCompleted,
     unnestNode,
     updateContent,
+    updateNote,
   }
 }

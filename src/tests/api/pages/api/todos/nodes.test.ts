@@ -26,6 +26,7 @@ import {
   API_ERROR_TODO_NODE_DELETE_UPDATE_CONFLICT,
   API_ERROR_TODO_NODE_INSERT_CHILD_DELETE_CONFLICT,
   API_ERROR_TODO_NODE_INSERT_CHILD_DOES_NOT_EXIST,
+  API_ERROR_TODO_NODE_NOTE_HTML_OR_TEXT_MISSING,
   API_ERROR_TODO_NODE_ROOT_NODE_DOES_NOT_EXIST,
   API_ERROR_TODO_NODE_ROOT_NODE_EMPTY,
   API_ERROR_TODO_NODE_UPDATE_CHILD_DELETE_CONFLICT,
@@ -72,8 +73,10 @@ describe('todo nodes', () => {
         async ({ fetch }) => {
           const content = 'todo node content'
           const completed = true
+          const noteHtml = '<p>todo node note</p>'
+          const noteText = 'todo node note\n\n'
 
-          const node = await createTestTodoNode({ todoId: id, content, completed })
+          const node = await createTestTodoNode({ todoId: id, content, completed, noteHtml, noteText })
           await updateTestTodoRoot(id, [...root, node.id])
 
           const res = await fetch({ method: HttpMethod.GET })
@@ -83,6 +86,8 @@ describe('todo nodes', () => {
           expect(json.nodes[node.id]?.parentId).toBeUndefined()
           expect(json.nodes[node.id]?.content).toBe(content)
           expect(json.nodes[node.id]?.completed).toBe(completed)
+          expect(json.nodes[node.id]?.noteHtml).toBe(noteHtml)
+          expect(json.nodes[node.id]?.noteText).toBe(noteText)
         },
         { dynamicRouteParams: { id } }
       )
@@ -169,6 +174,8 @@ describe('todo nodes', () => {
               todoNodeA.id === todoNodeB.id &&
               todoNodeA.content === todoNodeB.content &&
               todoNodeA.completed === todoNodeB.completed &&
+              todoNodeA.noteHtml === todoNodeB.noteHtml &&
+              todoNodeA.noteText === todoNodeB.noteText &&
               todoNodeAChildren?.length === todoNodeB.children.length &&
               todoNodeAChildren?.every((child, index) => child === todoNodeB.children[index])
             )
@@ -361,6 +368,59 @@ describe('todo nodes', () => {
       )
     })
 
+    test('should not update the note HTML of a node if the note text is missing', async () => {
+      const { id, nodes, root } = await createTestTodo()
+
+      return testApiRoute(
+        idHandler,
+        async ({ fetch }) => {
+          const updatedTodoNode = nodes[0]
+
+          assert(updatedTodoNode)
+
+          updatedTodoNode.noteHtml = '<p>updated todo node note HTML</p>'
+          updatedTodoNode.noteText = null
+
+          const res = await fetch({
+            method: HttpMethod.PATCH,
+            body: JSON.stringify({
+              children: { root },
+              mutations: { ...baseMutation, update: { [updatedTodoNode.id]: updatedTodoNode } },
+            }),
+          })
+          const json = await res.json<ApiErrorResponse>()
+
+          expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+          expect(json.error).toBe(API_ERROR_TODO_NODE_NOTE_HTML_OR_TEXT_MISSING)
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
+    test('should not insert a node with a note text if the note HTML is missing', async () => {
+      const { id, root } = await createTestTodo()
+
+      return testApiRoute(
+        idHandler,
+        async ({ fetch }) => {
+          const newTodoNode = getFakeTodoNode({ noteHtml: null, noteText: 'todo node note text\n\n' })
+
+          const res = await fetch({
+            method: HttpMethod.PATCH,
+            body: JSON.stringify({
+              children: { root },
+              mutations: { ...baseMutation, insert: { [newTodoNode.id]: newTodoNode } },
+            }),
+          })
+          const json = await res.json<ApiErrorResponse>()
+
+          expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+          expect(json.error).toBe(API_ERROR_TODO_NODE_NOTE_HTML_OR_TEXT_MISSING)
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
     test('should insert a new todo node', async () => {
       const { id, root } = await createTestTodo()
 
@@ -387,6 +447,8 @@ describe('todo nodes', () => {
           expect(testTodoNode?.todoId).toBe(id)
           expect(testTodoNode?.content).toBe(newTodoNode.content)
           expect(testTodoNode?.completed).toBe(newTodoNode.completed)
+          expect(testTodoNode?.noteHtml).toBe(newTodoNode.noteHtml)
+          expect(testTodoNode?.noteText).toBe(newTodoNode.noteText)
         },
         { dynamicRouteParams: { id } }
       )
@@ -490,6 +552,8 @@ describe('todo nodes', () => {
           expect(testTodoNode_0?.todoId).toBe(id)
           expect(testTodoNode_0?.content).toBe(newTodoNode_0.content)
           expect(testTodoNode_0?.completed).toBe(newTodoNode_0.completed)
+          expect(testTodoNode_0?.noteHtml).toBe(newTodoNode_0.noteHtml)
+          expect(testTodoNode_0?.noteText).toBe(newTodoNode_0.noteText)
           expect(testTodoNode_0?.children).toEqual(newTodoNode_0_children)
 
           const testTodoNode_0_0 = await getTestTodoNode(newTodoNode_0_0.id)
@@ -498,6 +562,8 @@ describe('todo nodes', () => {
           expect(testTodoNode_0_0?.todoId).toBe(id)
           expect(testTodoNode_0_0?.content).toBe(newTodoNode_0_0.content)
           expect(testTodoNode_0_0?.completed).toBe(newTodoNode_0_0.completed)
+          expect(testTodoNode_0_0?.noteHtml).toBe(newTodoNode_0_0.noteHtml)
+          expect(testTodoNode_0_0?.noteText).toBe(newTodoNode_0_0.noteText)
           expect(testTodoNode_0_0?.children).toEqual([])
 
           const testRootTodoNode = await getTestTodoNode(rootNode.id)
@@ -542,6 +608,8 @@ describe('todo nodes', () => {
           expect(testTodoNode?.todoId).toBe(id)
           expect(testTodoNode?.content).toBe(newTodoNode.content)
           expect(testTodoNode?.completed).toBe(newTodoNode.completed)
+          expect(testTodoNode?.noteHtml).toBe(newTodoNode.noteHtml)
+          expect(testTodoNode?.noteText).toBe(newTodoNode.noteText)
 
           const testRootTodoNode = await getTestTodoNode(rootNode.id)
 
@@ -642,10 +710,13 @@ describe('todo nodes', () => {
 
           const newContent = 'updated todo node'
           const newCompleted = !nodes[0]?.completed
+          const newNote = 'updated todo node note'
           const updatedTodoNode = getFakeTodoNode({
             id: updatedTodoNodeId,
             content: newContent,
             completed: newCompleted,
+            noteHtml: newNote,
+            noteText: newNote,
           })
 
           await fetch({
@@ -666,6 +737,8 @@ describe('todo nodes', () => {
           expect(testTodoNode?.todoId).toBe(id)
           expect(testTodoNode?.content).toBe(newContent)
           expect(testTodoNode?.completed).toBe(newCompleted)
+          expect(testTodoNode?.noteHtml).toBe(newNote)
+          expect(testTodoNode?.noteText).toBe(newNote)
         },
         { dynamicRouteParams: { id } }
       )
@@ -1118,7 +1191,7 @@ describe('todo nodes', () => {
            * Before:
            *
            * [ ] node_0
-           * |__ [X] node_0_0
+           * |__ [X] node_0_0               <- note added
            * |__ [ ] node_0_1               <- deleted
            *     |__ [X] node_0_1_0
            *     |__ [ ] node_0_1_1
@@ -1127,40 +1200,66 @@ describe('todo nodes', () => {
            * |__ [ ] node_0_2
            * |__ [ ] node_0_3               <- moved to root node 2nd child
            * [ ] node_1                     <- moved to node_0 first child
-           * |__ [ ] node_1_0               <- mark as completed
-           *     |__ [ ] node_1_0_0         <- renamed to node_1_0_0_updated - mark as completed
-           * [X] node_2                     <- mark as not completed
+           * |__ [ ] node_1_0               <- marked as completed
+           *     |__ [ ] node_1_0_0         <- renamed to node_1_0_0_updated - marked as completed
+           * [X] node_2                     <- marked as not completed
            * [ ] node_3                     <- moved before node_2
+           *     node_3_note                <- note deleted
            */
 
           const node_0 = nodes[0]
 
           assert(node_0)
 
-          const node_0_1_1_0 = await createTestTodoNode({ todoId: id, completed: true })
+          const node_0_1_1_0 = await createTestTodoNode({ todoId: id, completed: true, noteHtml: null, noteText: null })
 
-          const node_0_1_0 = await createTestTodoNode({ todoId: id, completed: true })
-          const node_0_1_1 = await createTestTodoNode({ todoId: id, children: [node_0_1_1_0.id], completed: false })
-          const node_0_1_2 = await createTestTodoNode({ todoId: id, completed: false })
+          const node_0_1_0 = await createTestTodoNode({ todoId: id, completed: true, noteHtml: null, noteText: null })
+          const node_0_1_1 = await createTestTodoNode({
+            todoId: id,
+            children: [node_0_1_1_0.id],
+            completed: false,
+            noteHtml: null,
+            noteText: null,
+          })
+          const node_0_1_2 = await createTestTodoNode({ todoId: id, completed: false, noteHtml: null, noteText: null })
 
-          const node_0_0 = await createTestTodoNode({ todoId: id, completed: true })
+          const node_0_0 = await createTestTodoNode({ todoId: id, completed: true, noteHtml: null, noteText: null })
           const node_0_1 = await createTestTodoNode({
             todoId: id,
             children: [node_0_1_0.id, node_0_1_1.id, node_0_1_2.id],
             completed: false,
+            noteHtml: null,
+            noteText: null,
           })
-          const node_0_2 = await createTestTodoNode({ todoId: id, completed: false })
-          const node_0_3 = await createTestTodoNode({ todoId: id, completed: false })
+          const node_0_2 = await createTestTodoNode({ todoId: id, completed: false, noteHtml: null, noteText: null })
+          const node_0_3 = await createTestTodoNode({ todoId: id, completed: false, noteHtml: null, noteText: null })
 
           await updateTestTodoNodeChildren(node_0.id, [node_0_0.id, node_0_1.id, node_0_2.id, node_0_3.id])
 
-          const node_1_0_0 = await createTestTodoNode({ todoId: id, completed: false })
+          const node_1_0_0 = await createTestTodoNode({ todoId: id, completed: false, noteHtml: null, noteText: null })
 
-          const node_1_0 = await createTestTodoNode({ todoId: id, children: [node_1_0_0.id], completed: false })
+          const node_1_0 = await createTestTodoNode({
+            todoId: id,
+            children: [node_1_0_0.id],
+            completed: false,
+            noteHtml: null,
+            noteText: null,
+          })
 
-          const node_1 = await createTestTodoNode({ todoId: id, children: [node_1_0.id], completed: false })
-          const node_2 = await createTestTodoNode({ todoId: id, completed: true })
-          const node_3 = await createTestTodoNode({ todoId: id, completed: false })
+          const node_1 = await createTestTodoNode({
+            todoId: id,
+            children: [node_1_0.id],
+            completed: false,
+            noteHtml: null,
+            noteText: null,
+          })
+          const node_2 = await createTestTodoNode({ todoId: id, completed: true, noteHtml: null, noteText: null })
+          const node_3 = await createTestTodoNode({
+            todoId: id,
+            completed: false,
+            noteHtml: 'node_3_note',
+            noteText: 'node_3_note',
+          })
 
           await updateTestTodoRoot(id, [node_0.id, node_1.id, node_2.id, node_3.id])
 
@@ -1172,6 +1271,7 @@ describe('todo nodes', () => {
            *     |__ [X] node_1_0
            *         |__ [X] node_1_0_0_updated
            * |__ [X] node_0_0
+           *         node_0_0_note
            *     |__ [ ] node_0_0_0_inserted
            * |__ [ ] node_0_2
            * [ ] node_0_3
@@ -1183,7 +1283,9 @@ describe('todo nodes', () => {
           const node_1_0_0_new_completed = true
           const node_1_0_0_new_name = 'node_1_0_0_updated'
           const node_0_0_0_inserted = getFakeTodoNode()
+          const node_0_0_new_note = 'node_0_0_note'
           const node_2_new_completed = false
+          const node_3_new_note = ''
 
           await fetch({
             method: HttpMethod.PATCH,
@@ -1201,7 +1303,8 @@ describe('todo nodes', () => {
                   [node_1_0_0.id]: { ...node_1_0_0, content: node_1_0_0_new_name, completed: node_1_0_0_new_completed },
                   [node_1_0.id]: { ...node_1_0, completed: node_1_0_new_completed },
                   [node_0.id]: { ...node_0 },
-                  [node_0_0.id]: { ...node_0_0 },
+                  [node_0_0.id]: { ...node_0_0, noteHtml: node_0_0_new_note, noteText: node_0_0_new_note },
+                  [node_3.id]: { ...node_3, noteHtml: node_3_new_note, noteText: node_3_new_note },
                 },
                 insert: {
                   [node_0_0_0_inserted.id]: node_0_0_0_inserted,
@@ -1253,6 +1356,8 @@ describe('todo nodes', () => {
           expect(testTodoNode).toBeDefined()
           expect(testTodoNode?.children.length).toBe(1)
           expect(testTodoNode?.children[0]).toBe(node_0_0_0_inserted.id)
+          expect(testTodoNode?.noteHtml).toBe(node_0_0_new_note)
+          expect(testTodoNode?.noteText).toBe(node_0_0_new_note)
 
           testTodoNode = await getTestTodoNode(node_0_0_0_inserted.id)
 
@@ -1274,6 +1379,8 @@ describe('todo nodes', () => {
 
           expect(testTodoNode).toBeDefined()
           expect(testTodoNode?.children.length).toBe(0)
+          expect(testTodoNode?.noteHtml).toBe('')
+          expect(testTodoNode?.noteText).toBe('')
 
           testTodoNode = await getTestTodoNode(node_2.id)
 
@@ -1296,9 +1403,13 @@ describe('todo nodes', () => {
 })
 
 function getFakeTodoNode(options?: Partial<TodoNodeData>): TodoNodeData {
+  const data = faker.datatype.boolean() ? faker.lorem.sentences() : null
+
   return {
     id: options?.id ?? cuid(),
     content: options?.content ?? faker.lorem.words(),
     completed: options?.completed ?? faker.datatype.boolean(),
+    noteHtml: options?.noteHtml ?? data,
+    noteText: options?.noteText ?? data,
   }
 }
