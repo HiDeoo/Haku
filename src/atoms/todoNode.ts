@@ -1,43 +1,18 @@
 import { atom } from 'jotai'
-import { atomWithReset, RESET } from 'jotai/utils'
+import { atomWithReset } from 'jotai/utils'
 
-import { type SyncStatus } from 'components/SyncReport'
 import { addAtIndex, removeAtIndex } from 'libs/array'
 import { type TodoNodeDataWithParentId, type TodoNodeData, type TodoNodesData } from 'libs/db/todoNodes'
-import { type CaretDirection } from 'libs/html'
+import { CaretDirection } from 'libs/html'
 
-export const todoChildrenAtom = atomWithReset<TodoNodesData['children']>({ root: [] })
+export const todoNodeChildrenAtom = atomWithReset<TodoNodesData['children']>({ root: [] })
 
-export const todoNodesAtom = atomWithReset<TodoNodesData['nodes']>({})
+export const todoNodeNodesAtom = atomWithReset<TodoNodesData['nodes']>({})
 
 export const todoNodeMutations = atomWithReset<Record<TodoNodeData['id'], 'insert' | 'update' | 'delete'>>({})
 
-export const todoSyncStatusAtom = atomWithReset<TodoSyncStatus>({ isLoading: false })
-
-export const todoEditorStateAtom = atom<TodoEditorState, TodoSyncStatus>(
-  (get) => {
-    const state = get(todoSyncStatusAtom)
-    const mutations = get(todoNodeMutations)
-
-    return {
-      ...state,
-      pristine: Object.keys(mutations).length === 0,
-    }
-  },
-  (_get, set, syncStatus: TodoSyncStatus) => {
-    set(todoSyncStatusAtom, syncStatus)
-  }
-)
-
-export const resetTodoAtomsAtom = atom(null, (_get, set) => {
-  set(todoChildrenAtom, RESET)
-  set(todoNodesAtom, RESET)
-  set(todoNodeMutations, RESET)
-  set(todoSyncStatusAtom, RESET)
-})
-
 export const updateContentAtom = atom(null, (get, set, { content, id }: AtomParamsContentUpdate) => {
-  const node = get(todoNodesAtom)[id]
+  const node = get(todoNodeNodesAtom)[id]
 
   if (!node) {
     return
@@ -45,23 +20,11 @@ export const updateContentAtom = atom(null, (get, set, { content, id }: AtomPara
 
   set(todoNodeMutations, (prevMutations) => ({ ...prevMutations, [id]: prevMutations[id] ?? 'update' }))
 
-  set(todoNodesAtom, (prevNodes) => ({ ...prevNodes, [id]: { ...node, content } }))
-})
-
-export const toggleCompletedAtom = atom(null, (get, set, { id }: AtomParamsWithParentId) => {
-  const node = get(todoNodesAtom)[id]
-
-  if (!node) {
-    return
-  }
-
-  set(todoNodeMutations, (prevMutations) => ({ ...prevMutations, [id]: prevMutations[id] ?? 'update' }))
-
-  set(todoNodesAtom, (prevNodes) => ({ ...prevNodes, [id]: { ...node, completed: !node.completed } }))
+  set(todoNodeNodesAtom, (prevNodes) => ({ ...prevNodes, [id]: { ...node, content } }))
 })
 
 export const updateNoteAtom = atom(null, (get, set, { id, noteHtml, noteText }: AtomParamsNoteUpdate) => {
-  const node = get(todoNodesAtom)[id]
+  const node = get(todoNodeNodesAtom)[id]
 
   if (!node) {
     return
@@ -69,16 +32,28 @@ export const updateNoteAtom = atom(null, (get, set, { id, noteHtml, noteText }: 
 
   set(todoNodeMutations, (prevMutations) => ({ ...prevMutations, [id]: prevMutations[id] ?? 'update' }))
 
-  set(todoNodesAtom, (prevNodes) => ({ ...prevNodes, [id]: { ...node, noteHtml, noteText } }))
+  set(todoNodeNodesAtom, (prevNodes) => ({ ...prevNodes, [id]: { ...node, noteHtml, noteText } }))
+})
+
+export const toggleCompletedAtom = atom(null, (get, set, { id }: AtomParamsWithParentId) => {
+  const node = get(todoNodeNodesAtom)[id]
+
+  if (!node) {
+    return
+  }
+
+  set(todoNodeMutations, (prevMutations) => ({ ...prevMutations, [id]: prevMutations[id] ?? 'update' }))
+
+  set(todoNodeNodesAtom, (prevNodes) => ({ ...prevNodes, [id]: { ...node, completed: !node.completed } }))
 })
 
 export const addNodeAtom = atom(null, (get, set, { id, newId, parentId = 'root' }: AtomParamsNodeAddition) => {
-  const children = get(todoChildrenAtom)
+  const children = get(todoNodeChildrenAtom)
   const nodeChildrenIds = children[id]
 
   const addAsChildren = nodeChildrenIds && nodeChildrenIds.length > 0
 
-  set(todoNodesAtom, (prevNodes) => ({
+  set(todoNodeNodesAtom, (prevNodes) => ({
     ...prevNodes,
     [newId]: {
       id: newId,
@@ -90,7 +65,7 @@ export const addNodeAtom = atom(null, (get, set, { id, newId, parentId = 'root' 
     },
   }))
 
-  set(todoChildrenAtom, (prevChildren) => {
+  set(todoNodeChildrenAtom, (prevChildren) => {
     if (addAsChildren) {
       parentId = id
     }
@@ -121,20 +96,20 @@ export const addNodeAtom = atom(null, (get, set, { id, newId, parentId = 'root' 
 
 export const deleteNodeAtom = atom(null, (get, set, { id, parentId = 'root' }: AtomParamsWithParentId) => {
   if (parentId === 'root') {
-    const root = get(todoChildrenAtom).root
+    const root = get(todoNodeChildrenAtom).root
 
     if (root.length - 1 === 0) {
       return
     }
   }
 
-  set(todoNodesAtom, (prevNodes) => {
+  set(todoNodeNodesAtom, (prevNodes) => {
     const { [id]: nodeToDelete, ...otherNodes } = prevNodes
 
     return otherNodes
   })
 
-  set(todoChildrenAtom, (prevChildren) => {
+  set(todoNodeChildrenAtom, (prevChildren) => {
     const parentChildren = prevChildren[parentId] ?? []
     const nodeIndex = prevChildren[parentId]?.indexOf(id) ?? -1
 
@@ -158,7 +133,7 @@ export const deleteNodeAtom = atom(null, (get, set, { id, parentId = 'root' }: A
 })
 
 export const nestNodeAtom = atom(null, (get, set, { id, parentId = 'root' }: AtomParamsWithParentId) => {
-  const parentChildren = get(todoChildrenAtom)[parentId]
+  const parentChildren = get(todoNodeChildrenAtom)[parentId]
 
   if (!parentChildren) {
     return
@@ -166,14 +141,14 @@ export const nestNodeAtom = atom(null, (get, set, { id, parentId = 'root' }: Ato
 
   const nodeIndex = parentChildren.indexOf(id)
   const sibblingId = parentChildren[nodeIndex - 1]
-  const nodes = get(todoNodesAtom)
+  const nodes = get(todoNodeNodesAtom)
   const node = nodes[id]
 
   if (!sibblingId || !node) {
     return
   }
 
-  set(todoChildrenAtom, (prevChildren) => {
+  set(todoNodeChildrenAtom, (prevChildren) => {
     const sibblingChildren = prevChildren[sibblingId]
 
     return {
@@ -183,7 +158,7 @@ export const nestNodeAtom = atom(null, (get, set, { id, parentId = 'root' }: Ato
     }
   })
 
-  set(todoNodesAtom, (prevNodes) => ({
+  set(todoNodeNodesAtom, (prevNodes) => ({
     ...prevNodes,
     [id]: { ...node, parentId: sibblingId },
   }))
@@ -201,7 +176,7 @@ export const unnestNodeAtom = atom(null, (get, set, { id, parentId }: AtomParams
     return
   }
 
-  const nodes = get(todoNodesAtom)
+  const nodes = get(todoNodeNodesAtom)
   const node = nodes[id]
   const parent = nodes[parentId]
 
@@ -209,7 +184,7 @@ export const unnestNodeAtom = atom(null, (get, set, { id, parentId }: AtomParams
     return
   }
 
-  set(todoChildrenAtom, (prevChildren) => {
+  set(todoNodeChildrenAtom, (prevChildren) => {
     const parentChildren = prevChildren[parentId]
 
     if (!parentChildren) {
@@ -228,7 +203,7 @@ export const unnestNodeAtom = atom(null, (get, set, { id, parentId }: AtomParams
     }
   })
 
-  set(todoNodesAtom, (prevNodes) => ({
+  set(todoNodeNodesAtom, (prevNodes) => ({
     ...prevNodes,
     [id]: { ...node, parentId: parent.parentId },
   }))
@@ -249,7 +224,7 @@ export const unnestNodeAtom = atom(null, (get, set, { id, parentId }: AtomParams
 })
 
 export const moveNodeAtom = atom(null, (get, set, { direction, id, parentId = 'root' }: AtomParamsWithDirection) => {
-  const parentChildren = get(todoChildrenAtom)[parentId]
+  const parentChildren = get(todoNodeChildrenAtom)[parentId]
 
   if (!parentChildren) {
     return
@@ -262,7 +237,7 @@ export const moveNodeAtom = atom(null, (get, set, { direction, id, parentId = 'r
     return
   }
 
-  set(todoChildrenAtom, (prevChildren) => {
+  set(todoNodeChildrenAtom, (prevChildren) => {
     return {
       ...prevChildren,
       [parentId]:
@@ -335,8 +310,9 @@ function getLastNestedChildren(
   return nodes[from]
 }
 
-interface AtomParamsNodeAddition extends AtomParamsWithParentId {
-  newId: TodoNodeData['id']
+interface AtomParamsWithParentId {
+  id: TodoNodeData['id']
+  parentId?: TodoNodeData['id']
 }
 
 interface AtomParamsContentUpdate {
@@ -350,19 +326,10 @@ export interface AtomParamsNoteUpdate {
   noteText: string
 }
 
+interface AtomParamsNodeAddition extends AtomParamsWithParentId {
+  newId: TodoNodeData['id']
+}
+
 export interface AtomParamsWithDirection extends AtomParamsWithParentId {
   direction: CaretDirection
-}
-
-interface AtomParamsWithParentId {
-  id: TodoNodeData['id']
-  parentId?: TodoNodeData['id']
-}
-
-export interface TodoSyncStatus extends SyncStatus {
-  isLoading: boolean
-}
-
-export interface TodoEditorState extends TodoSyncStatus {
-  pristine: boolean
 }

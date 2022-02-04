@@ -1,6 +1,6 @@
 import { forwardRef, useCallback, useImperativeHandle } from 'react'
 
-import { type AtomParamsNoteUpdate } from 'atoms/todos'
+import { type AtomParamsNoteUpdate } from 'atoms/todoNode'
 import { type TodoNodeDataWithParentId } from 'libs/db/todoNodes'
 import { EditorContent, EditorEvents, useEditor } from 'hooks/useEditor'
 import { ShiftEnter } from 'libs/editor'

@@ -2,7 +2,8 @@ import { useAtom } from 'jotai'
 import { useAtomCallback, useResetAtom } from 'jotai/utils'
 import { useCallback } from 'react'
 
-import { todoChildrenAtom, todoEditorStateAtom, todoNodeMutations, todoNodesAtom } from 'atoms/todos'
+import { todoEditorStateAtom } from 'atoms/todo'
+import { todoNodeChildrenAtom, todoNodeMutations, todoNodeNodesAtom } from 'atoms/todoNode'
 import Navbar from 'components/Navbar'
 import SyncReport from 'components/SyncReport'
 import useContentMutation, { type ContentMutation } from 'hooks/useContentMutation'
@@ -18,7 +19,11 @@ const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, todoId }) => {
 
   const getTodoAtoms = useAtomCallback(
     useCallback(
-      (get) => ({ children: get(todoChildrenAtom), mutations: get(todoNodeMutations), nodes: get(todoNodesAtom) }),
+      (get) => ({
+        children: get(todoNodeChildrenAtom),
+        mutations: get(todoNodeMutations),
+        nodes: get(todoNodeNodesAtom),
+      }),
       []
     )
   )
