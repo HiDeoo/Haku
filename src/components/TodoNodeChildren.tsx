@@ -1,7 +1,7 @@
 import { selectAtom, useAtomValue } from 'jotai/utils'
 import { memo, useCallback, useContext } from 'react'
 
-import { todoChildrenAtom } from 'atoms/todos'
+import { todoNodeChildrenAtom } from 'atoms/todoNode'
 import TodoNodeItem, { TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS, type TodoNodeItemHandle } from 'components/TodoNodeItem'
 import { TodoContext } from 'hooks/useTodoNode'
 import { type TodoNodeData, type TodoNodesData } from 'libs/db/todoNodes'
@@ -12,7 +12,7 @@ const TodoNodeChildren: React.FC<TodoNodeChildren> = ({ id = 'root', level = 0 }
 
   const children = useAtomValue(
     selectAtom(
-      todoChildrenAtom,
+      todoNodeChildrenAtom,
       useCallback((childrenMap: TodoNodesData['children'], nodeId = id) => childrenMap[nodeId], [id])
     )
   )

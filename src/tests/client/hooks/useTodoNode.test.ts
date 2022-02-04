@@ -6,7 +6,7 @@ import { useAtom } from 'jotai'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { act, renderHook } from '@testing-library/react-hooks/native'
 
-import { todoChildrenAtom, todoNodeMutations, todoNodesAtom } from 'atoms/todos'
+import { todoNodeChildrenAtom, todoNodeMutations, todoNodeNodesAtom } from 'atoms/todoNode'
 import useTodoNode from 'hooks/useTodoNode'
 import {
   type TodoNodeDataWithParentId,
@@ -131,7 +131,7 @@ describe('useTodoNode', () => {
       const node = getTodoNodeFromIndexes(nodes, children, 0)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoNodes } = renderHook(() => useAtom(todoNodesAtom))
+      const { result: todoNodes } = renderHook(() => useAtom(todoNodeNodesAtom))
       const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
 
       act(() => {
@@ -154,8 +154,8 @@ describe('useTodoNode', () => {
       const node = getTodoNodeFromIndexes(nodes, children, 0)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoNodes } = renderHook(() => useAtomValue(todoNodesAtom))
-      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoNodes } = renderHook(() => useAtomValue(todoNodeNodesAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
       const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
 
       const newId = cuid()
@@ -186,8 +186,8 @@ describe('useTodoNode', () => {
       const existingChild = getTodoNodeFromIndexes(nodes, children, 0, 0)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoNodes } = renderHook(() => useAtomValue(todoNodesAtom))
-      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoNodes } = renderHook(() => useAtomValue(todoNodeNodesAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
       const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
 
       const newId = cuid()
@@ -222,8 +222,8 @@ describe('useTodoNode', () => {
       const existingChild = getTodoNodeFromIndexes(nodes, children, 0, 0)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoNodes } = renderHook(() => useAtomValue(todoNodesAtom))
-      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoNodes } = renderHook(() => useAtomValue(todoNodeNodesAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
       const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
 
       const newId = cuid()
@@ -262,8 +262,8 @@ describe('useTodoNode', () => {
       const nextSibbling = getTodoNodeFromIndexes(nodes, children, 0, 2)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoNodes } = renderHook(() => useAtomValue(todoNodesAtom))
-      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoNodes } = renderHook(() => useAtomValue(todoNodeNodesAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
       const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
 
       const newId = cuid()
@@ -304,8 +304,8 @@ describe('useTodoNode', () => {
       const nextSibbling = getTodoNodeFromIndexes(nodes, children, 1)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoNodes } = renderHook(() => useAtomValue(todoNodesAtom))
-      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoNodes } = renderHook(() => useAtomValue(todoNodeNodesAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
       const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
 
       act(() => {
@@ -329,8 +329,8 @@ describe('useTodoNode', () => {
       const nextSibbling = getTodoNodeFromIndexes(nodes, children, 0, 2)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoNodes } = renderHook(() => useAtomValue(todoNodesAtom))
-      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoNodes } = renderHook(() => useAtomValue(todoNodeNodesAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
       const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
 
       act(() => {
@@ -359,8 +359,8 @@ describe('useTodoNode', () => {
       const nextSibbling = getTodoNodeFromIndexes(nodes, children, 0, 2)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoNodes } = renderHook(() => useAtomValue(todoNodesAtom))
-      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoNodes } = renderHook(() => useAtomValue(todoNodeNodesAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
       const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
 
       act(() => {
@@ -388,7 +388,7 @@ describe('useTodoNode', () => {
       const node = getTodoNodeFromIndexes(nodes, children, 0)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
       const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
 
       act(() => {
@@ -412,7 +412,7 @@ describe('useTodoNode', () => {
       const prevSibbling = getTodoNodeFromIndexes(nodes, children, 0)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
       const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
 
       act(() => {
@@ -436,7 +436,7 @@ describe('useTodoNode', () => {
       const node = getTodoNodeFromIndexes(nodes, children, 0)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
       const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
 
       act(() => {
@@ -458,7 +458,7 @@ describe('useTodoNode', () => {
       const prevSibbling = getTodoNodeFromIndexes(nodes, children, 0, 0)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
       const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
 
       act(() => {
@@ -484,7 +484,7 @@ describe('useTodoNode', () => {
       const parent = getTodoNodeFromIndexes(nodes, children, 0)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
       const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
 
       act(() => {
@@ -508,7 +508,7 @@ describe('useTodoNode', () => {
       const prevSibbling = getTodoNodeFromIndexes(nodes, children, 0)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
       const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
 
       act(() => {
@@ -537,7 +537,7 @@ describe('useTodoNode', () => {
       const prevSibblingFirstChild = getTodoNodeFromIndexes(nodes, children, 0, 0)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
       const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
 
       act(() => {
@@ -564,7 +564,7 @@ describe('useTodoNode', () => {
       const node = getTodoNodeFromIndexes(nodes, children, 0)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
       const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
 
       act(() => {
@@ -586,7 +586,7 @@ describe('useTodoNode', () => {
       const parentNextSibbling = getTodoNodeFromIndexes(nodes, children, 1)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
       const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
 
       act(() => {
@@ -612,7 +612,7 @@ describe('useTodoNode', () => {
       const grandParent = getTodoNodeFromIndexes(nodes, children, 0)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
       const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
 
       act(() => {
@@ -643,7 +643,7 @@ describe('useTodoNode', () => {
       const grandParent = getTodoNodeFromIndexes(nodes, children, 0)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
       const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
 
       act(() => {
@@ -680,7 +680,7 @@ describe('useTodoNode', () => {
       const lastSibbling = getTodoNodeFromIndexes(nodes, children, 3)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
       const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
 
       act(() => {
@@ -707,7 +707,7 @@ describe('useTodoNode', () => {
       const lastSibbling = getTodoNodeFromIndexes(nodes, children, 3)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
       const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
 
       act(() => {
@@ -735,7 +735,7 @@ describe('useTodoNode', () => {
       const lastSibbling = getTodoNodeFromIndexes(nodes, children, 0, 3)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
       const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
 
       act(() => {
@@ -767,7 +767,7 @@ describe('useTodoNode', () => {
       const lastSibbling = getTodoNodeFromIndexes(nodes, children, 0, 3)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
       const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
 
       act(() => {
@@ -798,7 +798,7 @@ describe('useTodoNode', () => {
       const nextSibbling = getTodoNodeFromIndexes(nodes, children, 0, 2)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
       const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
 
       act(() => {
@@ -829,7 +829,7 @@ describe('useTodoNode', () => {
       const nextSibbling = getTodoNodeFromIndexes(nodes, children, 0, 1)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
       const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
 
       act(() => {
@@ -855,7 +855,7 @@ describe('useTodoNode', () => {
       const prevSibbling = getTodoNodeFromIndexes(nodes, children, 0, 0)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoChildren } = renderHook(() => useAtomValue(todoChildrenAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
       const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
 
       act(() => {
@@ -1155,7 +1155,7 @@ describe('useTodoNode', () => {
       const node = getTodoNodeFromIndexes(nodes, children, 0)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoNodes } = renderHook(() => useAtom(todoNodesAtom))
+      const { result: todoNodes } = renderHook(() => useAtom(todoNodeNodesAtom))
       const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
 
       act(() => {
@@ -1260,7 +1260,7 @@ describe('useTodoNode', () => {
       const node = getTodoNodeFromIndexes(nodes, children, 0)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoNodes } = renderHook(() => useAtom(todoNodesAtom))
+      const { result: todoNodes } = renderHook(() => useAtom(todoNodeNodesAtom))
       const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
 
       const newNote = 'new note'
@@ -1336,8 +1336,8 @@ function setFakeTodoNodes(nodeDeclarations: FakeTodoNodeDeclaration[]) {
 
   children.root = parseFakeTodoNodes(nodeDeclarations, undefined, children, nodes)
 
-  const { result: setTodoChildren } = renderHook(() => useUpdateAtom(todoChildrenAtom))
-  const { result: setTodoNodes } = renderHook(() => useUpdateAtom(todoNodesAtom))
+  const { result: setTodoChildren } = renderHook(() => useUpdateAtom(todoNodeChildrenAtom))
+  const { result: setTodoNodes } = renderHook(() => useUpdateAtom(todoNodeNodesAtom))
 
   act(() => {
     setTodoChildren.current(children)

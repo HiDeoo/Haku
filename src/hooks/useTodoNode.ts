@@ -1,22 +1,21 @@
 import { selectAtom, useAtomCallback, useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { createContext, useCallback } from 'react'
 
+import { type TodoSyncStatus, todoSyncStatusAtom } from 'atoms/todo'
 import {
-  addNodeAtom,
   type AtomParamsWithDirection,
-  deleteNodeAtom,
-  moveNodeAtom,
-  nestNodeAtom,
-  todoChildrenAtom,
-  todoNodesAtom,
-  unnestNodeAtom,
-  updateContentAtom,
   getClosestNode,
-  type TodoSyncStatus,
-  todoSyncStatusAtom,
+  todoNodeNodesAtom,
+  todoNodeChildrenAtom,
+  updateContentAtom,
   toggleCompletedAtom,
   updateNoteAtom,
-} from 'atoms/todos'
+  addNodeAtom,
+  deleteNodeAtom,
+  nestNodeAtom,
+  unnestNodeAtom,
+  moveNodeAtom,
+} from 'atoms/todoNode'
 import { type TodoNodeItemHandle } from 'components/TodoNodeItem'
 import { type TodoNodeData } from 'libs/db/todoNodes'
 
@@ -39,12 +38,12 @@ export default function useTodoNode(id: TodoNodeData['id']) {
   const getClosestNodeId = useAtomCallback(
     useCallback(
       (get, _set, params: AtomParamsWithDirection) =>
-        getClosestNode(params, get(todoNodesAtom), get(todoChildrenAtom))?.id,
+        getClosestNode(params, get(todoNodeNodesAtom), get(todoNodeChildrenAtom))?.id,
       []
     )
   )
 
-  const node = useAtomValue(selectAtom(todoNodesAtom, getNodeById))
+  const node = useAtomValue(selectAtom(todoNodeNodesAtom, getNodeById))
 
   const updateContent = useUpdateAtom(updateContentAtom)
   const toggleCompleted = useUpdateAtom(toggleCompletedAtom)

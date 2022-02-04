@@ -3,7 +3,7 @@ import { forwardRef, memo, useCallback, useContext, useImperativeHandle, useRef,
 import { RiCheckboxBlankCircleFill } from 'react-icons/ri'
 import { useEditable } from 'use-editable'
 
-import { type AtomParamsWithDirection } from 'atoms/todos'
+import { AtomParamsWithDirection } from 'atoms/todoNode'
 import Flex from 'components/Flex'
 import Icon from 'components/Icon'
 import TodoNodeChildren from 'components/TodoNodeChildren'

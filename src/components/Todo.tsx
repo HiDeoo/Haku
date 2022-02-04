@@ -1,7 +1,8 @@
 import { selectAtom, useAtomValue, useResetAtom, useUpdateAtom } from 'jotai/utils'
 import { useEffect } from 'react'
 
-import { resetTodoAtomsAtom, todoChildrenAtom, TodoEditorState, todoEditorStateAtom, todoNodesAtom } from 'atoms/todos'
+import { resetTodoAtomsAtom, type TodoEditorState, todoEditorStateAtom } from 'atoms/todo'
+import { todoNodeChildrenAtom, todoNodeNodesAtom } from 'atoms/todoNode'
 import Flex from 'components/Flex'
 import Shimmer from 'components/Shimmer'
 import TodoNavbar from 'components/TodoNavbar'
@@ -40,8 +41,8 @@ const Todo: React.FC<TodoProps> = ({ id }) => {
   const pristine = useAtomValue(selectAtom(todoEditorStateAtom, pristineStateSelector))
   const resetTodoAtoms = useResetAtom(resetTodoAtomsAtom)
 
-  const setTodoChildren = useUpdateAtom(todoChildrenAtom)
-  const setTodoNodes = useUpdateAtom(todoNodesAtom)
+  const setTodoChildren = useUpdateAtom(todoNodeChildrenAtom)
+  const setTodoNodes = useUpdateAtom(todoNodeNodesAtom)
 
   useNavigationPrompt(!pristine)
 
