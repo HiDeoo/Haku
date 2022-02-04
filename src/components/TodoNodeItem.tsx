@@ -6,7 +6,7 @@ import { useEditable } from 'use-editable'
 import { AtomParamsWithDirection } from 'atoms/todoNode'
 import Flex from 'components/Flex'
 import Icon from 'components/Icon'
-import TodoNodeChildren from 'components/TodoNodeChildren'
+import TodoNodeChildren, { type TodoNodeChildrenProps } from 'components/TodoNodeChildren'
 import TodoNodeItemNote, { type TodoNodeItemNoteHandle } from 'components/TodoNodeItemNote'
 import useTodoNode, { TodoContext } from 'hooks/useTodoNode'
 import { type TodoNodeData } from 'libs/db/todoNodes'
@@ -25,10 +25,10 @@ import styles from 'styles/TodoNodeItem.module.css'
 export const TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS = 16
 
 const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeItemProps> = (
-  { id, level = 0 },
+  { id, level = 0, onFocusTodoNode, setTodoNodeItemRef },
   forwardedRef
 ) => {
-  useImperativeHandle(forwardedRef, () => ({ focusContent }))
+  useImperativeHandle(forwardedRef, () => ({ focusContent, scrollIntoView }))
 
   const [shouldFocusNote, setShouldFocusNote] = useState(false)
 
@@ -186,6 +186,10 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
   }
 
   function onFocusContent() {
+    if (node?.id) {
+      onFocusTodoNode(node.id)
+    }
+
     contentRef.current?.setAttribute('spellcheck', 'true')
   }
 
@@ -210,32 +214,42 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     direction?: CaretDirection,
     fromLevel?: TodoNodeItemProps['level']
   ) {
-    if (contentRef.current) {
-      contentRef.current.focus()
-
-      if (
-        caretPositionOrIndex &&
-        typeof caretPositionOrIndex !== 'number' &&
-        direction &&
-        typeof fromLevel !== 'undefined'
-      ) {
-        // Adjust the caret left position based on the level offset difference between the previous and current levels.
-        const left = Math.max(
-          0,
-          caretPositionOrIndex.left +
-            fromLevel * TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS -
-            level * TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS
-        )
-
-        setContentEditableCaretPosition(contentRef.current, { ...caretPositionOrIndex, left }, direction)
-      } else {
-        // Focus the passed down caret index or fallback to the end of the text content.
-        setContentEditableCaretIndex(
-          contentRef.current,
-          typeof caretPositionOrIndex === 'number' ? caretPositionOrIndex : node?.content.length
-        )
-      }
+    if (!contentRef.current) {
+      return
     }
+
+    contentRef.current.focus()
+
+    if (
+      caretPositionOrIndex &&
+      typeof caretPositionOrIndex !== 'number' &&
+      direction &&
+      typeof fromLevel !== 'undefined'
+    ) {
+      // Adjust the caret left position based on the level offset difference between the previous and current levels.
+      const left = Math.max(
+        0,
+        caretPositionOrIndex.left +
+          fromLevel * TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS -
+          level * TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS
+      )
+
+      setContentEditableCaretPosition(contentRef.current, { ...caretPositionOrIndex, left }, direction)
+    } else {
+      // Focus the passed down caret index or fallback to the end of the text content.
+      setContentEditableCaretIndex(
+        contentRef.current,
+        typeof caretPositionOrIndex === 'number' ? caretPositionOrIndex : node?.content.length
+      )
+    }
+  }
+
+  function scrollIntoView() {
+    if (!contentRef.current) {
+      return
+    }
+
+    contentRef.current.scrollIntoView()
   }
 
   if (!node) {
@@ -289,7 +303,12 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
           </div>
         </Flex>
       </Flex>
-      <TodoNodeChildren id={id} level={level + 1} />
+      <TodoNodeChildren
+        id={id}
+        level={level + 1}
+        onFocusTodoNode={onFocusTodoNode}
+        setTodoNodeItemRef={setTodoNodeItemRef}
+      />
     </div>
   )
 }
@@ -299,6 +318,8 @@ export default memo(forwardRef(TodoNodeItem))
 interface TodoNodeItemProps {
   id: TodoNodeData['id']
   level: number
+  onFocusTodoNode: (todoNodeId: TodoNodeData['id']) => void
+  setTodoNodeItemRef: TodoNodeChildrenProps['setTodoNodeItemRef']
 }
 
 interface TodoNodeItemFocusClosestNodeParams extends AtomParamsWithDirection {
@@ -311,4 +332,5 @@ export interface TodoNodeItemHandle {
     direction?: CaretDirection,
     fromLevel?: TodoNodeItemProps['level']
   ) => void
+  scrollIntoView: () => void
 }
