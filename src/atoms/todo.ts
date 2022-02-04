@@ -1,8 +1,10 @@
 import { atom } from 'jotai'
-import { atomWithReset, RESET } from 'jotai/utils'
+import { atomWithReset, atomWithStorage, RESET } from 'jotai/utils'
 
 import { todoNodeChildrenAtom, todoNodeMutations, todoNodeNodesAtom } from 'atoms/todoNode'
 import { type SyncStatus } from 'components/SyncReport'
+import { type TodoMetadata } from 'libs/db/todo'
+import { type TodoNodeData } from 'libs/db/todoNodes'
 
 export const todoSyncStatusAtom = atomWithReset<TodoSyncStatus>({ isLoading: false })
 
@@ -27,6 +29,8 @@ export const resetTodoAtomsAtom = atom(null, (_get, set) => {
   set(todoNodeMutations, RESET)
   set(todoSyncStatusAtom, RESET)
 })
+
+export const todoFocusMapAtom = atomWithStorage<Record<TodoMetadata['id'], TodoNodeData['id']>>('haku.todoFocusMap', {})
 
 export interface TodoSyncStatus extends SyncStatus {
   isLoading: boolean
