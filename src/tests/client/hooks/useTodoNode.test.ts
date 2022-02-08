@@ -587,6 +587,36 @@ describe('useTodoNode', () => {
       expect(todoMutations.current[node.id]).toBe('update')
       expect(todoMutations.current[prevSibbling.id]).toBe('update')
     })
+
+    test('should nest a todo node and make sure the new parent is not collapsed', () => {
+      const { children, nodes } = setFakeTodoNodes([{ children: [{}], collapsed: true }, {}])
+      const node = getTodoNodeFromIndexes(nodes, children, 1)
+      const prevSibbling = getTodoNodeFromIndexes(nodes, children, 0)
+      const prevSibblingFirstChild = getTodoNodeFromIndexes(nodes, children, 0, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoNodes } = renderHook(() => useAtomValue(todoNodeNodesAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+
+      act(() => {
+        result.current.nestNode({ id: node.id, parentId: node.parentId })
+      })
+
+      expect(result.current.node?.parentId).toBe(prevSibbling.id)
+
+      expect(todoChildren.current.root.length).toBe(1)
+      expect(todoChildren.current.root[0]).toBe(prevSibbling.id)
+
+      expect(todoChildren.current[prevSibbling.id]?.length).toBe(2)
+      expect(todoChildren.current[prevSibbling.id]?.[0]).toBe(prevSibblingFirstChild.id)
+      expect(todoChildren.current[prevSibbling.id]?.[1]).toBe(node.id)
+
+      expect(todoMutations.current[node.id]).toBe('update')
+      expect(todoMutations.current[prevSibbling.id]).toBe('update')
+
+      expect(todoNodes.current[prevSibbling.id]?.collapsed).toBe(false)
+    })
   })
 
   describe('unnestNode', () => {

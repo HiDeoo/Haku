@@ -163,6 +163,12 @@ export const nestNodeAtom = atom(null, (get, set, { id, parentId = 'root' }: Ato
     return
   }
 
+  const sibbling = nodes[sibblingId]
+
+  if (!sibbling) {
+    return
+  }
+
   set(todoNodeChildrenAtom, (prevChildren) => {
     const sibblingChildren = prevChildren[sibblingId]
 
@@ -176,6 +182,7 @@ export const nestNodeAtom = atom(null, (get, set, { id, parentId = 'root' }: Ato
   set(todoNodeNodesAtom, (prevNodes) => ({
     ...prevNodes,
     [id]: { ...node, parentId: sibblingId },
+    [sibblingId]: { ...sibbling, collapsed: false },
   }))
 
   set(todoNodeMutations, (prevMutations) => ({
