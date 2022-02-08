@@ -341,7 +341,7 @@ function getLastNestedChildren(
   return node
 }
 
-interface AtomParamsWithParentId {
+export interface AtomParamsWithParentId {
   id: TodoNodeData['id']
   parentId?: TodoNodeData['id']
 }

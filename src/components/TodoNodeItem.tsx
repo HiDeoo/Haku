@@ -8,6 +8,7 @@ import TodoNodeChildren, { type TodoNodeChildrenProps } from 'components/TodoNod
 import TodoNodeHandle from 'components/TodoNodeHandle'
 import TodoNodeNote, { type TodoNodeNoteHandle } from 'components/TodoNodeNote'
 import useTodoNode, { TodoContext } from 'hooks/useTodoNode'
+import useTodoNodeChildren from 'hooks/useTodoNodeChildren'
 import { type TodoNodeData } from 'libs/db/todoNodes'
 import {
   type CaretPosition,
@@ -50,6 +51,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     updateContent,
     updateNote,
   } = useTodoNode(id)
+  const children = useTodoNodeChildren(id)
 
   const onChangeContent = useCallback(
     (content: string) => {
@@ -154,7 +156,9 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     } else if (event.key === '.' && event.metaKey && event.shiftKey) {
       event.preventDefault()
 
-      toggleCollapsed(update)
+      preserveCaret(() => {
+        toggleCollapsed(update)
+      })
     }
   }
 
@@ -275,11 +279,19 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
 
   const levelOffset = level * TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS + 1
 
+  console.log('node', node.id)
+
   return (
     <div className={containerClasses} style={{ marginLeft: `-${levelOffset}px` }}>
       <Flex className="px-2 focus-within:bg-zinc-600/30">
-        <Flex fullWidth className="pl-1" style={{ marginLeft: `${levelOffset}px` }}>
-          <TodoNodeHandle collapsed={node.collapsed} completed={node.completed} />
+        <Flex fullWidth className="group items-baseline pl-1" style={{ marginLeft: `${levelOffset}px` }}>
+          <TodoNodeHandle
+            id={id}
+            collapsed={node.collapsed}
+            completed={node.completed}
+            toggleCollapsed={toggleCollapsed}
+            hasChildren={(children?.length ?? 0) > 0}
+          />
           <div className="w-full">
             <div
               ref={contentRef}
