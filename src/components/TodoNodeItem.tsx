@@ -45,6 +45,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     moveNode,
     nestNode,
     node,
+    toggleCollapsed,
     toggleCompleted,
     unnestNode,
     updateContent,
@@ -151,6 +152,10 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
           moveNode({ ...update, direction })
         })
       }
+    } else if (event.key === '.' && event.metaKey && event.shiftKey) {
+      event.preventDefault()
+
+      toggleCollapsed(update)
     }
   }
 
@@ -303,12 +308,14 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
           </div>
         </Flex>
       </Flex>
-      <TodoNodeChildren
-        id={id}
-        level={level + 1}
-        onFocusTodoNode={onFocusTodoNode}
-        setTodoNodeItemRef={setTodoNodeItemRef}
-      />
+      {!node.collapsed ? (
+        <TodoNodeChildren
+          id={id}
+          level={level + 1}
+          onFocusTodoNode={onFocusTodoNode}
+          setTodoNodeItemRef={setTodoNodeItemRef}
+        />
+      ) : null}
     </div>
   )
 }
