@@ -33,8 +33,9 @@ export interface TodoNodesData {
 const todoNodeDataSelect = Prisma.validator<Prisma.TodoNodeSelect>()({
   id: true,
   children: true,
-  content: true,
+  collapsed: true,
   completed: true,
+  content: true,
   noteHtml: true,
   noteText: true,
 })

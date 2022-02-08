@@ -1,10 +1,9 @@
-import { selectAtom, useAtomValue } from 'jotai/utils'
-import { memo, useCallback } from 'react'
+import { memo } from 'react'
 
-import { todoNodeChildrenAtom } from 'atoms/todoNode'
 import TodoNodeItem, { TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS, type TodoNodeItemHandle } from 'components/TodoNodeItem'
-import { type TodoNodeData, type TodoNodesData } from 'libs/db/todoNodes'
+import { type TodoNodeData } from 'libs/db/todoNodes'
 import clst from 'styles/clst'
+import useTodoNodeChildren from 'hooks/useTodoNodeChildren'
 
 const TodoNodeChildren: React.FC<TodoNodeChildrenProps> = ({
   id = 'root',
@@ -12,12 +11,7 @@ const TodoNodeChildren: React.FC<TodoNodeChildrenProps> = ({
   onFocusTodoNode,
   setTodoNodeItemRef,
 }) => {
-  const children = useAtomValue(
-    selectAtom(
-      todoNodeChildrenAtom,
-      useCallback((childrenMap: TodoNodesData['children'], nodeId = id) => childrenMap[nodeId], [id])
-    )
-  )
+  const children = useTodoNodeChildren(id)
 
   const childrenClasses = clst({ 'border-l border-zinc-700': level > 0 })
 

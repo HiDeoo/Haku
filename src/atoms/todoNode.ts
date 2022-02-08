@@ -35,6 +35,19 @@ export const updateNoteAtom = atom(null, (get, set, { id, noteHtml, noteText }: 
   set(todoNodeNodesAtom, (prevNodes) => ({ ...prevNodes, [id]: { ...node, noteHtml, noteText } }))
 })
 
+export const toggleCollapsedAtom = atom(null, (get, set, { id }: AtomParamsWithParentId) => {
+  const node = get(todoNodeNodesAtom)[id]
+  const nodeChildrenIds = get(todoNodeChildrenAtom)[id]
+
+  if (!node || !nodeChildrenIds || nodeChildrenIds.length === 0) {
+    return
+  }
+
+  set(todoNodeMutations, (prevMutations) => ({ ...prevMutations, [id]: prevMutations[id] ?? 'update' }))
+
+  set(todoNodeNodesAtom, (prevNodes) => ({ ...prevNodes, [id]: { ...node, collapsed: !node.collapsed } }))
+})
+
 export const toggleCompletedAtom = atom(null, (get, set, { id }: AtomParamsWithParentId) => {
   const node = get(todoNodeNodesAtom)[id]
 
@@ -48,15 +61,17 @@ export const toggleCompletedAtom = atom(null, (get, set, { id }: AtomParamsWithP
 })
 
 export const addNodeAtom = atom(null, (get, set, { id, newId, parentId = 'root' }: AtomParamsNodeAddition) => {
+  const node = get(todoNodeNodesAtom)[id]
   const children = get(todoNodeChildrenAtom)
   const nodeChildrenIds = children[id]
 
-  const addAsChildren = nodeChildrenIds && nodeChildrenIds.length > 0
+  const addAsChildren = node?.collapsed === false && nodeChildrenIds && nodeChildrenIds.length > 0
 
   set(todoNodeNodesAtom, (prevNodes) => ({
     ...prevNodes,
     [newId]: {
       id: newId,
+      collapsed: false,
       completed: false,
       content: '',
       noteHtml: null,
@@ -148,6 +163,12 @@ export const nestNodeAtom = atom(null, (get, set, { id, parentId = 'root' }: Ato
     return
   }
 
+  const sibbling = nodes[sibblingId]
+
+  if (!sibbling) {
+    return
+  }
+
   set(todoNodeChildrenAtom, (prevChildren) => {
     const sibblingChildren = prevChildren[sibblingId]
 
@@ -161,6 +182,7 @@ export const nestNodeAtom = atom(null, (get, set, { id, parentId = 'root' }: Ato
   set(todoNodeNodesAtom, (prevNodes) => ({
     ...prevNodes,
     [id]: { ...node, parentId: sibblingId },
+    [sibblingId]: { ...sibbling, collapsed: false },
   }))
 
   set(todoNodeMutations, (prevMutations) => ({
@@ -262,11 +284,19 @@ export function getClosestNode(
   skipChildren = false
 ): TodoNodeDataWithParentId | undefined {
   if (!skipChildren && direction === 'down') {
-    const nodeChildren = children[id]
-    const firstChildId = nodeChildren?.[0]
+    const node = nodes[id]
 
-    if (firstChildId) {
-      return nodes[firstChildId]
+    if (!node) {
+      return
+    }
+
+    if (!node.collapsed) {
+      const nodeChildren = children[id]
+      const firstChildId = nodeChildren?.[0]
+
+      if (firstChildId) {
+        return nodes[firstChildId]
+      }
     }
   }
 
@@ -297,9 +327,10 @@ function getLastNestedChildren(
   nodes: TodoNodesData['nodes'],
   children: TodoNodesData['children']
 ): TodoNodeDataWithParentId | undefined {
+  const node = nodes[from]
   const nodeChildren = children[from]
 
-  if (nodeChildren) {
+  if (node && !node.collapsed && nodeChildren) {
     const lastChildId = nodeChildren[nodeChildren.length - 1]
 
     if (lastChildId) {
@@ -307,10 +338,10 @@ function getLastNestedChildren(
     }
   }
 
-  return nodes[from]
+  return node
 }
 
-interface AtomParamsWithParentId {
+export interface AtomParamsWithParentId {
   id: TodoNodeData['id']
   parentId?: TodoNodeData['id']
 }
