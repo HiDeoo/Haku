@@ -117,6 +117,7 @@ export function createTestTodoNode(options?: TestTodoNodeOptions) {
     data: {
       id: options?.id,
       children: options?.children,
+      collapsed: options?.collapsed ?? faker.datatype.boolean(),
       completed: options?.completed ?? faker.datatype.boolean(),
       content: options?.content ?? faker.lorem.words(),
       noteHtml: options?.noteHtml ?? data,
@@ -181,10 +182,11 @@ interface TestTodoOptions {
 interface TestTodoNodeOptions {
   id?: TodoNode['id']
   children?: TodoNode['children']
+  collapsed?: TodoNode['collapsed']
+  completed?: TodoNode['completed']
   content?: TodoNode['content']
   noteHtml?: TodoNode['noteHtml']
   noteText?: TodoNode['noteText']
-  completed?: TodoNode['completed']
   todoId?: TodoNode['todoId']
 }
 

@@ -104,8 +104,9 @@ model Todo {
 
 model TodoNode {
   id        String  @id @default(cuid())
-  content   String
+  collapsed Boolean @default(false)
   completed Boolean @default(false)
+  content   String
   noteHtml  String?
   noteText  String?
 
