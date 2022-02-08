@@ -1,12 +1,11 @@
 import cuid from 'cuid'
 import { forwardRef, memo, useCallback, useContext, useImperativeHandle, useRef, useState } from 'react'
-import { RiCheckboxBlankCircleFill } from 'react-icons/ri'
 import { useEditable } from 'use-editable'
 
 import { AtomParamsWithDirection } from 'atoms/todoNode'
 import Flex from 'components/Flex'
-import Icon from 'components/Icon'
 import TodoNodeChildren, { type TodoNodeChildrenProps } from 'components/TodoNodeChildren'
+import TodoNodeHandle from 'components/TodoNodeHandle'
 import TodoNodeItemNote, { type TodoNodeItemNoteHandle } from 'components/TodoNodeItemNote'
 import useTodoNode, { TodoContext } from 'hooks/useTodoNode'
 import { type TodoNodeData } from 'libs/db/todoNodes'
@@ -274,17 +273,13 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     'line-through text-zinc-400': node.completed,
   })
 
-  const circleClasses = clst('mt-[0.57rem] mr-2 h-[0.45rem] w-[0.45rem] shrink-0 text-zinc-300', {
-    'text-zinc-400': node.completed,
-  })
-
   const levelOffset = level * TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS + 1
 
   return (
     <div className={containerClasses} style={{ marginLeft: `-${levelOffset}px` }}>
       <Flex className="px-2 focus-within:bg-zinc-600/30">
         <Flex fullWidth className="pl-1" style={{ marginLeft: `${levelOffset}px` }}>
-          <Icon icon={RiCheckboxBlankCircleFill} className={circleClasses} />
+          <TodoNodeHandle collapsed={node.collapsed} completed={node.completed} />
           <div className="w-full">
             <div
               ref={contentRef}
