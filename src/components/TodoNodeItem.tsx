@@ -6,7 +6,7 @@ import { AtomParamsWithDirection } from 'atoms/todoNode'
 import Flex from 'components/Flex'
 import TodoNodeChildren, { type TodoNodeChildrenProps } from 'components/TodoNodeChildren'
 import TodoNodeHandle from 'components/TodoNodeHandle'
-import TodoNodeItemNote, { type TodoNodeItemNoteHandle } from 'components/TodoNodeItemNote'
+import TodoNodeNote, { type TodoNodeNoteHandle } from 'components/TodoNodeNote'
 import useTodoNode, { TodoContext } from 'hooks/useTodoNode'
 import { type TodoNodeData } from 'libs/db/todoNodes'
 import {
@@ -32,7 +32,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
   const [shouldFocusNote, setShouldFocusNote] = useState(false)
 
   const contentRef = useRef<HTMLDivElement>(null)
-  const noteRef = useRef<TodoNodeItemNoteHandle>(null)
+  const noteRef = useRef<TodoNodeNoteHandle>(null)
 
   const todoNodeItems = useContext(TodoContext)
 
@@ -292,7 +292,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
               {content}
             </div>
             {isNoteVisible ? (
-              <TodoNodeItemNote
+              <TodoNodeNote
                 ref={noteRef}
                 node={node}
                 onBlur={onBlurNote}

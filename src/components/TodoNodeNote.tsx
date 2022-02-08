@@ -5,7 +5,7 @@ import { type TodoNodeDataWithParentId } from 'libs/db/todoNodes'
 import { EditorContent, EditorEvents, useEditor } from 'hooks/useEditor'
 import { ShiftEnter } from 'libs/editor'
 
-const TodoNodeItemNote: React.ForwardRefRenderFunction<TodoNodeItemNoteHandle, TodoNodeItemNoteProps> = (
+const TodoNodeNote: React.ForwardRefRenderFunction<TodoNodeNoteHandle, TodoNodeNoteProps> = (
   { node, onBlur, onChange, onShiftEnter },
   forwardedRef
 ) => {
@@ -49,15 +49,15 @@ const TodoNodeItemNote: React.ForwardRefRenderFunction<TodoNodeItemNoteHandle, T
   )
 }
 
-export default forwardRef(TodoNodeItemNote)
+export default forwardRef(TodoNodeNote)
 
-interface TodoNodeItemNoteProps {
+interface TodoNodeNoteProps {
   node: TodoNodeDataWithParentId
   onBlur: () => void
   onChange: (update: AtomParamsNoteUpdate) => void
   onShiftEnter: () => void
 }
 
-export interface TodoNodeItemNoteHandle {
+export interface TodoNodeNoteHandle {
   focusNote: () => void
 }
