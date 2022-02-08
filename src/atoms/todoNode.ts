@@ -61,10 +61,11 @@ export const toggleCompletedAtom = atom(null, (get, set, { id }: AtomParamsWithP
 })
 
 export const addNodeAtom = atom(null, (get, set, { id, newId, parentId = 'root' }: AtomParamsNodeAddition) => {
+  const node = get(todoNodeNodesAtom)[id]
   const children = get(todoNodeChildrenAtom)
   const nodeChildrenIds = children[id]
 
-  const addAsChildren = nodeChildrenIds && nodeChildrenIds.length > 0
+  const addAsChildren = node?.collapsed === false && nodeChildrenIds && nodeChildrenIds.length > 0
 
   set(todoNodeNodesAtom, (prevNodes) => ({
     ...prevNodes,

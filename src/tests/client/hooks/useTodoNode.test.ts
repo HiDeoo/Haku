@@ -180,8 +180,39 @@ describe('useTodoNode', () => {
       expect(todoMutations.current[newTodoNodeId]).toBe('insert')
     })
 
+    test('should add a new todo node at the root if the reference todo node has children but is collapsed', () => {
+      const { children, nodes } = setFakeTodoNodes([{ children: [{}], collapsed: true }])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoNodes } = renderHook(() => useAtom(todoNodeNodesAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+
+      const newId = cuid()
+
+      act(() => {
+        result.current.addNode({ id: node.id, newId, parentId: node.parentId })
+      })
+
+      expect(todoChildren.current.root.length).toBe(2)
+      expect(todoChildren.current.root[0]).toBe(node.id)
+
+      const newTodoNodeId = todoChildren.current.root[1]
+      assert(newTodoNodeId)
+
+      expect(todoChildren.current[newTodoNodeId]).toEqual([])
+
+      expect(todoNodes.current[0][newTodoNodeId]).toBeDefined()
+      expect(todoNodes.current[0][newTodoNodeId]?.id).toBe(newId)
+      expect(todoNodes.current[0][newTodoNodeId]?.content).toBe('')
+      expect(todoNodes.current[0][newTodoNodeId]?.parentId).toBeUndefined()
+
+      expect(todoMutations.current[newTodoNodeId]).toBe('insert')
+    })
+
     test('should add a new child todo node if the existing reference has children', () => {
-      const { children, nodes } = setFakeTodoNodes([{ children: [{}] }])
+      const { children, nodes } = setFakeTodoNodes([{ children: [{}], collapsed: false }])
       const node = getTodoNodeFromIndexes(nodes, children, 0)
       const existingChild = getTodoNodeFromIndexes(nodes, children, 0, 0)
 
@@ -217,7 +248,7 @@ describe('useTodoNode', () => {
     })
 
     test('should persist the mutation type when adding a new child todo node if the new reference has children', () => {
-      const { children, nodes } = setFakeTodoNodes([{ children: [{}] }])
+      const { children, nodes } = setFakeTodoNodes([{ children: [{}], collapsed: false }])
       const node = getTodoNodeFromIndexes(nodes, children, 0)
       const existingChild = getTodoNodeFromIndexes(nodes, children, 0, 0)
 
@@ -1279,7 +1310,7 @@ describe('useTodoNode', () => {
     })
   })
 
-  describe.only('toggleCollapsed', () => {
+  describe('toggleCollapsed', () => {
     test('should not toggle collapsed a todo node without children', () => {
       const { children, nodes } = setFakeTodoNodes([{}])
       const node = getTodoNodeFromIndexes(nodes, children, 0)
@@ -1461,7 +1492,7 @@ function parseFakeTodoNodes(
   const nodeIds: string[] = []
 
   for (const declaration of nodeDeclarations) {
-    const node = getFakeTodoNode(parentId)
+    const node = getFakeTodoNode(parentId, declaration.collapsed)
 
     nodeIds.push(node.id)
 
@@ -1479,13 +1510,16 @@ function parseFakeTodoNodes(
   return nodeIds
 }
 
-function getFakeTodoNode(parentId: TodoNodeDataWithParentId['parentId']): TodoNodeDataWithParentId {
+function getFakeTodoNode(
+  parentId: TodoNodeDataWithParentId['parentId'],
+  collapsed?: boolean
+): TodoNodeDataWithParentId {
   const data = faker.datatype.boolean() ? faker.lorem.sentences() : null
 
   return {
     id: cuid(),
     content: faker.lorem.words(),
-    collapsed: faker.datatype.boolean(),
+    collapsed: collapsed ?? faker.datatype.boolean(),
     completed: faker.datatype.boolean(),
     noteHtml: data,
     noteText: data,
@@ -1495,4 +1529,5 @@ function getFakeTodoNode(parentId: TodoNodeDataWithParentId['parentId']): TodoNo
 
 interface FakeTodoNodeDeclaration {
   children?: FakeTodoNodeDeclaration[]
+  collapsed?: boolean
 }
