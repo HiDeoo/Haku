@@ -1030,9 +1030,23 @@ describe('useTodoNode', () => {
     })
 
     test('should return the first children if it exists when going down', async () => {
-      const { children, nodes } = setFakeTodoNodes([{ children: [{ children: [{}] }] }, {}])
+      const { children, nodes } = setFakeTodoNodes([{ children: [{ children: [{}] }], collapsed: false }, {}])
       const node = getTodoNodeFromIndexes(nodes, children, 0)
       const closestNode = getTodoNodeFromIndexes(nodes, children, 0, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      await act(async () => {
+        const id = await result.current.getClosestNodeId({ direction: 'down', id: node.id, parentId: node.parentId })
+
+        expect(id).toBe(closestNode.id)
+      })
+    })
+
+    test('should not return the first children if it exists and the node is collapsed when going down', async () => {
+      const { children, nodes } = setFakeTodoNodes([{ children: [{ children: [{}] }], collapsed: true }, {}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+      const closestNode = getTodoNodeFromIndexes(nodes, children, 1)
 
       const { result } = renderHook(() => useTodoNode(node.id))
 
@@ -1058,7 +1072,27 @@ describe('useTodoNode', () => {
     })
 
     test('should return the last children of the previous sibbling when going up', async () => {
-      const { children, nodes } = setFakeTodoNodes([{ children: [{ children: [{}] }] }, {}])
+      const { children, nodes } = setFakeTodoNodes([
+        { children: [{ children: [{}], collapsed: false }], collapsed: false },
+        {},
+      ])
+      const node = getTodoNodeFromIndexes(nodes, children, 1)
+      const closestNode = getTodoNodeFromIndexes(nodes, children, 0, 0, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      await act(async () => {
+        const id = await result.current.getClosestNodeId({ direction: 'up', id: node.id, parentId: node.parentId })
+
+        expect(id).toBe(closestNode.id)
+      })
+    })
+
+    test('should return the last children of the previous sibbling when going up until hitting a collapsed node', async () => {
+      const { children, nodes } = setFakeTodoNodes([
+        { children: [{ children: [{ children: [{}], collapsed: true }], collapsed: false }], collapsed: false },
+        {},
+      ])
       const node = getTodoNodeFromIndexes(nodes, children, 1)
       const closestNode = getTodoNodeFromIndexes(nodes, children, 0, 0, 0)
 
@@ -1086,7 +1120,13 @@ describe('useTodoNode', () => {
     })
 
     test('should walk down the tree from the root when going up', async () => {
-      const { children, nodes } = setFakeTodoNodes([{ children: [{ children: [{}, { children: [{}, {}] }] }] }, {}])
+      const { children, nodes } = setFakeTodoNodes([
+        {
+          children: [{ children: [{}, { children: [{}, {}], collapsed: false }], collapsed: false }],
+          collapsed: false,
+        },
+        {},
+      ])
       const node = getTodoNodeFromIndexes(nodes, children, 1)
       const closestNode = getTodoNodeFromIndexes(nodes, children, 0, 0, 1, 1)
 

@@ -284,11 +284,19 @@ export function getClosestNode(
   skipChildren = false
 ): TodoNodeDataWithParentId | undefined {
   if (!skipChildren && direction === 'down') {
-    const nodeChildren = children[id]
-    const firstChildId = nodeChildren?.[0]
+    const node = nodes[id]
 
-    if (firstChildId) {
-      return nodes[firstChildId]
+    if (!node) {
+      return
+    }
+
+    if (!node.collapsed) {
+      const nodeChildren = children[id]
+      const firstChildId = nodeChildren?.[0]
+
+      if (firstChildId) {
+        return nodes[firstChildId]
+      }
     }
   }
 
@@ -319,9 +327,10 @@ function getLastNestedChildren(
   nodes: TodoNodesData['nodes'],
   children: TodoNodesData['children']
 ): TodoNodeDataWithParentId | undefined {
+  const node = nodes[from]
   const nodeChildren = children[from]
 
-  if (nodeChildren) {
+  if (node && !node.collapsed && nodeChildren) {
     const lastChildId = nodeChildren[nodeChildren.length - 1]
 
     if (lastChildId) {
@@ -329,7 +338,7 @@ function getLastNestedChildren(
     }
   }
 
-  return nodes[from]
+  return node
 }
 
 interface AtomParamsWithParentId {
