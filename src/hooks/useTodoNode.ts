@@ -15,6 +15,7 @@ import {
   nestNodeAtom,
   unnestNodeAtom,
   moveNodeAtom,
+  toggleCollapsedAtom,
 } from 'atoms/todoNode'
 import { type TodoNodeItemHandle } from 'components/TodoNodeItem'
 import { type TodoNodeData } from 'libs/db/todoNodes'
@@ -46,6 +47,7 @@ export default function useTodoNode(id: TodoNodeData['id']) {
   const node = useAtomValue(selectAtom(todoNodeNodesAtom, getNodeById))
 
   const updateContent = useUpdateAtom(updateContentAtom)
+  const toggleCollapsed = useUpdateAtom(toggleCollapsedAtom)
   const toggleCompleted = useUpdateAtom(toggleCompletedAtom)
   const updateNote = useUpdateAtom(updateNoteAtom)
   const addNode = useUpdateAtom(addNodeAtom)
@@ -62,6 +64,7 @@ export default function useTodoNode(id: TodoNodeData['id']) {
     moveNode,
     nestNode,
     node,
+    toggleCollapsed,
     toggleCompleted,
     unnestNode,
     updateContent,

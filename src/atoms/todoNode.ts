@@ -35,6 +35,19 @@ export const updateNoteAtom = atom(null, (get, set, { id, noteHtml, noteText }: 
   set(todoNodeNodesAtom, (prevNodes) => ({ ...prevNodes, [id]: { ...node, noteHtml, noteText } }))
 })
 
+export const toggleCollapsedAtom = atom(null, (get, set, { id }: AtomParamsWithParentId) => {
+  const node = get(todoNodeNodesAtom)[id]
+  const nodeChildrenIds = get(todoNodeChildrenAtom)[id]
+
+  if (!node || !nodeChildrenIds || nodeChildrenIds.length === 0) {
+    return
+  }
+
+  set(todoNodeMutations, (prevMutations) => ({ ...prevMutations, [id]: prevMutations[id] ?? 'update' }))
+
+  set(todoNodeNodesAtom, (prevNodes) => ({ ...prevNodes, [id]: { ...node, collapsed: !node.collapsed } }))
+})
+
 export const toggleCompletedAtom = atom(null, (get, set, { id }: AtomParamsWithParentId) => {
   const node = get(todoNodeNodesAtom)[id]
 
@@ -57,6 +70,7 @@ export const addNodeAtom = atom(null, (get, set, { id, newId, parentId = 'root' 
     ...prevNodes,
     [newId]: {
       id: newId,
+      collapsed: false,
       completed: false,
       content: '',
       noteHtml: null,

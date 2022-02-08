@@ -1080,7 +1080,7 @@ describe('useTodoNode', () => {
     })
   })
 
-  describe('updateCompleted', () => {
+  describe('toggleCompleted', () => {
     test('should toggle completed a root todo node', () => {
       const { children, nodes } = setFakeTodoNodes([{}])
       const node = getTodoNodeFromIndexes(nodes, children, 0)
@@ -1278,6 +1278,111 @@ describe('useTodoNode', () => {
       expect(todoMutations.current[0][node.id]).toBe('delete')
     })
   })
+
+  describe.only('toggleCollapsed', () => {
+    test('should not toggle collapsed a todo node without children', () => {
+      const { children, nodes } = setFakeTodoNodes([{}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      act(() => {
+        result.current.toggleCollapsed({ id: node.id })
+      })
+
+      expect(result.current.node?.collapsed).toBe(node.collapsed)
+    })
+
+    test('should toggle collapsed a root todo node', () => {
+      const { children, nodes } = setFakeTodoNodes([{ children: [{}] }])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      act(() => {
+        result.current.toggleCollapsed({ id: node.id })
+      })
+
+      expect(result.current.node?.collapsed).toBe(!node.collapsed)
+    })
+
+    test('should toggle collapsed a nested todo node', () => {
+      const { children, nodes } = setFakeTodoNodes([{ children: [{ children: [{}] }] }])
+      const node = getTodoNodeFromIndexes(nodes, children, 0, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      act(() => {
+        result.current.toggleCollapsed({ id: node.id })
+      })
+
+      expect(result.current.node?.collapsed).toBe(!node.collapsed)
+    })
+
+    test('should mark an existing todo node as updated after toggling its collapsed state', () => {
+      const { children, nodes } = setFakeTodoNodes([{ children: [{}] }])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+
+      act(() => {
+        result.current.toggleCollapsed({ id: node.id })
+      })
+
+      expect(todoMutations.current[node.id]).toBe('update')
+    })
+
+    test('should not mark a new todo node as updated after toggling its collapsed state', () => {
+      const { children, nodes } = setFakeTodoNodes([{}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
+
+      act(() => {
+        todoMutations.current[1]((prevMutations) => ({ ...prevMutations, [node.id]: 'insert' }))
+
+        result.current.toggleCollapsed({ id: node.id })
+      })
+
+      expect(todoMutations.current[0][node.id]).toBe('insert')
+    })
+
+    test('should not toggle collapsed a nonexisting todo node', () => {
+      const { children, nodes } = setFakeTodoNodes([{}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      act(() => {
+        result.current.toggleCollapsed({ id: 'nonexistingId' })
+      })
+
+      expect(result.current.node?.collapsed).toBe(nodes[node.id]?.collapsed)
+    })
+
+    test('should not toggle collapsed a deleted todo node', () => {
+      const { children, nodes } = setFakeTodoNodes([{}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoNodes } = renderHook(() => useAtom(todoNodeNodesAtom))
+      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
+
+      act(() => {
+        const { [node.id]: nodeToDelete, ...otherNodes } = todoNodes.current[0]
+        todoNodes.current[1](otherNodes)
+
+        todoMutations.current[1]((prevMutations) => ({ ...prevMutations, [node.id]: 'delete' }))
+
+        result.current.toggleCollapsed({ id: node.id })
+      })
+
+      expect(result.current.node).toBeUndefined()
+      expect(todoMutations.current[0][node.id]).toBe('delete')
+    })
+  })
 })
 
 function getTodoNodeFromIndexes(
@@ -1380,6 +1485,7 @@ function getFakeTodoNode(parentId: TodoNodeDataWithParentId['parentId']): TodoNo
   return {
     id: cuid(),
     content: faker.lorem.words(),
+    collapsed: faker.datatype.boolean(),
     completed: faker.datatype.boolean(),
     noteHtml: data,
     noteText: data,
