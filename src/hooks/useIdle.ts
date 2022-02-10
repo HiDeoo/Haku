@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { throttle } from 'throttle-debounce'
 
 const activityEvents: (keyof WindowEventMap)[] = ['keydown', 'mousedown', 'mousemove', 'resize', 'touchstart', 'wheel']
@@ -6,20 +6,23 @@ const activityEvents: (keyof WindowEventMap)[] = ['keydown', 'mousedown', 'mouse
 export default function useIdle(durationInSeconds = 5) {
   const [idle, setIdle] = useState(false)
 
-  useEffect(() => {
-    let timeout: ReturnType<typeof setTimeout>
+  const enabled = useRef(true)
+  const timeout = useRef<ReturnType<typeof setTimeout>>()
 
+  useEffect(() => {
     function startIdleTimer() {
-      timeout = setTimeout(() => {
-        setIdle(true)
+      timeout.current = setTimeout(() => {
+        if (enabled.current) {
+          setIdle(true)
+        }
       }, durationInSeconds * 1_000)
     }
 
     const onActivity = throttle(250, () => {
       setIdle(false)
 
-      if (timeout) {
-        clearTimeout(timeout)
+      if (timeout.current) {
+        clearTimeout(timeout.current)
       }
 
       startIdleTimer()
@@ -40,6 +43,12 @@ export default function useIdle(durationInSeconds = 5) {
     startIdleTimer()
 
     return () => {
+      enabled.current = false
+
+      if (timeout?.current) {
+        clearTimeout(timeout.current)
+      }
+
       document.removeEventListener('visibilitychange', onVisibilityChange)
 
       for (const event of activityEvents) {
