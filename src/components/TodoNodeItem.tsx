@@ -279,8 +279,6 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
 
   const levelOffset = level * TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS + 1
 
-  console.log('node', node.id)
-
   return (
     <div className={containerClasses} style={{ marginLeft: `-${levelOffset}px` }}>
       <Flex className="px-2 focus-within:bg-zinc-600/30">

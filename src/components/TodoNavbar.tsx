@@ -1,19 +1,22 @@
 import { useAtom } from 'jotai'
 import { useAtomCallback, useResetAtom } from 'jotai/utils'
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 
 import { todoEditorStateAtom } from 'atoms/todo'
 import { todoNodeChildrenAtom, todoNodeMutations, todoNodeNodesAtom } from 'atoms/todoNode'
 import Navbar from 'components/Navbar'
 import SyncReport from 'components/SyncReport'
 import useContentMutation, { type ContentMutation } from 'hooks/useContentMutation'
+import useIdle from 'hooks/useIdle'
 import { type TodoMetadata } from 'libs/db/todo'
 
-const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, todoId }) => {
+const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, focusTodoNode, todoId }) => {
   const [editorState, setEditorState] = useAtom(todoEditorStateAtom)
   const resetMutations = useResetAtom(todoNodeMutations)
 
   const { isLoading, mutate } = useContentMutation()
+
+  const idle = useIdle()
 
   const navbarDisabled = disabled || isLoading
 
@@ -28,7 +31,20 @@ const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, todoId }) => {
     )
   )
 
-  async function save() {
+  const onSettledMutation = useCallback(
+    (_: unknown, error: unknown) => {
+      setEditorState({ error, isLoading: false, lastSync: error ? undefined : new Date() })
+
+      focusTodoNode()
+    },
+    [focusTodoNode, setEditorState]
+  )
+
+  const onSuccessMutation = useCallback(() => {
+    resetMutations()
+  }, [resetMutations])
+
+  const save = useCallback(async () => {
     if (!todoId) {
       return
     }
@@ -65,15 +81,13 @@ const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, todoId }) => {
     setEditorState({ isLoading: true })
 
     mutate(mutationData, { onSettled: onSettledMutation, onSuccess: onSuccessMutation })
-  }
+  }, [getTodoAtoms, mutate, onSettledMutation, onSuccessMutation, setEditorState, todoId])
 
-  function onSettledMutation(_: unknown, error: unknown) {
-    setEditorState({ error, isLoading: false, lastSync: error ? undefined : new Date() })
-  }
-
-  function onSuccessMutation() {
-    resetMutations()
-  }
+  useEffect(() => {
+    if (idle && !editorState.pristine) {
+      save()
+    }
+  }, [editorState.pristine, idle, save])
 
   return (
     <Navbar disabled={navbarDisabled}>
@@ -90,5 +104,6 @@ export default TodoNavbar
 
 interface TodoNavbarProps {
   disabled?: boolean
-  todoId?: TodoMetadata['id']
+  focusTodoNode: () => void
+  todoId: TodoMetadata['id']
 }

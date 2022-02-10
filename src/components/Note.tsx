@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import Flex from 'components/Flex'
 import NoteInspector from 'components/NoteInspector'
@@ -68,26 +68,34 @@ const Note: React.FC<NoteProps> = ({ id }) => {
     [updateToc]
   )
 
-  const editor = useEditor(
-    {
-      autofocus: 'start',
-      className: 'h-full p-3',
-      content: data?.html,
-      extensions: [HeadingWithId],
-      onCreate: onEditorCreate,
-      onUpdate: updateToc,
-    },
-    [data?.html]
-  )
+  const editor = useEditor({
+    autofocus: 'start',
+    className: 'h-full p-3',
+    content: data?.html,
+    extensions: [HeadingWithId],
+    onCreate: onEditorCreate,
+    onUpdate: updateToc,
+  })
 
-  function onMutation(error?: unknown) {
+  useEffect(() => {
+    if (editor && data?.html) {
+      // Preserve the cursor position if the content is identical.
+      if (data.html === editor.getHTML()) {
+        return
+      }
+
+      editor.chain().setContent(data.html).focus().run()
+    }
+  }, [data, editor])
+
+  const onMutation = useCallback((error?: unknown) => {
     setEditorState((prevEditorState) => ({
       ...prevEditorState,
       error,
       lastSync: error ? undefined : new Date(),
       pristine: !error,
     }))
-  }
+  }, [])
 
   return (
     <Flex fullHeight className="overflow-hidden">
