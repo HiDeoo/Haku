@@ -3,7 +3,7 @@ import { throttle } from 'throttle-debounce'
 
 const activityEvents: (keyof WindowEventMap)[] = ['keydown', 'mousedown', 'mousemove', 'resize', 'touchstart', 'wheel']
 
-export default function useIdle(durationInSeconds = 5) {
+export default function useIdle(durationInSeconds = 10) {
   const [idle, setIdle] = useState(false)
 
   const enabled = useRef(true)
