@@ -72,6 +72,18 @@ const Todo: React.FC<TodoProps> = ({ id }) => {
     resetTodoAtoms()
   })
 
+  const focusTodoNode = useCallback(() => {
+    requestAnimationFrame(async () => {
+      const focusedTodoNodeId = await getFocusedTodoNode()
+      const focusedTodoNode: TodoNodeItemHandle | undefined = focusedTodoNodeId
+        ? todoNodeItems.get(focusedTodoNodeId)
+        : todoNodeItems.values().next().value
+
+      focusedTodoNode?.focusContent()
+      focusedTodoNode?.scrollIntoView()
+    })
+  }, [getFocusedTodoNode, todoNodeItems])
+
   const setTodoNodeItemRef = useCallback(
     async (id: TodoNodeData['id'], item: TodoNodeItemHandle | null) => {
       if (item) {
@@ -86,17 +98,9 @@ const Todo: React.FC<TodoProps> = ({ id }) => {
 
       didFocusOnMount.current = true
 
-      requestAnimationFrame(async () => {
-        const focusedTodoNodeId = await getFocusedTodoNode()
-        const focusedTodoNode: TodoNodeItemHandle | undefined = focusedTodoNodeId
-          ? todoNodeItems.get(focusedTodoNodeId)
-          : todoNodeItems.values().next().value
-
-        focusedTodoNode?.focusContent()
-        focusedTodoNode?.scrollIntoView()
-      })
+      focusTodoNode()
     },
-    [getFocusedTodoNode, todoNodeItems]
+    [focusTodoNode, todoNodeItems]
   )
 
   const setTodoFocus = useCallback(
@@ -108,7 +112,7 @@ const Todo: React.FC<TodoProps> = ({ id }) => {
 
   return (
     <Flex direction="col" fullHeight className="overflow-hidden">
-      <TodoNavbar disabled={isLoading} todoId={id} />
+      <TodoNavbar disabled={isLoading} todoId={id} focusTodoNode={focusTodoNode} />
       {isLoading ? (
         <Shimmer>
           {shimmerClassesAndLevels.map(([classes, level], index) => (

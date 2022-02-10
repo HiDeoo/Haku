@@ -31,6 +31,7 @@ specifiers:
   '@types/node': 16.11.11
   '@types/react': 17.0.37
   '@types/react-dom': 17.0.11
+  '@types/throttle-debounce': 2.1.0
   '@typescript-eslint/eslint-plugin': 5.5.0
   '@typescript-eslint/parser': 5.9.1
   autoprefixer: 10.4.0
@@ -69,6 +70,7 @@ specifiers:
   status-code-enum: 1.0.0
   tailwind-merge: 1.1.1
   tailwindcss: 3.0.7
+  throttle-debounce: 3.0.1
   ts-node: 10.4.0
   tsconfig-paths: 3.12.0
   typescript: 4.5.2
@@ -114,6 +116,7 @@ dependencies:
   react-query: 3.34.2_react-dom@17.0.2+react@17.0.2
   status-code-enum: 1.0.0
   tailwind-merge: 1.1.1
+  throttle-debounce: 3.0.1
   url-slug: 3.0.2
   use-editable: 2.3.3_react@17.0.2
   zod: 3.11.6
@@ -129,6 +132,7 @@ devDependencies:
   '@types/node': 16.11.11
   '@types/react': 17.0.37
   '@types/react-dom': 17.0.11
+  '@types/throttle-debounce': 2.1.0
   '@typescript-eslint/eslint-plugin': 5.5.0_7c169a00409c2e526b5f12016a48db45
   '@typescript-eslint/parser': 5.9.1_eslint@8.4.0+typescript@4.5.2
   autoprefixer: 10.4.0_postcss@8.4.4
@@ -2164,6 +2168,10 @@ packages:
 
   /@types/stack-utils/2.0.1:
     resolution: {integrity: sha512-Hl219/BT5fLAaz6NDkSuhzasy49dwQS/DSdu4MdggFB8zcXv7vflBI3xp7FEmkmdDkBUI2bPUNeMttp2knYdxw==}
+    dev: true
+
+  /@types/throttle-debounce/2.1.0:
+    resolution: {integrity: sha512-5eQEtSCoESnh2FsiLTxE121IiE60hnMqcb435fShf4bpLRjEu1Eoekht23y6zXS9Ts3l+Szu3TARnTsA0GkOkQ==}
     dev: true
 
   /@types/through/0.0.30:
@@ -6600,6 +6608,11 @@ packages:
   /throat/6.0.1:
     resolution: {integrity: sha512-8hmiGIJMDlwjg7dlJ4yKGLK8EsYqKgPWbG3b4wjJddKNwc7N7Dpn08Df4szr/sZdMVeOstrdYSsqzX6BYbcB+w==}
     dev: true
+
+  /throttle-debounce/3.0.1:
+    resolution: {integrity: sha512-dTEWWNu6JmeVXY0ZYoPuH5cRIwc0MeGbJwah9KUNYSJwommQpCzTySTpEe8Gs1J23aeWEuAobe4Ag7EHVt/LOg==}
+    engines: {node: '>=10'}
+    dev: false
 
   /through/2.3.8:
     resolution: {integrity: sha1-DdTJ/6q8NXlgsbckEV1+Doai4fU=}
