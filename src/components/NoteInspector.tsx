@@ -1,5 +1,5 @@
 import { Editor } from '@tiptap/react'
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   RiArrowDropRightFill,
   RiArrowGoBackLine,
@@ -32,6 +32,7 @@ import Icon from 'components/Icon'
 import { type NoteEditorState } from 'components/Note'
 import SyncReport from 'components/SyncReport'
 import useContentMutation from 'hooks/useContentMutation'
+import useIdle from 'hooks/useIdle'
 import { type NoteData } from 'libs/db/note'
 import clst from 'styles/clst'
 
@@ -39,6 +40,37 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
   const [linkModalOpened, setLinkModalOpened] = useState(false)
 
   const { isLoading, mutate } = useContentMutation()
+
+  const idle = useIdle()
+
+  const onSettledMutation = useCallback(
+    (_: unknown, error: unknown) => {
+      editor?.setEditable(true)
+      editor?.commands.focus()
+
+      onMutation(error)
+    },
+    [editor, onMutation]
+  )
+
+  const save = useCallback(() => {
+    if (!editor || !noteId) {
+      return
+    }
+
+    editor.setEditable(false)
+
+    const html = editor.getHTML()
+    const text = editor.getText()
+
+    mutate({ action: 'update', id: noteId, html, text }, { onSettled: onSettledMutation })
+  }, [editor, mutate, noteId, onSettledMutation])
+
+  useEffect(() => {
+    if (idle && !editorState.pristine) {
+      save()
+    }
+  }, [editorState.pristine, idle, save])
 
   const inspectorDisabled = disabled || isLoading
 
@@ -64,19 +96,6 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
 
   function redo() {
     editor?.chain().focus().redo().run()
-  }
-
-  function save() {
-    if (!editor || !noteId) {
-      return
-    }
-
-    editor.setEditable(false)
-
-    const html = editor.getHTML()
-    const text = editor.getText()
-
-    mutate({ action: 'update', id: noteId, html, text }, { onSettled: onSettledMutation })
   }
 
   function toggleBold() {
@@ -125,13 +144,6 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
 
   function undo() {
     editor?.chain().focus().undo().run()
-  }
-
-  function onSettledMutation(_: unknown, error: unknown) {
-    editor?.setEditable(true)
-    editor?.commands.focus()
-
-    onMutation(error)
   }
 
   return (
