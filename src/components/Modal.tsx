@@ -6,6 +6,12 @@ import Button from 'components/Button'
 import IconButton from 'components/IconButton'
 import clst from 'styles/clst'
 
+export const MODAL_CONTENT_CLASSES =
+  'z-50 m-auto outline-none min-w-[400px] max-w-[75%] bg-zinc-800 rounded-md shadow shadow-black/75'
+
+export const MODAL_OVERLAY_CLASSES =
+  'animate-modal-overlay fixed inset-0 z-40 flex flex-col overflow-y-auto bg-zinc-900/80 p-10'
+
 const Modal: ModalComponent = ({ children, contentClassName, disabled, onOpenChange, opened, title, trigger }) => {
   function onCloseInteraction(event: KeyboardEvent | CustomEvent) {
     if (disabled) {
@@ -13,16 +19,13 @@ const Modal: ModalComponent = ({ children, contentClassName, disabled, onOpenCha
     }
   }
 
-  const contentClasses = clst(
-    'z-50 m-auto outline-none min-w-[400px] max-w-[75%] animate-modal-content bg-zinc-800 rounded-md shadow shadow-black/75',
-    contentClassName
-  )
+  const contentClasses = clst(MODAL_CONTENT_CLASSES, 'animate-modal-content', contentClassName)
 
   return (
     <Root open={opened} onOpenChange={onOpenChange}>
       {trigger ? <Trigger asChild>{trigger}</Trigger> : null}
       <Portal>
-        <Overlay className="animate-modal-overlay fixed inset-0 z-40 flex  flex-col overflow-y-auto bg-zinc-900/80 p-10">
+        <Overlay className={MODAL_OVERLAY_CLASSES}>
           <Content
             className={contentClasses}
             onEscapeKeyDown={onCloseInteraction}
@@ -76,8 +79,8 @@ type ModalComponent = React.FC<ModalProps> & {
 export interface ModalProps {
   contentClassName?: string
   disabled?: boolean
-  opened: boolean
   onOpenChange: (opened: boolean) => void
+  opened: boolean
   title: string
   trigger?: React.ReactNode
 }
