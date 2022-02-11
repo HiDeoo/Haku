@@ -60,17 +60,9 @@ const Select = <TItem,>({
 
   return (
     <div className={containerClasses} ref={container} contentEditable={false}>
-      {label ? (
-        <Label {...getLabelProps()} disabled={disabled}>
-          {label}
-        </Label>
-      ) : null}
+      {label ? <Label {...getLabelProps({ disabled })}>{label}</Label> : null}
       <Button
-        {...getToggleButtonProps()}
-        disabled={disabled}
-        tabIndex={tabIndex}
-        aria-label="Toggle Menu"
-        className={triggerClasses}
+        {...getToggleButtonProps({ 'aria-label': 'Toggle Menu', className: triggerClasses, disabled, tabIndex })}
         pressedClassName={triggerPressedClassName}
       >
         <Flex alignItems="center" justifyContent="between" className="gap-1">

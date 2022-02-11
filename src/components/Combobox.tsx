@@ -183,10 +183,10 @@ const Combobox = <TItem, TFormFields extends FieldValues>({
 
   return (
     <div className="relative mb-3" ref={container}>
-      <Label {...getLabelProps()} errorMessage={errorMessage} disabled={isDisabled()}>
+      <Label {...getLabelProps({ disabled: isDisabled() })} errorMessage={errorMessage}>
         {label}
       </Label>
-      <Flex {...getComboboxProps()} className="relative">
+      <Flex {...getComboboxProps({ className: 'relative' })}>
         {loading ? <Spinner className="absolute top-1.5 right-12 h-5 w-5 text-blue-500" /> : null}
         <TextInput
           {...inputProps}
@@ -197,10 +197,11 @@ const Combobox = <TItem, TFormFields extends FieldValues>({
           errorMessage={errorMessage}
         />
         <Button
-          {...getToggleButtonProps()}
-          disabled={isDisabled()}
-          aria-label="Toggle Menu"
-          className="min-w-0 px-2 disabled:bg-zinc-600"
+          {...getToggleButtonProps({
+            'aria-label': 'Toggle Menu',
+            className: 'min-w-0 px-2 disabled:bg-zinc-600',
+            disabled: isDisabled(),
+          })}
         >
           <Icon icon={RiArrowDownSLine} className={triggerIconClasses} />
         </Button>

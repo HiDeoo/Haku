@@ -98,7 +98,7 @@ const PalettePicker = <TItem,>({
 
   return (
     <>
-      <div {...getComboboxProps()} className="relative p-3">
+      <div {...getComboboxProps({ className: 'relative p-3' })}>
         <TextInput
           {...getInputProps({
             className: isLoading ? 'pr-8' : undefined,
@@ -113,7 +113,7 @@ const PalettePicker = <TItem,>({
         />
         {isLoading ? <Spinner className="absolute right-5 bottom-1/3 my-0.5 h-4 w-4" color="text-blue-50/80" /> : null}
       </div>
-      <ul {...getMenuProps()} className="h-full overflow-y-auto">
+      <ul {...getMenuProps({ className: 'h-full overflow-y-auto' })}>
         {(filteredItems.length === 0 && inputValue.length > 0) || isLoading ? (
           <li className={clst(baseMenuItemClasses, 'mb-1.5 opacity-75')}>
             {isLoading ? 'Loading…' : 'No matching results'}
