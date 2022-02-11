@@ -130,9 +130,15 @@ const PalettePicker = <TItem,>({
             return (
               <li {...getItemProps({ className: menuItemClasses, item, index })} key={`${itemStr}-${index}`}>
                 {itemIcon ? (
-                  <Icon icon={itemIcon} label={itemStr} key={`${itemStr}-${index}-icon`} className="opacity-70" />
+                  <Icon
+                    icon={itemIcon}
+                    label={itemStr}
+                    className="shrink-0 opacity-70"
+                    key={`${itemStr}-${index}-icon`}
+                  />
                 ) : null}
                 <span
+                  className="truncate"
                   key={`${itemStr}-${index}-label`}
                   dangerouslySetInnerHTML={{ __html: renderFilteredItem(item, isHighlighted) }}
                 />

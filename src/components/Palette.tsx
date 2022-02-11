@@ -10,7 +10,7 @@ const Palette = <TItem,>(props: PaletteProps<TItem>) => {
 
   const contentClasses = clst(
     MODAL_CONTENT_CLASSES,
-    'flex flex-col my-0 max-h-[500px] animate-palette-content overflow-y-hidden rounded-t-none'
+    'flex flex-col my-0 max-h-[500px] w-[400px] animate-palette-content overflow-y-hidden rounded-t-none'
   )
 
   return (
