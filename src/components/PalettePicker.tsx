@@ -7,6 +7,7 @@ import {
 import fuzzaldrin from 'fuzzaldrin-plus'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
+import Icon from 'components/Icon'
 import { type PaletteProps } from 'components/Palette'
 import Spinner from 'components/Spinner'
 import TextInput from 'components/TextInput'
@@ -15,6 +16,7 @@ import clst from 'styles/clst'
 const PalettePicker = <TItem,>({
   isLoading,
   items,
+  itemToIcon,
   itemToString,
   onOpenChange,
   onPick,
@@ -118,17 +120,23 @@ const PalettePicker = <TItem,>({
           </li>
         ) : (
           filteredItems.map((item, index) => {
+            const itemStr = itemToString(item)
+            const itemIcon = itemToIcon ? itemToIcon(item) : undefined
             const isHighlighted = highlightedIndex === index
-
-            const menuItemClasses = clst(baseMenuItemClasses, { 'bg-blue-600': isHighlighted })
+            const menuItemClasses = clst(baseMenuItemClasses, 'flex gap-3 items-center', {
+              'bg-blue-600': isHighlighted,
+            })
 
             return (
-              <li
-                className={menuItemClasses}
-                {...getItemProps({ item, index })}
-                key={`${itemToString(item)}-${index}`}
-                dangerouslySetInnerHTML={{ __html: renderFilteredItem(item, isHighlighted) }}
-              />
+              <li {...getItemProps({ className: menuItemClasses, item, index })} key={`${itemStr}-${index}`}>
+                {itemIcon ? (
+                  <Icon icon={itemIcon} label={itemStr} key={`${itemStr}-${index}-icon`} className="opacity-70" />
+                ) : null}
+                <span
+                  key={`${itemStr}-${index}-label`}
+                  dangerouslySetInnerHTML={{ __html: renderFilteredItem(item, isHighlighted) }}
+                />
+              </li>
             )
           })
         )}

@@ -1,5 +1,6 @@
 import { Content, Overlay, Portal, Root } from '@radix-ui/react-dialog'
 
+import { type IconProps } from 'components/Icon'
 import { MODAL_CONTENT_CLASSES, MODAL_OVERLAY_CLASSES } from 'components/Modal'
 import PalettePicker from 'components/PalettePicker'
 import clst from 'styles/clst'
@@ -30,6 +31,7 @@ export default Palette
 export interface PaletteProps<TItem> {
   isLoading?: boolean
   items: TItem[]
+  itemToIcon?: (item: TItem | null) => IconProps['icon'] | null
   itemToString: (item: TItem | null) => string
   onOpenChange: (opened: boolean) => void
   onPick: (item: TItem | null | undefined) => void
