@@ -8,6 +8,7 @@ import { type NoteMetadata } from 'libs/db/note'
 import useContentId from 'hooks/useContentId'
 import useContentType, { ContentType } from 'hooks/useContentType'
 import { getContentTreeQueryKey } from 'hooks/useContentTree'
+import { getFilesQueryKey } from 'hooks/useFiles'
 import { type TodoMetadata } from 'libs/db/todo'
 import { type RemoveNoteQuery, type UpdateNoteBody, type UpdateNoteQuery } from 'pages/api/notes/[id]'
 import { type RemoveTodoQuery } from 'pages/api/todos/[id]'
@@ -46,6 +47,7 @@ export default function useMetadataMutation() {
     {
       onSuccess: (newMetadata, variables) => {
         queryClient.invalidateQueries(getContentTreeQueryKey(type))
+        queryClient.invalidateQueries(getFilesQueryKey())
 
         if (
           newMetadata &&

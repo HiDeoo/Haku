@@ -10,7 +10,7 @@ import { ContentType } from 'atoms/contentType'
 const Palette = dynamic<PaletteProps<FileData>>(import('components/Palette'))
 
 const NavigationPalette: React.FC = () => {
-  const [opened, setOpened] = useState(true)
+  const [opened, setOpened] = useState(false)
 
   const { data, isLoading } = useFiles(opened)
 

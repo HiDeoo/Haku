@@ -7,6 +7,10 @@ export default function useFiles(enabled: boolean) {
   return useQuery<FilesData>('files', getFiles, { enabled })
 }
 
+export function getFilesQueryKey() {
+  return 'files'
+}
+
 function getFiles() {
   return client.get('files').json<FilesData>()
 }
