@@ -71,9 +71,14 @@ const ControlMenu = <TItem,>({
             return (
               <li
                 key={`${itemToString(item)}-${index}`}
-                {...getItemProps({ item, index })}
-                className={menuItemClasses}
-                dangerouslySetInnerHTML={itemToInnerHtml ? { __html: itemToInnerHtml(item, isHighlighted) } : undefined}
+                {...getItemProps({
+                  className: menuItemClasses,
+                  dangerouslySetInnerHTML: itemToInnerHtml
+                    ? { __html: itemToInnerHtml(item, isHighlighted) }
+                    : undefined,
+                  item,
+                  index,
+                })}
               >
                 {itemToInnerHtml ? null : itemToString(item)}
               </li>

@@ -6,6 +6,7 @@ import ContentTree from 'components/ContentTree'
 import Flex from 'components/Flex'
 import IconButton from 'components/IconButton'
 import ContentTypeSwitch from 'components/ContentTypeSwitch'
+import NavigationPalette from 'components/NavigationPalette'
 
 const ContentModal = dynamic(import('components/ContentModal'))
 const FolderModal = dynamic(import('components/FolderModal'))
@@ -16,18 +17,21 @@ const Sidebar: React.FC = () => {
   }
 
   return (
-    <Flex direction="col" className="w-64 bg-zinc-900">
-      <ContentTree />
-      <Flex
-        justifyContent="center"
-        className="z-10 border-t border-zinc-600/40 px-4 py-2 shadow-[0_-1px_1px_0_rgba(0,0,0,1)]"
-      >
-        <ContentTypeSwitch />
-        <ContentModal />
-        <FolderModal />
-        <IconButton icon={RiLogoutCircleRLine} onPress={logout} tooltip="Logout" />
+    <>
+      <NavigationPalette />
+      <Flex direction="col" className="w-64 bg-zinc-900">
+        <ContentTree />
+        <Flex
+          justifyContent="center"
+          className="z-10 border-t border-zinc-600/40 px-4 py-2 shadow-[0_-1px_1px_0_rgba(0,0,0,1)]"
+        >
+          <ContentTypeSwitch />
+          <ContentModal />
+          <FolderModal />
+          <IconButton icon={RiLogoutCircleRLine} onPress={logout} tooltip="Logout" />
+        </Flex>
       </Flex>
-    </Flex>
+    </>
   )
 }
 

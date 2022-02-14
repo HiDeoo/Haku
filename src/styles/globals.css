@@ -27,6 +27,18 @@
     }
   }
 
+  .animate-palette-content {
+    @media (prefers-reduced-motion: no-preference) {
+      &[data-state='open'] {
+        @apply animate-drop-in;
+      }
+
+      &[data-state='closed'] {
+        @apply animate-drop-out;
+      }
+    }
+  }
+
   .animate-modal-overlay {
     @media (prefers-reduced-motion: no-preference) {
       &[data-state='open'] {

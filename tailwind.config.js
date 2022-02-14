@@ -6,6 +6,8 @@ module.exports = {
         'bounce-in': 'bounceIn 300ms cubic-bezier(0.55, 1.15, 0.35, 1.15)',
         'bounce-out': 'bounceOut 250ms cubic-bezier(0.55, 1.15, 0.35, 1.15)',
         dash: 'dash 1.5s ease-in-out infinite',
+        'drop-in': 'dropIn 250ms ease-out',
+        'drop-out': 'dropOut 200ms ease-in',
         'fade-in': 'fadeIn 200ms ease-out',
         'fade-out': 'fadeOut 200ms ease-in',
         'spin-slow': 'spin 2s linear infinite',
@@ -47,6 +49,26 @@ module.exports = {
           '100%': {
             'stroke-dasharray': '90, 150',
             'stroke-dashoffset': '-124',
+          },
+        },
+        dropIn: {
+          '0%': {
+            opacity: '0',
+            transform: 'translateY(-50%)',
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'translateY(0%)',
+          },
+        },
+        dropOut: {
+          '0%': {
+            opacity: '1',
+            transform: 'translateY(0%)',
+          },
+          '100%': {
+            opacity: '0',
+            transform: 'translateY(-50%)',
           },
         },
         fadeIn: {
