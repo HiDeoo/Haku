@@ -1,9 +1,11 @@
 import dynamic from 'next/dynamic'
+import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
 import { RiBookletLine, RiTodoLine } from 'react-icons/ri'
 
 import { ContentType } from 'atoms/contentType'
 import { type PaletteProps } from 'components/Palette'
+import { getContentType } from 'hooks/useContentType'
 import useFiles from 'hooks/useFiles'
 import useShortcuts from 'hooks/useShortcuts'
 import { type FileData } from 'libs/db/file'
@@ -11,6 +13,8 @@ import { type FileData } from 'libs/db/file'
 const Palette = dynamic<PaletteProps<FileData>>(import('components/Palette'))
 
 const NavigationPalette: React.FC = () => {
+  const { push } = useRouter()
+
   const [opened, setOpened] = useState(false)
 
   const { data, isLoading } = useFiles(opened)
@@ -45,24 +49,26 @@ const NavigationPalette: React.FC = () => {
   }
 
   function onPick(item: FileData | null | undefined) {
-    console.log('item ', item)
+    if (!item) {
+      return
+    }
+
+    const { urlPath } = getContentType(item.type)
+
+    push(`${urlPath}/${item.id}`)
   }
 
   return (
-    <div>
-      <button onClick={() => setOpened(true)}>Test</button>
-
-      <Palette
-        opened={opened}
-        onPick={onPick}
-        items={data ?? []}
-        isLoading={isLoading}
-        itemToIcon={itemToIcon}
-        onOpenChange={setOpened}
-        itemToString={itemToString}
-        placeholder="Search notes & todos by name"
-      />
-    </div>
+    <Palette
+      opened={opened}
+      onPick={onPick}
+      items={data ?? []}
+      isLoading={isLoading}
+      itemToIcon={itemToIcon}
+      onOpenChange={setOpened}
+      itemToString={itemToString}
+      placeholder="Search notes & todos by name"
+    />
   )
 }
 
