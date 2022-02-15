@@ -23,12 +23,20 @@ export function parseKeybinding(keybinding: Keybinding): ParsedKeybinding {
   return [mods, key]
 }
 
+export function getKeybindingMap<TKeybinding extends Keybinding>(keybindings: TKeybinding[]) {
+  const map = {} as Record<TKeybinding, ParsedKeybinding>
+
+  for (const keybinding of keybindings) {
+    map[keybinding] = parseKeybinding(keybinding)
+  }
+
+  return map
+}
+
 export function isEventWithKeybinding(
   event: React.KeyboardEvent<HTMLElement> | KeyboardEvent,
-  keybinding: Keybinding | ParsedKeybinding
+  [mods, key]: ParsedKeybinding
 ): boolean {
-  const [mods, key] = typeof keybinding === 'string' ? parseKeybinding(keybinding) : keybinding
-
   return (
     // Match against `event.key` only.
     event.key.toLowerCase() === key.toLowerCase() &&

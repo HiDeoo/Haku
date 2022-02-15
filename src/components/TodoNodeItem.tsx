@@ -18,11 +18,25 @@ import {
   setContentEditableCaretIndex,
   setContentEditableCaretPosition,
 } from 'libs/html'
-import { isEventWithKeybinding } from 'libs/shortcut'
+import { getKeybindingMap, isEventWithKeybinding } from 'libs/shortcut'
 import clst from 'styles/clst'
 import styles from 'styles/TodoNodeItem.module.css'
 
 export const TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS = 16
+
+const keybindingMap = getKeybindingMap([
+  'Enter',
+  'Meta+Enter',
+  'Shift+Enter',
+  'Meta+Backspace',
+  'Tab',
+  'Shift+Tab',
+  'ArrowUp',
+  'Meta+ArrowUp',
+  'ArrowDown',
+  'Meta+ArrowDown',
+  'Meta+Shift+.',
+])
 
 const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeItemProps> = (
   { id, level = 0, onFocusTodoNode, setTodoNodeItemRef },
@@ -95,7 +109,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
       event.preventDefault()
     }
 
-    if (isEventWithKeybinding(event, 'Enter')) {
+    if (isEventWithKeybinding(event, keybindingMap['Enter'])) {
       const newId = cuid()
 
       addNode({ ...update, newId })
@@ -103,7 +117,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
       requestAnimationFrame(() => {
         todoNodeItems.get(newId)?.focusContent()
       })
-    } else if (isEventWithKeybinding(event, 'Meta+Enter')) {
+    } else if (isEventWithKeybinding(event, keybindingMap['Meta+Enter'])) {
       if (node.completed) {
         preserveCaret(() => {
           toggleCompleted(update)
@@ -113,51 +127,51 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
 
         focusClosestNode({ ...update, direction: 'down' })
       }
-    } else if (isEventWithKeybinding(event, 'Shift+Enter')) {
+    } else if (isEventWithKeybinding(event, keybindingMap['Shift+Enter'])) {
       setShouldFocusNote((prevIsNoteFocused) => !prevIsNoteFocused)
 
       requestAnimationFrame(() => {
         noteRef.current?.focusNote()
       })
-    } else if (isEventWithKeybinding(event, 'Meta+Backspace')) {
+    } else if (isEventWithKeybinding(event, keybindingMap['Meta+Backspace'])) {
       event.preventDefault()
 
       focusClosestNode({ ...update, direction: 'up' })
 
       deleteNode(update)
-    } else if (isEventWithKeybinding(event, 'Tab')) {
+    } else if (isEventWithKeybinding(event, keybindingMap['Tab'])) {
       preserveCaret(() => {
         nestNode(update)
       })
-    } else if (isEventWithKeybinding(event, 'Shift+Tab')) {
+    } else if (isEventWithKeybinding(event, keybindingMap['Shift+Tab'])) {
       preserveCaret(() => {
         unnestNode(update)
       })
-    } else if (isEventWithKeybinding(event, 'ArrowUp') && contentRef.current) {
+    } else if (isEventWithKeybinding(event, keybindingMap['ArrowUp']) && contentRef.current) {
       const caretPosition = getContentEditableCaretPosition(contentRef.current)
 
       if (caretPosition && caretPosition.atFirstLine) {
         focusClosestNode({ ...update, direction: 'up', caretPosition }, event)
       }
-    } else if (isEventWithKeybinding(event, 'Meta+ArrowUp')) {
+    } else if (isEventWithKeybinding(event, keybindingMap['Meta+ArrowUp'])) {
       event.preventDefault()
 
       preserveCaret(() => {
         moveNode({ ...update, direction: 'up' })
       })
-    } else if (isEventWithKeybinding(event, 'ArrowDown') && contentRef.current) {
+    } else if (isEventWithKeybinding(event, keybindingMap['ArrowDown']) && contentRef.current) {
       const caretPosition = getContentEditableCaretPosition(contentRef.current)
 
       if (caretPosition && caretPosition.atLastLine) {
         focusClosestNode({ ...update, direction: 'down', caretPosition }, event)
       }
-    } else if (isEventWithKeybinding(event, 'Meta+ArrowDown')) {
+    } else if (isEventWithKeybinding(event, keybindingMap['Meta+ArrowDown'])) {
       event.preventDefault()
 
       preserveCaret(() => {
         moveNode({ ...update, direction: 'down' })
       })
-    } else if (isEventWithKeybinding(event, 'Meta+Shift+.')) {
+    } else if (isEventWithKeybinding(event, keybindingMap['Meta+Shift+.'])) {
       event.preventDefault()
 
       preserveCaret(() => {
