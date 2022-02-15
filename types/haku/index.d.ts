@@ -29,6 +29,25 @@ declare global {
     }
   }
 
+  // https://wicg.github.io/ua-client-hints/#dictdef-uadatavalues
+  interface Navigator {
+    userAgentData?: {
+      brands: string[]
+      mobile: boolean
+      architecture: string
+      bitness: string
+      model: string
+      platform: string
+      platformVersion: string
+      uaFullVersion: string
+      wow64: boolean
+      fullVersionList: {
+        brand: string
+        version: string
+      }[]
+    }
+  }
+
   type UserId = Session['user']['id']
 
   // Just for the sake of object destructuring and having a better named ID e.g. `const { userId } = user`.

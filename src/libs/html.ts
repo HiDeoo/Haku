@@ -1,3 +1,7 @@
+export function isUserAgentDataPlatformAvailable(): boolean {
+  return typeof navigator === 'object' && !!navigator.userAgentData && !!navigator.userAgentData.platform
+}
+
 export function getContentEditableCaretIndex(element: HTMLElement): number | undefined {
   const range = window.getSelection()?.getRangeAt(0)
 
