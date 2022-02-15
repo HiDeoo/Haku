@@ -10,7 +10,33 @@ const platformNativeMetaModifier =
     ? 'Meta'
     : 'Control'
 
-export function parseKeybinding(keybinding: Keybinding): ParsedKeybinding {
+export function getShortcutMap<TKeybinding extends Keybinding>(shortcuts: Shortcut<TKeybinding>[]) {
+  const shortcutMap = {} as Record<TKeybinding, Shortcut & { parsedKeybinding: ParsedKeybinding }>
+
+  for (const shortcut of shortcuts) {
+    shortcutMap[shortcut.keybinding] = { ...shortcut, parsedKeybinding: parseKeybinding(shortcut.keybinding) }
+  }
+
+  return shortcutMap
+}
+
+export function isShortcutEvent(
+  event: React.KeyboardEvent<HTMLElement> | KeyboardEvent,
+  shortcut: ParsedShortcut
+): boolean {
+  const [mods, key] = shortcut.parsedKeybinding
+
+  return (
+    // Match against `event.key` only.
+    event.key.toLowerCase() === key.toLowerCase() &&
+    // Ensure required modifiers are pressed.
+    mods.every((mod) => event.getModifierState(mod)) &&
+    // Ensure non-required modifiers are not pressed.
+    keybindingModifiers.every((mod) => mods.includes(mod) || key === mod || !event.getModifierState(mod))
+  )
+}
+
+function parseKeybinding(keybinding: Keybinding): ParsedKeybinding {
   const parsedKeybinding = keybinding.trim().split('+')
 
   const key = parsedKeybinding.pop()
@@ -23,38 +49,16 @@ export function parseKeybinding(keybinding: Keybinding): ParsedKeybinding {
   return [mods, key]
 }
 
-export function getKeybindingMap<TKeybinding extends Keybinding>(keybindings: TKeybinding[]) {
-  const map = {} as Record<TKeybinding, ParsedKeybinding>
-
-  for (const keybinding of keybindings) {
-    map[keybinding] = parseKeybinding(keybinding)
-  }
-
-  return map
-}
-
-export function isEventWithKeybinding(
-  event: React.KeyboardEvent<HTMLElement> | KeyboardEvent,
-  [mods, key]: ParsedKeybinding
-): boolean {
-  return (
-    // Match against `event.key` only.
-    event.key.toLowerCase() === key.toLowerCase() &&
-    // Ensure required modifiers are pressed.
-    mods.every((mod) => event.getModifierState(mod)) &&
-    // Ensure non-required modifiers are not pressed.
-    keybindingModifiers.every((mod) => mods.includes(mod) || key === mod || !event.getModifierState(mod))
-  )
-}
-
-export interface Shortcut {
+export interface Shortcut<TKeybinding = Keybinding> {
   group?: string
-  keybinding: Keybinding
+  keybinding: TKeybinding
   label: string
-  onKeyDown: (event: KeyboardEvent) => void
+  onKeyDown?: (event: KeyboardEvent) => void
 }
 
 type Keybinding = string
 type ParsedKeybinding = [mods: string[], key: string]
 
-export type ShortcutMap = Record<string, Shortcut & { parsedKeybinding: ParsedKeybinding }>
+type ParsedShortcut = Shortcut & { parsedKeybinding: ParsedKeybinding }
+
+export type ShortcutMap = Record<string, ParsedShortcut>

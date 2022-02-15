@@ -12,9 +12,9 @@ import { type PaletteProps } from 'components/Palette'
 import Spinner from 'components/Spinner'
 import TextInput from 'components/TextInput'
 import clst from 'styles/clst'
-import { isEventWithKeybinding, parseKeybinding } from 'libs/shortcut'
+import { getShortcutMap, isShortcutEvent } from 'libs/shortcut'
 
-const escapeKeybinding = parseKeybinding('Escape')
+const shortcutMap = getShortcutMap([{ keybinding: 'Escape', label: '' }])
 
 const PalettePicker = <TItem,>({
   isLoading,
@@ -108,7 +108,7 @@ const PalettePicker = <TItem,>({
             placeholder,
             spellCheck: false,
             onKeyDown: (event) => {
-              if (isEventWithKeybinding(event, escapeKeybinding)) {
+              if (isShortcutEvent(event, shortcutMap['Escape'])) {
                 onOpenChange(false)
               }
             },
