@@ -12,6 +12,7 @@ import { type PaletteProps } from 'components/Palette'
 import Spinner from 'components/Spinner'
 import TextInput from 'components/TextInput'
 import clst from 'styles/clst'
+import { isEventWithKeybinding } from 'libs/shortcut'
 
 const PalettePicker = <TItem,>({
   isLoading,
@@ -105,7 +106,7 @@ const PalettePicker = <TItem,>({
             placeholder,
             spellCheck: false,
             onKeyDown: (event) => {
-              if (event.key === 'Escape') {
+              if (isEventWithKeybinding(event, 'Escape')) {
                 onOpenChange(false)
               }
             },

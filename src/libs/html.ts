@@ -1,7 +1,3 @@
-export function isEventWithoutModifier(event: React.KeyboardEvent<HTMLElement>) {
-  return !event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey
-}
-
 export function getContentEditableCaretIndex(element: HTMLElement): number | undefined {
   const range = window.getSelection()?.getRangeAt(0)
 

@@ -15,10 +15,10 @@ import {
   type CaretDirection,
   getContentEditableCaretIndex,
   getContentEditableCaretPosition,
-  isEventWithoutModifier,
   setContentEditableCaretIndex,
   setContentEditableCaretPosition,
 } from 'libs/html'
+import { isEventWithKeybinding } from 'libs/shortcut'
 import clst from 'styles/clst'
 import styles from 'styles/TodoNodeItem.module.css'
 
@@ -90,70 +90,74 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
 
     const update = { id: node.id, parentId: node.parentId }
 
-    if (event.key === 'Enter') {
+    // Prevent adding a new line or tab in the content editable element.
+    if (event.key === 'Enter' || event.key === 'Tab') {
       event.preventDefault()
+    }
 
-      if (isEventWithoutModifier(event)) {
-        const newId = cuid()
+    if (isEventWithKeybinding(event, 'Enter')) {
+      const newId = cuid()
 
-        addNode({ ...update, newId })
+      addNode({ ...update, newId })
 
-        requestAnimationFrame(() => {
-          todoNodeItems.get(newId)?.focusContent()
-        })
-      } else if (event.metaKey) {
-        if (node.completed) {
-          preserveCaret(() => {
-            toggleCompleted(update)
-          })
-        } else {
+      requestAnimationFrame(() => {
+        todoNodeItems.get(newId)?.focusContent()
+      })
+    } else if (isEventWithKeybinding(event, 'Meta+Enter')) {
+      if (node.completed) {
+        preserveCaret(() => {
           toggleCompleted(update)
-
-          focusClosestNode({ ...update, direction: 'down' })
-        }
-      } else if (event.shiftKey) {
-        setShouldFocusNote((prevIsNoteFocused) => !prevIsNoteFocused)
-
-        requestAnimationFrame(() => {
-          noteRef.current?.focusNote()
         })
+      } else {
+        toggleCompleted(update)
+
+        focusClosestNode({ ...update, direction: 'down' })
       }
-    } else if (event.key === 'Backspace' && event.metaKey) {
+    } else if (isEventWithKeybinding(event, 'Shift+Enter')) {
+      setShouldFocusNote((prevIsNoteFocused) => !prevIsNoteFocused)
+
+      requestAnimationFrame(() => {
+        noteRef.current?.focusNote()
+      })
+    } else if (isEventWithKeybinding(event, 'Meta+Backspace')) {
       event.preventDefault()
 
       focusClosestNode({ ...update, direction: 'up' })
 
       deleteNode(update)
-    } else if (event.key === 'Tab') {
+    } else if (isEventWithKeybinding(event, 'Tab')) {
+      preserveCaret(() => {
+        nestNode(update)
+      })
+    } else if (isEventWithKeybinding(event, 'Shift+Tab')) {
+      preserveCaret(() => {
+        unnestNode(update)
+      })
+    } else if (isEventWithKeybinding(event, 'ArrowUp') && contentRef.current) {
+      const caretPosition = getContentEditableCaretPosition(contentRef.current)
+
+      if (caretPosition && caretPosition.atFirstLine) {
+        focusClosestNode({ ...update, direction: 'up', caretPosition }, event)
+      }
+    } else if (isEventWithKeybinding(event, 'Meta+ArrowUp')) {
       event.preventDefault()
 
       preserveCaret(() => {
-        if (event.shiftKey) {
-          unnestNode(update)
-        } else {
-          nestNode(update)
-        }
+        moveNode({ ...update, direction: 'up' })
       })
-    } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-      const direction = event.key === 'ArrowUp' ? 'up' : 'down'
+    } else if (isEventWithKeybinding(event, 'ArrowDown') && contentRef.current) {
+      const caretPosition = getContentEditableCaretPosition(contentRef.current)
 
-      if (isEventWithoutModifier(event) && contentRef.current) {
-        const caretPosition = getContentEditableCaretPosition(contentRef.current)
-
-        if (
-          caretPosition &&
-          ((direction === 'up' && caretPosition.atFirstLine) || (direction === 'down' && caretPosition.atLastLine))
-        ) {
-          focusClosestNode({ ...update, direction, caretPosition }, event)
-        }
-      } else if (event.metaKey) {
-        event.preventDefault()
-
-        preserveCaret(() => {
-          moveNode({ ...update, direction })
-        })
+      if (caretPosition && caretPosition.atLastLine) {
+        focusClosestNode({ ...update, direction: 'down', caretPosition }, event)
       }
-    } else if (event.key === '.' && event.metaKey && event.shiftKey) {
+    } else if (isEventWithKeybinding(event, 'Meta+ArrowDown')) {
+      event.preventDefault()
+
+      preserveCaret(() => {
+        moveNode({ ...update, direction: 'down' })
+      })
+    } else if (isEventWithKeybinding(event, 'Meta+Shift+.')) {
       event.preventDefault()
 
       preserveCaret(() => {
