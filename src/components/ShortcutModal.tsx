@@ -6,13 +6,13 @@ import { setShortcutModalOpenedAtom, shortcutModalAtom } from 'atoms/modal'
 import IconButton from 'components/IconButton'
 import Modal from 'components/Modal'
 import ShortcutList from 'components/ShortcutList'
-import useShortcuts from 'hooks/useShortcuts'
+import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
 
 const ShortcutModal: React.FC = () => {
   const opened = useAtomValue(shortcutModalAtom)
   const setOpened = useUpdateAtom(setShortcutModalOpenedAtom)
 
-  useShortcuts(
+  useGlobalShortcuts(
     useMemo(
       () => [
         {
