@@ -23,6 +23,7 @@ const NavigationPalette: React.FC = () => {
     useMemo(
       () => [
         {
+          group: '// TODO',
           keybinding: 'Meta+p',
           label: 'Go to File…',
           onKeyDown: (event) => {

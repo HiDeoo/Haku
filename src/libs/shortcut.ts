@@ -10,7 +10,7 @@ const platformNativeMetaModifier =
     ? 'Meta'
     : 'Control'
 
-export function getShortcutMap<TKeybinding extends Keybinding>(shortcuts: Shortcut<TKeybinding>[]) {
+export function getShortcutMap<TKeybinding extends Keybinding>(shortcuts: readonly Shortcut<TKeybinding>[]) {
   const shortcutMap = {} as Record<TKeybinding, Shortcut & { parsedKeybinding: ParsedKeybinding }>
 
   for (const shortcut of shortcuts) {
@@ -36,12 +36,6 @@ export function isShortcutEvent(
   )
 }
 
-export function isShortcutWithGroup(
-  shortcut: ParsedShortcut
-): shortcut is ParsedShortcut & { group: NonNullable<Shortcut['group']> } {
-  return typeof shortcut.group === 'string'
-}
-
 export function sortShortcutsByLabel(shortcuts: ParsedShortcut[]) {
   return shortcuts.sort((firstShortcut, secondShortcut) => firstShortcut.label.localeCompare(secondShortcut.label))
 }
@@ -60,15 +54,15 @@ function parseKeybinding(keybinding: Keybinding): ParsedKeybinding {
 }
 
 export interface Shortcut<TKeybinding = Keybinding> {
-  group?: string
-  keybinding: TKeybinding
-  label: string
-  onKeyDown?: (event: KeyboardEvent) => void
+  readonly group: string
+  readonly keybinding: TKeybinding
+  readonly label: string
+  readonly onKeyDown?: (event: KeyboardEvent) => void
 }
 
-type Keybinding = string
+export type Keybinding = string
 type ParsedKeybinding = [mods: string[], key: string]
 
-export type ParsedShortcut = Shortcut & { parsedKeybinding: ParsedKeybinding }
+export type ParsedShortcut = Shortcut & { readonly parsedKeybinding: ParsedKeybinding }
 
 export type ShortcutMap = Record<string, ParsedShortcut>

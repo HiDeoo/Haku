@@ -1,19 +1,32 @@
-import { atom } from 'jotai'
+import { atom, PrimitiveAtom, type WritableAtom } from 'jotai'
 
 import { getShortcutMap, type Shortcut, type ShortcutMap } from 'libs/shortcut'
 
-export const shortcutsAtom = atom<ShortcutMap>({})
+export const globalShortcutsAtom = atom<ShortcutMap>({})
+export const localShortcutsAtom = atom<ShortcutMap>({})
 
-export const registerShortcutsAtom = atom(null, (_get, set, shortcuts: Shortcut[]) => {
-  set(shortcutsAtom, (prevShortcuts) => ({ ...prevShortcuts, ...getShortcutMap(shortcuts) }))
-})
+export const [registerGlobalShortcutsAtom, unregisterGlobalShortcutsAtom] =
+  createShortcutsWriteOnlyAtoms(globalShortcutsAtom)
 
-export const unregisterShortcutsAtom = atom(null, (get, set, shortcuts: Shortcut[]) => {
-  const updatedShortcuts = { ...get(shortcutsAtom) }
+export const [registerLocalShortcutsAtom, unregisterLocalShortcutsAtom] =
+  createShortcutsWriteOnlyAtoms(localShortcutsAtom)
 
-  for (const shortcut of shortcuts) {
-    delete updatedShortcuts[shortcut.keybinding]
-  }
+function createShortcutsWriteOnlyAtoms(
+  shortcutsAtom: PrimitiveAtom<ShortcutMap>
+): [WritableAtom<null, readonly Shortcut[]>, WritableAtom<null, readonly Shortcut[]>] {
+  const registerAtom = atom(null, (_get, set, shortcuts: readonly Shortcut[]) => {
+    set(shortcutsAtom, (prevGlobalShortcuts) => ({ ...prevGlobalShortcuts, ...getShortcutMap(shortcuts) }))
+  })
 
-  set(shortcutsAtom, updatedShortcuts)
-})
+  const unregisterAtom = atom(null, (get, set, shortcuts: readonly Shortcut[]) => {
+    const updatedShortcuts = { ...get(shortcutsAtom) }
+
+    for (const shortcut of shortcuts) {
+      delete updatedShortcuts[shortcut.keybinding]
+    }
+
+    set(shortcutsAtom, updatedShortcuts)
+  })
+
+  return [registerAtom, unregisterAtom]
+}

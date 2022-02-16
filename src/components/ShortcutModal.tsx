@@ -16,6 +16,7 @@ const ShortcutModal: React.FC = () => {
     useMemo(
       () => [
         {
+          group: '// TODO',
           keybinding: 'Shift+?',
           label: 'Display Keyboard Shortcuts',
           onKeyDown: () => {
