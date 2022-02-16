@@ -36,6 +36,16 @@ export function isShortcutEvent(
   )
 }
 
+export function isShortcutWithGroup(
+  shortcut: ParsedShortcut
+): shortcut is ParsedShortcut & { group: NonNullable<Shortcut['group']> } {
+  return typeof shortcut.group === 'string'
+}
+
+export function sortShortcutsByLabel(shortcuts: ParsedShortcut[]) {
+  return shortcuts.sort((firstShortcut, secondShortcut) => firstShortcut.label.localeCompare(secondShortcut.label))
+}
+
 function parseKeybinding(keybinding: Keybinding): ParsedKeybinding {
   const parsedKeybinding = keybinding.trim().split('+')
 
@@ -59,6 +69,6 @@ export interface Shortcut<TKeybinding = Keybinding> {
 type Keybinding = string
 type ParsedKeybinding = [mods: string[], key: string]
 
-type ParsedShortcut = Shortcut & { parsedKeybinding: ParsedKeybinding }
+export type ParsedShortcut = Shortcut & { parsedKeybinding: ParsedKeybinding }
 
 export type ShortcutMap = Record<string, ParsedShortcut>

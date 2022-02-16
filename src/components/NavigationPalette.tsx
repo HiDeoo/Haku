@@ -23,7 +23,7 @@ const NavigationPalette: React.FC = () => {
     useMemo(
       () => [
         {
-          keybinding: 'Meta+P',
+          keybinding: 'Meta+p',
           label: 'Go to File…',
           onKeyDown: (event) => {
             event.preventDefault()
