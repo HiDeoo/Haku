@@ -7,7 +7,6 @@ import Flex from 'components/Flex'
 import TodoNodeChildren, { type TodoNodeChildrenProps } from 'components/TodoNodeChildren'
 import TodoNodeHandle from 'components/TodoNodeHandle'
 import TodoNodeNote, { type TodoNodeNoteHandle } from 'components/TodoNodeNote'
-import useLocalShortcuts from 'hooks/useLocalShortcuts'
 import useTodoNode, { TodoContext } from 'hooks/useTodoNode'
 import useTodoNodeChildren from 'hooks/useTodoNodeChildren'
 import { type TodoNodeData } from 'libs/db/todoNodes'
@@ -19,13 +18,13 @@ import {
   setContentEditableCaretIndex,
   setContentEditableCaretPosition,
 } from 'libs/html'
-import { isShortcutEvent } from 'libs/shortcut'
+import { getShortcutMap, isShortcutEvent } from 'libs/shortcut'
 import clst from 'styles/clst'
 import styles from 'styles/TodoNodeItem.module.css'
 
 export const TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS = 16
 
-const shortcutMap = [
+export const TODO_NODE_ITEM_SHORTCUTS = [
   { group: 'Todo', keybinding: 'Enter', label: 'Create new todo' },
   { group: 'Todo', keybinding: 'Meta+Enter', label: 'Toggle todo completion' },
   { group: 'Todo', keybinding: 'Shift+Enter', label: 'Move between todo & note' },
@@ -38,6 +37,8 @@ const shortcutMap = [
   { group: 'Todo', keybinding: 'Meta+ArrowDown', label: 'Move todo down' },
   { group: 'Todo', keybinding: 'Meta+Shift+.', label: 'Collapse todo' },
 ] as const
+
+const shortcutMap = getShortcutMap(TODO_NODE_ITEM_SHORTCUTS)
 
 const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeItemProps> = (
   { id, level = 0, onFocusTodoNode, setTodoNodeItemRef },
@@ -98,8 +99,6 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     [getClosestNodeId, level, todoNodeItems]
   )
 
-  const shortcuts = useLocalShortcuts(shortcutMap)
-
   function onKeyDownContent(event: React.KeyboardEvent<HTMLDivElement>) {
     if (!node) {
       return
@@ -112,7 +111,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
       event.preventDefault()
     }
 
-    if (isShortcutEvent(event, shortcuts['Enter'])) {
+    if (isShortcutEvent(event, shortcutMap['Enter'])) {
       const newId = cuid()
 
       addNode({ ...update, newId })
@@ -120,7 +119,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
       requestAnimationFrame(() => {
         todoNodeItems.get(newId)?.focusContent()
       })
-    } else if (isShortcutEvent(event, shortcuts['Meta+Enter'])) {
+    } else if (isShortcutEvent(event, shortcutMap['Meta+Enter'])) {
       if (node.completed) {
         preserveCaret(() => {
           toggleCompleted(update)
@@ -130,51 +129,51 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
 
         focusClosestNode({ ...update, direction: 'down' })
       }
-    } else if (isShortcutEvent(event, shortcuts['Shift+Enter'])) {
+    } else if (isShortcutEvent(event, shortcutMap['Shift+Enter'])) {
       setShouldFocusNote((prevIsNoteFocused) => !prevIsNoteFocused)
 
       requestAnimationFrame(() => {
         noteRef.current?.focusNote()
       })
-    } else if (isShortcutEvent(event, shortcuts['Meta+Backspace'])) {
+    } else if (isShortcutEvent(event, shortcutMap['Meta+Backspace'])) {
       event.preventDefault()
 
       focusClosestNode({ ...update, direction: 'up' })
 
       deleteNode(update)
-    } else if (isShortcutEvent(event, shortcuts['Tab'])) {
+    } else if (isShortcutEvent(event, shortcutMap['Tab'])) {
       preserveCaret(() => {
         nestNode(update)
       })
-    } else if (isShortcutEvent(event, shortcuts['Shift+Tab'])) {
+    } else if (isShortcutEvent(event, shortcutMap['Shift+Tab'])) {
       preserveCaret(() => {
         unnestNode(update)
       })
-    } else if (isShortcutEvent(event, shortcuts['ArrowUp']) && contentRef.current) {
+    } else if (isShortcutEvent(event, shortcutMap['ArrowUp']) && contentRef.current) {
       const caretPosition = getContentEditableCaretPosition(contentRef.current)
 
       if (caretPosition && caretPosition.atFirstLine) {
         focusClosestNode({ ...update, direction: 'up', caretPosition }, event)
       }
-    } else if (isShortcutEvent(event, shortcuts['Meta+ArrowUp'])) {
+    } else if (isShortcutEvent(event, shortcutMap['Meta+ArrowUp'])) {
       event.preventDefault()
 
       preserveCaret(() => {
         moveNode({ ...update, direction: 'up' })
       })
-    } else if (isShortcutEvent(event, shortcuts['ArrowDown']) && contentRef.current) {
+    } else if (isShortcutEvent(event, shortcutMap['ArrowDown']) && contentRef.current) {
       const caretPosition = getContentEditableCaretPosition(contentRef.current)
 
       if (caretPosition && caretPosition.atLastLine) {
         focusClosestNode({ ...update, direction: 'down', caretPosition }, event)
       }
-    } else if (isShortcutEvent(event, shortcuts['Meta+ArrowDown'])) {
+    } else if (isShortcutEvent(event, shortcutMap['Meta+ArrowDown'])) {
       event.preventDefault()
 
       preserveCaret(() => {
         moveNode({ ...update, direction: 'down' })
       })
-    } else if (isShortcutEvent(event, shortcuts['Meta+Shift+.'])) {
+    } else if (isShortcutEvent(event, shortcutMap['Meta+Shift+.'])) {
       event.preventDefault()
 
       preserveCaret(() => {
