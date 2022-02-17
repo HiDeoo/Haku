@@ -4,8 +4,25 @@ export const isPlatformMacOS =
   (isUserAgentDataPlatformAvailable() && navigator.userAgentData?.platform === 'macOS') ||
   (typeof navigator === 'object' && /Mac|iPad|iPhone|iPod/.test(navigator.platform))
 
-function isUserAgentDataPlatformAvailable(): boolean {
-  return typeof navigator === 'object' && !!navigator.userAgentData && !!navigator.userAgentData.platform
+export function isTextInputElement(element: EventTarget | Element | null): boolean {
+  if (!(element instanceof Element)) {
+    return false
+  }
+
+  const textInput = element.closest('input, textarea, [contenteditable=true], [contenteditable=plaintext-only]')
+
+  if (!textInput) {
+    return false
+  }
+
+  if (
+    isHTMLInputElement(textInput) &&
+    (textInput.type === 'checkbox' || textInput.type === 'radio' || textInput.readOnly)
+  ) {
+    return false
+  }
+
+  return true
 }
 
 export function getContentEditableCaretIndex(element: HTMLElement): number | undefined {
@@ -159,6 +176,14 @@ function getContentEditableLines(element: HTMLElement): ContentEditableLine[] {
   }
 
   return lines
+}
+
+function isUserAgentDataPlatformAvailable(): boolean {
+  return typeof navigator === 'object' && !!navigator.userAgentData && !!navigator.userAgentData.platform
+}
+
+function isHTMLInputElement(element: Element): element is HTMLInputElement {
+  return element.tagName === 'INPUT'
 }
 
 export interface CaretPosition {

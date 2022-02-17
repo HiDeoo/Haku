@@ -1,4 +1,4 @@
-import { isPlatformMacOS } from './html'
+import { isPlatformMacOS, isTextInputElement } from 'libs/html'
 
 const modifiers = ['Alt', 'Control', 'Meta', 'Shift']
 
@@ -26,7 +26,9 @@ export function isShortcutEvent(
     // Ensure required modifiers are pressed.
     mods.every((mod) => event.getModifierState(mod)) &&
     // Ensure non-required modifiers are not pressed.
-    modifiers.every((mod) => mods.includes(mod) || key === mod || !event.getModifierState(mod))
+    modifiers.every((mod) => mods.includes(mod) || key === mod || !event.getModifierState(mod)) &&
+    // Prevent the shortcut to be triggered in text inputs only if explicitely required.
+    (!isTextInputElement(event.target) || (shortcut.allowInTextInput ?? true))
   )
 }
 
@@ -67,6 +69,7 @@ function parseKeybinding(keybinding: Keybinding): ParsedKeybinding {
 }
 
 export interface Shortcut<TKeybinding = Keybinding> {
+  readonly allowInTextInput?: boolean
   readonly group: string
   readonly keybinding: TKeybinding
   readonly label: string
