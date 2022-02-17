@@ -7,7 +7,7 @@ export function removeAtIndex<TData>(array: TData[], index: number): TData[] {
 }
 
 export function groupByKey<
-  TIndex extends string | number | symbol,
+  TIndex extends PropertyKey,
   TKey extends TIndex,
   TRecord extends unknown & { [key in TKey]: TIndex }
 >(records: TRecord[], key: TKey): Record<TRecord[TKey], TRecord[]> {

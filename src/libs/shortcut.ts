@@ -1,14 +1,8 @@
-import { isUserAgentDataPlatformAvailable } from './html'
+import { isPlatformMacOS } from './html'
 
-const keybindingModifiers = ['Alt', 'Control', 'Meta', 'Shift']
+const modifiers = ['Alt', 'Control', 'Meta', 'Shift']
 
-const platformNativeMetaModifier =
-  // As of 02/15/22, the `userAgentData` Navigator API is currently not available on any iOS browser.
-  // https://caniuse.com/mdn-api_navigator_useragentdata
-  (isUserAgentDataPlatformAvailable() && navigator.userAgentData?.platform === 'macOS') ||
-  (typeof navigator === 'object' && /Mac|iPad|iPhone|iPod/.test(navigator.platform))
-    ? 'Meta'
-    : 'Control'
+const platformNativeMetaModifier = isPlatformMacOS ? 'Meta' : 'Control'
 
 export function getShortcutMap<TKeybinding extends Keybinding>(shortcuts: readonly Shortcut<TKeybinding>[]) {
   const shortcutMap = {} as Record<TKeybinding, Shortcut & { parsedKeybinding: ParsedKeybinding }>
@@ -32,12 +26,16 @@ export function isShortcutEvent(
     // Ensure required modifiers are pressed.
     mods.every((mod) => event.getModifierState(mod)) &&
     // Ensure non-required modifiers are not pressed.
-    keybindingModifiers.every((mod) => mods.includes(mod) || key === mod || !event.getModifierState(mod))
+    modifiers.every((mod) => mods.includes(mod) || key === mod || !event.getModifierState(mod))
   )
 }
 
 export function sortShortcutsByLabel(shortcuts: ParsedShortcut[]) {
   return shortcuts.sort((firstShortcut, secondShortcut) => firstShortcut.label.localeCompare(secondShortcut.label))
+}
+
+export function getKeyAriaLabel(key: string): string {
+  return key.replace('Alt', isPlatformMacOS ? 'Option' : 'Alt').replace('Meta', isPlatformMacOS ? 'Command' : 'Control')
 }
 
 function parseKeybinding(keybinding: Keybinding): ParsedKeybinding {
