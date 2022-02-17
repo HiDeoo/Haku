@@ -61,6 +61,9 @@ const PalettePicker = <TItem,>({
 
   function stateReducer(state: UseComboboxState<TItem>, { type, changes }: UseComboboxStateChangeOptions<TItem>) {
     switch (type) {
+      case useCombobox.stateChangeTypes.InputBlur: {
+        return state
+      }
       case useCombobox.stateChangeTypes.InputChange: {
         updateFilteredItems(changes.inputValue)
 
@@ -85,6 +88,16 @@ const PalettePicker = <TItem,>({
     onPick(changes.selectedItem)
   }
 
+  function onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (isShortcutEvent(event, shortcutMap['Escape'])) {
+      onOpenChange(false)
+    }
+  }
+
+  function onBlur() {
+    onOpenChange(false)
+  }
+
   function renderFilteredItem(item: TItem, isHighlighted: boolean) {
     const itemStr = itemToString(item)
 
@@ -105,13 +118,10 @@ const PalettePicker = <TItem,>({
         <TextInput
           {...getInputProps({
             className: isLoading ? 'pr-8' : undefined,
+            onKeyDown,
+            onBlur,
             placeholder,
             spellCheck: false,
-            onKeyDown: (event) => {
-              if (isShortcutEvent(event, shortcutMap['Escape'])) {
-                onOpenChange(false)
-              }
-            },
           })}
         />
         {isLoading ? <Spinner className="absolute right-5 bottom-1/3 my-0.5 h-4 w-4" color="text-blue-50/80" /> : null}
