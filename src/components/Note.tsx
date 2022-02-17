@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
+import EditorLinkModal from 'components/EditorLinkModal'
 import Flex from 'components/Flex'
 import NoteInspector from 'components/NoteInspector'
 import Shimmer from 'components/Shimmer'
@@ -32,6 +33,7 @@ const shimmerClasses = [
 const anchorHeadingRegExp = /^#.*-(?<pos>\d+)$/
 
 const Note: React.FC<NoteProps> = ({ id }) => {
+  const [linkModalOpened, setLinkModalOpened] = useState(false)
   const [editorState, setEditorState] = useState<NoteEditorState>({ pristine: true })
 
   useNavigationPrompt(!editorState.pristine)
@@ -75,6 +77,7 @@ const Note: React.FC<NoteProps> = ({ id }) => {
     extensions: [HeadingWithId],
     onCreate: onEditorCreate,
     onUpdate: updateToc,
+    setLinkModalOpened,
   })
 
   useEffect(() => {
@@ -114,7 +117,9 @@ const Note: React.FC<NoteProps> = ({ id }) => {
         disabled={isLoading}
         onMutation={onMutation}
         editorState={editorState}
+        setLinkModalOpened={setLinkModalOpened}
       />
+      <EditorLinkModal opened={linkModalOpened} onOpenChange={setLinkModalOpened} editor={editor} />
     </Flex>
   )
 }
