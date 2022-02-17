@@ -4,7 +4,8 @@ import { useAtomValue } from 'jotai/utils'
 import { globalShortcutsAtom, localShortcutsAtom } from 'atoms/shortcuts'
 import Flex from 'components/Flex'
 import { groupByKey } from 'libs/array'
-import { type ParsedShortcut, sortShortcutsByLabel, getKeyAriaLabel } from 'libs/shortcut'
+import { type ParsedShortcut, sortShortcutsByLabel, getKeyAriaLabel, prettyPrintKey } from 'libs/shortcut'
+import clst from 'styles/clst'
 
 const ShortcutList: React.FC = () => {
   const globalShortcuts = groupByKey(Object.values(useAtomValue(globalShortcutsAtom)), 'group')
@@ -42,18 +43,22 @@ const ShortcutKeybinding: React.FC<ShortcutKeybindingProps> = ({ keybinding }) =
 
   return (
     <Flex className="gap-1">
-      {keys.map((key) => (
-        <>
-          <kbd
-            key={key}
-            aria-hidden
-            className="block rounded bg-zinc-600  px-1.5 text-xs leading-[unset] shadow shadow-zinc-900"
-          >
-            {key}
-          </kbd>
-          <VisuallyHidden>{getKeyAriaLabel(key)}</VisuallyHidden>
-        </>
-      ))}
+      {keys.map((key) => {
+        const prettyPrintedKey = prettyPrintKey(key)
+
+        const kbdClasses = clst('block rounded bg-zinc-600 px-1.5 text-xs leading-[unset] shadow shadow-zinc-900', {
+          'text-lg': prettyPrintedKey.length === 1 && !/[A-z?]/i.test(prettyPrintedKey),
+        })
+
+        return (
+          <>
+            <kbd key={key} aria-hidden className={kbdClasses}>
+              {prettyPrintedKey}
+            </kbd>
+            <VisuallyHidden>{getKeyAriaLabel(key)}</VisuallyHidden>
+          </>
+        )
+      })}
     </Flex>
   )
 }

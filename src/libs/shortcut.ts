@@ -38,6 +38,21 @@ export function getKeyAriaLabel(key: string): string {
   return key.replace('Alt', isPlatformMacOS ? 'Option' : 'Alt').replace('Meta', isPlatformMacOS ? 'Command' : 'Control')
 }
 
+export function prettyPrintKey(key: string): string {
+  return key
+    .replace('Alt', isPlatformMacOS ? '⌥' : 'Alt')
+    .replace('Meta', isPlatformMacOS ? '⌘' : 'Ctrl')
+    .replace('Control', isPlatformMacOS ? '⌃' : 'Ctrl')
+    .replace('Shift', '⇧')
+    .replace('Enter', '⏎')
+    .replace('Backspace', '⌫')
+    .replace('Tab', '⇥')
+    .replace('ArrowUp', '↑')
+    .replace('ArrowDown', '↓')
+    .replace('ArrowLeft', '←')
+    .replace('ArrowRight', '→')
+}
+
 function parseKeybinding(keybinding: Keybinding): ParsedKeybinding {
   const parsedKeybinding = keybinding.trim().split('+')
 
