@@ -214,9 +214,9 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({
         <Inspector.Toggle
           icon={RiLink}
           onToggle={toggleLink}
-          tooltip="Toggle Link"
           disabled={isCodeBlock}
           toggled={editor?.isActive('link')}
+          tooltip={`${editor?.isActive('link') ? 'Edit' : 'Toggle'} Link`}
         />
         <Inspector.Toggle
           icon={RiDoubleQuotesR}

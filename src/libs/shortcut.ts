@@ -41,7 +41,7 @@ export function prettyPrintKey(key: string): string {
     .replace('Alt', isPlatformMacOS ? '⌥' : 'Alt')
     .replace('Meta', isPlatformMacOS ? '⌘' : 'Ctrl')
     .replace('Control', isPlatformMacOS ? '⌃' : 'Ctrl')
-    .replace('Shift', '⇧')
+    .replace('Shift', isPlatformMacOS ? '⇧' : 'Shift')
     .replace('Enter', '⏎')
     .replace('Backspace', '⌫')
     .replace('Tab', '⇥')
