@@ -14,7 +14,7 @@ import TextInput from 'components/TextInput'
 import clst from 'styles/clst'
 import { getShortcutMap, isShortcutEvent } from 'libs/shortcut'
 
-const shortcutMap = getShortcutMap([{ group: '', keybinding: 'Escape', label: '' }])
+const shortcutMap = getShortcutMap([{ keybinding: 'Escape' }])
 
 const PalettePicker = <TItem,>({
   isLoading,

@@ -32,10 +32,6 @@ export function isShortcutEvent(
   )
 }
 
-export function sortShortcutsByLabel(shortcuts: ParsedShortcut[]) {
-  return shortcuts.sort((firstShortcut, secondShortcut) => firstShortcut.label.localeCompare(secondShortcut.label))
-}
-
 export function getKeyAriaLabel(key: string): string {
   return key.replace('Alt', isPlatformMacOS ? 'Option' : 'Alt').replace('Meta', isPlatformMacOS ? 'Command' : 'Control')
 }
@@ -55,6 +51,10 @@ export function prettyPrintKey(key: string): string {
     .replace('ArrowRight', '→')
 }
 
+export function isDescribedShortcut(shortcut: ParsedShortcut): shortcut is DescribedShortcut {
+  return typeof shortcut.group === 'string' && typeof shortcut.label === 'string'
+}
+
 function parseKeybinding(keybinding: Keybinding): ParsedKeybinding {
   const parsedKeybinding = keybinding.trim().split('+')
 
@@ -70,15 +70,20 @@ function parseKeybinding(keybinding: Keybinding): ParsedKeybinding {
 
 export interface Shortcut<TKeybinding = Keybinding> {
   readonly allowInTextInput?: boolean
-  readonly group: string
+  readonly group?: string
   readonly keybinding: TKeybinding
-  readonly label: string
+  readonly label?: string
   readonly onKeyDown?: (event: KeyboardEvent) => void
 }
 
 export type Keybinding = string
 type ParsedKeybinding = [mods: string[], key: string]
 
-export type ParsedShortcut = Shortcut & { readonly parsedKeybinding: ParsedKeybinding }
+type ParsedShortcut = Shortcut & { readonly parsedKeybinding: ParsedKeybinding }
+
+export type DescribedShortcut = ParsedShortcut & {
+  group: NonNullable<Shortcut['group']>
+  label: NonNullable<Shortcut['label']>
+}
 
 export type ShortcutMap = Record<string, ParsedShortcut>

@@ -17,9 +17,9 @@ const ShortcutModal: React.FC = () => {
       () => [
         {
           allowInTextInput: false,
-          group: '// TODO',
+          group: 'Help',
           keybinding: 'Shift+?',
-          label: 'Display Keyboard Shortcuts',
+          label: 'Display keyboard shortcuts',
           onKeyDown: () => {
             setOpened(true)
           },

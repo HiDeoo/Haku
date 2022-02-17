@@ -23,9 +23,9 @@ const NavigationPalette: React.FC = () => {
     useMemo(
       () => [
         {
-          group: '// TODO',
+          group: 'Navigation',
           keybinding: 'Meta+p',
-          label: 'Go to File…',
+          label: 'Go to note or todo',
           onKeyDown: (event) => {
             event.preventDefault()
 
