@@ -25,17 +25,17 @@ import styles from 'styles/TodoNodeItem.module.css'
 export const TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS = 16
 
 export const TODO_NODE_ITEM_SHORTCUTS = [
-  { group: 'Todo', keybinding: 'Enter', label: 'Create new todo' },
-  { group: 'Todo', keybinding: 'Meta+Enter', label: 'Toggle todo completion' },
-  { group: 'Todo', keybinding: 'Shift+Enter', label: 'Move between todo & note' },
-  { group: 'Todo', keybinding: 'Meta+Backspace', label: 'Delete todo' },
-  { group: 'Todo', keybinding: 'Tab', label: 'Indent todo' },
-  { group: 'Todo', keybinding: 'Shift+Tab', label: 'Unindent todo' },
+  { group: 'Todo', keybinding: 'Enter', label: 'Create New Todo' },
+  { group: 'Todo', keybinding: 'Meta+Enter', label: 'Toggle Todo Completion' },
+  { group: 'Todo', keybinding: 'Shift+Enter', label: 'Move between Todo & Note' },
+  { group: 'Todo', keybinding: 'Meta+Backspace', label: 'Delete Todo' },
+  { group: 'Todo', keybinding: 'Tab', label: 'Indent Todo' },
+  { group: 'Todo', keybinding: 'Shift+Tab', label: 'Unindent Todo' },
   { keybinding: 'ArrowUp' },
-  { group: 'Todo', keybinding: 'Meta+ArrowUp', label: 'Move todo up' },
+  { group: 'Todo', keybinding: 'Meta+ArrowUp', label: 'Move Todo Up' },
   { keybinding: 'ArrowDown' },
-  { group: 'Todo', keybinding: 'Meta+ArrowDown', label: 'Move todo down' },
-  { group: 'Todo', keybinding: 'Meta+Shift+.', label: 'Collapse todo' },
+  { group: 'Todo', keybinding: 'Meta+ArrowDown', label: 'Move Todo Down' },
+  { group: 'Todo', keybinding: 'Meta+Shift+.', label: 'Collapse Todo' },
 ] as const
 
 const shortcutMap = getShortcutMap(TODO_NODE_ITEM_SHORTCUTS)

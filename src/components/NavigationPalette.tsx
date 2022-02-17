@@ -24,8 +24,8 @@ const NavigationPalette: React.FC = () => {
       () => [
         {
           group: 'Navigation',
-          keybinding: 'Meta+p',
-          label: 'Go to note or todo',
+          keybinding: 'Meta+P',
+          label: 'Go to Note or Todo',
           onKeyDown: (event) => {
             event.preventDefault()
 
