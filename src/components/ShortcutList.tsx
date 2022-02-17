@@ -1,5 +1,6 @@
 import { Root as VisuallyHidden } from '@radix-ui/react-visually-hidden'
 import { useAtomValue } from 'jotai/utils'
+import { Fragment } from 'react'
 
 import { globalShortcutsAtom, localShortcutsAtom } from 'atoms/shortcuts'
 import Flex from 'components/Flex'
@@ -18,7 +19,7 @@ const ShortcutList: React.FC = () => {
   )
 
   return (
-    <Flex direction="col" className="gap-2.5">
+    <Flex direction="col" className="-m-4 gap-2.5 py-3">
       {[...Object.entries(globalShortcuts), ...Object.entries(localShortcuts)].map(([group, groupShortcuts]) => {
         return <ShortcutGroup key={group} group={group} shortcuts={groupShortcuts} />
       })}
@@ -31,10 +32,16 @@ export default ShortcutList
 const ShortcutGroup: React.FC<ShortcutGroupProps> = ({ group, shortcuts }) => {
   return (
     <div>
-      <h2 className="mb-2.5 border-b border-zinc-700 pb-0.5 text-lg font-semibold">{group}</h2>
+      <div className="mb-2.5 px-4">
+        <h2 className="border-b border-zinc-700 pb-0.5 text-lg font-semibold">{group}</h2>
+      </div>
       {shortcuts.map((shortcut) => {
         return (
-          <Flex key={shortcut.keybinding} justifyContent="between" className="group mb-2 last:mb-0">
+          <Flex
+            justifyContent="between"
+            key={shortcut.keybinding}
+            className="group py-1 px-4 last:mb-0 hover:bg-zinc-700"
+          >
             <div>{shortcut.label}</div>
             <ShortcutKeybinding keybinding={shortcut.parsedKeybinding} />
           </Flex>
@@ -56,17 +63,17 @@ const ShortcutKeybinding: React.FC<ShortcutKeybindingProps> = ({ keybinding }) =
           'block rounded bg-zinc-600 px-1.5 text-xs leading-[unset] shadow shadow-zinc-900',
           'group-hover:bg-zinc-500',
           {
-            'text-base': prettyPrintedKey.length === 1 && !/[A-z.?]/i.test(prettyPrintedKey),
+            'text-base': prettyPrintedKey.length === 1 && !/[A-z0-9.?]/i.test(prettyPrintedKey),
           }
         )
 
         return (
-          <>
-            <kbd key={key} aria-hidden className={kbdClasses}>
+          <Fragment key={key}>
+            <kbd aria-hidden className={kbdClasses}>
               {prettyPrintedKey}
             </kbd>
             <VisuallyHidden>{getKeyAriaLabel(key)}</VisuallyHidden>
-          </>
+          </Fragment>
         )
       })}
     </Flex>
