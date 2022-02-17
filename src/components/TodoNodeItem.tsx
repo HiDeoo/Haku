@@ -25,7 +25,6 @@ import styles from 'styles/TodoNodeItem.module.css'
 
 export const TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS = 16
 
-// TODO(HiDeoo)
 const shortcutMap = [
   { group: 'Todo', keybinding: 'Enter', label: 'Create new todo' },
   { group: 'Todo', keybinding: 'Meta+Enter', label: 'Toggle todo completion' },
