@@ -1,8 +1,8 @@
 import { Content, Overlay, Portal, Root } from '@radix-ui/react-dialog'
 
+import PalettePicker from 'components/palette/PalettePicker'
 import { type IconProps } from 'components/ui/Icon'
 import { MODAL_CONTENT_CLASSES, MODAL_OVERLAY_CLASSES } from 'components/ui/Modal'
-import PalettePicker from 'components/palette/PalettePicker'
 import clst from 'styles/clst'
 
 const Palette = <TItem,>(props: PaletteProps<TItem>) => {

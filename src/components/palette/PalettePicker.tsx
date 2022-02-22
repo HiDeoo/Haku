@@ -7,12 +7,12 @@ import {
 import fuzzaldrin from 'fuzzaldrin-plus'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import Icon from 'components/ui/Icon'
-import { type PaletteProps } from 'components/palette/Palette'
-import Spinner from 'components/ui/Spinner'
 import TextInput from 'components/form/TextInput'
-import clst from 'styles/clst'
+import { type PaletteProps } from 'components/palette/Palette'
+import Icon from 'components/ui/Icon'
+import Spinner from 'components/ui/Spinner'
 import { getShortcutMap, isShortcutEvent } from 'libs/shortcut'
+import clst from 'styles/clst'
 
 const shortcutMap = getShortcutMap([{ keybinding: 'Escape' }])
 

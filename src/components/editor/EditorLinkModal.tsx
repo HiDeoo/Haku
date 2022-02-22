@@ -4,8 +4,8 @@ import { useForm } from 'react-hook-form'
 
 import Button from 'components/form/Button'
 import Form from 'components/form/Form'
-import Modal, { type ModalProps } from 'components/ui/Modal'
 import TextInput from 'components/form/TextInput'
+import Modal, { type ModalProps } from 'components/ui/Modal'
 
 const EditorLinkModal: React.FC<EditorLinkModalProps> = ({ editor, opened, onOpenChange }) => {
   const {

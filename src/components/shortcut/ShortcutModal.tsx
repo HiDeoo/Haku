@@ -4,8 +4,8 @@ import { RiKeyboardFill } from 'react-icons/ri'
 
 import { setShortcutModalOpenedAtom, shortcutModalAtom } from 'atoms/modal'
 import IconButton from 'components/form/IconButton'
-import Modal from 'components/ui/Modal'
 import ShortcutList from 'components/shortcut/ShortcutList'
+import Modal from 'components/ui/Modal'
 import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
 
 const ShortcutModal: React.FC = () => {

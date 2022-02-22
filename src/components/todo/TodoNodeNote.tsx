@@ -1,8 +1,8 @@
 import { forwardRef, useCallback, useImperativeHandle } from 'react'
 
 import { type AtomParamsNoteUpdate } from 'atoms/todoNode'
-import { type TodoNodeDataWithParentId } from 'libs/db/todoNodes'
 import { EditorContent, EditorEvents, useEditor } from 'hooks/useEditor'
+import { type TodoNodeDataWithParentId } from 'libs/db/todoNodes'
 import { ShiftEnter } from 'libs/editor'
 
 const TodoNodeNote: React.ForwardRefRenderFunction<TodoNodeNoteHandle, TodoNodeNoteProps> = (

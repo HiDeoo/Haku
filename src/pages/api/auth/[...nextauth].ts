@@ -1,8 +1,8 @@
-import NextAuth, { type CallbacksOptions } from 'next-auth'
 import { PrismaAdapter } from '@next-auth/prisma-adapter'
+import NextAuth, { type CallbacksOptions } from 'next-auth'
 
-import { prisma } from 'libs/db'
 import { EmailApiProvider, type EmailApiProviderUserOptions } from 'libs/auth'
+import { prisma } from 'libs/db'
 import { getAllowedEmailByEmail } from 'libs/db/emailAllowList'
 import { sendLoginEmail } from 'libs/email'
 

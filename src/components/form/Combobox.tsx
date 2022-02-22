@@ -1,10 +1,10 @@
-import fuzzaldrin from 'fuzzaldrin-plus'
 import {
   useCombobox,
   type UseComboboxStateChangeOptions,
   type UseComboboxState,
   type UseComboboxStateChange,
 } from 'downshift'
+import fuzzaldrin from 'fuzzaldrin-plus'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   type Control,
@@ -20,11 +20,11 @@ import { RiArrowDownSLine } from 'react-icons/ri'
 
 import Button from 'components/form/Button'
 import ControlMenu from 'components/form/ControlMenu'
+import Label from 'components/form/Label'
+import TextInput from 'components/form/TextInput'
 import Flex from 'components/ui/Flex'
 import Icon from 'components/ui/Icon'
-import Label from 'components/form/Label'
 import Spinner from 'components/ui/Spinner'
-import TextInput from 'components/form/TextInput'
 import clst from 'styles/clst'
 
 const Combobox = <TItem, TFormFields extends FieldValues>({

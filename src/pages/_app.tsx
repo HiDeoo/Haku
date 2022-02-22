@@ -1,14 +1,14 @@
 import 'styles/globals.css'
 
 import { Provider as TooltipProvider } from '@radix-ui/react-tooltip'
+import { SessionProvider } from 'next-auth/react'
 import { type AppProps } from 'next/app'
 import Head from 'next/head'
-import { SessionProvider } from 'next-auth/react'
 import { QueryClient, QueryClientProvider } from 'react-query'
 
+import ErrorBoundary from 'components/app/ErrorBoundary'
 import Route from 'components/app/Route'
 import Layout from 'components/ui/Layout'
-import ErrorBoundary from 'components/app/ErrorBoundary'
 import { getQueryClientDefaultOptions } from 'libs/api/client'
 
 const queryClient = new QueryClient({ defaultOptions: getQueryClientDefaultOptions() })

@@ -3,15 +3,15 @@ import cuid from 'cuid'
 import StatusCode from 'status-code-enum'
 
 import { HttpMethod } from 'constants/http'
-import { testApiRoute } from 'tests/api'
-import { createTestEmailAllowList, getTestEmailAllowList, getTestEmailAllowLists } from 'tests/api/db'
-import indexHandler from 'pages/api/admin/emails'
-import idHandler from 'pages/api/admin/emails/[id]'
 import {
   type ApiErrorResponse,
   API_ERROR_EMAIL_ALREADY_EXISTS,
   API_ERROR_EMAIL_DOES_NOT_EXISTS,
 } from 'libs/api/routes/errors'
+import indexHandler from 'pages/api/admin/emails'
+import idHandler from 'pages/api/admin/emails/[id]'
+import { testApiRoute } from 'tests/api'
+import { createTestEmailAllowList, getTestEmailAllowList, getTestEmailAllowLists } from 'tests/api/db'
 
 describe('admin/emails', () => {
   describe('GET', () => {

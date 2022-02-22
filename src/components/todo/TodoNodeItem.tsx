@@ -3,10 +3,10 @@ import { forwardRef, memo, useCallback, useContext, useImperativeHandle, useRef,
 import { useEditable } from 'use-editable'
 
 import { AtomParamsWithDirection } from 'atoms/todoNode'
-import Flex from 'components/ui/Flex'
 import TodoNodeChildren, { type TodoNodeChildrenProps } from 'components/todo/TodoNodeChildren'
 import TodoNodeHandle from 'components/todo/TodoNodeHandle'
 import TodoNodeNote, { type TodoNodeNoteHandle } from 'components/todo/TodoNodeNote'
+import Flex from 'components/ui/Flex'
 import { TODO_NODE_ITEM_SHORTCUTS } from 'constants/shortcut'
 import { TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS } from 'constants/ui'
 import useTodoNode, { TodoContext } from 'hooks/useTodoNode'

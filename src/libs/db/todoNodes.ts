@@ -1,7 +1,5 @@
 import { Prisma } from '@prisma/client'
 
-import { handleDbError, prisma } from 'libs/db'
-import { getTodoById, type TodoMetadata } from 'libs/db/todo'
 import {
   ApiError,
   API_ERROR_TODO_DOES_NOT_EXIST,
@@ -20,6 +18,8 @@ import {
   API_ERROR_TODO_NODE_UPDATE_CHILD_DOES_NOT_EXIST,
   API_ERROR_TODO_NODE_UPDATE_DOES_NOT_EXIST,
 } from 'libs/api/routes/errors'
+import { handleDbError, prisma } from 'libs/db'
+import { getTodoById, type TodoMetadata } from 'libs/db/todo'
 import { hasKey } from 'libs/object'
 
 type TodoNodeDataWithChildren = Prisma.TodoNodeGetPayload<{ select: typeof todoNodeDataSelect }>

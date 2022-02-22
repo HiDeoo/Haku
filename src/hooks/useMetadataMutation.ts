@@ -1,16 +1,16 @@
 import { useRouter } from 'next/router'
 import { useMutation, useQueryClient } from 'react-query'
 
-import client, { type Mutation } from 'libs/api/client'
-import { type AddNoteBody } from 'pages/api/notes'
-import { type AddTodoBody } from 'pages/api/todos'
-import { type NoteMetadata } from 'libs/db/note'
 import useContentId from 'hooks/useContentId'
-import useContentType, { ContentType } from 'hooks/useContentType'
 import { getContentTreeQueryKey } from 'hooks/useContentTree'
+import useContentType, { ContentType } from 'hooks/useContentType'
 import { getFilesQueryKey } from 'hooks/useFiles'
+import client, { type Mutation } from 'libs/api/client'
+import { type NoteMetadata } from 'libs/db/note'
 import { type TodoMetadata } from 'libs/db/todo'
+import { type AddNoteBody } from 'pages/api/notes'
 import { type RemoveNoteQuery, type UpdateNoteBody, type UpdateNoteQuery } from 'pages/api/notes/[id]'
+import { type AddTodoBody } from 'pages/api/todos'
 import { type RemoveTodoQuery } from 'pages/api/todos/[id]'
 
 export default function useMetadataMutation() {

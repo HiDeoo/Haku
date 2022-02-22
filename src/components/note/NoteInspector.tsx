@@ -25,10 +25,10 @@ import {
   RiStrikethrough,
 } from 'react-icons/ri'
 
-import Inspector from 'components/ui/Inspector'
+import { type NoteEditorState } from 'components/note/Note'
 import Flex from 'components/ui/Flex'
 import Icon from 'components/ui/Icon'
-import { type NoteEditorState } from 'components/note/Note'
+import Inspector from 'components/ui/Inspector'
 import SyncReport from 'components/ui/SyncReport'
 import useContentMutation from 'hooks/useContentMutation'
 import useIdle from 'hooks/useIdle'

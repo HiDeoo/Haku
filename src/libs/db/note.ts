@@ -2,14 +2,14 @@ import { FolderType, Note, Prisma } from '@prisma/client'
 import { StatusCode } from 'status-code-enum'
 import slug from 'url-slug'
 
-import { handleDbError, prisma } from 'libs/db'
-import { validateFolder } from 'libs/db/folder'
 import {
   ApiError,
   API_ERROR_NOTE_ALREADY_EXISTS,
   API_ERROR_NOTE_DOES_NOT_EXIST,
   API_ERROR_NOTE_HTML_OR_TEXT_MISSING,
 } from 'libs/api/routes/errors'
+import { handleDbError, prisma } from 'libs/db'
+import { validateFolder } from 'libs/db/folder'
 
 export type NoteMetadata = Prisma.NoteGetPayload<{ select: typeof noteMetadataSelect }>
 export type NoteData = Prisma.NoteGetPayload<{ select: typeof noteDataSelect }>

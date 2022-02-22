@@ -2,9 +2,9 @@ import { Content, Item, Root, Trigger } from '@radix-ui/react-dropdown-menu'
 import { Children, cloneElement, forwardRef, isValidElement } from 'react'
 
 import Button, { type ButtonProps } from 'components/form/Button'
+import IconButton, { type IconButtonProps } from 'components/form/IconButton'
 import Flex from 'components/ui/Flex'
 import { type IconProps } from 'components/ui/Icon'
-import IconButton, { type IconButtonProps } from 'components/form/IconButton'
 import clst from 'styles/clst'
 
 const Inspector: InspectorComponent = ({ children, disabled }) => {

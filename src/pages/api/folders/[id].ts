@@ -2,8 +2,8 @@ import { type NextApiResponse } from 'next'
 
 import { createApiRoute, getApiRequestUser } from 'libs/api/routes'
 import { type ValidatedApiRequest, withAuth, withValidation } from 'libs/api/routes/middlewares'
-import { z, zAtLeastOneOf, zQuerySchemaWithId } from 'libs/validation'
 import { type FolderData, updateFolder, removeFolder } from 'libs/db/folder'
+import { z, zAtLeastOneOf, zQuerySchemaWithId } from 'libs/validation'
 
 const patchBodySchema = zAtLeastOneOf(
   z.object({

@@ -1,12 +1,12 @@
-import dynamic from 'next/dynamic'
 import { signOut } from 'next-auth/react'
+import dynamic from 'next/dynamic'
 import { RiLogoutCircleRLine } from 'react-icons/ri'
 
 import ContentTree from 'components/content/ContentTree'
-import Flex from 'components/ui/Flex'
-import IconButton from 'components/form/IconButton'
 import ContentTypeSwitch from 'components/content/ContentTypeSwitch'
+import IconButton from 'components/form/IconButton'
 import NavigationPalette from 'components/palette/NavigationPalette'
+import Flex from 'components/ui/Flex'
 
 const ContentModal = dynamic(import('components/content/ContentModal'))
 const FolderModal = dynamic(import('components/folder/FolderModal'))

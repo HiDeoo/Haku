@@ -1,9 +1,9 @@
 import { Close, Content, Overlay, Portal, Root, Trigger } from '@radix-ui/react-dialog'
 import { RiCloseLine } from 'react-icons/ri'
 
-import Flex from 'components/ui/Flex'
 import Button from 'components/form/Button'
 import IconButton from 'components/form/IconButton'
+import Flex from 'components/ui/Flex'
 import clst from 'styles/clst'
 
 export const MODAL_CONTENT_CLASSES =

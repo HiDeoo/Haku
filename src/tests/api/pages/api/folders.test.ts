@@ -3,6 +3,16 @@ import cuid from 'cuid'
 import StatusCode from 'status-code-enum'
 
 import { HttpMethod } from 'constants/http'
+import {
+  type ApiErrorResponse,
+  API_ERROR_FOLDER_ALREADY_EXISTS,
+  API_ERROR_FOLDER_DOES_NOT_EXIST,
+  API_ERROR_FOLDER_PARENT_DOES_NOT_EXIST,
+  API_ERROR_FOLDER_PARENT_INVALID_TYPE,
+} from 'libs/api/routes/errors'
+import { type FolderData } from 'libs/db/folder'
+import indexHandler from 'pages/api/folders'
+import idHandler from 'pages/api/folders/[id]'
 import { getTestUser, testApiRoute } from 'tests/api'
 import {
   createTestNote,
@@ -14,16 +24,6 @@ import {
   getTestNotes,
   getTestTodos,
 } from 'tests/api/db'
-import indexHandler from 'pages/api/folders'
-import idHandler from 'pages/api/folders/[id]'
-import { type FolderData } from 'libs/db/folder'
-import {
-  type ApiErrorResponse,
-  API_ERROR_FOLDER_ALREADY_EXISTS,
-  API_ERROR_FOLDER_DOES_NOT_EXIST,
-  API_ERROR_FOLDER_PARENT_DOES_NOT_EXIST,
-  API_ERROR_FOLDER_PARENT_INVALID_TYPE,
-} from 'libs/api/routes/errors'
 
 describe('folders', () => {
   describe('POST', () => {

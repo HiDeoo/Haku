@@ -1,10 +1,10 @@
 import assert from 'assert'
 
 import faker from '@faker-js/faker'
+import { act, renderHook } from '@testing-library/react-hooks/native'
 import cuid from 'cuid'
 import { useAtom } from 'jotai'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
-import { act, renderHook } from '@testing-library/react-hooks/native'
 
 import { todoNodeChildrenAtom, todoNodeMutations, todoNodeNodesAtom } from 'atoms/todoNode'
 import useTodoNode from 'hooks/useTodoNode'

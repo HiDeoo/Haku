@@ -2,9 +2,9 @@ import { memo } from 'react'
 
 import TodoNodeItem, { type TodoNodeItemHandle } from 'components/todo/TodoNodeItem'
 import { TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS } from 'constants/ui'
+import useTodoNodeChildren from 'hooks/useTodoNodeChildren'
 import { type TodoNodeData } from 'libs/db/todoNodes'
 import clst from 'styles/clst'
-import useTodoNodeChildren from 'hooks/useTodoNodeChildren'
 
 const TodoNodeChildren: React.FC<TodoNodeChildrenProps> = ({
   id = 'root',

@@ -4,17 +4,17 @@ import { type NestedValue, useForm } from 'react-hook-form'
 import { RiFileAddLine } from 'react-icons/ri'
 
 import { contentModalAtom, setContentModalOpenedAtom } from 'atoms/modal'
-import Alert from 'components/ui/Alert'
-import Button from 'components/form/Button'
 import FolderPicker from 'components/folder/FolderPicker'
+import Button from 'components/form/Button'
 import Form from 'components/form/Form'
 import IconButton from 'components/form/IconButton'
-import Modal from 'components/ui/Modal'
 import TextInput from 'components/form/TextInput'
+import Alert from 'components/ui/Alert'
+import Modal from 'components/ui/Modal'
 import { ROOT_FOLDER_ID } from 'constants/folder'
+import useContentType from 'hooks/useContentType'
 import useMetadataMutation, { type MetadataMutation } from 'hooks/useMetadataMutation'
 import { type FolderData } from 'libs/db/folder'
-import useContentType from 'hooks/useContentType'
 
 const ContentModal: React.FC = () => {
   const { cType, lcType } = useContentType()

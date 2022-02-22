@@ -4,8 +4,8 @@ import { RiBookletLine, RiTodoLine } from 'react-icons/ri'
 
 import Icon from 'components/ui/Icon'
 import Tooltip from 'components/ui/Tooltip'
-import clst from 'styles/clst'
 import useContentType, { ContentType, getContentType } from 'hooks/useContentType'
+import clst from 'styles/clst'
 
 const ContentTypeSwitch: React.FC = () => {
   const { push } = useRouter()

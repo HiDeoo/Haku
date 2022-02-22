@@ -2,9 +2,9 @@ import { type NextApiRequest, type NextApiResponse } from 'next'
 
 import { createApiRoute, getApiRequestUser } from 'libs/api/routes'
 import { type ValidatedApiRequest, withAuth, withValidation } from 'libs/api/routes/middlewares'
+import { addNote, type NoteMetadata } from 'libs/db/note'
 import { getNoteTree, type NoteTreeData } from 'libs/db/tree'
 import { z } from 'libs/validation'
-import { addNote, type NoteMetadata } from 'libs/db/note'
 
 const postBodySchema = z.object({
   name: z.string(),

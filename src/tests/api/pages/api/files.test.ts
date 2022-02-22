@@ -2,10 +2,10 @@ import assert from 'assert'
 
 import { ContentType } from 'constants/contentType'
 import { HttpMethod } from 'constants/http'
-import { getTestUser, testApiRoute } from 'tests/api'
-import indexHandler from 'pages/api/files'
-import { createTestNote, createTestTodo } from 'tests/api/db'
 import { type FilesData } from 'libs/db/file'
+import indexHandler from 'pages/api/files'
+import { getTestUser, testApiRoute } from 'tests/api'
+import { createTestNote, createTestTodo } from 'tests/api/db'
 
 describe('files', () => {
   describe('GET', () => {

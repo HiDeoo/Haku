@@ -1,7 +1,7 @@
 import { RiCheckLine, RiErrorWarningLine } from 'react-icons/ri'
 
-import Icon from 'components/ui/Icon'
 import Flex from 'components/ui/Flex'
+import Icon from 'components/ui/Icon'
 import clst from 'styles/clst'
 
 const Callout: React.FC<CalloutProps> = ({ intent, message, title }) => {
