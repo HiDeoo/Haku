@@ -2,6 +2,7 @@ import { FolderType } from '@prisma/client'
 import cuid from 'cuid'
 import StatusCode from 'status-code-enum'
 
+import { HttpMethod } from 'constants/http'
 import { getTestUser, testApiRoute } from 'tests/api'
 import {
   createTestNote,
@@ -13,7 +14,6 @@ import {
   getTestNotes,
   getTestTodos,
 } from 'tests/api/db'
-import { HttpMethod } from 'libs/http'
 import indexHandler from 'pages/api/folders'
 import idHandler from 'pages/api/folders/[id]'
 import { type FolderData } from 'libs/db/folder'

@@ -8,6 +8,7 @@ import ContentTreeNode from 'components/ContentTreeNode'
 import ContextMenu from 'components/ContextMenu'
 import Flex from 'components/Flex'
 import Shimmer from 'components/Shimmer'
+import { CONTENT_TREE_SHIMMER_DEPTHS } from 'constants/shimmer'
 import useContentTree from 'hooks/useContentTree'
 import { type FolderData } from 'libs/db/folder'
 import { type NoteMetadata } from 'libs/db/note'
@@ -17,8 +18,6 @@ import useContentType, { type UseContentTypeReturnValue } from 'hooks/useContent
 import useContentId from 'hooks/useContentId'
 
 const depthOffset = '1.25rem'
-
-const shimmerDepths = [0, 1, 2, 2, 3, 0, 1, 1, 1, 1, 2]
 
 const ContentTree: React.FC = () => {
   const contentType = useContentType()
@@ -38,8 +37,8 @@ const ContentTree: React.FC = () => {
   if (isLoading) {
     return (
       <Shimmer>
-        {shimmerDepths.map((depth, index) => (
-          <ShimmerNode key={index} depth={depth} />
+        {CONTENT_TREE_SHIMMER_DEPTHS.map((shimmerDepth, index) => (
+          <ShimmerNode key={index} depth={shimmerDepth} />
         ))}
       </Shimmer>
     )

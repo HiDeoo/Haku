@@ -5,6 +5,7 @@ import { type TodoNode } from '@prisma/client'
 import cuid from 'cuid'
 import { StatusCode } from 'status-code-enum'
 
+import { HttpMethod } from 'constants/http'
 import { getTestUser, testApiRoute } from 'tests/api'
 import {
   createTestTodo,
@@ -14,7 +15,6 @@ import {
   updateTestTodoNodeChildren,
   updateTestTodoRoot,
 } from 'tests/api/db'
-import { HttpMethod } from 'libs/http'
 import idHandler, { type UpdateTodoNodesBody } from 'pages/api/todos/[id]/nodes'
 import { type TodoNodesData, type TodoNodeData } from 'libs/db/todoNodes'
 import {

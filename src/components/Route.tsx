@@ -3,8 +3,9 @@ import { signIn, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
-import { ContentType, contentTypeAtom } from 'atoms/contentType'
+import { contentTypeAtom } from 'atoms/contentType'
 import Spinner from 'components/Spinner'
+import { ContentType } from 'constants/contentType'
 
 const unsecureRoutes = ['/auth/error', '/auth/login', '/auth/verify']
 

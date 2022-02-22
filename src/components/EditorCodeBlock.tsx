@@ -2,9 +2,8 @@ import { type NodeViewProps, NodeViewContent, NodeViewWrapper } from '@tiptap/re
 import { useEffect, useState } from 'react'
 
 import Select from 'components/Select'
+import { CODE_BLOCK_DEFAULT_LANGUAGE } from 'constants/editor'
 import { getLanguageName } from 'libs/editor'
-
-export const CODE_BLOCK_DEFAULT_LANGUAGE = 'plaintext'
 
 const EditorCodeBlock: React.FC<NodeViewProps> = ({ editor, extension, node, updateAttributes }) => {
   const [tabIndex, setTabIndex] = useState<-1 | undefined>(-1)

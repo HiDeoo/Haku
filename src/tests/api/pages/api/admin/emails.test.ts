@@ -2,11 +2,11 @@ import { type EmailAllowList } from '@prisma/client'
 import cuid from 'cuid'
 import StatusCode from 'status-code-enum'
 
+import { HttpMethod } from 'constants/http'
 import { testApiRoute } from 'tests/api'
 import { createTestEmailAllowList, getTestEmailAllowList, getTestEmailAllowLists } from 'tests/api/db'
 import indexHandler from 'pages/api/admin/emails'
 import idHandler from 'pages/api/admin/emails/[id]'
-import { HttpMethod } from 'libs/http'
 import {
   type ApiErrorResponse,
   API_ERROR_EMAIL_ALREADY_EXISTS,

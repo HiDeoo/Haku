@@ -1,4 +1,4 @@
-import { ContentType } from 'atoms/contentType'
+import { ContentType } from 'constants/contentType'
 import { prisma } from 'libs/db'
 
 export type FilesData = FileData[]

@@ -1,11 +1,11 @@
 import assert from 'assert'
 
+import { ContentType } from 'constants/contentType'
+import { HttpMethod } from 'constants/http'
 import { getTestUser, testApiRoute } from 'tests/api'
-import { HttpMethod } from 'libs/http'
 import indexHandler from 'pages/api/files'
 import { createTestNote, createTestTodo } from 'tests/api/db'
 import { type FilesData } from 'libs/db/file'
-import { ContentType } from 'atoms/contentType'
 
 describe('files', () => {
   describe('GET', () => {

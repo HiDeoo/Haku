@@ -7,11 +7,10 @@ import Flex from 'components/Flex'
 import Shimmer from 'components/Shimmer'
 import TodoNavbar from 'components/TodoNavbar'
 import TodoNodeChildren from 'components/TodoNodeChildren'
-import {
-  type TodoNodeItemHandle,
-  TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS,
-  TODO_NODE_ITEM_SHORTCUTS,
-} from 'components/TodoNodeItem'
+import { type TodoNodeItemHandle } from 'components/TodoNodeItem'
+import { TODO_SHIMMER_CLASSES_AND_LEVELS } from 'constants/shimmer'
+import { TODO_NODE_ITEM_SHORTCUTS } from 'constants/shortcut'
+import { TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS } from 'constants/ui'
 import useLocalShortcuts from 'hooks/useLocalShortcuts'
 import useNavigationPrompt from 'hooks/useNavigationPrompt'
 import useRouteChange from 'hooks/useRouteChange'
@@ -19,25 +18,6 @@ import useTodo from 'hooks/useTodo'
 import { TodoContext, todoNodeContentRefs } from 'hooks/useTodoNode'
 import { type TodoMetadata } from 'libs/db/todo'
 import { type TodoNodeData } from 'libs/db/todoNodes'
-
-const shimmerClassesAndLevels = [
-  ['w-2/5', 0],
-  ['w-11/12', 1],
-  ['w-2/6', 1],
-  ['w-10/12', 2],
-  ['w-9/12', 3],
-  ['w-8/12', 3],
-  ['w-3/5', 2],
-  ['w-3/6', 2],
-  ['w-4/5', 0],
-  ['w-10/12', 1],
-  ['w-9/12', 0],
-  ['w-4/6', 0],
-  ['w-10/12', 1],
-  ['w-11/12', 1],
-  ['w-9/12', 2],
-  ['w-4/6', 2],
-] as const
 
 function pristineStateSelector(state: TodoEditorState) {
   return state.pristine
@@ -122,11 +102,11 @@ const Todo: React.FC<TodoProps> = ({ id }) => {
       <TodoNavbar disabled={isLoading} todoId={id} focusTodoNode={focusTodoNode} />
       {isLoading ? (
         <Shimmer>
-          {shimmerClassesAndLevels.map(([classes, level], index) => (
+          {TODO_SHIMMER_CLASSES_AND_LEVELS.map(([shimmerClass, shimmerLevel], index) => (
             <Shimmer.Line
               key={index}
-              className={classes}
-              style={{ paddingLeft: level * TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS }}
+              className={shimmerClass}
+              style={{ paddingLeft: shimmerLevel * TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS }}
             />
           ))}
         </Shimmer>
