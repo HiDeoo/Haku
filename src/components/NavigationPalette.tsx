@@ -7,7 +7,7 @@ import { ContentType } from 'atoms/contentType'
 import { type PaletteProps } from 'components/Palette'
 import { getContentType } from 'hooks/useContentType'
 import useFiles from 'hooks/useFiles'
-import useShortcuts from 'hooks/useShortcuts'
+import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
 import { type FileData } from 'libs/db/file'
 
 const Palette = dynamic<PaletteProps<FileData>>(import('components/Palette'))
@@ -19,12 +19,13 @@ const NavigationPalette: React.FC = () => {
 
   const { data, isLoading } = useFiles(opened)
 
-  useShortcuts(
+  useGlobalShortcuts(
     useMemo(
       () => [
         {
+          group: 'Navigation',
           keybinding: 'Meta+P',
-          label: 'Go to File…',
+          label: 'Go to Note or Todo',
           onKeyDown: (event) => {
             event.preventDefault()
 

@@ -1,5 +1,5 @@
 import { Editor } from '@tiptap/react'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect } from 'react'
 import {
   RiArrowDropRightFill,
   RiArrowGoBackLine,
@@ -26,7 +26,6 @@ import {
 } from 'react-icons/ri'
 
 import Inspector from 'components/Inspector'
-import EditorLinkModal from 'components/EditorLinkModal'
 import Flex from 'components/Flex'
 import Icon from 'components/Icon'
 import { type NoteEditorState } from 'components/Note'
@@ -36,9 +35,14 @@ import useIdle from 'hooks/useIdle'
 import { type NoteData } from 'libs/db/note'
 import clst from 'styles/clst'
 
-const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorState, noteId, onMutation }) => {
-  const [linkModalOpened, setLinkModalOpened] = useState(false)
-
+const NoteInspector: React.FC<NoteInspectorProps> = ({
+  disabled,
+  editor,
+  editorState,
+  noteId,
+  onMutation,
+  setLinkModalOpened,
+}) => {
   const { isLoading, mutate } = useContentMutation()
 
   const idle = useIdle()
@@ -147,135 +151,122 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
   }
 
   return (
-    <>
-      <Inspector disabled={inspectorDisabled}>
-        <Inspector.Section className="gap-y-[0.3125rem]">
-          <Inspector.Button onPress={save} primary loading={isLoading} disabled={editorState.pristine}>
-            Save
-          </Inspector.Button>
-          <SyncReport isLoading={isLoading} error={editorState.error} lastSync={editorState.lastSync} />
-          <div className="h-0 basis-full" />
-          <Inspector.IconButton
-            tooltip="Undo"
-            onPress={undo}
-            icon={RiArrowGoBackLine}
-            disabled={!editor?.can().undo()}
-          />
-          <Inspector.IconButton
-            tooltip="Redo"
-            onPress={redo}
-            icon={RiArrowGoForwardLine}
-            disabled={!editor?.can().redo()}
-          />
-          <Inspector.IconButton tooltip="Clear Format" onPress={clearFormat} icon={RiFormatClear} />
+    <Inspector disabled={inspectorDisabled}>
+      <Inspector.Section className="gap-y-[0.3125rem]">
+        <Inspector.Button onPress={save} primary loading={isLoading} disabled={editorState.pristine}>
+          Save
+        </Inspector.Button>
+        <SyncReport isLoading={isLoading} error={editorState.error} lastSync={editorState.lastSync} />
+        <div className="h-0 basis-full" />
+        <Inspector.IconButton tooltip="Undo" onPress={undo} icon={RiArrowGoBackLine} disabled={!editor?.can().undo()} />
+        <Inspector.IconButton
+          tooltip="Redo"
+          onPress={redo}
+          icon={RiArrowGoForwardLine}
+          disabled={!editor?.can().redo()}
+        />
+        <Inspector.IconButton tooltip="Clear Format" onPress={clearFormat} icon={RiFormatClear} />
+      </Inspector.Section>
+      <Inspector.Section title="Text">
+        <Inspector.IconMenu toggled={isHeading} icon={headingMenuIcon} disabled={isCodeBlock} tooltip="Toggle Heading">
+          <Inspector.IconMenuItem icon={RiH1} onClick={() => toggleHeading(1)} />
+          <Inspector.IconMenuItem icon={RiH2} onClick={() => toggleHeading(2)} />
+          <Inspector.IconMenuItem icon={RiH3} onClick={() => toggleHeading(3)} />
+          <Inspector.IconMenuItem icon={RiH4} onClick={() => toggleHeading(4)} />
+          <Inspector.IconMenuItem icon={RiH5} onClick={() => toggleHeading(5)} />
+          <Inspector.IconMenuItem icon={RiH6} onClick={() => toggleHeading(6)} />
+        </Inspector.IconMenu>
+        <Inspector.Toggle
+          icon={RiBold}
+          onToggle={toggleBold}
+          tooltip="Toggle Bold"
+          disabled={isCodeBlock}
+          toggled={editor?.isActive('bold')}
+        />
+        <Inspector.Toggle
+          icon={RiItalic}
+          disabled={isCodeBlock}
+          onToggle={toggleItalic}
+          tooltip="Toggle Italic"
+          toggled={editor?.isActive('italic')}
+        />
+        <Inspector.Toggle
+          icon={RiCodeLine}
+          onToggle={toggleCode}
+          tooltip="Toggle Code"
+          disabled={isCodeBlock}
+          toggled={editor?.isActive('code')}
+        />
+        <Inspector.Toggle
+          icon={RiStrikethrough}
+          disabled={isCodeBlock}
+          onToggle={toggleStrike}
+          tooltip="Toggle Strike"
+          toggled={editor?.isActive('strike')}
+        />
+        <Inspector.Toggle
+          icon={RiMarkPenLine}
+          disabled={isCodeBlock}
+          onToggle={toggleHighlight}
+          tooltip="Toggle Highlight"
+          toggled={editor?.isActive('highlight')}
+        />
+        <Inspector.Toggle
+          icon={RiLink}
+          onToggle={toggleLink}
+          disabled={isCodeBlock}
+          toggled={editor?.isActive('link')}
+          tooltip={`${editor?.isActive('link') ? 'Edit' : 'Toggle'} Link`}
+        />
+        <Inspector.Toggle
+          icon={RiDoubleQuotesR}
+          onToggle={toggleQuote}
+          tooltip="Toggle Quote"
+          disabled={isCodeBlock}
+          toggled={editor?.isActive('blockquote')}
+        />
+        <Inspector.Toggle
+          icon={RiListUnordered}
+          disabled={isCodeBlock}
+          onToggle={toggleBulletList}
+          tooltip="Toggle Bullet List"
+          toggled={editor?.isActive('bulletList')}
+        />
+        <Inspector.Toggle
+          icon={RiListOrdered}
+          disabled={isCodeBlock}
+          onToggle={toggleOrderedList}
+          tooltip="Toggle Ordered List"
+          toggled={editor?.isActive('orderedList')}
+        />
+      </Inspector.Section>
+      <Inspector.Section title="Content">
+        <Inspector.IconButton
+          icon={RiSeparator}
+          disabled={isCodeBlock}
+          tooltip="Insert Separator"
+          onPress={addHorizontalRule}
+        />
+        <Inspector.Toggle
+          icon={RiCodeBoxLine}
+          onToggle={toggleCodeBlock}
+          tooltip="Toggle Code Block"
+          toggled={editor?.isActive('codeBlock')}
+        />
+      </Inspector.Section>
+      {editorState.toc && editorState.toc.length > 0 ? (
+        <Inspector.Section
+          title="Table of contents"
+          titleClassName="pt-2 pb-1.5 px-3 mb-0"
+          sectionClassName="shrink p-0 min-h-[150px]"
+          className="flex-col flex-nowrap gap-1.5 overflow-y-auto px-3 pt-1 pb-3"
+        >
+          {editorState.toc.map((entry) => (
+            <TocEntry key={entry.id} entry={entry} editor={editor} />
+          ))}
         </Inspector.Section>
-        <Inspector.Section title="Text">
-          <Inspector.IconMenu
-            toggled={isHeading}
-            icon={headingMenuIcon}
-            disabled={isCodeBlock}
-            tooltip="Toggle Heading"
-          >
-            <Inspector.IconMenuItem icon={RiH1} onClick={() => toggleHeading(1)} />
-            <Inspector.IconMenuItem icon={RiH2} onClick={() => toggleHeading(2)} />
-            <Inspector.IconMenuItem icon={RiH3} onClick={() => toggleHeading(3)} />
-            <Inspector.IconMenuItem icon={RiH4} onClick={() => toggleHeading(4)} />
-            <Inspector.IconMenuItem icon={RiH5} onClick={() => toggleHeading(5)} />
-            <Inspector.IconMenuItem icon={RiH6} onClick={() => toggleHeading(6)} />
-          </Inspector.IconMenu>
-          <Inspector.Toggle
-            icon={RiBold}
-            onToggle={toggleBold}
-            tooltip="Toggle Bold"
-            disabled={isCodeBlock}
-            toggled={editor?.isActive('bold')}
-          />
-          <Inspector.Toggle
-            icon={RiItalic}
-            disabled={isCodeBlock}
-            onToggle={toggleItalic}
-            tooltip="Toggle Italic"
-            toggled={editor?.isActive('italic')}
-          />
-          <Inspector.Toggle
-            icon={RiCodeLine}
-            onToggle={toggleCode}
-            tooltip="Toggle Code"
-            disabled={isCodeBlock}
-            toggled={editor?.isActive('code')}
-          />
-          <Inspector.Toggle
-            icon={RiStrikethrough}
-            disabled={isCodeBlock}
-            onToggle={toggleStrike}
-            tooltip="Toggle Strike"
-            toggled={editor?.isActive('strike')}
-          />
-          <Inspector.Toggle
-            icon={RiMarkPenLine}
-            disabled={isCodeBlock}
-            onToggle={toggleHighlight}
-            tooltip="Toggle Highlight"
-            toggled={editor?.isActive('highlight')}
-          />
-          <Inspector.Toggle
-            icon={RiLink}
-            onToggle={toggleLink}
-            tooltip="Toggle Link"
-            disabled={isCodeBlock}
-            toggled={editor?.isActive('link')}
-          />
-          <Inspector.Toggle
-            icon={RiDoubleQuotesR}
-            onToggle={toggleQuote}
-            tooltip="Toggle Quote"
-            disabled={isCodeBlock}
-            toggled={editor?.isActive('blockquote')}
-          />
-          <Inspector.Toggle
-            icon={RiListUnordered}
-            disabled={isCodeBlock}
-            onToggle={toggleBulletList}
-            tooltip="Toggle Bullet List"
-            toggled={editor?.isActive('bulletList')}
-          />
-          <Inspector.Toggle
-            icon={RiListOrdered}
-            disabled={isCodeBlock}
-            onToggle={toggleOrderedList}
-            tooltip="Toggle Ordered List"
-            toggled={editor?.isActive('orderedList')}
-          />
-        </Inspector.Section>
-        <Inspector.Section title="Content">
-          <Inspector.IconButton
-            icon={RiSeparator}
-            disabled={isCodeBlock}
-            tooltip="Insert Separator"
-            onPress={addHorizontalRule}
-          />
-          <Inspector.Toggle
-            icon={RiCodeBoxLine}
-            onToggle={toggleCodeBlock}
-            tooltip="Toggle Code Block"
-            toggled={editor?.isActive('codeBlock')}
-          />
-        </Inspector.Section>
-        {editorState.toc && editorState.toc.length > 0 ? (
-          <Inspector.Section
-            title="Table of contents"
-            titleClassName="pt-2 pb-1.5 px-3 mb-0"
-            sectionClassName="shrink p-0 min-h-[150px]"
-            className="flex-col flex-nowrap gap-1.5 overflow-y-auto px-3 pt-1 pb-3"
-          >
-            {editorState.toc.map((entry) => (
-              <TocEntry key={entry.id} entry={entry} editor={editor} />
-            ))}
-          </Inspector.Section>
-        ) : null}
-      </Inspector>
-      <EditorLinkModal opened={linkModalOpened} onOpenChange={setLinkModalOpened} title="Link" editor={editor} />
-    </>
+      ) : null}
+    </Inspector>
   )
 }
 
@@ -311,6 +302,7 @@ interface NoteInspectorProps {
   editorState: NoteEditorState
   noteId?: NoteData['id']
   onMutation: (error?: unknown) => void
+  setLinkModalOpened: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 interface TocEntryProps {

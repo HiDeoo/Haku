@@ -7,7 +7,12 @@ import Flex from 'components/Flex'
 import Shimmer from 'components/Shimmer'
 import TodoNavbar from 'components/TodoNavbar'
 import TodoNodeChildren from 'components/TodoNodeChildren'
-import { type TodoNodeItemHandle, TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS } from 'components/TodoNodeItem'
+import {
+  type TodoNodeItemHandle,
+  TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS,
+  TODO_NODE_ITEM_SHORTCUTS,
+} from 'components/TodoNodeItem'
+import useLocalShortcuts from 'hooks/useLocalShortcuts'
 import useNavigationPrompt from 'hooks/useNavigationPrompt'
 import useRouteChange from 'hooks/useRouteChange'
 import useTodo from 'hooks/useTodo'
@@ -53,6 +58,8 @@ const Todo: React.FC<TodoProps> = ({ id }) => {
   const setTodoNodes = useUpdateAtom(todoNodeNodesAtom)
 
   useNavigationPrompt(!pristine)
+
+  useLocalShortcuts(TODO_NODE_ITEM_SHORTCUTS)
 
   const { isLoading } = useTodo(id, {
     enabled: pristine,

@@ -1,42 +1,32 @@
-import { atom } from 'jotai'
+import { atom, PrimitiveAtom, type WritableAtom } from 'jotai'
 
-export const shortcutsAtom = atom<ShortcutMap>({})
+import { getShortcutMap, type Shortcut, type ShortcutMap } from 'libs/shortcut'
 
-export const registerShortcutsAtom = atom(null, (_get, set, shortcuts: Shortcut[]) => {
-  const newShortcuts: ShortcutMap = {}
+export const globalShortcutsAtom = atom<ShortcutMap>({})
+export const localShortcutsAtom = atom<ShortcutMap>({})
 
-  for (const shortcut of shortcuts) {
-    const parsedKeybinding = shortcut.keybinding.trim().split('+')
-    const key = parsedKeybinding.pop()
-    const mods = parsedKeybinding
+export const [registerGlobalShortcutsAtom, unregisterGlobalShortcutsAtom] =
+  createShortcutsWriteOnlyAtoms(globalShortcutsAtom)
 
-    if (key) {
-      newShortcuts[shortcut.keybinding] = { ...shortcut, parsedKeybinding: [mods, key] }
+export const [registerLocalShortcutsAtom, unregisterLocalShortcutsAtom] =
+  createShortcutsWriteOnlyAtoms(localShortcutsAtom)
+
+function createShortcutsWriteOnlyAtoms(
+  shortcutsAtom: PrimitiveAtom<ShortcutMap>
+): [WritableAtom<null, readonly Shortcut[]>, WritableAtom<null, readonly Shortcut[]>] {
+  const registerAtom = atom(null, (_get, set, shortcuts: readonly Shortcut[]) => {
+    set(shortcutsAtom, (prevGlobalShortcuts) => ({ ...prevGlobalShortcuts, ...getShortcutMap(shortcuts) }))
+  })
+
+  const unregisterAtom = atom(null, (get, set, shortcuts: readonly Shortcut[]) => {
+    const updatedShortcuts = { ...get(shortcutsAtom) }
+
+    for (const shortcut of shortcuts) {
+      delete updatedShortcuts[shortcut.keybinding]
     }
-  }
 
-  set(shortcutsAtom, (prevShortcuts) => ({ ...prevShortcuts, ...newShortcuts }))
-})
+    set(shortcutsAtom, updatedShortcuts)
+  })
 
-export const unregisterShortcutsAtom = atom(null, (get, set, shortcuts: Shortcut[]) => {
-  const updatedShortcuts = { ...get(shortcutsAtom) }
-
-  for (const shortcut of shortcuts) {
-    delete updatedShortcuts[shortcut.keybinding]
-  }
-
-  set(shortcutsAtom, updatedShortcuts)
-})
-
-export interface Shortcut {
-  group?: string
-  keybinding: string
-  label: string
-  onKeyDown: (event: KeyboardEvent) => void
+  return [registerAtom, unregisterAtom]
 }
-
-interface ParsedShortcut extends Shortcut {
-  parsedKeybinding: [mods: string[], key: string]
-}
-
-type ShortcutMap = Record<string, ParsedShortcut>

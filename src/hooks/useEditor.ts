@@ -30,7 +30,7 @@ const defaultExtensions: Extensions = [
 ]
 
 export function useEditor(options: UseEditorOptions, deps?: DependencyList): Editor | null {
-  const { className, extensions, spellcheck, starterKitOptions, ...editorOptions } = options
+  const { className, extensions, setLinkModalOpened, spellcheck, starterKitOptions, ...editorOptions } = options
 
   const editorClasses = clst(styles.editor, className)
 
@@ -38,7 +38,7 @@ export function useEditor(options: UseEditorOptions, deps?: DependencyList): Edi
     {
       ...editorOptions,
       editorProps: { attributes: { class: editorClasses, spellcheck: spellcheck ?? 'false' } },
-      extensions: getExtensions(starterKitOptions, extensions),
+      extensions: getExtensions(starterKitOptions, extensions, setLinkModalOpened),
     },
     deps
   )
@@ -48,9 +48,30 @@ export function useEditor(options: UseEditorOptions, deps?: DependencyList): Edi
 
 function getExtensions(
   starterKitOptions: Partial<StarterKitOptions> = { codeBlock: false, strike: false },
-  extensions: Extensions = []
+  extensions: Extensions = [],
+  setLinkModalOpened?: React.Dispatch<React.SetStateAction<boolean>>
 ): Extensions {
-  return [StarterKit.configure(starterKitOptions), ...defaultExtensions, ...extensions]
+  return [
+    StarterKit.configure(starterKitOptions),
+    ...defaultExtensions.map((extension) => {
+      if (extension.name === 'link' && setLinkModalOpened) {
+        return extension.extend({
+          addKeyboardShortcuts() {
+            return {
+              'Mod-k': () => {
+                setLinkModalOpened((prevLinkModalOpened) => !prevLinkModalOpened)
+
+                return true
+              },
+            }
+          },
+        })
+      }
+
+      return extension
+    }),
+    ...extensions,
+  ]
 }
 
 function addCodeBlockLowlightNodeView() {
@@ -59,6 +80,7 @@ function addCodeBlockLowlightNodeView() {
 
 interface UseEditorOptions extends Partial<Omit<EditorOptions, 'editorProps'>> {
   className?: string
+  setLinkModalOpened?: React.Dispatch<React.SetStateAction<boolean>>
   spellcheck?: string
   starterKitOptions?: StarterKitOptions
 }

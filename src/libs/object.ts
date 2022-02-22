@@ -1,4 +1,4 @@
-export function hasKey<TObject, TKey extends PropertyKey>(
+export function hasKey<TObject extends object, TKey extends PropertyKey>(
   obj: TObject,
   key: TKey
 ): obj is TObject & Record<TKey, unknown> {

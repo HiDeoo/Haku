@@ -15,7 +15,7 @@ import useMetadataMutation, { type MetadataMutation } from 'hooks/useMetadataMut
 import { type FolderData } from 'libs/db/folder'
 import useContentType from 'hooks/useContentType'
 
-const NewContentModal: React.FC = () => {
+const ContentModal: React.FC = () => {
   const { cType, lcType } = useContentType()
 
   const {
@@ -106,7 +106,7 @@ const NewContentModal: React.FC = () => {
   )
 }
 
-export default NewContentModal
+export default ContentModal
 
 type FormFields = {
   name: string

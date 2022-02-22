@@ -7,7 +7,7 @@ import Form from 'components/Form'
 import Modal, { type ModalProps } from 'components/Modal'
 import TextInput from 'components/TextInput'
 
-const EditorLinkModal: React.FC<EditorLinkModalProps> = ({ editor, opened, onOpenChange, title }) => {
+const EditorLinkModal: React.FC<EditorLinkModalProps> = ({ editor, opened, onOpenChange }) => {
   const {
     register,
     handleSubmit,
@@ -34,7 +34,7 @@ const EditorLinkModal: React.FC<EditorLinkModalProps> = ({ editor, opened, onOpe
   })
 
   return (
-    <Modal opened={opened} onOpenChange={onOpenChange} title={title}>
+    <Modal opened={opened} onOpenChange={onOpenChange} title="Link">
       <Form onSubmit={onSubmit}>
         <TextInput
           type="url"
@@ -56,7 +56,7 @@ const EditorLinkModal: React.FC<EditorLinkModalProps> = ({ editor, opened, onOpe
 
 export default EditorLinkModal
 
-interface EditorLinkModalProps extends Pick<ModalProps, 'opened' | 'onOpenChange' | 'title'> {
+interface EditorLinkModalProps extends Pick<ModalProps, 'opened' | 'onOpenChange'> {
   editor: Editor | null
 }
 

@@ -4,6 +4,7 @@ import { useEditable } from 'use-editable'
 
 import { AtomParamsWithDirection } from 'atoms/todoNode'
 import Flex from 'components/Flex'
+import { NOTE_SHORTCUTS } from 'components/Note'
 import TodoNodeChildren, { type TodoNodeChildrenProps } from 'components/TodoNodeChildren'
 import TodoNodeHandle from 'components/TodoNodeHandle'
 import TodoNodeNote, { type TodoNodeNoteHandle } from 'components/TodoNodeNote'
@@ -15,14 +16,33 @@ import {
   type CaretDirection,
   getContentEditableCaretIndex,
   getContentEditableCaretPosition,
-  isEventWithoutModifier,
   setContentEditableCaretIndex,
   setContentEditableCaretPosition,
 } from 'libs/html'
+import { getShortcutMap, isShortcutEvent } from 'libs/shortcut'
 import clst from 'styles/clst'
 import styles from 'styles/TodoNodeItem.module.css'
 
 export const TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS = 16
+
+export const TODO_NODE_ITEM_SHORTCUTS = [
+  { group: 'Todo', keybinding: 'Enter', label: 'Create New Todo' },
+  { group: 'Todo', keybinding: 'Meta+Enter', label: 'Toggle Todo Completion' },
+  { group: 'Todo', keybinding: 'Shift+Enter', label: 'Move between Todo & Note' },
+  { group: 'Todo', keybinding: 'Meta+Backspace', label: 'Delete Todo' },
+  { group: 'Todo', keybinding: 'Tab', label: 'Indent Todo' },
+  { group: 'Todo', keybinding: 'Shift+Tab', label: 'Unindent Todo' },
+  { keybinding: 'ArrowUp' },
+  { group: 'Todo', keybinding: 'Meta+ArrowUp', label: 'Move Todo Up' },
+  { keybinding: 'ArrowDown' },
+  { group: 'Todo', keybinding: 'Meta+ArrowDown', label: 'Move Todo Down' },
+  { group: 'Todo', keybinding: 'Meta+Shift+.', label: 'Collapse Todo' },
+  ...NOTE_SHORTCUTS.filter(
+    (shortcut) => shortcut.label !== 'Add a Line Break' && shortcut.label !== 'Toggle / Edit Link'
+  ),
+] as const
+
+const shortcutMap = getShortcutMap(TODO_NODE_ITEM_SHORTCUTS)
 
 const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeItemProps> = (
   { id, level = 0, onFocusTodoNode, setTodoNodeItemRef },
@@ -90,70 +110,74 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
 
     const update = { id: node.id, parentId: node.parentId }
 
-    if (event.key === 'Enter') {
+    // Prevent adding a new line or tab in the content editable element.
+    if (event.key === 'Enter' || event.key === 'Tab') {
       event.preventDefault()
+    }
 
-      if (isEventWithoutModifier(event)) {
-        const newId = cuid()
+    if (isShortcutEvent(event, shortcutMap['Enter'])) {
+      const newId = cuid()
 
-        addNode({ ...update, newId })
+      addNode({ ...update, newId })
 
-        requestAnimationFrame(() => {
-          todoNodeItems.get(newId)?.focusContent()
-        })
-      } else if (event.metaKey) {
-        if (node.completed) {
-          preserveCaret(() => {
-            toggleCompleted(update)
-          })
-        } else {
+      requestAnimationFrame(() => {
+        todoNodeItems.get(newId)?.focusContent()
+      })
+    } else if (isShortcutEvent(event, shortcutMap['Meta+Enter'])) {
+      if (node.completed) {
+        preserveCaret(() => {
           toggleCompleted(update)
-
-          focusClosestNode({ ...update, direction: 'down' })
-        }
-      } else if (event.shiftKey) {
-        setShouldFocusNote((prevIsNoteFocused) => !prevIsNoteFocused)
-
-        requestAnimationFrame(() => {
-          noteRef.current?.focusNote()
         })
+      } else {
+        toggleCompleted(update)
+
+        focusClosestNode({ ...update, direction: 'down' })
       }
-    } else if (event.key === 'Backspace' && event.metaKey) {
+    } else if (isShortcutEvent(event, shortcutMap['Shift+Enter'])) {
+      setShouldFocusNote((prevIsNoteFocused) => !prevIsNoteFocused)
+
+      requestAnimationFrame(() => {
+        noteRef.current?.focusNote()
+      })
+    } else if (isShortcutEvent(event, shortcutMap['Meta+Backspace'])) {
       event.preventDefault()
 
       focusClosestNode({ ...update, direction: 'up' })
 
       deleteNode(update)
-    } else if (event.key === 'Tab') {
+    } else if (isShortcutEvent(event, shortcutMap['Tab'])) {
+      preserveCaret(() => {
+        nestNode(update)
+      })
+    } else if (isShortcutEvent(event, shortcutMap['Shift+Tab'])) {
+      preserveCaret(() => {
+        unnestNode(update)
+      })
+    } else if (isShortcutEvent(event, shortcutMap['ArrowUp']) && contentRef.current) {
+      const caretPosition = getContentEditableCaretPosition(contentRef.current)
+
+      if (caretPosition && caretPosition.atFirstLine) {
+        focusClosestNode({ ...update, direction: 'up', caretPosition }, event)
+      }
+    } else if (isShortcutEvent(event, shortcutMap['Meta+ArrowUp'])) {
       event.preventDefault()
 
       preserveCaret(() => {
-        if (event.shiftKey) {
-          unnestNode(update)
-        } else {
-          nestNode(update)
-        }
+        moveNode({ ...update, direction: 'up' })
       })
-    } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-      const direction = event.key === 'ArrowUp' ? 'up' : 'down'
+    } else if (isShortcutEvent(event, shortcutMap['ArrowDown']) && contentRef.current) {
+      const caretPosition = getContentEditableCaretPosition(contentRef.current)
 
-      if (isEventWithoutModifier(event) && contentRef.current) {
-        const caretPosition = getContentEditableCaretPosition(contentRef.current)
-
-        if (
-          caretPosition &&
-          ((direction === 'up' && caretPosition.atFirstLine) || (direction === 'down' && caretPosition.atLastLine))
-        ) {
-          focusClosestNode({ ...update, direction, caretPosition }, event)
-        }
-      } else if (event.metaKey) {
-        event.preventDefault()
-
-        preserveCaret(() => {
-          moveNode({ ...update, direction })
-        })
+      if (caretPosition && caretPosition.atLastLine) {
+        focusClosestNode({ ...update, direction: 'down', caretPosition }, event)
       }
-    } else if (event.key === '.' && event.metaKey && event.shiftKey) {
+    } else if (isShortcutEvent(event, shortcutMap['Meta+ArrowDown'])) {
+      event.preventDefault()
+
+      preserveCaret(() => {
+        moveNode({ ...update, direction: 'down' })
+      })
+    } else if (isShortcutEvent(event, shortcutMap['Meta+Shift+.'])) {
       event.preventDefault()
 
       preserveCaret(() => {

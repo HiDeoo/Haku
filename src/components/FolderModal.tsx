@@ -14,7 +14,7 @@ import TextInput from 'components/TextInput'
 import useFolderMutation, { type FolderMutation } from 'hooks/useFolderMutation'
 import { type FolderData } from 'libs/db/folder'
 
-const NewFolderModal: React.FC = () => {
+const FolderModal: React.FC = () => {
   const {
     control,
     register,
@@ -102,7 +102,7 @@ const NewFolderModal: React.FC = () => {
   )
 }
 
-export default NewFolderModal
+export default FolderModal
 
 type FormFields = {
   name: string

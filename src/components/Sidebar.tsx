@@ -10,6 +10,7 @@ import NavigationPalette from 'components/NavigationPalette'
 
 const ContentModal = dynamic(import('components/ContentModal'))
 const FolderModal = dynamic(import('components/FolderModal'))
+const ShortcutModal = dynamic(import('components/ShortcutModal'))
 
 const Sidebar: React.FC = () => {
   function logout() {
@@ -28,6 +29,7 @@ const Sidebar: React.FC = () => {
           <ContentTypeSwitch />
           <ContentModal />
           <FolderModal />
+          <ShortcutModal />
           <IconButton icon={RiLogoutCircleRLine} onPress={logout} tooltip="Logout" />
         </Flex>
       </Flex>
