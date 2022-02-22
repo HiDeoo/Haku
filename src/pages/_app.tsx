@@ -6,9 +6,9 @@ import Head from 'next/head'
 import { SessionProvider } from 'next-auth/react'
 import { QueryClient, QueryClientProvider } from 'react-query'
 
-import Route from 'components/Route'
-import Layout from 'components/Layout'
-import ErrorBoundary from 'components/ErrorBoundary'
+import Route from 'components/app/Route'
+import Layout from 'components/ui/Layout'
+import ErrorBoundary from 'components/app/ErrorBoundary'
 import { getQueryClientDefaultOptions } from 'libs/api/client'
 
 const queryClient = new QueryClient({ defaultOptions: getQueryClientDefaultOptions() })

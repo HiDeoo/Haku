@@ -3,10 +3,10 @@ import { signIn } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
 
 import { getAuthErrorMesssage } from 'libs/auth'
-import TextInput from 'components/TextInput'
-import Button from 'components/Button'
-import Flex from 'components/Flex'
-import Form from 'components/Form'
+import TextInput from 'components/form/TextInput'
+import Button from 'components/form/Button'
+import Flex from 'components/ui/Flex'
+import Form from 'components/form/Form'
 
 const Login: Page = () => {
   const { query } = useRouter()

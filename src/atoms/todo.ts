@@ -2,7 +2,7 @@ import { atom } from 'jotai'
 import { atomWithReset, atomWithStorage, RESET } from 'jotai/utils'
 
 import { todoNodeChildrenAtom, todoNodeMutations, todoNodeNodesAtom } from 'atoms/todoNode'
-import { type SyncStatus } from 'components/SyncReport'
+import { type SyncStatus } from 'components/ui/SyncReport'
 import { type TodoMetadata } from 'libs/db/todo'
 import { type TodoNodeData } from 'libs/db/todoNodes'
 

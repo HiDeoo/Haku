@@ -1,9 +1,9 @@
 import dynamic from 'next/dynamic'
 
-import Spinner from 'components/Spinner'
+import Spinner from 'components/ui/Spinner'
 import useContentId from 'hooks/useContentId'
 
-const Note = dynamic(import('components/Note'), {
+const Note = dynamic(import('components/note/Note'), {
   loading: () => <Spinner delay className="my-auto h-10 w-10 self-center" />,
 })
 
