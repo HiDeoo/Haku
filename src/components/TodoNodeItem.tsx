@@ -4,6 +4,7 @@ import { useEditable } from 'use-editable'
 
 import { AtomParamsWithDirection } from 'atoms/todoNode'
 import Flex from 'components/Flex'
+import { NOTE_SHORTCUTS } from 'components/Note'
 import TodoNodeChildren, { type TodoNodeChildrenProps } from 'components/TodoNodeChildren'
 import TodoNodeHandle from 'components/TodoNodeHandle'
 import TodoNodeNote, { type TodoNodeNoteHandle } from 'components/TodoNodeNote'
@@ -36,6 +37,9 @@ export const TODO_NODE_ITEM_SHORTCUTS = [
   { keybinding: 'ArrowDown' },
   { group: 'Todo', keybinding: 'Meta+ArrowDown', label: 'Move Todo Down' },
   { group: 'Todo', keybinding: 'Meta+Shift+.', label: 'Collapse Todo' },
+  ...NOTE_SHORTCUTS.filter(
+    (shortcut) => shortcut.label !== 'Add a Line Break' && shortcut.label !== 'Toggle / Edit Link'
+  ),
 ] as const
 
 const shortcutMap = getShortcutMap(TODO_NODE_ITEM_SHORTCUTS)

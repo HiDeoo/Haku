@@ -31,7 +31,7 @@ const shimmerClasses = [
   'w-4/6',
 ]
 
-export const shortcuts = [
+export const NOTE_SHORTCUTS = [
   { group: 'Note', keybinding: 'Shift+Enter', label: 'Add a Line Break' },
   { group: 'Note', keybinding: 'Meta+B', label: 'Toggle Bold' },
   { group: 'Note', keybinding: 'Meta+I', label: 'Toggle Italic' },
@@ -60,7 +60,7 @@ const Note: React.FC<NoteProps> = ({ id }) => {
 
   useNavigationPrompt(!editorState.pristine)
 
-  useLocalShortcuts(shortcuts)
+  useLocalShortcuts(NOTE_SHORTCUTS)
 
   const { data, isLoading } = useNote(id, { enabled: editorState.pristine })
 
