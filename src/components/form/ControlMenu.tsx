@@ -35,12 +35,14 @@ const ControlMenu = <TItem,>({
 
     calculateMaxHeight()
 
-    window.addEventListener('resize', calculateMaxHeight)
-    window.addEventListener('scroll', calculateMaxHeight, true)
+    const eventListenerOptions: AddEventListenerOptions & EventListenerOptions = { capture: true, passive: true }
+
+    window.addEventListener('resize', calculateMaxHeight, eventListenerOptions)
+    window.addEventListener('scroll', calculateMaxHeight, eventListenerOptions)
 
     return () => {
-      window.removeEventListener('resize', calculateMaxHeight)
-      window.removeEventListener('scroll', calculateMaxHeight, true)
+      window.removeEventListener('resize', calculateMaxHeight, eventListenerOptions)
+      window.removeEventListener('scroll', calculateMaxHeight, eventListenerOptions)
     }
   }, [container])
 

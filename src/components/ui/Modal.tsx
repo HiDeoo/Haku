@@ -82,7 +82,7 @@ export interface ModalProps {
   onOpenChange: (opened: boolean) => void
   opened: boolean
   title: string
-  trigger?: React.ReactNode
+  trigger?: React.StrictReactNode
 }
 
 interface FooterProps extends Pick<ModalProps, 'disabled'> {
