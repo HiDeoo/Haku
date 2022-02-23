@@ -140,7 +140,11 @@ export const deleteNodeAtom = atom(null, (get, set, { id, parentId = 'root' }: A
   })
 
   set(todoNodeMutations, (prevMutations) => {
-    const newState: typeof prevMutations = { ...prevMutations, [id]: 'delete' }
+    const { [id]: prevNodeMutation, ...newState } = prevMutations
+
+    if (!prevNodeMutation || prevNodeMutation === 'update') {
+      newState[id] = 'delete'
+    }
 
     if (parentId !== 'root') {
       newState[parentId] = newState[parentId] ?? 'update'
