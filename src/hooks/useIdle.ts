@@ -34,10 +34,12 @@ export default function useIdle(durationInSeconds = 10) {
       }
     }
 
-    document.addEventListener('visibilitychange', onVisibilityChange)
+    const eventListenerOptions: AddEventListenerOptions & EventListenerOptions = { passive: true }
+
+    document.addEventListener('visibilitychange', onVisibilityChange, eventListenerOptions)
 
     for (const event of activityEvents) {
-      window.addEventListener(event, onActivity)
+      window.addEventListener(event, onActivity, eventListenerOptions)
     }
 
     startIdleTimer()
@@ -49,10 +51,10 @@ export default function useIdle(durationInSeconds = 10) {
         clearTimeout(timeout.current)
       }
 
-      document.removeEventListener('visibilitychange', onVisibilityChange)
+      document.removeEventListener('visibilitychange', onVisibilityChange, eventListenerOptions)
 
       for (const event of activityEvents) {
-        window.removeEventListener(event, onActivity)
+        window.removeEventListener(event, onActivity, eventListenerOptions)
       }
     }
   }, [durationInSeconds])
