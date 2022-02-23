@@ -346,6 +346,8 @@ describe('useTodoNode', () => {
       expect(result.current.node).toBeUndefined()
       expect(todoNodes.current[node.id]).toBeUndefined()
 
+      expect(todoChildren.current[node.id]).toBeUndefined()
+
       expect(todoChildren.current.root.length).toBe(1)
       expect(todoChildren.current.root[0]).toBe(nextSibbling.id)
 
@@ -370,6 +372,8 @@ describe('useTodoNode', () => {
 
       expect(result.current.node).toBeUndefined()
       expect(todoNodes.current[node.id]).toBeUndefined()
+
+      expect(todoChildren.current[node.id]).toBeUndefined()
 
       expect(todoChildren.current.root.length).toBe(1)
       expect(todoChildren.current.root[0]).toBe(parent.id)
@@ -403,6 +407,8 @@ describe('useTodoNode', () => {
       expect(result.current.node).toBeUndefined()
       expect(todoNodes.current[node.id]).toBeUndefined()
 
+      expect(todoChildren.current[node.id]).toBeUndefined()
+
       expect(todoChildren.current.root.length).toBe(1)
       expect(todoChildren.current.root[0]).toBe(parent.id)
 
@@ -429,10 +435,39 @@ describe('useTodoNode', () => {
       expect(result.current.node).toBeDefined()
       expect(result.current.node?.id).toBe(node.id)
 
+      expect(todoChildren.current[node.id]).toEqual([])
+
       expect(todoChildren.current.root.length).toBe(1)
       expect(todoChildren.current.root[0]).toBe(node.id)
 
       expect(todoMutations.current[node.id]).toBeUndefined()
+    })
+
+    test('should delete a new todo node', () => {
+      const { children, nodes } = setFakeTodoNodes([{}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+
+      const newId = cuid()
+
+      act(() => {
+        result.current.addNode({ id: node.id, newId, parentId: node.parentId })
+
+        result.current.deleteNode({ id: newId })
+      })
+
+      expect(result.current.node).toBeDefined()
+      expect(result.current.node?.id).toBe(node.id)
+
+      expect(todoChildren.current[newId]).toBeUndefined()
+
+      expect(todoChildren.current.root.length).toBe(1)
+      expect(todoChildren.current.root[0]).toBe(node.id)
+
+      expect(todoMutations.current[newId]).toBeUndefined()
     })
   })
 
