@@ -346,6 +346,8 @@ describe('useTodoNode', () => {
       expect(result.current.node).toBeUndefined()
       expect(todoNodes.current[node.id]).toBeUndefined()
 
+      expect(todoChildren.current[node.id]).toBeUndefined()
+
       expect(todoChildren.current.root.length).toBe(1)
       expect(todoChildren.current.root[0]).toBe(nextSibbling.id)
 
@@ -370,6 +372,8 @@ describe('useTodoNode', () => {
 
       expect(result.current.node).toBeUndefined()
       expect(todoNodes.current[node.id]).toBeUndefined()
+
+      expect(todoChildren.current[node.id]).toBeUndefined()
 
       expect(todoChildren.current.root.length).toBe(1)
       expect(todoChildren.current.root[0]).toBe(parent.id)
@@ -403,6 +407,8 @@ describe('useTodoNode', () => {
       expect(result.current.node).toBeUndefined()
       expect(todoNodes.current[node.id]).toBeUndefined()
 
+      expect(todoChildren.current[node.id]).toBeUndefined()
+
       expect(todoChildren.current.root.length).toBe(1)
       expect(todoChildren.current.root[0]).toBe(parent.id)
 
@@ -428,6 +434,8 @@ describe('useTodoNode', () => {
 
       expect(result.current.node).toBeDefined()
       expect(result.current.node?.id).toBe(node.id)
+
+      expect(todoChildren.current[node.id]).toEqual([])
 
       expect(todoChildren.current.root.length).toBe(1)
       expect(todoChildren.current.root[0]).toBe(node.id)

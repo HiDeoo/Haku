@@ -125,13 +125,16 @@ export const deleteNodeAtom = atom(null, (get, set, { id, parentId = 'root' }: A
   })
 
   set(todoNodeChildrenAtom, (prevChildren) => {
+    const { [id]: childrenToDelete, root, ...newChildren } = prevChildren
+
     const parentChildren = prevChildren[parentId] ?? []
     const nodeIndex = prevChildren[parentId]?.indexOf(id) ?? -1
 
     const newParentChildren = removeAtIndex(parentChildren, nodeIndex)
 
     return {
-      ...prevChildren,
+      ...newChildren,
+      root,
       [parentId]: newParentChildren,
     }
   })
