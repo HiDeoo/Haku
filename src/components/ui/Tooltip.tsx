@@ -15,5 +15,5 @@ const Tooltip: React.FC<TooltipProps> = ({ children, content }) => {
 export default Tooltip
 
 interface TooltipProps {
-  content: React.ReactNode
+  content: React.StrictReactNode
 }

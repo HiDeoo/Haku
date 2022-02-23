@@ -64,7 +64,7 @@ type ContextMenuComponent = React.FC<ContextMenuProps> & {
 }
 
 interface ContextMenuProps {
-  trigger: React.ReactNode
+  trigger: React.StrictReactNode
 }
 
 interface ItemProps {
