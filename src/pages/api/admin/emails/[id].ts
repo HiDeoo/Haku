@@ -2,8 +2,8 @@ import { type NextApiResponse } from 'next'
 
 import { createApiRoute } from 'libs/api/routes'
 import { type ValidatedApiRequest, withAdmin, withValidation } from 'libs/api/routes/middlewares'
-import { z, zQuerySchemaWithId } from 'libs/validation'
 import { removeAllowedEmail } from 'libs/db/emailAllowList'
+import { z, zQuerySchemaWithId } from 'libs/validation'
 
 const route = createApiRoute(
   {

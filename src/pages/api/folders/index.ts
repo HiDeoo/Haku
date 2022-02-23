@@ -2,8 +2,8 @@ import { type NextApiResponse } from 'next'
 
 import { createApiRoute, getApiRequestUser } from 'libs/api/routes'
 import { type ValidatedApiRequest, withAuth, withValidation } from 'libs/api/routes/middlewares'
-import { z, zFolderType } from 'libs/validation'
 import { addFolder, type FolderData } from 'libs/db/folder'
+import { z, zFolderType } from 'libs/validation'
 
 const postBodySchema = z.object({
   name: z.string(),

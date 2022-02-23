@@ -1,6 +1,6 @@
+import { waitForPostgres } from '@jcoreio/wait-for-postgres'
 import compose from 'docker-compose'
 import execa from 'execa'
-import { waitForPostgres } from '@jcoreio/wait-for-postgres'
 
 async function setup() {
   await compose.upAll({ cwd: __dirname })

@@ -1,10 +1,10 @@
-import { useRouter } from 'next/router'
 import { signIn } from 'next-auth/react'
+import { useRouter } from 'next/router'
 
+import Button from 'components/form/Button'
+import Callout from 'components/form/Callout'
+import Flex from 'components/ui/Flex'
 import { getAuthErrorMesssage } from 'libs/auth'
-import Callout from 'components/Callout'
-import Button from 'components/Button'
-import Flex from 'components/Flex'
 
 const Error: Page = () => {
   const { query } = useRouter()

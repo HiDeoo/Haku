@@ -1,7 +1,7 @@
 import { type NextApiHandler, type NextApiRequest, type NextApiResponse } from 'next'
 import { StatusCode } from 'status-code-enum'
 
-import { HttpMethod } from 'libs/http'
+import { HttpMethod } from 'constants/http'
 import { type ApiErrorResponse, API_ERROR_UNKNOWN, ApiError } from 'libs/api/routes/errors'
 import { type ApiRequestValidationData, type ValidatedApiRequest } from 'libs/api/routes/middlewares'
 

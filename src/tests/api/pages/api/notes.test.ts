@@ -2,14 +2,7 @@ import cuid from 'cuid'
 import StatusCode from 'status-code-enum'
 import slug from 'url-slug'
 
-import { getTestUser, testApiRoute } from 'tests/api'
-import { createTestNote, createTestNoteFolder, createTestTodoFolder, getTestNote, getTestNotes } from 'tests/api/db'
-import { HttpMethod } from 'libs/http'
-import indexHandler from 'pages/api/notes'
-import idHandler from 'pages/api/notes/[id]'
-import { type NoteTreeData } from 'libs/db/tree'
-import { type NoteData, type NoteMetadata } from 'libs/db/note'
-import { assertIsTreeFolder, assertIsTreeItem } from 'libs/tree'
+import { HttpMethod } from 'constants/http'
 import {
   type ApiErrorResponse,
   API_ERROR_FOLDER_DOES_NOT_EXIST,
@@ -18,7 +11,14 @@ import {
   API_ERROR_NOTE_DOES_NOT_EXIST,
   API_ERROR_NOTE_HTML_OR_TEXT_MISSING,
 } from 'libs/api/routes/errors'
+import { type NoteData, type NoteMetadata } from 'libs/db/note'
+import { type NoteTreeData } from 'libs/db/tree'
 import { hasKey } from 'libs/object'
+import { assertIsTreeFolder, assertIsTreeItem } from 'libs/tree'
+import indexHandler from 'pages/api/notes'
+import idHandler from 'pages/api/notes/[id]'
+import { getTestUser, testApiRoute } from 'tests/api'
+import { createTestNote, createTestNoteFolder, createTestTodoFolder, getTestNote, getTestNotes } from 'tests/api/db'
 
 describe('notes', () => {
   describe('GET', () => {

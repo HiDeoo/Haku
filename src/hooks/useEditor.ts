@@ -12,7 +12,8 @@ import {
 import StarterKit, { type StarterKitOptions } from '@tiptap/starter-kit'
 import { type DependencyList } from 'react'
 
-import EditorCodeBlock, { CODE_BLOCK_DEFAULT_LANGUAGE } from 'components/EditorCodeBlock'
+import EditorCodeBlock from 'components/editor/EditorCodeBlock'
+import { CODE_BLOCK_DEFAULT_LANGUAGE } from 'constants/editor'
 import { getLowlight } from 'libs/editor'
 import clst from 'styles/clst'
 import styles from 'styles/Editor.module.css'

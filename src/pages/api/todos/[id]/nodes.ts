@@ -2,8 +2,8 @@ import { type NextApiResponse } from 'next'
 
 import { createApiRoute, getApiRequestUser } from 'libs/api/routes'
 import { ValidatedApiRequest, withAuth, withValidation } from 'libs/api/routes/middlewares'
-import { z, zQuerySchemaWithId } from 'libs/validation'
 import { getTodoNodes, type TodoNodesData, updateTodoNodes } from 'libs/db/todoNodes'
+import { z, zQuerySchemaWithId } from 'libs/validation'
 
 const mutationMapSchema = z.record(
   z.object({

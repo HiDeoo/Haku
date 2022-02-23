@@ -2,9 +2,9 @@ import { type NextApiRequest, NextApiResponse } from 'next'
 
 import { createApiRoute, getApiRequestUser } from 'libs/api/routes'
 import { type ValidatedApiRequest, withAuth, withValidation } from 'libs/api/routes/middlewares'
-import { z } from 'libs/validation'
-import { getTodoTree, type TodoTreeData } from 'libs/db/tree'
 import { addTodo, type TodoMetadata } from 'libs/db/todo'
+import { getTodoTree, type TodoTreeData } from 'libs/db/tree'
+import { z } from 'libs/validation'
 
 const postBodySchema = z.object({
   name: z.string(),

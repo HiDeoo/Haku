@@ -1,12 +1,12 @@
 import { useRouter } from 'next/router'
 import { useMutation, useQueryClient } from 'react-query'
 
+import { getContentTreeQueryKey } from 'hooks/useContentTree'
+import useContentType, { type ContentType } from 'hooks/useContentType'
 import client, { type Mutation } from 'libs/api/client'
 import { type FolderData } from 'libs/db/folder'
 import { type AddFolderBody } from 'pages/api/folders'
 import { type UpdateFolderQuery, type UpdateFolderBody, type RemoveFolderQuery } from 'pages/api/folders/[id]'
-import useContentType, { type ContentType } from 'hooks/useContentType'
-import { getContentTreeQueryKey } from 'hooks/useContentTree'
 
 export default function useFolderMutation() {
   const { push } = useRouter()

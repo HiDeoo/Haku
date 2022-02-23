@@ -17,7 +17,7 @@ import {
   moveNodeAtom,
   toggleCollapsedAtom,
 } from 'atoms/todoNode'
-import { type TodoNodeItemHandle } from 'components/TodoNodeItem'
+import { type TodoNodeItemHandle } from 'components/todo/TodoNodeItem'
 import { type TodoNodeData } from 'libs/db/todoNodes'
 
 export const todoNodeContentRefs = new Map<TodoNodeData['id'], TodoNodeItemHandle>()

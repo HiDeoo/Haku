@@ -1,8 +1,8 @@
 import { FolderType, Prisma, Todo } from '@prisma/client'
 import slug from 'url-slug'
 
-import { handleDbError, prisma } from 'libs/db'
 import { ApiError, API_ERROR_TODO_ALREADY_EXISTS, API_ERROR_TODO_DOES_NOT_EXIST } from 'libs/api/routes/errors'
+import { handleDbError, prisma } from 'libs/db'
 import { validateFolder } from 'libs/db/folder'
 
 export type TodoMetadata = Prisma.TodoGetPayload<{ select: typeof todoMetadataSelect }>

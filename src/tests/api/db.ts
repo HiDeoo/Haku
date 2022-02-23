@@ -1,5 +1,5 @@
-import { type EmailAllowList, FolderType, TodoNode } from '@prisma/client'
 import faker from '@faker-js/faker'
+import { type EmailAllowList, FolderType, TodoNode } from '@prisma/client'
 import slug from 'url-slug'
 
 import { prisma } from 'libs/db'

@@ -1,8 +1,8 @@
 import { useMutation } from 'react-query'
 
+import useContentType, { ContentType } from 'hooks/useContentType'
 import client, { type Mutation } from 'libs/api/client'
 import { type NoteData } from 'libs/db/note'
-import useContentType, { ContentType } from 'hooks/useContentType'
 import { type TodoNodesData } from 'libs/db/todoNodes'
 import { type UpdateNoteBody, type UpdateNoteQuery } from 'pages/api/notes/[id]'
 import { type UpdateTodoNodesBody, type UpdateTodoNodesQuery } from 'pages/api/todos/[id]/nodes'
