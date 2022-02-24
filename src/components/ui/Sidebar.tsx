@@ -1,25 +1,23 @@
-import { signOut } from 'next-auth/react'
 import dynamic from 'next/dynamic'
 import { RiLogoutCircleRLine } from 'react-icons/ri'
 
 import ContentTree from 'components/content/ContentTree'
 import ContentTypeSwitch from 'components/content/ContentTypeSwitch'
 import IconButton from 'components/form/IconButton'
+import CommandPalette from 'components/palette/CommandPalette'
 import NavigationPalette from 'components/palette/NavigationPalette'
 import Flex from 'components/ui/Flex'
+import { logout } from 'libs/auth'
 
 const ContentModal = dynamic(import('components/content/ContentModal'))
 const FolderModal = dynamic(import('components/folder/FolderModal'))
 const ShortcutModal = dynamic(import('components/shortcut/ShortcutModal'))
 
 const Sidebar: React.FC = () => {
-  function logout() {
-    signOut({ callbackUrl: `/auth/login` })
-  }
-
   return (
     <>
       <NavigationPalette />
+      <CommandPalette />
       <Flex direction="col" className="w-64 bg-zinc-900">
         <ContentTree />
         <Flex

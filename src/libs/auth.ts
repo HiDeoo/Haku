@@ -1,4 +1,5 @@
 import { type EmailConfig } from 'next-auth/providers'
+import { signOut } from 'next-auth/react'
 
 const errorMessages: Partial<Record<ErrorType, string>> = {
   AccessDenied: 'You do not have permission to login.',
@@ -21,6 +22,10 @@ export function getAuthErrorMesssage(queryStringErrorType: QueryStringErrorType)
   const errorType: ErrorType = isErrorType(queryStringErrorType) ? queryStringErrorType : 'Default'
 
   return errorMessages[errorType] ?? 'Something went wrong!'
+}
+
+export function logout() {
+  signOut({ callbackUrl: `/auth/login` })
 }
 
 function isErrorType(error: string | string[] | undefined): error is ErrorType {
