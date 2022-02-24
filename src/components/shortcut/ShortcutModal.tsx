@@ -17,7 +17,7 @@ const ShortcutModal: React.FC = () => {
       () => [
         {
           allowInTextInput: false,
-          group: 'Help',
+          group: 'Miscellaneous',
           keybinding: 'Shift+?',
           label: 'Display Keyboard Shortcuts',
           onKeyDown: () => {

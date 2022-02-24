@@ -38,7 +38,7 @@ const CommandPalette: React.FC = () => {
     useMemo(
       () => [
         {
-          group: 'Command',
+          group: 'Miscellaneous',
           keybinding: 'Meta+Shift+P',
           label: 'Show all Commands',
           onKeyDown: (event) => {

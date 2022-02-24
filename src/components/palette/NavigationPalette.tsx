@@ -22,7 +22,7 @@ const NavigationPalette: React.FC = () => {
     useMemo(
       () => [
         {
-          group: 'Navigation',
+          group: 'Miscellaneous',
           keybinding: 'Meta+P',
           label: 'Go to Note or Todo',
           onKeyDown: (event) => {
