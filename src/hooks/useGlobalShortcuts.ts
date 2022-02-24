@@ -31,10 +31,10 @@ export default function useGlobalShortcuts(shortcuts: Shortcut[]) {
   )
 
   useEffect(() => {
-    document.addEventListener('keydown', onKeyDown)
+    document.addEventListener('keydown', onKeyDown, true)
 
     return () => {
-      document.removeEventListener('keydown', onKeyDown)
+      document.removeEventListener('keydown', onKeyDown, true)
     }
   }, [onKeyDown])
 }
