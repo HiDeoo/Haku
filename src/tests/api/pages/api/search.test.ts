@@ -1,12 +1,46 @@
+import StatusCode from 'status-code-enum'
+
 import { HttpMethod } from 'constants/http'
+import { ApiErrorResponse, API_ERROR_SEARCH_QUERY_TOO_SHORT } from 'libs/api/routes/errors'
 import { type FilesData } from 'libs/db/file'
 import indexHandler from 'pages/api/search'
-import { testApiRoute } from 'tests/api'
+import { getTestUser, testApiRoute } from 'tests/api'
 import { createTestNote, createTestTodo, createTestTodoNode } from 'tests/api/db'
 
 describe('search', () => {
   describe('GET', () => {
     describe('index', () => {
+      test('should require a search query of at least 3 characters long', () =>
+        testApiRoute(
+          indexHandler,
+          async ({ fetch }) => {
+            await createTestNote()
+            await createTestTodo()
+
+            const res = await fetch({ method: HttpMethod.GET })
+            const json = await res.json<ApiErrorResponse>()
+
+            expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+            expect(json.error).toBe(API_ERROR_SEARCH_QUERY_TOO_SHORT)
+          },
+          { dynamicRouteParams: { q: 'it' } }
+        ))
+
+      test('should return an empty list of result', () =>
+        testApiRoute(
+          indexHandler,
+          async ({ fetch }) => {
+            await createTestNote()
+            await createTestTodo()
+
+            const res = await fetch({ method: HttpMethod.GET })
+            const json = await res.json<FilesData>()
+
+            expect(json.length).toBe(0)
+          },
+          { dynamicRouteParams: { q: 'amazing' } }
+        ))
+
       test('should return a note with a name matching the query', () =>
         testApiRoute(
           indexHandler,
@@ -85,6 +119,46 @@ describe('search', () => {
             expect(json.length).toBe(1)
 
             expect(json[0]?.id).toBe(id)
+          },
+          { dynamicRouteParams: { q: 'amazing' } }
+        ))
+
+      test('should dedupe todos with a name and todo node content matching the query', () =>
+        testApiRoute(
+          indexHandler,
+          async ({ fetch }) => {
+            const { id } = await createTestTodo({ name: 'amazing name' })
+            await createTestTodoNode({ todoId: id, noteText: 'amazing text' })
+
+            const res = await fetch({ method: HttpMethod.GET })
+            const json = await res.json<FilesData>()
+
+            expect(json.length).toBe(1)
+
+            expect(json[0]?.id).toBe(id)
+          },
+          { dynamicRouteParams: { q: 'amazing' } }
+        ))
+
+      test('should return only items owned by the current user', () =>
+        testApiRoute(
+          indexHandler,
+          async ({ fetch }) => {
+            const { userId: userId1 } = getTestUser('1')
+
+            const { id: todo_0_id } = await createTestTodo({ name: 'amazing name' })
+            await createTestTodo({ name: 'amazing name', userId: userId1 })
+
+            const { id: note_0_id } = await createTestNote({ name: 'amazing name' })
+            await createTestNote({ name: 'amazing name', userId: userId1 })
+
+            const res = await fetch({ method: HttpMethod.GET })
+            const json = await res.json<FilesData>()
+
+            expect(json.length).toBe(2)
+
+            expect(json[0]?.id).toBe(note_0_id)
+            expect(json[1]?.id).toBe(todo_0_id)
           },
           { dynamicRouteParams: { q: 'amazing' } }
         ))

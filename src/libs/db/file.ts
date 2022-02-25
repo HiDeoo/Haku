@@ -1,4 +1,5 @@
 import { ContentType } from 'constants/contentType'
+import { ApiError, API_ERROR_SEARCH_QUERY_TOO_SHORT } from 'libs/api/routes/errors'
 import { prisma } from 'libs/db'
 
 export type FilesData = FileData[]
@@ -35,6 +36,10 @@ ORDER BY
 }
 
 export function searchFiles(userId: UserId, query: string): Promise<FilesData> {
+  if (query.length < 3) {
+    throw new ApiError(API_ERROR_SEARCH_QUERY_TOO_SHORT)
+  }
+
   return prisma.$queryRaw<FilesData>`
 SELECT
   "id",
