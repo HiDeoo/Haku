@@ -41,17 +41,21 @@ export function searchFiles(userId: UserId, query: string): Promise<FilesData> {
   }
 
   return prisma.$queryRaw<FilesData>`
+WITH search AS (
+  SELECT websearch_to_tsquery('simple', ${query}) AS query
+)
 SELECT
-  "id",
-  "name",
-  "slug",
+  note."id",
+  note."name",
+  note."slug",
   ${ContentType.NOTE} AS "type",
-  ts_rank("searchVector", websearch_to_tsquery('simple', ${query})) AS "rank"
+  ts_rank(note."searchVector", search.query) AS "rank"
 FROM
-  "Note"
+  "Note" note,
+  search
 WHERE
-  "userId" = ${userId}
-  AND "searchVector" @@ websearch_to_tsquery('simple', ${query})
+  note."userId" = ${userId}
+  AND note."searchVector" @@ search.query
 UNION
 SELECT DISTINCT ON (todoAndTodoNode."id")
   *
@@ -65,26 +69,25 @@ FROM
       (
         COALESCE(
           ts_rank(
-            todo."searchVector",
-            websearch_to_tsquery('simple', ${query})
+            todo."searchVector", search.query
           ),
           0
         ) + COALESCE(
           ts_rank(
-            todoNode."searchVector",
-            websearch_to_tsquery('simple', ${query})
+            todoNode."searchVector", search.query
           ),
           0
         )
       ) AS "rank"
     FROM
       "Todo" todo
-      INNER JOIN "TodoNode" todoNode ON todoNode."todoId" = todo."id"
+      INNER JOIN "TodoNode" todoNode ON todoNode."todoId" = todo."id",
+      search
     WHERE
       todo."userId" = ${userId}
       AND (
-        todo."searchVector" @@ websearch_to_tsquery('simple', ${query})
-        OR todoNode."searchVector" @@ websearch_to_tsquery('simple', ${query})
+        todo."searchVector" @@ search.query
+        OR todoNode."searchVector" @@ search.query
       )
     ORDER BY
       "rank" DESC
