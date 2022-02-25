@@ -33,3 +33,21 @@ WHERE
 ORDER BY
   "name" ASC`
 }
+
+export function searchFiles(userId: UserId, query: string): Promise<FilesData> {
+  return prisma.$queryRaw<FilesData>`
+SELECT
+  "id",
+  "name",
+  "slug",
+  ${ContentType.NOTE} AS "type",
+  ts_rank("searchVector", to_tsquery('simple', ${query})) AS "rank"
+FROM
+  "Note"
+WHERE
+  "userId" = ${userId}
+  AND "searchVector" @@ to_tsquery('simple', ${query})
+ORDER BY
+  "rank" DESC,
+  "name" ASC`
+}
