@@ -48,18 +48,44 @@ WHERE
   "userId" = ${userId}
   AND "searchVector" @@ websearch_to_tsquery('simple', ${query})
 UNION
-SELECT
-  "id",
-  "name",
-  "slug",
-  ${ContentType.TODO} AS "type",
-  ts_rank("searchVector", websearch_to_tsquery('simple', ${query})) AS "rank"
+SELECT DISTINCT ON (todoAndTodoNode."id")
+  *
 FROM
-  "Todo"
-WHERE
-  "userId" = ${userId}
-  AND "searchVector" @@ websearch_to_tsquery('simple', ${query})
+  (
+    SELECT
+      todo."id",
+      todo."name",
+      todo."slug",
+      ${ContentType.TODO} AS "type",
+      (
+        COALESCE(
+          ts_rank(
+            todo."searchVector",
+            websearch_to_tsquery('simple', ${query})
+          ),
+          0
+        ) + COALESCE(
+          ts_rank(
+            todoNode."searchVector",
+            websearch_to_tsquery('simple', ${query})
+          ),
+          0
+        )
+      ) AS "rank"
+    FROM
+      "Todo" todo
+      INNER JOIN "TodoNode" todoNode ON todoNode."todoId" = todo."id"
+    WHERE
+      todo."userId" = ${userId}
+      AND (
+        todo."searchVector" @@ websearch_to_tsquery('simple', ${query})
+        OR todoNode."searchVector" @@ websearch_to_tsquery('simple', ${query})
+      )
+    ORDER BY
+      "rank" DESC
+  ) AS todoAndTodoNode
 ORDER BY
   "rank" DESC,
-  "name" ASC`
+  "name" ASC,
+  "type" ASC`
 }

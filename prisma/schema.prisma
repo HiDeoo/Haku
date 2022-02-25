@@ -120,4 +120,8 @@ model TodoNode {
 
   todoId String?
   todo   Todo?   @relation(fields: [todoId], references: [id])
+
+  searchVector Unsupported("TSVECTOR")?
+
+  @@index([searchVector], name: "TodoNode_searchVector_index")
 }
