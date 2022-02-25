@@ -47,6 +47,18 @@ FROM
 WHERE
   "userId" = ${userId}
   AND "searchVector" @@ websearch_to_tsquery('simple', ${query})
+UNION
+SELECT
+  "id",
+  "name",
+  "slug",
+  ${ContentType.TODO} AS "type",
+  ts_rank("searchVector", websearch_to_tsquery('simple', ${query})) AS "rank"
+FROM
+  "Todo"
+WHERE
+  "userId" = ${userId}
+  AND "searchVector" @@ websearch_to_tsquery('simple', ${query})
 ORDER BY
   "rank" DESC,
   "name" ASC`
