@@ -41,12 +41,12 @@ SELECT
   "name",
   "slug",
   ${ContentType.NOTE} AS "type",
-  ts_rank("searchVector", to_tsquery('simple', ${query})) AS "rank"
+  ts_rank("searchVector", websearch_to_tsquery('simple', ${query})) AS "rank"
 FROM
   "Note"
 WHERE
   "userId" = ${userId}
-  AND "searchVector" @@ to_tsquery('simple', ${query})
+  AND "searchVector" @@ websearch_to_tsquery('simple', ${query})
 ORDER BY
   "rank" DESC,
   "name" ASC`

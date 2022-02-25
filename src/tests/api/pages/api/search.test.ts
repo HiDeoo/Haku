@@ -145,6 +145,86 @@ describe('search', () => {
           },
           { dynamicRouteParams: { q: 'AMAZING' } }
         ))
+
+      test('should search multiple unquoted words', () =>
+        testApiRoute(
+          indexHandler,
+          async ({ fetch }) => {
+            const { id: note_0_id } = await createTestNote({ name: 'amazing super name' })
+            await createTestNote({ name: 'amazing' })
+            await createTestNote({ name: 'name' })
+            const { id: note_3_id } = await createTestNote({ name: 'amazing name' })
+
+            const res = await fetch({ method: HttpMethod.GET })
+            const json = await res.json<FilesData>()
+
+            expect(json.length).toBe(2)
+
+            expect(json[0]?.id).toBe(note_3_id)
+            expect(json[1]?.id).toBe(note_0_id)
+          },
+          { dynamicRouteParams: { q: 'amazing name' } }
+        ))
+
+      test('should search multiple quoted words', () =>
+        testApiRoute(
+          indexHandler,
+          async ({ fetch }) => {
+            await createTestNote({ name: 'amazing super name' })
+            await createTestNote({ name: 'amazing' })
+            await createTestNote({ name: 'name' })
+            const { id: note_3_id } = await createTestNote({ name: 'amazing name' })
+
+            const res = await fetch({ method: HttpMethod.GET })
+            const json = await res.json<FilesData>()
+
+            expect(json.length).toBe(1)
+
+            expect(json[0]?.id).toBe(note_3_id)
+          },
+          { dynamicRouteParams: { q: '"amazing name"' } }
+        ))
+
+      test('should search multiple words using the OR operator', () =>
+        testApiRoute(
+          indexHandler,
+          async ({ fetch }) => {
+            const { id: note_0_id } = await createTestNote({ name: 'amazing super name' })
+            const { id: note_1_id } = await createTestNote({ name: 'amazing' })
+            const { id: note_2_id } = await createTestNote({ name: 'name' })
+            const { id: note_3_id } = await createTestNote({ name: 'amazing name' })
+
+            const res = await fetch({ method: HttpMethod.GET })
+            const json = await res.json<FilesData>()
+
+            expect(json.length).toBe(4)
+
+            expect(json[0]?.id).toBe(note_3_id)
+            expect(json[1]?.id).toBe(note_0_id)
+            expect(json[2]?.id).toBe(note_1_id)
+            expect(json[3]?.id).toBe(note_2_id)
+          },
+          { dynamicRouteParams: { q: 'amazing OR name' } }
+        ))
+
+      test('should search multiple words using the NOT operator', () =>
+        testApiRoute(
+          indexHandler,
+          async ({ fetch }) => {
+            await createTestNote({ name: 'amazing super name' })
+            const { id: note_1_id } = await createTestNote({ name: 'amazing' })
+            await createTestNote({ name: 'name' })
+            await createTestNote({ name: 'amazing name' })
+
+            const res = await fetch({ method: HttpMethod.GET })
+            const json = await res.json<FilesData>()
+
+            expect(json.length).toBe(1)
+
+            expect(json[0]?.id).toBe(note_1_id)
+          },
+          { dynamicRouteParams: { q: 'amazing -name' } }
+        ))
     })
   })
 })
