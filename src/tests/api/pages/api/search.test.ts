@@ -1,8 +1,9 @@
+import faker from '@faker-js/faker'
 import StatusCode from 'status-code-enum'
 
 import { HttpMethod } from 'constants/http'
 import { ApiErrorResponse, API_ERROR_SEARCH_QUERY_TOO_SHORT } from 'libs/api/routes/errors'
-import { type FilesData } from 'libs/db/file'
+import { type SearchResulstData } from 'libs/db/file'
 import indexHandler from 'pages/api/search'
 import { getTestUser, testApiRoute } from 'tests/api'
 import { createTestNote, createTestTodo, createTestTodoNode } from 'tests/api/db'
@@ -34,7 +35,7 @@ describe('search', () => {
             await createTestTodo()
 
             const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<FilesData>()
+            const json = await res.json<SearchResulstData>()
 
             expect(json.length).toBe(0)
           },
@@ -48,7 +49,7 @@ describe('search', () => {
             const { id } = await createTestNote({ name: 'amazing name' })
 
             const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<FilesData>()
+            const json = await res.json<SearchResulstData>()
 
             expect(json.length).toBe(1)
 
@@ -64,7 +65,7 @@ describe('search', () => {
             const { id } = await createTestNote({ data: 'amazing text' })
 
             const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<FilesData>()
+            const json = await res.json<SearchResulstData>()
 
             expect(json.length).toBe(1)
 
@@ -80,7 +81,7 @@ describe('search', () => {
             const { id } = await createTestTodo({ name: 'amazing name' })
 
             const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<FilesData>()
+            const json = await res.json<SearchResulstData>()
 
             expect(json.length).toBe(1)
 
@@ -97,7 +98,7 @@ describe('search', () => {
             await createTestTodoNode({ todoId: id, content: 'amazing content' })
 
             const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<FilesData>()
+            const json = await res.json<SearchResulstData>()
 
             expect(json.length).toBe(1)
 
@@ -114,7 +115,7 @@ describe('search', () => {
             await createTestTodoNode({ todoId: id, noteText: 'amazing text' })
 
             const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<FilesData>()
+            const json = await res.json<SearchResulstData>()
 
             expect(json.length).toBe(1)
 
@@ -131,7 +132,7 @@ describe('search', () => {
             await createTestTodoNode({ todoId: id, noteText: 'amazing text' })
 
             const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<FilesData>()
+            const json = await res.json<SearchResulstData>()
 
             expect(json.length).toBe(1)
 
@@ -153,7 +154,7 @@ describe('search', () => {
             await createTestNote({ name: 'amazing name', userId: userId1 })
 
             const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<FilesData>()
+            const json = await res.json<SearchResulstData>()
 
             expect(json.length).toBe(2)
 
@@ -182,7 +183,7 @@ describe('search', () => {
             await createTestTodoNode({ todoId: todo_4_id, noteText: 'amazing text' })
 
             const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<FilesData>()
+            const json = await res.json<SearchResulstData>()
 
             expect(json.length).toBe(5)
 
@@ -208,7 +209,7 @@ describe('search', () => {
             await createTestTodoNode({ todoId: todo_1_id, content: 'amazing content' })
 
             const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<FilesData>()
+            const json = await res.json<SearchResulstData>()
 
             expect(json.length).toBe(4)
 
@@ -236,7 +237,7 @@ describe('search', () => {
             const { id: note_1_id } = await createTestNote({ name: 'amazing name', data: 'amazing text' })
 
             const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<FilesData>()
+            const json = await res.json<SearchResulstData>()
 
             expect(json.length).toBe(5)
 
@@ -262,7 +263,7 @@ describe('search', () => {
             await createTestTodoNode({ todoId: todo_1_id, content: 'amazing content' })
 
             const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<FilesData>()
+            const json = await res.json<SearchResulstData>()
 
             expect(json.length).toBe(4)
 
@@ -286,7 +287,7 @@ describe('search', () => {
             await createTestTodoNode({ todoId: todo_1_id, content: 'amAZIng content' })
 
             const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<FilesData>()
+            const json = await res.json<SearchResulstData>()
 
             expect(json.length).toBe(3)
 
@@ -309,7 +310,7 @@ describe('search', () => {
             await createTestTodoNode({ todoId: todo_1_id, content: 'Amazing content' })
 
             const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<FilesData>()
+            const json = await res.json<SearchResulstData>()
 
             expect(json.length).toBe(3)
 
@@ -344,7 +345,7 @@ describe('search', () => {
             await createTestTodoNode({ todoId: todo_7_id, content: 'amazing name' })
 
             const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<FilesData>()
+            const json = await res.json<SearchResulstData>()
 
             expect(json.length).toBe(6)
 
@@ -382,7 +383,7 @@ describe('search', () => {
             await createTestTodoNode({ todoId: todo_7_id, content: 'amazing name' })
 
             const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<FilesData>()
+            const json = await res.json<SearchResulstData>()
 
             expect(json.length).toBe(3)
 
@@ -417,7 +418,7 @@ describe('search', () => {
             await createTestTodoNode({ todoId: todo_7_id, content: 'amazing name' })
 
             const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<FilesData>()
+            const json = await res.json<SearchResulstData>()
 
             expect(json.length).toBe(12)
 
@@ -461,7 +462,7 @@ describe('search', () => {
             await createTestTodoNode({ todoId: todo_7_id, content: 'amazing name' })
 
             const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<FilesData>()
+            const json = await res.json<SearchResulstData>()
 
             expect(json.length).toBe(3)
 
@@ -484,7 +485,7 @@ describe('search', () => {
             }
 
             const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<FilesData>()
+            const json = await res.json<SearchResulstData>()
 
             expect(json.length).toBe(25)
 
@@ -506,7 +507,7 @@ describe('search', () => {
           indexHandler,
           async ({ fetch }) => {
             const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<FilesData>()
+            const json = await res.json<SearchResulstData>()
 
             expect(json.length).toBe(25)
 
@@ -520,7 +521,7 @@ describe('search', () => {
           indexHandler,
           async ({ fetch }) => {
             const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<FilesData>()
+            const json = await res.json<SearchResulstData>()
 
             expect(json.length).toBe(25)
 
@@ -534,7 +535,7 @@ describe('search', () => {
           indexHandler,
           async ({ fetch }) => {
             const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<FilesData>()
+            const json = await res.json<SearchResulstData>()
 
             expect(json.length).toBe(2)
 
@@ -544,6 +545,56 @@ describe('search', () => {
           { dynamicRouteParams: { q: 'amazing', page: '2' } }
         )
       })
+
+      test('should return valid excerpts', () =>
+        testApiRoute(
+          indexHandler,
+          async ({ fetch }) => {
+            const highlightedContent = `${faker.lorem.sentences(10)} The amazing content. ${faker.lorem.sentences(10)}`
+
+            const { id: note_0_id } = await createTestNote({ name: 'amazing name' })
+            const { id: note_1_id } = await createTestNote({ name: 'note_1', data: highlightedContent })
+
+            const { id: todo_0_id } = await createTestTodo({ name: 'amazing name' })
+
+            const { id: todo_1_id } = await createTestTodo({ name: 'todo_1' })
+            await createTestTodoNode({ todoId: todo_1_id, content: highlightedContent })
+
+            const { id: todo_2_id } = await createTestTodo()
+            await createTestTodoNode({ todoId: todo_2_id, noteText: highlightedContent })
+
+            const res = await fetch({ method: HttpMethod.GET })
+            const json = await res.json<SearchResulstData>()
+
+            expect(json.length).toBe(5)
+
+            // The note content does not match the search query, the excerpt should not contain an highlight.
+            expect(json[0]?.id).toBe(note_0_id)
+            expect(getExcerptHighlightCount(json[0]?.excerpt)).toBe(0)
+
+            // The note content matches the search query, the excerpt should highlight the match.
+            expect(json[2]?.id).toBe(note_1_id)
+            expect(getExcerptHighlightCount(json[2]?.excerpt)).toBe(1)
+
+            // The content of the todo nodes does not match the search query, the excerpt should not contain an
+            // highlight.
+            expect(json[1]?.id).toBe(todo_0_id)
+            expect(getExcerptHighlightCount(json[1]?.excerpt)).toBe(0)
+
+            // The content of a todo nodes matches the search query, the excerpt should highlight the match.
+            expect(json[3]?.id).toBe(todo_1_id)
+            expect(getExcerptHighlightCount(json[3]?.excerpt)).toBe(1)
+
+            // The note of a todo nodes matches the search query, the excerpt should highlight the match.
+            expect(json[4]?.id).toBe(todo_2_id)
+            expect(getExcerptHighlightCount(json[4]?.excerpt)).toBe(1)
+          },
+          { dynamicRouteParams: { q: 'amazing' } }
+        ))
     })
   })
 })
+
+function getExcerptHighlightCount(excerpt?: SearchResulstData[number]['excerpt']) {
+  return (excerpt?.match(/<\/?strong>/g)?.length ?? 0) / 2
+}
