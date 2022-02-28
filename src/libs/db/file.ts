@@ -55,7 +55,10 @@ WITH search AS (
   SELECT websearch_to_tsquery('simple', ${query}) AS query
 )
 SELECT
-  results.*,
+  results.id,
+  results.name,
+  results.slug,
+  results.type,
   ts_headline('simple', results."content", search."query", 'StartSel=<strong>, StopSel=</strong>') AS "excerpt"
 FROM
   (

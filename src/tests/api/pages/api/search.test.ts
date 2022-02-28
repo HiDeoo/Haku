@@ -591,6 +591,25 @@ describe('search', () => {
           },
           { dynamicRouteParams: { q: 'amazing' } }
         ))
+
+      test('should return a list with only the ID, name, slug, type & excerpt', () =>
+        testApiRoute(
+          indexHandler,
+          async ({ fetch }) => {
+            await createTestNote({ name: 'amazing name' })
+            await createTestTodo({ name: 'amazing name' })
+
+            const res = await fetch({ method: HttpMethod.GET })
+            const json = await res.json<SearchResulstData>()
+
+            expect(json.length).toBe(2)
+
+            for (const result of json) {
+              expect(Object.keys(result).length).toBe(5)
+            }
+          },
+          { dynamicRouteParams: { q: 'amazing' } }
+        ))
     })
   })
 })
