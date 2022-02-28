@@ -472,14 +472,15 @@ describe('search', () => {
           { dynamicRouteParams: { q: 'amazing -name' } }
         ))
 
-      test('should return at most 25 results', () =>
+      test('should return at most 25 results per page', () =>
         testApiRoute(
           indexHandler,
           async ({ fetch }) => {
-            const asciiOffset = 65
+            // 2 pages: 25 + 1
+            const names = Array.from({ length: 26 }, (_, index) => `amazing name ${'a'.repeat(index + 1)}`)
 
             for (let index = 0; index < 26; index++) {
-              await createTestNote({ name: `amazing name ${String.fromCharCode(index + asciiOffset)}` })
+              await createTestNote({ name: names[index] })
             }
 
             const res = await fetch({ method: HttpMethod.GET })
@@ -487,13 +488,62 @@ describe('search', () => {
 
             expect(json.length).toBe(25)
 
-            expect(json[0]?.name).toBe(`amazing name ${String.fromCharCode(asciiOffset)}`)
-            expect(json[json.length - 1]?.name).toBe(
-              `amazing name ${String.fromCharCode(json.length - 1 + asciiOffset)}`
-            )
+            expect(json[0]?.name).toBe(names[0])
+            expect(json[json.length - 1]?.name).toBe(names[24])
           },
           { dynamicRouteParams: { q: 'amazing' } }
         ))
+
+      test('should return paginated results', async () => {
+        // 3 pages: 25 + 25 + 2
+        const names = Array.from({ length: 52 }, (_, index) => `amazing name ${'a'.repeat(index + 1)}`)
+
+        for (let index = 0; index < names.length; index++) {
+          await createTestNote({ name: names[index] })
+        }
+
+        await testApiRoute(
+          indexHandler,
+          async ({ fetch }) => {
+            const res = await fetch({ method: HttpMethod.GET })
+            const json = await res.json<FilesData>()
+
+            expect(json.length).toBe(25)
+
+            expect(json[0]?.name).toBe(names[0])
+            expect(json[24]?.name).toBe(names[24])
+          },
+          { dynamicRouteParams: { q: 'amazing' } }
+        )
+
+        await testApiRoute(
+          indexHandler,
+          async ({ fetch }) => {
+            const res = await fetch({ method: HttpMethod.GET })
+            const json = await res.json<FilesData>()
+
+            expect(json.length).toBe(25)
+
+            expect(json[0]?.name).toBe(names[25])
+            expect(json[24]?.name).toBe(names[49])
+          },
+          { dynamicRouteParams: { q: 'amazing', page: '1' } }
+        )
+
+        return testApiRoute(
+          indexHandler,
+          async ({ fetch }) => {
+            const res = await fetch({ method: HttpMethod.GET })
+            const json = await res.json<FilesData>()
+
+            expect(json.length).toBe(2)
+
+            expect(json[0]?.name).toBe(names[50])
+            expect(json[1]?.name).toBe(names[51])
+          },
+          { dynamicRouteParams: { q: 'amazing', page: '2' } }
+        )
+      })
     })
   })
 })

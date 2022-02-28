@@ -6,6 +6,7 @@ import { type FilesData, searchFiles } from 'libs/db/file'
 import { z } from 'libs/validation'
 
 const getQueryScrhema = z.object({
+  page: z.string().optional(),
   q: z.string(),
 })
 
@@ -21,7 +22,7 @@ export default route
 async function getHandler(req: ValidatedApiRequest<{ query: SearchFileQuery }>, res: NextApiResponse<FilesData>) {
   const { userId } = getApiRequestUser(req)
 
-  const results = await searchFiles(userId, req.query.q)
+  const results = await searchFiles(userId, req.query.q, req.query.page)
 
   return res.status(200).json(results)
 }

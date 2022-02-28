@@ -10,6 +10,9 @@ export interface FileData {
   type: ContentType
 }
 
+// Number of maximum results to return per search query.
+const searchResultLimit = 25
+
 export function getFiles(userId: UserId): Promise<FilesData> {
   return prisma.$queryRaw<FilesData>`
 SELECT
@@ -35,10 +38,12 @@ ORDER BY
   "name" ASC`
 }
 
-export function searchFiles(userId: UserId, query: string): Promise<FilesData> {
+export function searchFiles(userId: UserId, query: string, page?: string): Promise<FilesData> {
   if (query.length < 3) {
     throw new ApiError(API_ERROR_SEARCH_QUERY_TOO_SHORT)
   }
+
+  const offset = (page ? parseInt(page, 10) : 0) * searchResultLimit
 
   return prisma.$queryRaw<FilesData>`
 WITH search AS (
@@ -95,6 +100,8 @@ FROM
 ORDER BY
   "rank" DESC,
   "name" ASC,
-  "type" ASC
-LIMIT 25`
+  "type" ASC,
+  "id" ASC
+LIMIT ${searchResultLimit}
+OFFSET ${offset}`
 }
