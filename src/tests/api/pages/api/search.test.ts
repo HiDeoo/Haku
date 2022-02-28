@@ -124,11 +124,29 @@ describe('search', () => {
           { dynamicRouteParams: { q: 'amazing' } }
         ))
 
-      test('should dedupe todos with a name and todo node content matching the query', () =>
+      test('should return a single note with a name & content matching the query', () =>
+        testApiRoute(
+          indexHandler,
+          async ({ fetch }) => {
+            const { id } = await createTestNote({ name: 'amazing name', data: 'amazing content' })
+
+            const res = await fetch({ method: HttpMethod.GET })
+            const json = await res.json<SearchResulstData>()
+
+            expect(json.length).toBe(1)
+
+            expect(json[0]?.id).toBe(id)
+          },
+          { dynamicRouteParams: { q: 'amazing' } }
+        ))
+
+      test('should return a single todo with a name, todo node content & notes matching the query', () =>
         testApiRoute(
           indexHandler,
           async ({ fetch }) => {
             const { id } = await createTestTodo({ name: 'amazing name' })
+            await createTestTodoNode({ todoId: id, content: 'amazing text' })
+            await createTestTodoNode({ todoId: id })
             await createTestTodoNode({ todoId: id, noteText: 'amazing text' })
 
             const res = await fetch({ method: HttpMethod.GET })
