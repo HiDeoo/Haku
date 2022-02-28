@@ -471,6 +471,29 @@ describe('search', () => {
           },
           { dynamicRouteParams: { q: 'amazing -name' } }
         ))
+
+      test('should return at most 25 results', () =>
+        testApiRoute(
+          indexHandler,
+          async ({ fetch }) => {
+            const asciiOffset = 65
+
+            for (let index = 0; index < 26; index++) {
+              await createTestNote({ name: `amazing name ${String.fromCharCode(index + asciiOffset)}` })
+            }
+
+            const res = await fetch({ method: HttpMethod.GET })
+            const json = await res.json<FilesData>()
+
+            expect(json.length).toBe(25)
+
+            expect(json[0]?.name).toBe(`amazing name ${String.fromCharCode(asciiOffset)}`)
+            expect(json[json.length - 1]?.name).toBe(
+              `amazing name ${String.fromCharCode(json.length - 1 + asciiOffset)}`
+            )
+          },
+          { dynamicRouteParams: { q: 'amazing' } }
+        ))
     })
   })
 })

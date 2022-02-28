@@ -95,5 +95,6 @@ FROM
 ORDER BY
   "rank" DESC,
   "name" ASC,
-  "type" ASC`
+  "type" ASC
+LIMIT 25`
 }
