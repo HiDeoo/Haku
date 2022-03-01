@@ -29,12 +29,16 @@ const Palette = <TItem,>(props: PaletteProps<TItem>) => {
 export default Palette
 
 export interface PaletteProps<TItem> {
+  infinite?: boolean
+  initialQuery?: string
   isLoading?: boolean
   items: TItem[]
   itemToIcon?: (item: TItem | null) => IconProps['icon'] | null
   itemToString: (item: TItem | null) => string
+  loadMore?: () => void
   onOpenChange: (opened: boolean) => void
   onPick: (item: TItem | null | undefined) => void
+  onQueryChange?: (query?: string) => void
   opened?: boolean
   placeholder: string
 }

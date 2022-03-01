@@ -11,21 +11,27 @@ import TextInput from 'components/form/TextInput'
 import { type PaletteProps } from 'components/palette/Palette'
 import Icon from 'components/ui/Icon'
 import Spinner from 'components/ui/Spinner'
+import useIntersectionObserver from 'hooks/useIntersectionObserver'
 import { getShortcutMap, isShortcutEvent } from 'libs/shortcut'
 import clst from 'styles/clst'
 
 const shortcutMap = getShortcutMap([{ keybinding: 'Escape' }])
 
 const PalettePicker = <TItem,>({
+  infinite = false,
+  initialQuery = '',
   isLoading,
   items,
   itemToIcon,
   itemToString,
+  loadMore,
   onOpenChange,
   onPick,
+  onQueryChange,
   placeholder,
 }: PaletteProps<TItem>) => {
   const inputValueRef = useRef('')
+  const infiniteRef = useRef<HTMLLIElement | null>(null)
 
   const [filteredItems, setFilteredItems] = useState(items)
 
@@ -34,12 +40,24 @@ const PalettePicker = <TItem,>({
   const { getComboboxProps, getInputProps, getItemProps, getMenuProps, highlightedIndex, inputValue } = useCombobox({
     circularNavigation: true,
     initialHighlightedIndex: 0,
+    initialInputValue: initialQuery,
     isOpen: true,
     items: filteredItems,
     itemToString,
+    onInputValueChange,
     onSelectedItemChange,
     stateReducer,
   })
+
+  const isInfiniteEnabled = infinite && !isLoading && filteredItems.length > 0 && typeof loadMore === 'function'
+
+  const shouldLoadMore = useIntersectionObserver(infiniteRef, { enabled: isInfiniteEnabled })
+
+  useEffect(() => {
+    if (isInfiniteEnabled && shouldLoadMore && loadMore) {
+      loadMore()
+    }
+  }, [isInfiniteEnabled, loadMore, shouldLoadMore])
 
   inputValueRef.current = inputValue
 
@@ -80,6 +98,12 @@ const PalettePicker = <TItem,>({
       default: {
         return changes
       }
+    }
+  }
+
+  function onInputValueChange(changes: UseComboboxStateChange<TItem>) {
+    if (onQueryChange) {
+      onQueryChange(changes.inputValue)
     }
   }
 
@@ -132,32 +156,35 @@ const PalettePicker = <TItem,>({
             {isLoading ? 'Loading…' : 'No matching results'}
           </li>
         ) : (
-          filteredItems.map((item, index) => {
-            const itemStr = itemToString(item)
-            const itemIcon = itemToIcon ? itemToIcon(item) : undefined
-            const isHighlighted = highlightedIndex === index
-            const menuItemClasses = clst(baseMenuItemClasses, 'flex gap-3 items-center', {
-              'bg-blue-600': isHighlighted,
-            })
+          <>
+            {filteredItems.map((item, index) => {
+              const itemStr = itemToString(item)
+              const itemIcon = itemToIcon ? itemToIcon(item) : undefined
+              const isHighlighted = highlightedIndex === index
+              const menuItemClasses = clst(baseMenuItemClasses, 'flex gap-3 items-center', {
+                'bg-blue-600': isHighlighted,
+              })
 
-            return (
-              <li {...getItemProps({ className: menuItemClasses, item, index })} key={`${itemStr}-${index}`}>
-                {itemIcon ? (
-                  <Icon
-                    icon={itemIcon}
-                    label={itemStr}
-                    className="shrink-0 opacity-70"
-                    key={`${itemStr}-${index}-icon`}
+              return (
+                <li {...getItemProps({ className: menuItemClasses, item, index })} key={`${itemStr}-${index}`}>
+                  {itemIcon ? (
+                    <Icon
+                      icon={itemIcon}
+                      label={itemStr}
+                      className="shrink-0 opacity-70"
+                      key={`${itemStr}-${index}-icon`}
+                    />
+                  ) : null}
+                  <span
+                    className="truncate"
+                    key={`${itemStr}-${index}-label`}
+                    dangerouslySetInnerHTML={{ __html: renderFilteredItem(item, isHighlighted) }}
                   />
-                ) : null}
-                <span
-                  className="truncate"
-                  key={`${itemStr}-${index}-label`}
-                  dangerouslySetInnerHTML={{ __html: renderFilteredItem(item, isHighlighted) }}
-                />
-              </li>
-            )
-          })
+                </li>
+              )
+            })}
+            {isInfiniteEnabled ? <li ref={infiniteRef}>load more</li> : null}
+          </>
         )}
       </ul>
     </>
