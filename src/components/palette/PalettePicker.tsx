@@ -25,6 +25,7 @@ const PalettePicker = <TItem,>({
   itemToIcon,
   itemToString,
   loadMore,
+  minQueryLength = 1,
   onOpenChange,
   onPick,
   onQueryChange,
@@ -151,7 +152,7 @@ const PalettePicker = <TItem,>({
         {isLoading ? <Spinner className="absolute right-5 bottom-1/3 my-0.5 h-4 w-4" color="text-blue-50/80" /> : null}
       </div>
       <ul {...getMenuProps({ className: 'h-full overflow-y-auto' })}>
-        {(filteredItems.length === 0 && inputValue.length > 0) || isLoading ? (
+        {(filteredItems.length === 0 && inputValue.length >= minQueryLength) || isLoading ? (
           <li className={clst(baseMenuItemClasses, 'mb-1.5 opacity-75')}>
             {isLoading ? 'Loading…' : 'No matching results'}
           </li>

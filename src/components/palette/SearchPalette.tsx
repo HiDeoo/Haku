@@ -4,6 +4,7 @@ import { RiBookletLine, RiTodoLine } from 'react-icons/ri'
 
 import { type PaletteProps } from 'components/palette/Palette'
 import { ContentType } from 'constants/contentType'
+import { SEARCH_QUERY_MIN_LENGTH } from 'constants/search'
 import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
 import useSearch from 'hooks/useSearch'
 import { type SearchResultData } from 'libs/db/file'
@@ -55,7 +56,6 @@ const SearchPalette: React.FC = () => {
       opened={opened}
       onPick={onPick}
       initialQuery={query}
-      placeholder="Search"
       isLoading={isLoading}
       itemToIcon={itemToIcon}
       onOpenChange={setOpened}
@@ -63,6 +63,8 @@ const SearchPalette: React.FC = () => {
       loadMore={fetchNextPage}
       itemToString={itemToString}
       items={data?.pages.flat() ?? []}
+      placeholder="Search (min. 3 characters)"
+      minQueryLength={SEARCH_QUERY_MIN_LENGTH}
       infinite={hasNextPage && !isFetchingNextPage}
     />
   )

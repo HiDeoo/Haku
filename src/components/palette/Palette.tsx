@@ -36,6 +36,7 @@ export interface PaletteProps<TItem> {
   itemToIcon?: (item: TItem | null) => IconProps['icon'] | null
   itemToString: (item: TItem | null) => string
   loadMore?: () => void
+  minQueryLength?: number
   onOpenChange: (opened: boolean) => void
   onPick: (item: TItem | null | undefined) => void
   onQueryChange?: (query?: string) => void
