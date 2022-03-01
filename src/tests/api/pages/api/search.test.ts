@@ -610,6 +610,23 @@ describe('search', () => {
           { dynamicRouteParams: { q: 'amazing' } }
         ))
 
+      test('should return an excerpt with multiple highlights', () =>
+        testApiRoute(
+          indexHandler,
+          async ({ fetch }) => {
+            const { id } = await createTestNote({ data: 'amazing super name' })
+
+            const res = await fetch({ method: HttpMethod.GET })
+            const json = await res.json<SearchResulstData>()
+
+            expect(json.length).toBe(1)
+
+            expect(json[0]?.id).toBe(id)
+            expect(getExcerptHighlightCount(json[0]?.excerpt)).toBe(2)
+          },
+          { dynamicRouteParams: { q: 'amazing name' } }
+        ))
+
       test('should return a list with only the ID, name, slug, type & excerpt', () =>
         testApiRoute(
           indexHandler,
