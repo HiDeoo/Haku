@@ -19,7 +19,6 @@ const Sidebar: React.FC = () => {
     <>
       <NavigationPalette />
       <CommandPalette />
-      <SearchPalette />
       <Flex direction="col" className="w-64 bg-zinc-900">
         <ContentTree />
         <Flex
@@ -29,6 +28,7 @@ const Sidebar: React.FC = () => {
           <ContentTypeSwitch />
           <ContentModal />
           <FolderModal />
+          <SearchPalette />
           <ShortcutModal />
           <IconButton icon={RiLogoutCircleRLine} onPress={logout} tooltip="Logout" />
         </Flex>

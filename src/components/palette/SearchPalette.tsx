@@ -1,8 +1,9 @@
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { useMemo, useRef, useState } from 'react'
-import { RiBookletLine, RiTodoLine } from 'react-icons/ri'
+import { RiBookletLine, RiSearchLine, RiTodoLine } from 'react-icons/ri'
 
+import IconButton from 'components/form/IconButton'
 import { type PaletteProps } from 'components/palette/Palette'
 import { ContentType } from 'constants/contentType'
 import { SEARCH_QUERY_MIN_LENGTH } from 'constants/search'
@@ -17,7 +18,10 @@ const Palette = dynamic<PaletteProps<SearchResultData>>(import('components/palet
 const SearchPalette: React.FC = () => {
   const { push } = useRouter()
 
+  const triggerRef = useRef<HTMLButtonElement | null>(null)
   const paletteTextInputRef = useRef<HTMLInputElement | null>(null)
+
+  const triggerUsefRef = useRef(false)
 
   const [opened, setOpened] = useState(false)
   const [query, setQuery] = useState<string | undefined>('')
@@ -35,6 +39,8 @@ const SearchPalette: React.FC = () => {
           onKeyDown: (event) => {
             event.preventDefault()
 
+            triggerUsefRef.current = false
+
             setOpened(true)
 
             if (paletteTextInputRef.current && query && query.length > 0) {
@@ -46,6 +52,20 @@ const SearchPalette: React.FC = () => {
       [query]
     )
   )
+
+  function onPressTrigger() {
+    triggerUsefRef.current = true
+
+    setOpened(true)
+  }
+
+  function onOpenChange(newOpened: boolean) {
+    setOpened(newOpened)
+
+    if (!newOpened && triggerUsefRef.current) {
+      triggerRef.current?.focus()
+    }
+  }
 
   function itemToString(item: SearchResultData | null) {
     return item?.name ?? ''
@@ -74,25 +94,28 @@ const SearchPalette: React.FC = () => {
   }
 
   return (
-    <Palette
-      fuzzy={false}
-      opened={opened}
-      onPick={onPick}
-      initialQuery={query}
-      isLoading={isLoading}
-      itemToIcon={itemToIcon}
-      onOpenChange={setOpened}
-      onQueryChange={setQuery}
-      loadMore={fetchNextPage}
-      itemToString={itemToString}
-      items={data?.pages.flat() ?? []}
-      forwardedRef={paletteTextInputRef}
-      isLoadingMore={isFetchingNextPage}
-      minQueryLength={SEARCH_QUERY_MIN_LENGTH}
-      itemDetailsToString={itemDetailsToString}
-      infinite={hasNextPage && !isFetchingNextPage}
-      placeholder={`Search (min. ${SEARCH_QUERY_MIN_LENGTH} characters)`}
-    />
+    <>
+      <IconButton icon={RiSearchLine} tooltip="Search" onPress={onPressTrigger} ref={triggerRef} />
+      <Palette
+        fuzzy={false}
+        opened={opened}
+        onPick={onPick}
+        initialQuery={query}
+        isLoading={isLoading}
+        itemToIcon={itemToIcon}
+        onQueryChange={setQuery}
+        loadMore={fetchNextPage}
+        onOpenChange={onOpenChange}
+        itemToString={itemToString}
+        items={data?.pages.flat() ?? []}
+        forwardedRef={paletteTextInputRef}
+        isLoadingMore={isFetchingNextPage}
+        minQueryLength={SEARCH_QUERY_MIN_LENGTH}
+        itemDetailsToString={itemDetailsToString}
+        infinite={hasNextPage && !isFetchingNextPage}
+        placeholder={`Search (min. ${SEARCH_QUERY_MIN_LENGTH} characters)`}
+      />
+    </>
   )
 }
 
