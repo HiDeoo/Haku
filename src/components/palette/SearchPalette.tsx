@@ -61,11 +61,13 @@ const SearchPalette: React.FC = () => {
     setOpened(true)
   }
 
-  function onOpenChange(newOpened: boolean) {
-    setOpened(newOpened)
+  function onOpenChange(opened: boolean) {
+    setOpened(opened)
 
-    if (!newOpened && triggerUsefRef.current) {
-      triggerRef.current?.focus()
+    if (!opened && triggerUsefRef.current) {
+      requestAnimationFrame(() => {
+        triggerRef.current?.focus()
+      })
     }
   }
 
