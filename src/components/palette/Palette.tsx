@@ -29,10 +29,12 @@ const Palette = <TItem,>(props: PaletteProps<TItem>) => {
 export default Palette
 
 export interface PaletteProps<TItem> {
+  fuzzy?: boolean
   infinite?: boolean
   initialQuery?: string
   isLoading?: boolean
   isLoadingMore?: boolean
+  itemDetailsToString?: (item: TItem | null) => string
   items: TItem[]
   itemToIcon?: (item: TItem | null) => IconProps['icon'] | null
   itemToString: (item: TItem | null) => string

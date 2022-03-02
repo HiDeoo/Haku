@@ -1,0 +1,11 @@
+.itemDetails {
+  strong {
+    @apply font-semibold text-blue-400;
+  }
+
+  &:global(.highlighted) {
+    strong {
+      @apply text-blue-300;
+    }
+  }
+}

@@ -25,7 +25,7 @@ const SearchPalette: React.FC = () => {
         {
           group: 'Miscellaneous',
           keybinding: 'Meta+Shift+F',
-          label: 'Search',
+          label: 'Search in Notes and Todos',
           onKeyDown: (event) => {
             event.preventDefault()
 
@@ -49,12 +49,17 @@ const SearchPalette: React.FC = () => {
     return item.type === ContentType.NOTE ? RiBookletLine : RiTodoLine
   }
 
+  function itemDetailsToString(item: SearchResultData | null) {
+    return item?.excerpt ?? ''
+  }
+
   function onPick(item: SearchResultData | null | undefined) {
     console.log('item ', item)
   }
 
   return (
     <Palette
+      fuzzy={false}
       opened={opened}
       onPick={onPick}
       initialQuery={query}
@@ -66,9 +71,10 @@ const SearchPalette: React.FC = () => {
       itemToString={itemToString}
       items={data?.pages.flat() ?? []}
       isLoadingMore={isFetchingNextPage}
-      placeholder="Search (min. 3 characters)"
       minQueryLength={SEARCH_QUERY_MIN_LENGTH}
+      itemDetailsToString={itemDetailsToString}
       infinite={hasNextPage && !isFetchingNextPage}
+      placeholder={`Search (min. ${SEARCH_QUERY_MIN_LENGTH} characters)`}
     />
   )
 }

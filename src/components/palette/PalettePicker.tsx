@@ -14,14 +14,17 @@ import Spinner from 'components/ui/Spinner'
 import useIntersectionObserver from 'hooks/useIntersectionObserver'
 import { getShortcutMap, isShortcutEvent } from 'libs/shortcut'
 import clst from 'styles/clst'
+import styles from 'styles/PalettePicker.module.css'
 
 const shortcutMap = getShortcutMap([{ keybinding: 'Escape' }])
 
 const PalettePicker = <TItem,>({
+  fuzzy = true,
   infinite = false,
   initialQuery = '',
   isLoading,
   isLoadingMore,
+  itemDetailsToString,
   items,
   itemToIcon,
   itemToString,
@@ -65,6 +68,12 @@ const PalettePicker = <TItem,>({
 
   const updateFilteredItems = useCallback(
     (inputValue?: string) => {
+      if (!fuzzy) {
+        setFilteredItems(items)
+
+        return
+      }
+
       const needle = inputValue?.toLowerCase() ?? ''
       const results = inputValue
         ? fuzzaldrin.filter(searchableItems, needle, { key: 'str' }).map((result) => result.item)
@@ -72,7 +81,7 @@ const PalettePicker = <TItem,>({
 
       setFilteredItems(results)
     },
-    [items, searchableItems]
+    [fuzzy, items, searchableItems]
   )
 
   useEffect(() => {
@@ -169,6 +178,11 @@ const PalettePicker = <TItem,>({
               const menuItemClasses = clst(baseMenuItemClasses, 'flex gap-3 items-center', {
                 'bg-blue-600': isHighlighted,
               })
+              const itemDetailsClasses = clst(
+                styles.itemDetails,
+                { highlighted: isHighlighted },
+                'truncate text-xs italic text-zinc-400'
+              )
 
               return (
                 <li {...getItemProps({ className: menuItemClasses, item, index })} key={`${itemStr}-${index}`}>
@@ -180,11 +194,18 @@ const PalettePicker = <TItem,>({
                       key={`${itemStr}-${index}-icon`}
                     />
                   ) : null}
-                  <span
-                    className="truncate"
-                    key={`${itemStr}-${index}-label`}
-                    dangerouslySetInnerHTML={{ __html: renderFilteredItem(item, isHighlighted) }}
-                  />
+                  <div className="min-w-0" key={`${itemStr}-${index}-label`}>
+                    <div
+                      className="truncate"
+                      dangerouslySetInnerHTML={{ __html: renderFilteredItem(item, isHighlighted).repeat(10) }}
+                    />
+                    {itemDetailsToString ? (
+                      <div
+                        className={itemDetailsClasses}
+                        dangerouslySetInnerHTML={{ __html: itemDetailsToString(item).repeat(10) }}
+                      />
+                    ) : null}
+                  </div>
                 </li>
               )
             })}
