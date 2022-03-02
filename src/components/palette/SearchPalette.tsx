@@ -1,8 +1,10 @@
+import { useAtom } from 'jotai'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { useMemo, useRef, useState } from 'react'
 import { RiBookletLine, RiSearchLine, RiTodoLine } from 'react-icons/ri'
 
+import { searchPaletteOpenedAtom } from 'atoms/palette'
 import IconButton from 'components/form/IconButton'
 import { type PaletteProps } from 'components/palette/Palette'
 import { ContentType } from 'constants/contentType'
@@ -23,7 +25,7 @@ const SearchPalette: React.FC = () => {
 
   const triggerUsefRef = useRef(false)
 
-  const [opened, setOpened] = useState(false)
+  const [opened, setOpened] = useAtom(searchPaletteOpenedAtom)
   const [query, setQuery] = useState<string | undefined>('')
   const debouncedQuery = useDebouncedValue(query, 300)
 
@@ -49,7 +51,7 @@ const SearchPalette: React.FC = () => {
           },
         },
       ],
-      [query]
+      [setOpened, query]
     )
   )
 
