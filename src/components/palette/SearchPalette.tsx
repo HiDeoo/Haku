@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { RiBookletLine, RiTodoLine } from 'react-icons/ri'
 
 import { type PaletteProps } from 'components/palette/Palette'
@@ -16,6 +16,8 @@ const Palette = dynamic<PaletteProps<SearchResultData>>(import('components/palet
 
 const SearchPalette: React.FC = () => {
   const { push } = useRouter()
+
+  const paletteTextInputRef = useRef<HTMLInputElement | null>(null)
 
   const [opened, setOpened] = useState(false)
   const [query, setQuery] = useState<string | undefined>('')
@@ -34,10 +36,14 @@ const SearchPalette: React.FC = () => {
             event.preventDefault()
 
             setOpened(true)
+
+            if (paletteTextInputRef.current && query && query.length > 0) {
+              paletteTextInputRef.current.select()
+            }
           },
         },
       ],
-      []
+      [query]
     )
   )
 
@@ -80,6 +86,7 @@ const SearchPalette: React.FC = () => {
       loadMore={fetchNextPage}
       itemToString={itemToString}
       items={data?.pages.flat() ?? []}
+      forwardedRef={paletteTextInputRef}
       isLoadingMore={isFetchingNextPage}
       minQueryLength={SEARCH_QUERY_MIN_LENGTH}
       itemDetailsToString={itemDetailsToString}

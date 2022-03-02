@@ -5,7 +5,7 @@ import {
   type UseComboboxStateChange,
 } from 'downshift'
 import fuzzaldrin from 'fuzzaldrin-plus'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { forwardRef, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import TextInput from 'components/form/TextInput'
 import { type PaletteProps } from 'components/palette/Palette'
@@ -18,23 +18,26 @@ import styles from 'styles/PalettePicker.module.css'
 
 const shortcutMap = getShortcutMap([{ keybinding: 'Escape' }])
 
-const PalettePicker = <TItem,>({
-  fuzzy = true,
-  infinite = false,
-  initialQuery = '',
-  isLoading,
-  isLoadingMore,
-  itemDetailsToString,
-  items,
-  itemToIcon,
-  itemToString,
-  loadMore,
-  minQueryLength = 1,
-  onOpenChange,
-  onPick,
-  onQueryChange,
-  placeholder,
-}: PaletteProps<TItem>) => {
+const PalettePicker = <TItem,>(
+  {
+    fuzzy = true,
+    infinite = false,
+    initialQuery = '',
+    isLoading,
+    isLoadingMore,
+    itemDetailsToString,
+    items,
+    itemToIcon,
+    itemToString,
+    loadMore,
+    minQueryLength = 1,
+    onOpenChange,
+    onPick,
+    onQueryChange,
+    placeholder,
+  }: PaletteProps<TItem>,
+  forwardedRef: React.ForwardedRef<HTMLInputElement>
+) => {
   const inputValueRef = useRef('')
   const infiniteRef = useRef<HTMLLIElement | null>(null)
 
@@ -157,6 +160,7 @@ const PalettePicker = <TItem,>({
             onKeyDown,
             onBlur,
             placeholder,
+            ref: forwardedRef,
             spellCheck: false,
           })}
         />
@@ -197,12 +201,12 @@ const PalettePicker = <TItem,>({
                   <div className="min-w-0" key={`${itemStr}-${index}-label`}>
                     <div
                       className="truncate"
-                      dangerouslySetInnerHTML={{ __html: renderFilteredItem(item, isHighlighted).repeat(10) }}
+                      dangerouslySetInnerHTML={{ __html: renderFilteredItem(item, isHighlighted) }}
                     />
                     {itemDetailsToString ? (
                       <div
                         className={itemDetailsClasses}
-                        dangerouslySetInnerHTML={{ __html: itemDetailsToString(item).repeat(10) }}
+                        dangerouslySetInnerHTML={{ __html: itemDetailsToString(item) }}
                       />
                     ) : null}
                   </div>
@@ -217,4 +221,8 @@ const PalettePicker = <TItem,>({
   )
 }
 
-export default PalettePicker
+PalettePicker.displayName = 'PalettePicker'
+
+export default forwardRef(PalettePicker) as <TItem>(
+  props: PaletteProps<TItem> & { ref?: React.ForwardedRef<HTMLInputElement> }
+) => ReturnType<typeof PalettePicker>
