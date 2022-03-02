@@ -81,7 +81,10 @@ model Note {
   folderId String?
   folder   Folder? @relation(fields: [folderId], references: [id], onDelete: Cascade)
 
+  searchVector Unsupported("TSVECTOR")?
+
   @@unique([folderId, userId, name], map: "Note_folderId_userId_name_unique_constraint")
+  @@index([searchVector], name: "Note_searchVector_index")
 }
 
 model Todo {
@@ -99,7 +102,10 @@ model Todo {
 
   nodes TodoNode[]
 
+  searchVector Unsupported("TSVECTOR")?
+
   @@unique([folderId, userId, name], map: "Todo_folderId_userId_name_unique_constraint")
+  @@index([searchVector], name: "Todo_searchVector_index")
 }
 
 model TodoNode {
@@ -114,4 +120,8 @@ model TodoNode {
 
   todoId String?
   todo   Todo?   @relation(fields: [todoId], references: [id])
+
+  searchVector Unsupported("TSVECTOR")?
+
+  @@index([searchVector], name: "TodoNode_searchVector_index")
 }

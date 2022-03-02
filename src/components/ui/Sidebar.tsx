@@ -6,6 +6,7 @@ import ContentTypeSwitch from 'components/content/ContentTypeSwitch'
 import IconButton from 'components/form/IconButton'
 import CommandPalette from 'components/palette/CommandPalette'
 import NavigationPalette from 'components/palette/NavigationPalette'
+import SearchPalette from 'components/palette/SearchPalette'
 import Flex from 'components/ui/Flex'
 import { logout } from 'libs/auth'
 
@@ -27,6 +28,7 @@ const Sidebar: React.FC = () => {
           <ContentTypeSwitch />
           <ContentModal />
           <FolderModal />
+          <SearchPalette />
           <ShortcutModal />
           <IconButton icon={RiLogoutCircleRLine} onPress={logout} tooltip="Logout" />
         </Flex>

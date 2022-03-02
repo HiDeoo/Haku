@@ -5,7 +5,7 @@ import { type IconProps } from 'components/ui/Icon'
 import { MODAL_CONTENT_CLASSES, MODAL_OVERLAY_CLASSES } from 'components/ui/Modal'
 import clst from 'styles/clst'
 
-const Palette = <TItem,>(props: PaletteProps<TItem>) => {
+const Palette = <TItem,>({ forwardedRef, ...props }: PaletteProps<TItem>) => {
   const overlayClasses = clst(MODAL_OVERLAY_CLASSES, 'pt-0')
 
   const contentClasses = clst(
@@ -18,7 +18,7 @@ const Palette = <TItem,>(props: PaletteProps<TItem>) => {
       <Portal>
         <Overlay className={overlayClasses}>
           <Content className={contentClasses}>
-            <PalettePicker {...props} />
+            <PalettePicker {...props} ref={forwardedRef} />
           </Content>
         </Overlay>
       </Portal>
@@ -29,12 +29,21 @@ const Palette = <TItem,>(props: PaletteProps<TItem>) => {
 export default Palette
 
 export interface PaletteProps<TItem> {
+  forwardedRef?: React.ForwardedRef<HTMLInputElement>
+  fuzzy?: boolean
+  infinite?: boolean
+  initialQuery?: string
   isLoading?: boolean
+  isLoadingMore?: boolean
+  itemDetailsToString?: (item: TItem | null) => string
   items: TItem[]
   itemToIcon?: (item: TItem | null) => IconProps['icon'] | null
   itemToString: (item: TItem | null) => string
+  loadMore?: () => void
+  minQueryLength?: number
   onOpenChange: (opened: boolean) => void
   onPick: (item: TItem | null | undefined) => void
+  onQueryChange?: (query?: string) => void
   opened?: boolean
   placeholder: string
 }

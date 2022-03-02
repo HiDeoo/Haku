@@ -1,17 +1,21 @@
+import { useAtom } from 'jotai'
 import { useUpdateAtom } from 'jotai/utils'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import {
   RiBookletLine,
   RiFileAddLine,
   RiFolderAddLine,
   RiKeyboardFill,
+  RiLink,
   RiLogoutCircleRLine,
+  RiSearchLine,
   RiTodoLine,
 } from 'react-icons/ri'
 
 import { setContentModalOpenedAtom, setFolderModalOpenedAtom, setShortcutModalOpenedAtom } from 'atoms/modal'
+import { commandPaletteOpenedAtom, navigationPaletteOpenedAtom, searchPaletteOpenedAtom } from 'atoms/palette'
 import { type PaletteProps } from 'components/palette/Palette'
 import { type IconProps } from 'components/ui/Icon'
 import useContentType, { ContentType, getContentType } from 'hooks/useContentType'
@@ -23,7 +27,10 @@ const Palette = dynamic<PaletteProps<Command>>(import('components/palette/Palett
 const CommandPalette: React.FC = () => {
   const { push } = useRouter()
 
-  const [opened, setOpened] = useState(false)
+  const [opened, setOpened] = useAtom(commandPaletteOpenedAtom)
+
+  const setNavigationPaletteOpened = useUpdateAtom(navigationPaletteOpenedAtom)
+  const setSearchPaletteOpened = useUpdateAtom(searchPaletteOpenedAtom)
 
   const { cType, type } = useContentType()
   const isBrowsingNotes = type === ContentType.NOTE
@@ -48,7 +55,7 @@ const CommandPalette: React.FC = () => {
           },
         },
       ],
-      []
+      [setOpened]
     )
   )
 
@@ -66,6 +73,20 @@ const CommandPalette: React.FC = () => {
         icon: RiFolderAddLine,
         action: () => {
           setFolderModalOpened(true)
+        },
+      },
+      {
+        name: 'Search in Notes and Todos',
+        icon: RiSearchLine,
+        action: () => {
+          setSearchPaletteOpened(true)
+        },
+      },
+      {
+        name: 'Go to Note or Todo',
+        icon: RiLink,
+        action: () => {
+          setNavigationPaletteOpened(true)
         },
       },
       {
@@ -90,7 +111,17 @@ const CommandPalette: React.FC = () => {
         },
       },
     ],
-    [altContentType, altIcon, cType, push, setContentModalOpened, setFolderModalOpened, setShortcutModalOpened]
+    [
+      altContentType,
+      altIcon,
+      cType,
+      push,
+      setContentModalOpened,
+      setFolderModalOpened,
+      setNavigationPaletteOpened,
+      setSearchPaletteOpened,
+      setShortcutModalOpened,
+    ]
   )
 
   function itemToString(item: Command | null) {

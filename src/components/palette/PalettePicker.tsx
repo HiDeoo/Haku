@@ -5,27 +5,41 @@ import {
   type UseComboboxStateChange,
 } from 'downshift'
 import fuzzaldrin from 'fuzzaldrin-plus'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { forwardRef, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import TextInput from 'components/form/TextInput'
 import { type PaletteProps } from 'components/palette/Palette'
 import Icon from 'components/ui/Icon'
 import Spinner from 'components/ui/Spinner'
+import useIntersectionObserver from 'hooks/useIntersectionObserver'
 import { getShortcutMap, isShortcutEvent } from 'libs/shortcut'
 import clst from 'styles/clst'
+import styles from 'styles/PalettePicker.module.css'
 
 const shortcutMap = getShortcutMap([{ keybinding: 'Escape' }])
 
-const PalettePicker = <TItem,>({
-  isLoading,
-  items,
-  itemToIcon,
-  itemToString,
-  onOpenChange,
-  onPick,
-  placeholder,
-}: PaletteProps<TItem>) => {
+const PalettePicker = <TItem,>(
+  {
+    fuzzy = true,
+    infinite = false,
+    initialQuery = '',
+    isLoading,
+    isLoadingMore,
+    itemDetailsToString,
+    items,
+    itemToIcon,
+    itemToString,
+    loadMore,
+    minQueryLength = 1,
+    onOpenChange,
+    onPick,
+    onQueryChange,
+    placeholder,
+  }: PaletteProps<TItem>,
+  forwardedRef: React.ForwardedRef<HTMLInputElement>
+) => {
   const inputValueRef = useRef('')
+  const infiniteRef = useRef<HTMLLIElement | null>(null)
 
   const [filteredItems, setFilteredItems] = useState(items)
 
@@ -34,17 +48,35 @@ const PalettePicker = <TItem,>({
   const { getComboboxProps, getInputProps, getItemProps, getMenuProps, highlightedIndex, inputValue } = useCombobox({
     circularNavigation: true,
     initialHighlightedIndex: 0,
+    initialInputValue: initialQuery,
     isOpen: true,
     items: filteredItems,
     itemToString,
+    onInputValueChange,
     onSelectedItemChange,
     stateReducer,
   })
+
+  const isInfiniteEnabled = infinite && !isLoading && filteredItems.length > 0 && typeof loadMore === 'function'
+
+  const shouldLoadMore = useIntersectionObserver(infiniteRef, { enabled: isInfiniteEnabled })
+
+  useEffect(() => {
+    if (isInfiniteEnabled && shouldLoadMore && loadMore) {
+      loadMore()
+    }
+  }, [isInfiniteEnabled, loadMore, shouldLoadMore])
 
   inputValueRef.current = inputValue
 
   const updateFilteredItems = useCallback(
     (inputValue?: string) => {
+      if (!fuzzy) {
+        setFilteredItems(items)
+
+        return
+      }
+
       const needle = inputValue?.toLowerCase() ?? ''
       const results = inputValue
         ? fuzzaldrin.filter(searchableItems, needle, { key: 'str' }).map((result) => result.item)
@@ -52,7 +84,7 @@ const PalettePicker = <TItem,>({
 
       setFilteredItems(results)
     },
-    [items, searchableItems]
+    [fuzzy, items, searchableItems]
   )
 
   useEffect(() => {
@@ -80,6 +112,12 @@ const PalettePicker = <TItem,>({
       default: {
         return changes
       }
+    }
+  }
+
+  function onInputValueChange(changes: UseComboboxStateChange<TItem>) {
+    if (onQueryChange) {
+      onQueryChange(changes.inputValue)
     }
   }
 
@@ -111,57 +149,80 @@ const PalettePicker = <TItem,>({
   }
 
   const baseMenuItemClasses = 'px-3 py-1.5 cursor-pointer text-ellipsis overflow-hidden'
+  const showLoadingSpinner = isLoading || isLoadingMore
 
   return (
     <>
       <div {...getComboboxProps({ className: 'relative p-3' })}>
         <TextInput
           {...getInputProps({
-            className: isLoading ? 'pr-8' : undefined,
+            className: showLoadingSpinner ? 'pr-8' : undefined,
             onKeyDown,
             onBlur,
             placeholder,
+            ref: forwardedRef,
             spellCheck: false,
           })}
         />
-        {isLoading ? <Spinner className="absolute right-5 bottom-1/3 my-0.5 h-4 w-4" color="text-blue-50/80" /> : null}
+        {showLoadingSpinner ? (
+          <Spinner className="absolute right-5 bottom-1/3 my-0.5 h-4 w-4" color="text-blue-50/80" />
+        ) : null}
       </div>
       <ul {...getMenuProps({ className: 'h-full overflow-y-auto' })}>
-        {(filteredItems.length === 0 && inputValue.length > 0) || isLoading ? (
+        {(filteredItems.length === 0 && inputValue.length >= minQueryLength) || isLoading ? (
           <li className={clst(baseMenuItemClasses, 'mb-1.5 opacity-75')}>
             {isLoading ? 'Loading…' : 'No matching results'}
           </li>
         ) : (
-          filteredItems.map((item, index) => {
-            const itemStr = itemToString(item)
-            const itemIcon = itemToIcon ? itemToIcon(item) : undefined
-            const isHighlighted = highlightedIndex === index
-            const menuItemClasses = clst(baseMenuItemClasses, 'flex gap-3 items-center', {
-              'bg-blue-600': isHighlighted,
-            })
+          <>
+            {filteredItems.map((item, index) => {
+              const itemStr = itemToString(item)
+              const itemIcon = itemToIcon ? itemToIcon(item) : undefined
+              const isHighlighted = highlightedIndex === index
+              const menuItemClasses = clst(baseMenuItemClasses, 'flex gap-3 items-center', {
+                'bg-blue-600': isHighlighted,
+              })
+              const itemDetailsClasses = clst(
+                styles.itemDetails,
+                { highlighted: isHighlighted },
+                'truncate text-xs italic text-zinc-400'
+              )
 
-            return (
-              <li {...getItemProps({ className: menuItemClasses, item, index })} key={`${itemStr}-${index}`}>
-                {itemIcon ? (
-                  <Icon
-                    icon={itemIcon}
-                    label={itemStr}
-                    className="shrink-0 opacity-70"
-                    key={`${itemStr}-${index}-icon`}
-                  />
-                ) : null}
-                <span
-                  className="truncate"
-                  key={`${itemStr}-${index}-label`}
-                  dangerouslySetInnerHTML={{ __html: renderFilteredItem(item, isHighlighted) }}
-                />
-              </li>
-            )
-          })
+              return (
+                <li {...getItemProps({ className: menuItemClasses, item, index })} key={`${itemStr}-${index}`}>
+                  {itemIcon ? (
+                    <Icon
+                      icon={itemIcon}
+                      label={itemStr}
+                      className="shrink-0 opacity-70"
+                      key={`${itemStr}-${index}-icon`}
+                    />
+                  ) : null}
+                  <div className="min-w-0" key={`${itemStr}-${index}-label`}>
+                    <div
+                      className="truncate"
+                      dangerouslySetInnerHTML={{ __html: renderFilteredItem(item, isHighlighted) }}
+                    />
+                    {itemDetailsToString ? (
+                      <div
+                        className={itemDetailsClasses}
+                        dangerouslySetInnerHTML={{ __html: itemDetailsToString(item) }}
+                      />
+                    ) : null}
+                  </div>
+                </li>
+              )
+            })}
+            {isInfiniteEnabled ? <li ref={infiniteRef}>load more</li> : null}
+          </>
         )}
       </ul>
     </>
   )
 }
 
-export default PalettePicker
+PalettePicker.displayName = 'PalettePicker'
+
+export default forwardRef(PalettePicker) as <TItem>(
+  props: PaletteProps<TItem> & { ref?: React.ForwardedRef<HTMLInputElement> }
+) => ReturnType<typeof PalettePicker>

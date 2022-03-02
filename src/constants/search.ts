@@ -1,0 +1,2 @@
+export const SEARCH_QUERY_MIN_LENGTH = 3
+export const SEARCH_RESULT_LIMIT = 25

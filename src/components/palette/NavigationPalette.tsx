@@ -1,8 +1,10 @@
+import { useAtom } from 'jotai'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { RiBookletLine, RiTodoLine } from 'react-icons/ri'
 
+import { navigationPaletteOpenedAtom } from 'atoms/palette'
 import { type PaletteProps } from 'components/palette/Palette'
 import { ContentType, getContentType } from 'hooks/useContentType'
 import useFiles from 'hooks/useFiles'
@@ -14,7 +16,7 @@ const Palette = dynamic<PaletteProps<FileData>>(import('components/palette/Palet
 const NavigationPalette: React.FC = () => {
   const { push } = useRouter()
 
-  const [opened, setOpened] = useState(false)
+  const [opened, setOpened] = useAtom(navigationPaletteOpenedAtom)
 
   const { data, isLoading } = useFiles(opened)
 
@@ -32,7 +34,7 @@ const NavigationPalette: React.FC = () => {
           },
         },
       ],
-      []
+      [setOpened]
     )
   )
 
