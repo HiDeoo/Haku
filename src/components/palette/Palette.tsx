@@ -32,6 +32,7 @@ export interface PaletteProps<TItem> {
   infinite?: boolean
   initialQuery?: string
   isLoading?: boolean
+  isLoadingMore?: boolean
   items: TItem[]
   itemToIcon?: (item: TItem | null) => IconProps['icon'] | null
   itemToString: (item: TItem | null) => string

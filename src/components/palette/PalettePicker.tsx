@@ -21,6 +21,7 @@ const PalettePicker = <TItem,>({
   infinite = false,
   initialQuery = '',
   isLoading,
+  isLoadingMore,
   items,
   itemToIcon,
   itemToString,
@@ -136,20 +137,23 @@ const PalettePicker = <TItem,>({
   }
 
   const baseMenuItemClasses = 'px-3 py-1.5 cursor-pointer text-ellipsis overflow-hidden'
+  const showLoadingSpinner = isLoading || isLoadingMore
 
   return (
     <>
       <div {...getComboboxProps({ className: 'relative p-3' })}>
         <TextInput
           {...getInputProps({
-            className: isLoading ? 'pr-8' : undefined,
+            className: showLoadingSpinner ? 'pr-8' : undefined,
             onKeyDown,
             onBlur,
             placeholder,
             spellCheck: false,
           })}
         />
-        {isLoading ? <Spinner className="absolute right-5 bottom-1/3 my-0.5 h-4 w-4" color="text-blue-50/80" /> : null}
+        {showLoadingSpinner ? (
+          <Spinner className="absolute right-5 bottom-1/3 my-0.5 h-4 w-4" color="text-blue-50/80" />
+        ) : null}
       </div>
       <ul {...getMenuProps({ className: 'h-full overflow-y-auto' })}>
         {(filteredItems.length === 0 && inputValue.length >= minQueryLength) || isLoading ? (

@@ -65,6 +65,7 @@ const SearchPalette: React.FC = () => {
       loadMore={fetchNextPage}
       itemToString={itemToString}
       items={data?.pages.flat() ?? []}
+      isLoadingMore={isFetchingNextPage}
       placeholder="Search (min. 3 characters)"
       minQueryLength={SEARCH_QUERY_MIN_LENGTH}
       infinite={hasNextPage && !isFetchingNextPage}
