@@ -5,6 +5,7 @@ import { RiBookletLine, RiTodoLine } from 'react-icons/ri'
 import { type PaletteProps } from 'components/palette/Palette'
 import { ContentType } from 'constants/contentType'
 import { SEARCH_QUERY_MIN_LENGTH } from 'constants/search'
+import useDebouncedValue from 'hooks/useDebouncedValue'
 import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
 import useSearch from 'hooks/useSearch'
 import { type SearchResultData } from 'libs/db/file'
@@ -14,8 +15,9 @@ const Palette = dynamic<PaletteProps<SearchResultData>>(import('components/palet
 const SearchPalette: React.FC = () => {
   const [opened, setOpened] = useState(false)
   const [query, setQuery] = useState<string | undefined>('')
+  const debouncedQuery = useDebouncedValue(query, 300)
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useSearch(opened, query)
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useSearch(opened, debouncedQuery)
 
   useGlobalShortcuts(
     useMemo(
