@@ -57,7 +57,7 @@ const NavigationPalette: React.FC = () => {
 
     const { urlPath } = getContentType(item.type)
 
-    push(`${urlPath}/${item.id}`)
+    push(`${urlPath}/${item.id}/${item.slug}`)
   }
 
   return (
