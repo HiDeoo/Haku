@@ -14,8 +14,8 @@ import { TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS } from 'constants/ui'
 import useLocalShortcuts from 'hooks/useLocalShortcuts'
 import useNavigationPrompt from 'hooks/useNavigationPrompt'
 import useRouteChange from 'hooks/useRouteChange'
-import useTodo from 'hooks/useTodo'
 import { TodoContext, todoNodeContentRefs } from 'hooks/useTodoNode'
+import useTodoQuery from 'hooks/useTodoQuery'
 import { type TodoMetadata } from 'libs/db/todo'
 import { type TodoNodeData } from 'libs/db/todoNodes'
 
@@ -41,7 +41,7 @@ const Todo: React.FC<TodoProps> = ({ id }) => {
 
   useLocalShortcuts(TODO_NODE_ITEM_SHORTCUTS)
 
-  const { isLoading } = useTodo(id, {
+  const { isLoading } = useTodoQuery(id, {
     enabled: pristine,
     onSuccess: ({ children, nodes }) => {
       setTodoChildren(children)

@@ -3,7 +3,7 @@ import { useQuery } from 'react-query'
 import client from 'libs/api/client'
 import { type FilesData } from 'libs/db/file'
 
-export default function useFiles(enabled: boolean) {
+export default function useFilesQuery(enabled: boolean) {
   return useQuery<FilesData>('files', getFiles, { enabled })
 }
 

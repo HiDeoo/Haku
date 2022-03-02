@@ -4,7 +4,7 @@ import client, { isNetworkError } from 'libs/api/client'
 import { type TodoMetadata } from 'libs/db/todo'
 import { type TodoNodesData } from 'libs/db/todoNodes'
 
-export default function useTodo(id: TodoMetadata['id'], options?: UseQueryOptions<TodoNodesData>) {
+export default function useTodoQuery(id: TodoMetadata['id'], options?: UseQueryOptions<TodoNodesData>) {
   return useQuery<TodoNodesData>(
     ['todo', id],
     () => {

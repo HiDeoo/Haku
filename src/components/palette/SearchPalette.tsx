@@ -12,7 +12,7 @@ import { SEARCH_QUERY_MIN_LENGTH } from 'constants/search'
 import { getContentType } from 'hooks/useContentType'
 import useDebouncedValue from 'hooks/useDebouncedValue'
 import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
-import useSearch from 'hooks/useSearch'
+import useSearchQuery from 'hooks/useSearchQuery'
 import { type SearchResultData } from 'libs/db/file'
 
 const Palette = dynamic<PaletteProps<SearchResultData>>(import('components/palette/Palette'))
@@ -29,7 +29,7 @@ const SearchPalette: React.FC = () => {
   const [query, setQuery] = useState<string | undefined>('')
   const debouncedQuery = useDebouncedValue(query, 300)
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useSearch(opened, debouncedQuery)
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useSearchQuery(opened, debouncedQuery)
 
   useGlobalShortcuts(
     useMemo(

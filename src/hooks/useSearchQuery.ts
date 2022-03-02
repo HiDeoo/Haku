@@ -5,7 +5,7 @@ import { SEARCH_QUERY_MIN_LENGTH, SEARCH_RESULT_LIMIT } from 'constants/search'
 import client from 'libs/api/client'
 import { type SearchResulstData } from 'libs/db/file'
 
-export default function useSearch(enabled: boolean, query?: string) {
+export default function useSearchQuery(enabled: boolean, query?: string) {
   const sanitizedQuery = query ? query.trim() : ''
 
   return useInfiniteQuery(
