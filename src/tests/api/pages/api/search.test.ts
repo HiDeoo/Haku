@@ -2,6 +2,7 @@ import faker from '@faker-js/faker'
 import StatusCode from 'status-code-enum'
 
 import { HttpMethod } from 'constants/http'
+import { SEARCH_RESULT_LIMIT } from 'constants/search'
 import { ApiErrorResponse, API_ERROR_SEARCH_QUERY_TOO_SHORT } from 'libs/api/routes/errors'
 import { type SearchResulstData } from 'libs/db/file'
 import indexHandler from 'pages/api/search'
@@ -491,21 +492,24 @@ describe('search', () => {
           { dynamicRouteParams: { q: 'amazing -name' } }
         ))
 
-      test('should return at most 25 results per page', () =>
+      test('should return at most `SEARCH_RESULT_LIMIT` results per page', () =>
         testApiRoute(
           indexHandler,
           async ({ fetch }) => {
-            // 2 pages: 25 + 1
-            const names = Array.from({ length: 26 }, (_, index) => `amazing name ${'a'.repeat(index + 1)}`)
+            // 2 pages: `SEARCH_RESULT_LIMIT` + 1
+            const names = Array.from(
+              { length: SEARCH_RESULT_LIMIT + 1 },
+              (_, index) => `amazing name ${'a'.repeat(index + 1)}`
+            )
 
-            for (let index = 0; index < 26; index++) {
+            for (let index = 0; index < names.length; index++) {
               await createTestNote({ name: names[index] })
             }
 
             const res = await fetch({ method: HttpMethod.GET })
             const json = await res.json<SearchResulstData>()
 
-            expect(json.length).toBe(25)
+            expect(json.length).toBe(SEARCH_RESULT_LIMIT)
 
             expect(json[0]?.name).toBe(names[0])
             expect(json[json.length - 1]?.name).toBe(names[24])
@@ -514,7 +518,7 @@ describe('search', () => {
         ))
 
       test('should return paginated results', async () => {
-        // 3 pages: 25 + 25 + 2
+        // 3 pages: `SEARCH_RESULT_LIMIT` + `SEARCH_RESULT_LIMIT` + 2
         const names = Array.from({ length: 52 }, (_, index) => `amazing name ${'a'.repeat(index + 1)}`)
 
         for (let index = 0; index < names.length; index++) {
@@ -527,10 +531,10 @@ describe('search', () => {
             const res = await fetch({ method: HttpMethod.GET })
             const json = await res.json<SearchResulstData>()
 
-            expect(json.length).toBe(25)
+            expect(json.length).toBe(SEARCH_RESULT_LIMIT)
 
             expect(json[0]?.name).toBe(names[0])
-            expect(json[24]?.name).toBe(names[24])
+            expect(json[24]?.name).toBe(names[SEARCH_RESULT_LIMIT - 1])
           },
           { dynamicRouteParams: { q: 'amazing' } }
         )
@@ -541,10 +545,10 @@ describe('search', () => {
             const res = await fetch({ method: HttpMethod.GET })
             const json = await res.json<SearchResulstData>()
 
-            expect(json.length).toBe(25)
+            expect(json.length).toBe(SEARCH_RESULT_LIMIT)
 
-            expect(json[0]?.name).toBe(names[25])
-            expect(json[24]?.name).toBe(names[49])
+            expect(json[0]?.name).toBe(names[SEARCH_RESULT_LIMIT])
+            expect(json[24]?.name).toBe(names[SEARCH_RESULT_LIMIT * 2 - 1])
           },
           { dynamicRouteParams: { q: 'amazing', page: '1' } }
         )
