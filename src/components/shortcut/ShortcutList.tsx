@@ -1,6 +1,6 @@
 import { Root as VisuallyHidden } from '@radix-ui/react-visually-hidden'
 import { useAtomValue } from 'jotai/utils'
-import { Fragment } from 'react'
+import { Fragment, useMemo } from 'react'
 
 import { globalShortcutsAtom, localShortcutsAtom } from 'atoms/shortcuts'
 import Flex from 'components/ui/Flex'
@@ -9,18 +9,24 @@ import { type DescribedShortcut, getKeyAriaLabel, prettyPrintKey, isDescribedSho
 import clst from 'styles/clst'
 
 const ShortcutList: React.FC = () => {
-  const globalShortcuts = groupByKey(
-    Object.values(useAtomValue(globalShortcutsAtom)).filter(isDescribedShortcut),
-    'group'
-  )
-  const localShortcuts = groupByKey(
-    Object.values(useAtomValue(localShortcutsAtom)).filter(isDescribedShortcut),
-    'group'
+  const globalShortcuts = useAtomValue(globalShortcutsAtom)
+  const localShortcuts = useAtomValue(localShortcutsAtom)
+
+  const allShortcuts = useMemo(
+    () =>
+      groupByKey(
+        [
+          ...Object.values(globalShortcuts).filter(isDescribedShortcut),
+          ...Object.values(localShortcuts).filter(isDescribedShortcut),
+        ],
+        'group'
+      ),
+    [globalShortcuts, localShortcuts]
   )
 
   return (
     <Flex direction="col" className="-m-4 gap-2.5 py-3">
-      {[...Object.entries(globalShortcuts), ...Object.entries(localShortcuts)].map(([group, groupShortcuts]) => {
+      {Object.entries(allShortcuts).map(([group, groupShortcuts]) => {
         return <ShortcutGroup key={group} group={group} shortcuts={groupShortcuts} />
       })}
     </Flex>

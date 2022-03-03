@@ -1,5 +1,5 @@
 import { Editor } from '@tiptap/react'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import {
   RiArrowDropRightFill,
   RiArrowGoBackLine,
@@ -31,6 +31,7 @@ import Icon from 'components/ui/Icon'
 import Inspector from 'components/ui/Inspector'
 import SyncReport from 'components/ui/SyncReport'
 import useContentMutation from 'hooks/useContentMutation'
+import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
 import useIdle from 'hooks/useIdle'
 import { type NoteData } from 'libs/db/note'
 import clst from 'styles/clst'
@@ -44,8 +45,6 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({
   setLinkModalOpened,
 }) => {
   const { isLoading, mutate } = useContentMutation()
-
-  const idle = useIdle()
 
   const onSettledMutation = useCallback(
     (_: unknown, error: unknown) => {
@@ -69,6 +68,28 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({
 
     mutate({ action: 'update', id: noteId, html, text }, { onSettled: onSettledMutation })
   }, [editor, mutate, noteId, onSettledMutation])
+
+  useGlobalShortcuts(
+    useMemo(
+      () => [
+        {
+          group: 'Note',
+          keybinding: 'Meta+S',
+          label: 'Save',
+          onKeyDown: (event) => {
+            event.preventDefault()
+
+            if (!editorState.pristine) {
+              save()
+            }
+          },
+        },
+      ],
+      [editorState.pristine, save]
+    )
+  )
+
+  const idle = useIdle()
 
   useEffect(() => {
     if (idle && !editorState.pristine) {
