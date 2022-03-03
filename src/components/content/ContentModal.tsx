@@ -98,7 +98,7 @@ const ContentModal: React.FC = () => {
           />
           <Modal.Footer disabled={isLoading}>
             <Button type="submit" primary disabled={isLoading} loading={isLoading}>
-              Create
+              {isUpdating ? 'Update' : 'Create'}
             </Button>
           </Modal.Footer>
         </Form>

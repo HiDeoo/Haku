@@ -10,7 +10,7 @@ import Flex from 'components/ui/Flex'
 import Shimmer from 'components/ui/Shimmer'
 import { CONTENT_TREE_SHIMMER_DEPTHS } from 'constants/shimmer'
 import useContentId from 'hooks/useContentId'
-import useContentTree from 'hooks/useContentTree'
+import useContentTreeQuery from 'hooks/useContentTreeQuery'
 import useContentType, { type UseContentTypeReturnValue } from 'hooks/useContentType'
 import { type FolderData } from 'libs/db/folder'
 import { type NoteMetadata } from 'libs/db/note'
@@ -27,7 +27,7 @@ const ContentTree: React.FC = () => {
   }
 
   const contentId = useContentId()
-  const { data, isLoading } = useContentTree()
+  const { data, isLoading } = useContentTreeQuery()
   const setContentModalOpened = useUpdateAtom(setContentModalOpenedAtom)
 
   function openNewContentModal() {

@@ -4,7 +4,7 @@ import useContentType, { ContentType } from 'hooks/useContentType'
 import client, { isNetworkError } from 'libs/api/client'
 import { type NoteTreeData, type TodoTreeData } from 'libs/db/tree'
 
-export default function useContentTree() {
+export default function useContentTreeQuery() {
   const { type } = useContentType()
 
   return useQuery<NoteTreeData | TodoTreeData>(

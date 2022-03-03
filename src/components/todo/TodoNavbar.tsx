@@ -1,12 +1,13 @@
 import { useAtom } from 'jotai'
 import { useAtomCallback, useResetAtom } from 'jotai/utils'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 
 import { todoEditorStateAtom } from 'atoms/todo'
 import { todoNodeChildrenAtom, todoNodeMutations, todoNodeNodesAtom } from 'atoms/todoNode'
 import Navbar from 'components/ui/Navbar'
 import SyncReport from 'components/ui/SyncReport'
 import useContentMutation, { type ContentMutation } from 'hooks/useContentMutation'
+import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
 import useIdle from 'hooks/useIdle'
 import { type TodoMetadata } from 'libs/db/todo'
 
@@ -82,6 +83,26 @@ const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, focusTodoNode, todoId
 
     mutate(mutationData, { onSettled: onSettledMutation, onSuccess: onSuccessMutation })
   }, [getTodoAtoms, mutate, onSettledMutation, onSuccessMutation, setEditorState, todoId])
+
+  useGlobalShortcuts(
+    useMemo(
+      () => [
+        {
+          group: 'Todo',
+          keybinding: 'Meta+S',
+          label: 'Save',
+          onKeyDown: (event) => {
+            event.preventDefault()
+
+            if (!editorState.pristine) {
+              save()
+            }
+          },
+        },
+      ],
+      [editorState.pristine, save]
+    )
+  )
 
   useEffect(() => {
     if (idle && !editorState.pristine) {

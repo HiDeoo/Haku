@@ -1,9 +1,7 @@
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { useMemo } from 'react'
-import { RiKeyboardFill } from 'react-icons/ri'
 
 import { setShortcutModalOpenedAtom, shortcutModalAtom } from 'atoms/modal'
-import IconButton from 'components/form/IconButton'
 import ShortcutList from 'components/shortcut/ShortcutList'
 import Modal from 'components/ui/Modal'
 import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
@@ -30,12 +28,7 @@ const ShortcutModal: React.FC = () => {
   )
 
   return (
-    <Modal
-      opened={opened}
-      onOpenChange={setOpened}
-      title="Keyboard Shortcuts"
-      trigger={<IconButton icon={RiKeyboardFill} tooltip="Keyboard Shortcuts" />}
-    >
+    <Modal opened={opened} onOpenChange={setOpened} title="Keyboard Shortcuts">
       <ShortcutList />
     </Modal>
   )

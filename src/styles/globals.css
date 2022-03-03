@@ -82,6 +82,12 @@ div#__next {
   @apply flex items-center justify-center overflow-hidden;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  :focus-visible {
+    transition: box-shadow 150ms ease;
+  }
+}
+
 ::selection {
   color: theme('colors.blue.50');
   background-color: theme('colors.blue.600');

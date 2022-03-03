@@ -3,7 +3,7 @@ import { FieldPath, type Control, type FieldValues } from 'react-hook-form'
 
 import Combobox from 'components/form/Combobox'
 import { ROOT_FOLDER_ID } from 'constants/folder'
-import useContentTree from 'hooks/useContentTree'
+import useContentTreeQuery from 'hooks/useContentTreeQuery'
 import { type FolderData } from 'libs/db/folder'
 import { NoteMetadata } from 'libs/db/note'
 import { isTreeFolder, type TreeFolder } from 'libs/tree'
@@ -18,7 +18,7 @@ const FolderPicker = <TFormFields extends FieldValues>({
   label,
   name,
 }: FolderPickerProps<TFormFields>) => {
-  const { data, isLoading } = useContentTree()
+  const { data, isLoading } = useContentTreeQuery()
 
   const [folders, defaultItem]: [Folders, DefaultFolder] = useMemo(() => {
     if (!data) {

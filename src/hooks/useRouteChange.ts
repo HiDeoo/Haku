@@ -5,10 +5,16 @@ export default function useRouteChange(callback: () => void) {
   const router = useRouter()
 
   useEffect(() => {
-    router.events.on('routeChangeStart', callback)
+    function onRouteChangeStart(url: string) {
+      if (router.asPath !== url) {
+        callback()
+      }
+    }
+
+    router.events.on('routeChangeStart', onRouteChangeStart)
 
     return () => {
-      router.events.off('routeChangeStart', callback)
+      router.events.off('routeChangeStart', onRouteChangeStart)
     }
-  }, [callback, router.events])
+  }, [callback, router.asPath, router.events])
 }

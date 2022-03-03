@@ -160,7 +160,7 @@ const InspectorIconMenuItem: React.FC<InspectorIconMenuItemProps> = ({ icon, onC
       <InspectorIconButton
         icon={icon}
         onClick={onClick}
-        className="focus-visible:ring-inset focus-visible:ring-offset-0 focus-visible:ring-offset-red-500"
+        className="focus-visible:ring-inset focus-visible:ring-offset-0"
       />
     </Item>
   )

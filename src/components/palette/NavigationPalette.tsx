@@ -7,7 +7,7 @@ import { RiBookletLine, RiTodoLine } from 'react-icons/ri'
 import { navigationPaletteOpenedAtom } from 'atoms/palette'
 import { type PaletteProps } from 'components/palette/Palette'
 import { ContentType, getContentType } from 'hooks/useContentType'
-import useFiles from 'hooks/useFiles'
+import useFilesQuery from 'hooks/useFilesQuery'
 import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
 import { type FileData } from 'libs/db/file'
 
@@ -18,7 +18,7 @@ const NavigationPalette: React.FC = () => {
 
   const [opened, setOpened] = useAtom(navigationPaletteOpenedAtom)
 
-  const { data, isLoading } = useFiles(opened)
+  const { data, isLoading } = useFilesQuery(opened)
 
   useGlobalShortcuts(
     useMemo(
@@ -57,7 +57,7 @@ const NavigationPalette: React.FC = () => {
 
     const { urlPath } = getContentType(item.type)
 
-    push(`${urlPath}/${item.id}`)
+    push(`${urlPath}/${item.id}/${item.slug}`)
   }
 
   return (

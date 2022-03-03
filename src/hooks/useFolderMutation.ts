@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
 import { useMutation, useQueryClient } from 'react-query'
 
-import { getContentTreeQueryKey } from 'hooks/useContentTree'
+import { getContentTreeQueryKey } from 'hooks/useContentTreeQuery'
 import useContentType, { type ContentType } from 'hooks/useContentType'
 import client, { type Mutation } from 'libs/api/client'
 import { type FolderData } from 'libs/db/folder'

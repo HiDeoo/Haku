@@ -10,7 +10,7 @@ import { EDITOR_SHORTCUTS } from 'constants/shortcut'
 import { EditorContent, EditorEvents, useEditor } from 'hooks/useEditor'
 import useLocalShortcuts from 'hooks/useLocalShortcuts'
 import useNavigationPrompt from 'hooks/useNavigationPrompt'
-import useNote from 'hooks/useNote'
+import useNoteQuery from 'hooks/useNoteQuery'
 import { type TodoMetadata } from 'libs/db/todo'
 import { getToc, HeadingWithId, type ToC } from 'libs/editor'
 
@@ -24,7 +24,7 @@ const Note: React.FC<NoteProps> = ({ id }) => {
 
   useLocalShortcuts(EDITOR_SHORTCUTS)
 
-  const { data, isLoading } = useNote(id, { enabled: editorState.pristine })
+  const { data, isLoading } = useNoteQuery(id, { enabled: editorState.pristine })
 
   const updateToc = useCallback(({ editor }: EditorEvents['create'], emitUpdate = true) => {
     const toc = getToc(editor as NonNullable<ReturnType<typeof useEditor>>)
