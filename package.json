@@ -4,7 +4,8 @@
   "scripts": {
     "dev": "next dev",
     "dev:migrate": "dotenv -c -- ts-node prisma/migrate.ts",
-    "build": "next build",
+    "build": "next build && pnpm build:sw",
+    "build:sw": "tsc -p src/sw/tsconfig.json",
     "build:analyze": "ANALYZE=true pnpm build",
     "start": "next start",
     "lint": "next lint -d . --max-warnings=0 && tsc --noEmit",

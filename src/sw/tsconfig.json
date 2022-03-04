@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "isolatedModules": false,
+    "lib": ["WebWorker", "ESNext"],
+    "noEmit": false,
+    "outDir": "../../public",
+    "tsBuildInfoFile": "../../sw.tsbuildinfo"
+  },
+  "include": ["."],
+  "exclude": ["../../node_modules"]
+}
