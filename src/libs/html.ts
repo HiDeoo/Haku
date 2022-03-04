@@ -4,18 +4,6 @@ export const isPlatformMacOS =
   (isUserAgentDataPlatformAvailable() && navigator.userAgentData?.platform === 'macOS') ||
   (typeof navigator === 'object' && /Mac|iPad|iPhone|iPod/.test(navigator.platform))
 
-export async function registerServiceWoerker(swPath: string) {
-  if (!('serviceWorker' in navigator)) {
-    return
-  }
-
-  try {
-    await navigator.serviceWorker.register(swPath)
-  } catch (error) {
-    console.error('Error while registering service worker:', error)
-  }
-}
-
 export function isTextInputElement(element: EventTarget | Element | null): boolean {
   if (!(element instanceof Element)) {
     return false

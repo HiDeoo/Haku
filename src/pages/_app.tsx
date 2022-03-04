@@ -11,7 +11,7 @@ import ErrorBoundary from 'components/app/ErrorBoundary'
 import Route from 'components/app/Route'
 import Layout from 'components/ui/Layout'
 import { getQueryClientDefaultOptions } from 'libs/api/client'
-import { registerServiceWoerker } from 'libs/html'
+import { registerServiceWorker } from 'libs/sw'
 
 const queryClient = new QueryClient({ defaultOptions: getQueryClientDefaultOptions() })
 
@@ -20,7 +20,7 @@ function Haku({ Component, pageProps: { session, ...pageProps } }: AppPropsWithL
 
   useEffect(() => {
     function onLoad() {
-      registerServiceWoerker('/sw.js')
+      registerServiceWorker('/sw.js')
     }
 
     window.addEventListener('load', onLoad, { once: true })

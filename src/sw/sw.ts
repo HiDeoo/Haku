@@ -1,5 +1,5 @@
 // TODO
-console.log('Hello 2 from service worker!')
+console.log('Hello 4 from service worker!')
 
 self.addEventListener('fetch', () => {
   return
