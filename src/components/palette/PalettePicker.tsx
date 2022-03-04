@@ -39,7 +39,7 @@ const PalettePicker = <TItem,>(
   forwardedRef: React.ForwardedRef<HTMLInputElement>
 ) => {
   const currentInputValue = useRef('')
-  const infiniteDetectorElement = useRef<HTMLLIElement | null>(null)
+  const infiniteDetectorElement = useRef<HTMLLIElement>(null)
 
   const [filteredItems, setFilteredItems] = useState(items)
 

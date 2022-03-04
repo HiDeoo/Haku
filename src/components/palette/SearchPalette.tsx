@@ -20,8 +20,8 @@ const Palette = dynamic<PaletteProps<SearchResultData>>(import('components/palet
 const SearchPalette: React.FC = () => {
   const { push } = useRouter()
 
-  const trigger = useRef<HTMLButtonElement | null>(null)
-  const paletteTextInput = useRef<HTMLInputElement | null>(null)
+  const trigger = useRef<HTMLButtonElement>(null)
+  const paletteTextInput = useRef<HTMLInputElement>(null)
 
   const triggerUsed = useRef(false)
 
