@@ -39,7 +39,7 @@ const SidebarMenu: React.FC = () => {
         </Trigger>
         <Content side="top" className="animate-tooltip text-[0.84rem] leading-[1.2rem]" loop>
           <Arrow className="fill-zinc-700" width={16} height={8} />
-          <Flex direction="col" className="rounded-lg bg-zinc-700 p-[0.3125rem] shadow-lg shadow-zinc-900">
+          <Flex direction="col" className="rounded-md bg-zinc-700 p-1.5 shadow shadow-black/75">
             <Item asChild>
               <SidebarMenuItem label="Logout" icon={RiLogoutCircleRLine} onClick={logout} />
             </Item>
@@ -56,7 +56,7 @@ const SidebarMenu: React.FC = () => {
 export default SidebarMenu
 
 const sidebarMenuItemClasses = clst(
-  'mx-0 flex items-center justify-start gap-2.5 bg-zinc-700 text-left shadow-none px-2',
+  'mx-0 flex items-center justify-start gap-2.5 bg-zinc-700 text-left shadow-none px-2 py-1 rounded font-medium',
   'hover:bg-blue-600 hover:text-blue-50',
   'focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:bg-blue-600'
 )
