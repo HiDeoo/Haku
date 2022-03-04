@@ -18,9 +18,9 @@ const IconButton = forwardRef<HTMLButtonElement, React.PropsWithChildren<IconBut
       <Button
         {...props}
         ref={forwardedRef}
-        aria-label={tooltip}
         className={buttonClasses}
         pressedClassName={pressedButtonClasses}
+        aria-label={tooltip ?? props['aria-label']}
       >
         <Icon icon={icon} />
       </Button>
