@@ -10,6 +10,7 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import ErrorBoundary from 'components/app/ErrorBoundary'
 import Route from 'components/app/Route'
 import Layout from 'components/ui/Layout'
+import Toaster from 'components/ui/Toaster'
 import { getQueryClientDefaultOptions } from 'libs/api/client'
 import { registerServiceWorker } from 'libs/sw'
 
@@ -42,6 +43,7 @@ function Haku({ Component, pageProps: { session, ...pageProps } }: AppPropsWithL
               </Layout>
             </Route>
           </TooltipProvider>
+          <Toaster />
         </SessionProvider>
       </QueryClientProvider>
     </ErrorBoundary>

@@ -15,6 +15,8 @@ module.exports = {
         'scale-out': 'scaleOut 150ms ease-in',
         'slide-in': 'slideIn 250ms ease-out',
         'slide-out': 'slideOut 200ms ease-in',
+        'swipe-in': 'swipeIn 250ms ease-out',
+        'swipe-out': 'swipeOut 200ms ease-in',
       },
       keyframes: {
         bounceIn: {
@@ -125,6 +127,26 @@ module.exports = {
           '100%': {
             opacity: '0',
             transform: 'scaleY(0)',
+          },
+        },
+        swipeIn: {
+          '0%': {
+            opacity: '0',
+            transform: 'translateX(100%)',
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'translateX(0)',
+          },
+        },
+        swipeOut: {
+          '0%': {
+            opacity: '1',
+            transform: 'translateX(0)',
+          },
+          '100%': {
+            opacity: '0',
+            transform: 'translateX(100%)',
           },
         },
       },
