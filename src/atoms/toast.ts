@@ -35,7 +35,7 @@ export interface WarmToast {
 }
 
 type AtomParamsNewToast = Pick<WarmToast, 'action' | 'actionLabel' | 'text'> & {
-  duration?: ToastImplProps['duration']
+  duration?: ToastImplProps['duration'] // In milliseconds
   icon?: IconProps['icon']
   type?: ToastImplProps['type']
 }
