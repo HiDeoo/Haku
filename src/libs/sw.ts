@@ -1,4 +1,4 @@
-export async function registerServiceWorker(swPath: string) {
+export async function registerServiceWorker(swPath: string, onAvailableUpdate: ServiceWorkerRegistrationUpdateHandler) {
   if (!('serviceWorker' in navigator)) {
     return
   }
@@ -6,25 +6,30 @@ export async function registerServiceWorker(swPath: string) {
   try {
     const registration = await navigator.serviceWorker.register(swPath)
 
-    handleServiceWorkerUpdate(registration)
+    handleServiceWorkerUpdate(registration, onAvailableUpdate)
   } catch (error) {
     console.error('Error while registering service worker:', error)
   }
 }
 
-function handleServiceWorkerUpdate(registration: ServiceWorkerRegistration) {
+function handleServiceWorkerUpdate(
+  registration: ServiceWorkerRegistration,
+  onAvailableUpdate: ServiceWorkerRegistrationUpdateHandler
+) {
+  const updateServiceWorker = () => {
+    registration.waiting?.postMessage({ type: 'UPDATE' })
+  }
+
   // Trigger the update flow if a pending update is already available.
   if (registration.waiting) {
-    // TODO(HiDeoo)
-    console.log('UPDATE ALREADY AVAILABLE')
+    onAvailableUpdate(updateServiceWorker)
   }
 
   registration.addEventListener('updatefound', () => {
     registration.installing?.addEventListener('statechange', () => {
       // Wait until a new version is fully installed before triggering the update flow.
       if (registration.waiting && navigator.serviceWorker.controller) {
-        // TODO(HiDeoo)
-        console.log('UPDATE AVAILABLE AND DONE INSTALLING')
+        onAvailableUpdate(updateServiceWorker)
       }
     })
   })
@@ -34,3 +39,5 @@ function handleServiceWorkerUpdate(registration: ServiceWorkerRegistration) {
     window.location.reload()
   })
 }
+
+type ServiceWorkerRegistrationUpdateHandler = (updateServiceWorker: () => void) => void
