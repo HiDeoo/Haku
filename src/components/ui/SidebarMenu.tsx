@@ -1,9 +1,10 @@
 import { Arrow, Content, Item, Root, Trigger } from '@radix-ui/react-dropdown-menu'
-import { useUpdateAtom } from 'jotai/utils'
+import { useAtomValue, useResetAtom, useUpdateAtom } from 'jotai/utils'
 import { forwardRef } from 'react'
-import { RiKeyboardFill, RiLogoutCircleRLine, RiMore2Fill } from 'react-icons/ri'
+import { RiInstallLine, RiKeyboardFill, RiLogoutCircleRLine, RiMore2Fill } from 'react-icons/ri'
 
 import { setShortcutModalOpenedAtom } from 'atoms/modal'
+import { deferrefPromptEventAtom } from 'atoms/pwa'
 import ContentModal from 'components/content/ContentModal'
 import ContentTypeSwitch from 'components/content/ContentTypeSwitch'
 import FolderModal from 'components/folder/FolderModal'
@@ -17,10 +18,19 @@ import { logout } from 'libs/auth'
 import clst from 'styles/clst'
 
 const SidebarMenu: React.FC = () => {
+  const deferrefPromptEvent = useAtomValue(deferrefPromptEventAtom)
+  const resetDeferrefPromptEvent = useResetAtom(deferrefPromptEventAtom)
+
   const setShortcutModalOpened = useUpdateAtom(setShortcutModalOpenedAtom)
 
   function onClickKeyboardShortcuts() {
     setShortcutModalOpened(true)
+  }
+
+  function onClickInstallApp() {
+    deferrefPromptEvent?.prompt()
+
+    resetDeferrefPromptEvent()
   }
 
   return (
@@ -46,6 +56,11 @@ const SidebarMenu: React.FC = () => {
             <Item asChild>
               <SidebarMenuItem label="Keyboard Shortcuts" icon={RiKeyboardFill} onClick={onClickKeyboardShortcuts} />
             </Item>
+            {deferrefPromptEvent ? (
+              <Item asChild>
+                <SidebarMenuItem label="Install App" icon={RiInstallLine} onClick={onClickInstallApp} />
+              </Item>
+            ) : null}
           </Flex>
         </Content>
       </Root>

@@ -9,13 +9,15 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import ErrorBoundary from 'components/app/ErrorBoundary'
 import Route from 'components/app/Route'
 import Layout from 'components/ui/Layout'
-import Pwa from 'components/ui/Pwa'
 import Toaster from 'components/ui/Toaster'
+import usePwa from 'hooks/usePwa'
 import { getQueryClientDefaultOptions } from 'libs/api/client'
 
 const queryClient = new QueryClient({ defaultOptions: getQueryClientDefaultOptions() })
 
 function Haku({ Component, pageProps: { session, ...pageProps } }: AppPropsWithLayout) {
+  usePwa()
+
   const sidebar = Component.sidebar ?? true
 
   return (
@@ -34,7 +36,6 @@ function Haku({ Component, pageProps: { session, ...pageProps } }: AppPropsWithL
               </Layout>
             </Route>
           </TooltipProvider>
-          <Pwa />
           <Toaster />
         </SessionProvider>
       </QueryClientProvider>
