@@ -24,8 +24,6 @@ function Haku({ Component, pageProps: { session, ...pageProps } }: AppPropsWithL
     <ErrorBoundary>
       <Head>
         <title>Haku</title>
-        <meta name="color-scheme" content="dark" />
-        <link rel="manifest" href="/manifest.json"></link>
       </Head>
       <QueryClientProvider client={queryClient}>
         <SessionProvider session={session}>

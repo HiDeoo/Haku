@@ -1,5 +1,6 @@
 {
   "name": "haku",
+  "description": "Craft, consolidate and tackle your notebooks and to-do lists all in one place.",
   "private": true,
   "scripts": {
     "dev": "next dev",
