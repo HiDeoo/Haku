@@ -10,7 +10,7 @@ import { forwardRef } from 'react'
 
 import clst from 'styles/clst'
 
-const itemClasses = 'block w-full text-left focus:outline-none px-2 py-1 rounded'
+const itemClasses = 'block w-full text-left focus:outline-none px-2 py-1 rounded select-none'
 
 const ContextMenu: ContextMenuComponent = ({ children, trigger }) => {
   return (
