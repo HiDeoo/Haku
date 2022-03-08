@@ -150,6 +150,9 @@ module.exports = {
           },
         },
       },
+      screens: {
+        pwa: { raw: '(display-mode: standalone)' },
+      },
     },
   },
   plugins: [],
