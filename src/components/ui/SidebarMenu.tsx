@@ -36,7 +36,7 @@ const SidebarMenu: React.FC = () => {
   return (
     <Flex
       justifyContent="center"
-      className="z-10 border-t border-zinc-600/40 px-4 py-2 shadow-[0_-1px_1px_0_rgba(0,0,0,1)]"
+      className="z-10 border-t border-zinc-600/40 px-4 py-2 shadow-[0_-1px_1px_0_rgba(0_0_0/1)]"
     >
       <ContentTypeSwitch />
       <ContentModal />

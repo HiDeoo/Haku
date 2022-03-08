@@ -47,7 +47,7 @@ const ContentTree: React.FC = () => {
   return (
     <Root orientation="vertical" asChild>
       <Flex as="nav" direction="col" flex className="relative overflow-y-auto">
-        <div className="pointer-events-none absolute inset-0 shadow-[inset_-1px_0_1px_0_rgba(0,0,0,0.4)]" />
+        <div className="pointer-events-none absolute inset-0 shadow-[inset_-1px_0_1px_0_rgba(0_0_0/0.4)]" />
         {data?.length == 0 ? (
           <Flex
             fullWidth
