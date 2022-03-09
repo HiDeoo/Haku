@@ -3,6 +3,7 @@ import { useCallback, useContext, useEffect, useRef } from 'react'
 
 import { resetTodoAtomsAtom, type TodoEditorState, todoEditorStateAtom, todoFocusMapAtom } from 'atoms/todo'
 import { todoNodeChildrenAtom, todoNodeNodesAtom } from 'atoms/todoNode'
+import Title from 'components/app/Title'
 import TodoNavbar from 'components/todo/TodoNavbar'
 import TodoNodeChildren from 'components/todo/TodoNodeChildren'
 import { type TodoNodeItemHandle } from 'components/todo/TodoNodeItem'
@@ -41,7 +42,7 @@ const Todo: React.FC<TodoProps> = ({ id }) => {
 
   useLocalShortcuts(TODO_NODE_ITEM_SHORTCUTS)
 
-  const { isLoading } = useTodoQuery(id, {
+  const { data, isLoading } = useTodoQuery(id, {
     enabled: pristine,
     onSuccess: ({ children, nodes }) => {
       setTodoChildren(children)
@@ -98,26 +99,29 @@ const Todo: React.FC<TodoProps> = ({ id }) => {
   )
 
   return (
-    <Flex direction="col" fullHeight className="overflow-hidden">
-      <TodoNavbar disabled={isLoading} todoId={id} focusTodoNode={focusTodoNode} />
-      {isLoading ? (
-        <Shimmer>
-          {TODO_SHIMMER_CLASSES_AND_LEVELS.map(([shimmerClass, shimmerLevel], index) => (
-            <Shimmer.Line
-              key={index}
-              className={shimmerClass}
-              style={{ paddingLeft: shimmerLevel * TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS }}
-            />
-          ))}
-        </Shimmer>
-      ) : (
-        <TodoContext.Provider value={todoNodeContentRefs}>
-          <Flex fullHeight fullWidth direction="col" className="overflow-y-auto">
-            <TodoNodeChildren onFocusTodoNode={setTodoFocus} setTodoNodeItemRef={setTodoNodeItemRef} />
-          </Flex>
-        </TodoContext.Provider>
-      )}
-    </Flex>
+    <>
+      <Title pageTitle={data?.name} />
+      <Flex direction="col" fullHeight className="overflow-hidden">
+        <TodoNavbar disabled={isLoading} todoId={id} focusTodoNode={focusTodoNode} />
+        {isLoading ? (
+          <Shimmer>
+            {TODO_SHIMMER_CLASSES_AND_LEVELS.map(([shimmerClass, shimmerLevel], index) => (
+              <Shimmer.Line
+                key={index}
+                className={shimmerClass}
+                style={{ paddingLeft: shimmerLevel * TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS }}
+              />
+            ))}
+          </Shimmer>
+        ) : (
+          <TodoContext.Provider value={todoNodeContentRefs}>
+            <Flex fullHeight fullWidth direction="col" className="overflow-y-auto">
+              <TodoNodeChildren onFocusTodoNode={setTodoFocus} setTodoNodeItemRef={setTodoNodeItemRef} />
+            </Flex>
+          </TodoContext.Provider>
+        )}
+      </Flex>
+    </>
   )
 }
 

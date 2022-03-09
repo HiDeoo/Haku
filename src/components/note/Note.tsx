@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
+import Title from 'components/app/Title'
 import EditorLinkModal from 'components/editor/EditorLinkModal'
 import NoteInspector from 'components/note/NoteInspector'
 import Flex from 'components/ui/Flex'
@@ -87,26 +88,29 @@ const Note: React.FC<NoteProps> = ({ id }) => {
   }, [])
 
   return (
-    <Flex fullHeight className="overflow-hidden">
-      {isLoading ? (
-        <Shimmer>
-          {NOTE_SHIMMER_CLASSES.map((shimmerClass, index) => (
-            <Shimmer.Line key={index} className={shimmerClass} />
-          ))}
-        </Shimmer>
-      ) : (
-        <EditorContent editor={editor} className="grid h-full w-full overflow-y-auto" />
-      )}
-      <NoteInspector
-        noteId={id}
-        editor={editor}
-        disabled={isLoading}
-        onMutation={onMutation}
-        editorState={editorState}
-        setLinkModalOpened={setLinkModalOpened}
-      />
-      <EditorLinkModal opened={linkModalOpened} onOpenChange={setLinkModalOpened} editor={editor} />
-    </Flex>
+    <>
+      <Title pageTitle={data?.name} />
+      <Flex fullHeight className="overflow-hidden">
+        {isLoading ? (
+          <Shimmer>
+            {NOTE_SHIMMER_CLASSES.map((shimmerClass, index) => (
+              <Shimmer.Line key={index} className={shimmerClass} />
+            ))}
+          </Shimmer>
+        ) : (
+          <EditorContent editor={editor} className="grid h-full w-full overflow-y-auto" />
+        )}
+        <NoteInspector
+          noteId={id}
+          editor={editor}
+          disabled={isLoading}
+          onMutation={onMutation}
+          editorState={editorState}
+          setLinkModalOpened={setLinkModalOpened}
+        />
+        <EditorLinkModal opened={linkModalOpened} onOpenChange={setLinkModalOpened} editor={editor} />
+      </Flex>
+    </>
   )
 }
 

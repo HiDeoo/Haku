@@ -43,6 +43,21 @@ const baseMutation: UpdateTodoNodesBody['mutations'] = {
 
 describe('todo nodes', () => {
   describe('GET', () => {
+    test('should return the name of the todo', async () => {
+      const { id, name } = await createTestTodo()
+
+      return testApiRoute(
+        idHandler,
+        async ({ fetch }) => {
+          const res = await fetch({ method: HttpMethod.GET })
+          const json = await res.json<TodoNodesData>()
+
+          expect(json.name).toBe(name)
+        },
+        { dynamicRouteParams: { id } }
+      )
+    })
+
     test('should return the single todo node of a new todo', async () => {
       const { id, nodes, root } = await createTestTodo()
 

@@ -3,11 +3,11 @@ import 'styles/globals.css'
 import { Provider as TooltipProvider } from '@radix-ui/react-tooltip'
 import { SessionProvider } from 'next-auth/react'
 import { type AppProps } from 'next/app'
-import Head from 'next/head'
 import { QueryClient, QueryClientProvider } from 'react-query'
 
 import ErrorBoundary from 'components/app/ErrorBoundary'
 import Route from 'components/app/Route'
+import Title from 'components/app/Title'
 import Layout from 'components/ui/Layout'
 import Toaster from 'components/ui/Toaster'
 import usePwa from 'hooks/usePwa'
@@ -22,9 +22,7 @@ function Haku({ Component, pageProps: { session, ...pageProps } }: AppPropsWithL
 
   return (
     <ErrorBoundary>
-      <Head>
-        <title>Haku</title>
-      </Head>
+      <Title />
       <QueryClientProvider client={queryClient}>
         <SessionProvider session={session}>
           <TooltipProvider>
