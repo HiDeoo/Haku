@@ -46,7 +46,7 @@ const Button = forwardRef<HTMLButtonElement, React.PropsWithChildren<ButtonProps
         'bg-zinc-400': !primary && isPressed,
         'bg-blue-400': primary && isPressed,
       },
-      'rounded-md shadow-sm shadow-zinc-900/50 disabled:shadow-none',
+      'rounded-md shadow-sm shadow-zinc-900/50 disabled:shadow-none select-none',
       'disabled:cursor-not-allowed disabled:opacity-50',
       'focus:outline-none',
       'focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-zinc-800 focus-visible:ring-offset-2',

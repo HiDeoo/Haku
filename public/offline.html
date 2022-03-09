@@ -1,0 +1,162 @@
+<html lang="en">
+  <head>
+    <title>Haku</title>
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#27272a" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="/images/icons/180.png" />
+
+    <style>
+      html,
+      body {
+        background-color: #27272a;
+        height: 100%;
+      }
+
+      body {
+        color: rgb(239 246 255);
+        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+          Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+        margin: 0;
+      }
+
+      ::selection {
+        color: #eff6ff;
+        background-color: #2563eb;
+      }
+
+      main {
+        align-items: center;
+        background-color: rgb(39 39 42);
+        display: flex;
+        justify-content: center;
+        height: 100%;
+      }
+
+      .content {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .callout {
+        background-color: rgb(248 113 113 / 0.5);
+        border: 1px solid rgb(254 202 202 / 0.3);
+        border-radius: 0.375rem;
+        color: rgb(254 226 226);
+        display: flex;
+        margin-bottom: 0.75rem;
+        padding: 0.625rem 0.75rem;
+      }
+
+      .calloutIcon {
+        color: rgb(254 202 202 / 1);
+        margin-top: 0.225rem;
+        margin-right: 0.5rem;
+        user-select: none;
+      }
+
+      .calloutIcon svg {
+        user-select: none;
+        height: 1rem;
+        width: 1rem;
+      }
+
+      .callout h1 {
+        color: rgb(254 202 202 / 1);
+        font-size: 1rem;
+        font-weight: 600;
+        line-height: 1.5rem;
+        margin: 0;
+        margin-bottom: 0.25rem;
+      }
+
+      .retry {
+        background-color: rgb(37 99 235);
+        border: none;
+        cursor: pointer;
+        border-radius: 0.375rem;
+        box-shadow: 0 0 #0000, 0 0 #0000, 0 1px 2px 0 rgba(24 24 27 / 0.5);
+        color: inherit;
+        font-family: inherit;
+        font-size: 100%;
+        margin-top: 0.75rem;
+        min-width: 75px;
+        padding: 0.375rem 0.875rem;
+        user-select: none;
+      }
+
+      .retry:hover {
+        background-color: rgb(59 130 246);
+      }
+
+      .retry:focus {
+        outline: 2px solid transparent;
+        outline-offset: 2px;
+      }
+
+      .retry:focus-visible {
+        box-shadow: 0 0 0 2px #27272a, 0 0 0 4px rgb(37 99 235), 0 1px 2px 0 rgb(24 24 27 / 0.5);
+      }
+
+      .retry:active {
+        background-color: rgb(96 165 250);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="content">
+        <div class="callout">
+          <div class="calloutIcon">
+            <svg
+              stroke="currentColor"
+              fill="currentColor"
+              stroke-width="0"
+              viewBox="0 0 24 24"
+              class="h-4 w-4 select-none"
+              aria-hidden="true"
+              focusable="false"
+              height="1em"
+              width="1em"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g>
+                <path fill="none" d="M0 0h24v24H0z"></path>
+                <path
+                  d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm-1-5h2v2h-2v-2zm0-8h2v6h-2V7z"
+                ></path>
+              </g></svg
+            ><span
+              style="
+                position: absolute;
+                border: 0px;
+                width: 1px;
+                height: 1px;
+                padding: 0px;
+                margin: -1px;
+                overflow: hidden;
+                clip: rect(0px, 0px, 0px, 0px);
+                white-space: nowrap;
+                overflow-wrap: normal;
+              "
+              >Error</span
+            >
+          </div>
+          <div>
+            <h1>You are offline!</h1>
+            Please check your network connectivity and try again.
+          </div>
+        </div>
+        <button type="button" class="retry" onclick="reload()">Retry</button>
+      </div>
+    </main>
+    <script>
+      function reload() {
+        window.location.reload()
+      }
+    </script>
+  </body>
+</html>

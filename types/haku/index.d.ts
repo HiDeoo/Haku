@@ -48,6 +48,31 @@ declare global {
     }
   }
 
+  // https://developer.mozilla.org/en-US/docs/Web/API/BeforeInstallPromptEvent
+  interface BeforeInstallPromptEvent extends Event {
+    readonly platforms: string[]
+    prompt: () => Promise<void>
+    readonly userChoice: Promise<{
+      outcome: 'accepted' | 'dismissed'
+      platform: string
+    }>
+  }
+
+  interface WindowEventMap {
+    beforeinstallprompt: BeforeInstallPromptEvent
+  }
+
+  // https://github.com/microsoft/TypeScript-DOM-lib-generator/issues/1029#issuecomment-869224737
+  interface ServiceWorkerRegistration {
+    readonly navigationPreload: NavigationPreloadManager
+  }
+
+  // https://github.com/GoogleChrome/workbox/issues/2974#issuecomment-963219535
+  interface FetchEvent {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    readonly preloadResponse: Promise<any>
+  }
+
   type UserId = Session['user']['id']
 
   // Just for the sake of object destructuring and having a better named ID e.g. `const { userId } = user`.

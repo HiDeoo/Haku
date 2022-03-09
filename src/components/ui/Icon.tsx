@@ -5,7 +5,7 @@ import clst from 'styles/clst'
 const Icon: React.FC<IconProps> = ({ className, icon, label }) => {
   const Component = icon
 
-  const iconClasses = clst('h-4 w-4', className)
+  const iconClasses = clst('h-4 w-4 select-none', className)
 
   const content = <Component className={iconClasses} />
 

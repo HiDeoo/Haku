@@ -38,8 +38,8 @@ const PalettePicker = <TItem,>(
   }: PaletteProps<TItem>,
   forwardedRef: React.ForwardedRef<HTMLInputElement>
 ) => {
-  const inputValueRef = useRef('')
-  const infiniteRef = useRef<HTMLLIElement | null>(null)
+  const currentInputValue = useRef('')
+  const infiniteDetectorElement = useRef<HTMLLIElement>(null)
 
   const [filteredItems, setFilteredItems] = useState(items)
 
@@ -59,7 +59,7 @@ const PalettePicker = <TItem,>(
 
   const isInfiniteEnabled = infinite && !isLoading && filteredItems.length > 0 && typeof loadMore === 'function'
 
-  const shouldLoadMore = useIntersectionObserver(infiniteRef, { enabled: isInfiniteEnabled })
+  const shouldLoadMore = useIntersectionObserver(infiniteDetectorElement, { enabled: isInfiniteEnabled })
 
   useEffect(() => {
     if (isInfiniteEnabled && shouldLoadMore && loadMore) {
@@ -67,7 +67,7 @@ const PalettePicker = <TItem,>(
     }
   }, [isInfiniteEnabled, loadMore, shouldLoadMore])
 
-  inputValueRef.current = inputValue
+  currentInputValue.current = inputValue
 
   const updateFilteredItems = useCallback(
     (inputValue?: string) => {
@@ -88,7 +88,7 @@ const PalettePicker = <TItem,>(
   )
 
   useEffect(() => {
-    updateFilteredItems(inputValueRef.current)
+    updateFilteredItems(currentInputValue.current)
   }, [updateFilteredItems])
 
   function stateReducer(state: UseComboboxState<TItem>, { type, changes }: UseComboboxStateChangeOptions<TItem>) {
@@ -213,7 +213,7 @@ const PalettePicker = <TItem,>(
                 </li>
               )
             })}
-            {isInfiniteEnabled ? <li ref={infiniteRef}>load more</li> : null}
+            {isInfiniteEnabled ? <li ref={infiniteDetectorElement}>load more</li> : null}
           </>
         )}
       </ul>

@@ -27,6 +27,7 @@ export type TodoNodeData = Omit<TodoNodeDataWithChildren, 'children'>
 
 export interface TodoNodesData {
   children: TodoNodeChildrenMapWithRoot
+  name: string
   nodes: TodoNodeDataMap
 }
 
@@ -44,6 +45,7 @@ export async function getTodoNodes(todoId: TodoMetadata['id'], userId: UserId): 
   const result = await prisma.todo.findFirst({
     where: { id: todoId, userId },
     select: {
+      name: true,
       nodes: {
         select: todoNodeDataSelect,
       },
@@ -57,7 +59,7 @@ export async function getTodoNodes(todoId: TodoMetadata['id'], userId: UserId): 
 
   const [nodes, children] = getTodosNodesMapKeyedById(result.nodes)
 
-  return { nodes, children: { ...children, root: result.root } }
+  return { children: { ...children, root: result.root }, name: result.name, nodes }
 }
 
 export function updateTodoNodes(todoId: TodoMetadata['id'], userId: UserId, data: UpdateTodoNodesData): Promise<void> {

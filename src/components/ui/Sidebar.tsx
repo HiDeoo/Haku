@@ -12,7 +12,7 @@ const Sidebar: React.FC = () => {
     <>
       <NavigationPalette />
       <CommandPalette />
-      <Flex direction="col" className="w-64 bg-zinc-900">
+      <Flex direction="col" className="w-64 bg-zinc-900 pwa:input-hover:border-t pwa:input-hover:border-zinc-700">
         <ContentTree />
         <SidebarMenu />
       </Flex>

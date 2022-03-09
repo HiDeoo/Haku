@@ -34,8 +34,8 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
 
   const [shouldFocusNote, setShouldFocusNote] = useState(false)
 
-  const contentRef = useRef<HTMLDivElement>(null)
-  const noteRef = useRef<TodoNodeNoteHandle>(null)
+  const contentEditable = useRef<HTMLDivElement>(null)
+  const todoNodeNote = useRef<TodoNodeNoteHandle>(null)
 
   const todoNodeItems = useContext(TodoContext)
 
@@ -65,7 +65,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     [node?.id, updateContent]
   )
 
-  useEditable(contentRef, onChangeContent, { disabled: isLoading || shouldFocusNote })
+  useEditable(contentEditable, onChangeContent, { disabled: isLoading || shouldFocusNote })
 
   const focusClosestNode = useCallback(
     async (
@@ -119,7 +119,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
       setShouldFocusNote((prevIsNoteFocused) => !prevIsNoteFocused)
 
       requestAnimationFrame(() => {
-        noteRef.current?.focusNote()
+        todoNodeNote.current?.focusNote()
       })
     } else if (isShortcutEvent(event, shortcutMap['Meta+Backspace'])) {
       event.preventDefault()
@@ -135,8 +135,8 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
       preserveCaret(() => {
         unnestNode(update)
       })
-    } else if (isShortcutEvent(event, shortcutMap['ArrowUp']) && contentRef.current) {
-      const caretPosition = getContentEditableCaretPosition(contentRef.current)
+    } else if (isShortcutEvent(event, shortcutMap['ArrowUp']) && contentEditable.current) {
+      const caretPosition = getContentEditableCaretPosition(contentEditable.current)
 
       if (caretPosition && caretPosition.atFirstLine) {
         focusClosestNode({ ...update, direction: 'up', caretPosition }, event)
@@ -147,8 +147,8 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
       preserveCaret(() => {
         moveNode({ ...update, direction: 'up' })
       })
-    } else if (isShortcutEvent(event, shortcutMap['ArrowDown']) && contentRef.current) {
-      const caretPosition = getContentEditableCaretPosition(contentRef.current)
+    } else if (isShortcutEvent(event, shortcutMap['ArrowDown']) && contentEditable.current) {
+      const caretPosition = getContentEditableCaretPosition(contentEditable.current)
 
       if (caretPosition && caretPosition.atLastLine) {
         focusClosestNode({ ...update, direction: 'down', caretPosition }, event)
@@ -190,7 +190,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
       return
     }
 
-    const caretIndex = contentRef.current ? getContentEditableCaretIndex(contentRef.current) : undefined
+    const caretIndex = contentEditable.current ? getContentEditableCaretIndex(contentEditable.current) : undefined
 
     callback()
 
@@ -204,11 +204,11 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
       onFocusTodoNode(node.id)
     }
 
-    contentRef.current?.setAttribute('spellcheck', 'true')
+    contentEditable.current?.setAttribute('spellcheck', 'true')
   }
 
   function onBlurContent() {
-    contentRef.current?.setAttribute('spellcheck', 'false')
+    contentEditable.current?.setAttribute('spellcheck', 'false')
   }
 
   function onBlurNote() {
@@ -228,11 +228,11 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     direction?: CaretDirection,
     fromLevel?: TodoNodeItemProps['level']
   ) {
-    if (!contentRef.current) {
+    if (!contentEditable.current) {
       return
     }
 
-    contentRef.current.focus()
+    contentEditable.current.focus()
 
     if (
       caretPositionOrIndex &&
@@ -248,22 +248,22 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
           level * TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS
       )
 
-      setContentEditableCaretPosition(contentRef.current, { ...caretPositionOrIndex, left }, direction)
+      setContentEditableCaretPosition(contentEditable.current, { ...caretPositionOrIndex, left }, direction)
     } else {
       // Focus the passed down caret index or fallback to the end of the text content.
       setContentEditableCaretIndex(
-        contentRef.current,
+        contentEditable.current,
         typeof caretPositionOrIndex === 'number' ? caretPositionOrIndex : node?.content.length
       )
     }
   }
 
   function scrollIntoView() {
-    if (!contentRef.current) {
+    if (!contentEditable.current) {
       return
     }
 
-    contentRef.current.scrollIntoView()
+    contentEditable.current.scrollIntoView()
   }
 
   if (!node) {
@@ -298,7 +298,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
           />
           <div className="w-full">
             <div
-              ref={contentRef}
+              ref={contentEditable}
               onBlur={onBlurContent}
               onFocus={onFocusContent}
               className={contentClasses}
@@ -309,7 +309,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
             </div>
             {isNoteVisible ? (
               <TodoNodeNote
-                ref={noteRef}
+                ref={todoNodeNote}
                 node={node}
                 onBlur={onBlurNote}
                 onChange={updateNote}

@@ -1,9 +1,10 @@
 import { Arrow, Content, Item, Root, Trigger } from '@radix-ui/react-dropdown-menu'
-import { useUpdateAtom } from 'jotai/utils'
+import { useAtomValue, useResetAtom, useUpdateAtom } from 'jotai/utils'
 import { forwardRef } from 'react'
-import { RiKeyboardFill, RiLogoutCircleRLine, RiMore2Fill } from 'react-icons/ri'
+import { RiInstallLine, RiKeyboardFill, RiLogoutCircleRLine, RiMore2Fill } from 'react-icons/ri'
 
 import { setShortcutModalOpenedAtom } from 'atoms/modal'
+import { deferrefPromptEventAtom } from 'atoms/pwa'
 import ContentModal from 'components/content/ContentModal'
 import ContentTypeSwitch from 'components/content/ContentTypeSwitch'
 import FolderModal from 'components/folder/FolderModal'
@@ -17,16 +18,25 @@ import { logout } from 'libs/auth'
 import clst from 'styles/clst'
 
 const SidebarMenu: React.FC = () => {
+  const deferrefPromptEvent = useAtomValue(deferrefPromptEventAtom)
+  const resetDeferrefPromptEvent = useResetAtom(deferrefPromptEventAtom)
+
   const setShortcutModalOpened = useUpdateAtom(setShortcutModalOpenedAtom)
 
   function onClickKeyboardShortcuts() {
     setShortcutModalOpened(true)
   }
 
+  function onClickInstallApp() {
+    deferrefPromptEvent?.prompt()
+
+    resetDeferrefPromptEvent()
+  }
+
   return (
     <Flex
       justifyContent="center"
-      className="z-10 border-t border-zinc-600/40 px-4 py-2 shadow-[0_-1px_1px_0_rgba(0,0,0,1)]"
+      className="z-10 border-t border-zinc-600/40 px-4 py-2 shadow-[0_-1px_1px_0_rgba(0_0_0/1)]"
     >
       <ContentTypeSwitch />
       <ContentModal />
@@ -39,13 +49,18 @@ const SidebarMenu: React.FC = () => {
         </Trigger>
         <Content side="top" className="animate-tooltip text-[0.84rem] leading-[1.2rem]" loop>
           <Arrow className="fill-zinc-700" width={16} height={8} />
-          <Flex direction="col" className="rounded-lg bg-zinc-700 p-[0.3125rem] shadow-lg shadow-zinc-900">
+          <Flex direction="col" className="rounded-md bg-zinc-700 p-1.5 shadow shadow-black/75">
             <Item asChild>
               <SidebarMenuItem label="Logout" icon={RiLogoutCircleRLine} onClick={logout} />
             </Item>
             <Item asChild>
               <SidebarMenuItem label="Keyboard Shortcuts" icon={RiKeyboardFill} onClick={onClickKeyboardShortcuts} />
             </Item>
+            {deferrefPromptEvent ? (
+              <Item asChild>
+                <SidebarMenuItem label="Install App" icon={RiInstallLine} onClick={onClickInstallApp} />
+              </Item>
+            ) : null}
           </Flex>
         </Content>
       </Root>
@@ -56,7 +71,7 @@ const SidebarMenu: React.FC = () => {
 export default SidebarMenu
 
 const sidebarMenuItemClasses = clst(
-  'mx-0 flex items-center justify-start gap-2.5 bg-zinc-700 text-left shadow-none px-2',
+  'mx-0 flex items-center justify-start gap-2.5 bg-zinc-700 text-left shadow-none px-2 py-1 rounded font-medium',
   'hover:bg-blue-600 hover:text-blue-50',
   'focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:bg-blue-600'
 )

@@ -4,6 +4,17 @@ export const isPlatformMacOS =
   (isUserAgentDataPlatformAvailable() && navigator.userAgentData?.platform === 'macOS') ||
   (typeof navigator === 'object' && /Mac|iPad|iPhone|iPod/.test(navigator.platform))
 
+export function isPwa() {
+  return (
+    (typeof navigator === 'object' && 'standalone' in navigator && (navigator as SafariNavigator).standalone) ||
+    (typeof window === 'object' && window.matchMedia('(display-mode: standalone)').matches)
+  )
+}
+
+export function isTouchScreen() {
+  return typeof window === 'object' && window.matchMedia('(hover: none)').matches
+}
+
 export function isTextInputElement(element: EventTarget | Element | null): boolean {
   if (!(element instanceof Element)) {
     return false
@@ -198,3 +209,8 @@ interface ContentEditableLine {
 }
 
 export type CaretDirection = 'down' | 'up'
+
+interface SafariNavigator extends Navigator {
+  // Available on Apple’s iOS Safari only.
+  standalone: boolean
+}

@@ -20,10 +20,10 @@ const Palette = dynamic<PaletteProps<SearchResultData>>(import('components/palet
 const SearchPalette: React.FC = () => {
   const { push } = useRouter()
 
-  const triggerRef = useRef<HTMLButtonElement | null>(null)
-  const paletteTextInputRef = useRef<HTMLInputElement | null>(null)
+  const trigger = useRef<HTMLButtonElement>(null)
+  const paletteTextInput = useRef<HTMLInputElement>(null)
 
-  const triggerUsefRef = useRef(false)
+  const triggerUsed = useRef(false)
 
   const [opened, setOpened] = useAtom(searchPaletteOpenedAtom)
   const [query, setQuery] = useState<string | undefined>('')
@@ -41,12 +41,12 @@ const SearchPalette: React.FC = () => {
           onKeyDown: (event) => {
             event.preventDefault()
 
-            triggerUsefRef.current = false
+            triggerUsed.current = false
 
             setOpened(true)
 
-            if (paletteTextInputRef.current && query && query.length > 0) {
-              paletteTextInputRef.current.select()
+            if (paletteTextInput.current && query && query.length > 0) {
+              paletteTextInput.current.select()
             }
           },
         },
@@ -56,7 +56,7 @@ const SearchPalette: React.FC = () => {
   )
 
   function onPressTrigger() {
-    triggerUsefRef.current = true
+    triggerUsed.current = true
 
     setOpened(true)
   }
@@ -64,9 +64,9 @@ const SearchPalette: React.FC = () => {
   function onOpenChange(opened: boolean) {
     setOpened(opened)
 
-    if (!opened && triggerUsefRef.current) {
+    if (!opened && triggerUsed.current) {
       requestAnimationFrame(() => {
-        triggerRef.current?.focus()
+        trigger.current?.focus()
       })
     }
   }
@@ -99,7 +99,7 @@ const SearchPalette: React.FC = () => {
 
   return (
     <>
-      <IconButton icon={RiSearchLine} tooltip="Search" onPress={onPressTrigger} ref={triggerRef} />
+      <IconButton icon={RiSearchLine} tooltip="Search" onPress={onPressTrigger} ref={trigger} />
       <Palette
         fuzzy={false}
         opened={opened}
@@ -112,7 +112,7 @@ const SearchPalette: React.FC = () => {
         onOpenChange={onOpenChange}
         itemToString={itemToString}
         items={data?.pages.flat() ?? []}
-        forwardedRef={paletteTextInputRef}
+        forwardedRef={paletteTextInput}
         isLoadingMore={isFetchingNextPage}
         minQueryLength={SEARCH_QUERY_MIN_LENGTH}
         itemDetailsToString={itemDetailsToString}

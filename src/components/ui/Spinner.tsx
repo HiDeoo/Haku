@@ -9,7 +9,7 @@ const Spinner: React.FC<SpinnerProps> = ({ className, color, delay }) => {
     return null
   }
 
-  const spinnerClasses = clst('animate-spin-slow', color ?? 'text-blue-50/40', className)
+  const spinnerClasses = clst('animate-spin-slow select-none', color ?? 'text-blue-50/40', className)
 
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" className={spinnerClasses}>
