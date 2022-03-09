@@ -11,6 +11,10 @@ export function isPwa() {
   )
 }
 
+export function isTouchScreen() {
+  return typeof window === 'object' && window.matchMedia('(hover: none)').matches
+}
+
 export function isTextInputElement(element: EventTarget | Element | null): boolean {
   if (!(element instanceof Element)) {
     return false

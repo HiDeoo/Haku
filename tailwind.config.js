@@ -151,6 +151,7 @@ module.exports = {
         },
       },
       screens: {
+        'input-hover': { raw: '(hover: hover)' },
         pwa: { raw: '(display-mode: standalone)' },
       },
     },
