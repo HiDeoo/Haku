@@ -9,7 +9,7 @@
     "build:sw": "tsc -p src/sw/tsconfig.json",
     "build:analyze": "ANALYZE=true pnpm build",
     "start": "next start",
-    "lint": "next lint -d . --max-warnings=0 && tsc --noEmit",
+    "lint": "next lint -d . --max-warnings=0 && tsc --noEmit && tsc --noEmit -p src/sw/tsconfig.json",
     "test:api": "TEST_TYPE=api jest -i",
     "test:client": "TEST_TYPE=client jest -i",
     "prepare": "husky install",
