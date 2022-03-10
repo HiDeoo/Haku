@@ -63,8 +63,8 @@ const SidebarMenu: React.FC = () => {
       <SearchPalette />
       <IconButton
         onPress={onPressCollapse}
-        tooltip={sidebarCollapsed ? 'Expand' : 'Collapse'}
         icon={sidebarCollapsed ? RiMenuUnfoldLine : RiMenuFoldLine}
+        tooltip={`${sidebarCollapsed ? 'Expand' : 'Collapse'} Menu`}
       />
       <Root>
         <Trigger asChild>
