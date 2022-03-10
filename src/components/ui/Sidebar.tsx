@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai'
 import dynamic from 'next/dynamic'
-import { RiMenuLine } from 'react-icons/ri'
+import { RiMenu2Line } from 'react-icons/ri'
 
 import { sidebarCollapsedAtom } from 'atoms/sidebar'
 import ContentTree from 'components/content/ContentTree'
@@ -34,11 +34,12 @@ const Sidebar: React.FC = () => {
       </Flex>
       {collapsed ? (
         <IconButton
-          icon={RiMenuLine}
+          icon={RiMenu2Line}
           tooltip="Expand Menu"
           onPress={onPressExpand}
-          className="fixed bottom-2 left-2 bg-zinc-900 p-2 shadow shadow-zinc-900 md:hidden"
           iconClassName="w-4 h-4"
+          pressedClassName="bg-zinc-500 hover:bg-zinc-500"
+          className="fixed bottom-2 left-2 bg-zinc-900 p-2 shadow shadow-zinc-900 hover:bg-zinc-600 hover:text-blue-50 md:hidden"
         />
       ) : null}
     </>
