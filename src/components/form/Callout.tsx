@@ -11,7 +11,7 @@ const Callout: React.FC<CalloutProps> = ({ intent, message, title }) => {
   const icon = isSuccess ? RiCheckLine : RiErrorWarningLine
   const iconLabel = isSuccess ? 'Success' : 'Error'
 
-  const containerClasses = clst('rounded-md mt-1 mb-3 pl-3 pr-4 py-2.5 border', {
+  const containerClasses = clst('rounded-md mt-1 mb-3 mx-4 pl-3 pr-4 py-2.5 border', {
     'bg-green-400/30 text-green-100 border-green-300/30': isSuccess,
     'bg-red-400/50 text-red-100 border-red-200/30': isError,
   })
