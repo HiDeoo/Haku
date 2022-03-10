@@ -1,8 +1,9 @@
 import { Link as Roving, Root } from '@radix-ui/react-toolbar'
-import { useUpdateAtom } from 'jotai/utils'
+import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { RiFileTextLine, RiFolderLine } from 'react-icons/ri'
 
 import { contentModalAtom, folderModalAtom, setContentModalOpenedAtom } from 'atoms/modal'
+import { sidebarCollapsedAtom } from 'atoms/sidebar'
 import ContentTreeNode from 'components/content/ContentTreeNode'
 import Button from 'components/form/Button'
 import ContextMenu from 'components/ui/ContextMenu'
@@ -16,6 +17,7 @@ import { type FolderData } from 'libs/db/folder'
 import { type NoteMetadata } from 'libs/db/note'
 import { type TodoMetadata } from 'libs/db/todo'
 import { isTreeFolder, type TreeFolder } from 'libs/tree'
+import clst from 'styles/clst'
 
 const depthOffset = '1.25rem'
 
@@ -25,6 +27,8 @@ const ContentTree: React.FC = () => {
   if (!contentType.type) {
     throw new Error('Missing content type to render the content tree.')
   }
+
+  const sidebarCollapsed = useAtomValue(sidebarCollapsedAtom)
 
   const contentId = useContentId()
   const { data, isLoading } = useContentTreeQuery()
@@ -44,8 +48,10 @@ const ContentTree: React.FC = () => {
     )
   }
 
+  const treeClasses = clst({ hidden: sidebarCollapsed })
+
   return (
-    <Root orientation="vertical" asChild>
+    <Root orientation="vertical" asChild className={treeClasses}>
       <Flex as="nav" direction="col" flex className="relative overflow-y-auto">
         <div className="pointer-events-none absolute inset-0 shadow-[inset_-1px_0_1px_0_rgba(0_0_0/0.4)]" />
         {data?.length == 0 ? (
