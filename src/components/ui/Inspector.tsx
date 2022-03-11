@@ -16,7 +16,7 @@ const Inspector: InspectorComponent = ({ children, collapsed, controls, disabled
 
   return (
     <Flex direction="col" className={inspectorClasses}>
-      <div className="overflow-y-auto">
+      <Flex direction="col" className="overflow-y-auto ">
         {Children.map(children, (child) => {
           if (!isValidElement(child)) {
             return null
@@ -24,7 +24,7 @@ const Inspector: InspectorComponent = ({ children, collapsed, controls, disabled
 
           return cloneElement(child, { ...child.props, collapsed, disabled })
         })}
-      </div>
+      </Flex>
       {controls ? (
         <>
           <div className="grow" />
