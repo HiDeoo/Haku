@@ -1,5 +1,4 @@
-import { Editor } from '@tiptap/react'
-import { useCallback, useEffect, useMemo } from 'react'
+import { type Editor } from '@tiptap/react'
 import {
   RiArrowDropRightFill,
   RiArrowGoBackLine,
@@ -29,76 +28,9 @@ import { type NoteEditorState } from 'components/note/Note'
 import Flex from 'components/ui/Flex'
 import Icon from 'components/ui/Icon'
 import Inspector from 'components/ui/Inspector'
-import SyncReport from 'components/ui/SyncReport'
-import useContentMutation from 'hooks/useContentMutation'
-import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
-import useIdle from 'hooks/useIdle'
-import { type NoteData } from 'libs/db/note'
 import clst from 'styles/clst'
 
-const NoteInspector: React.FC<NoteInspectorProps> = ({
-  disabled,
-  editor,
-  editorState,
-  noteId,
-  onMutation,
-  setLinkModalOpened,
-}) => {
-  const { isLoading, mutate } = useContentMutation()
-
-  const onSettledMutation = useCallback(
-    (_: unknown, error: unknown) => {
-      editor?.setEditable(true)
-      editor?.commands.focus()
-
-      onMutation(error)
-    },
-    [editor, onMutation]
-  )
-
-  const save = useCallback(() => {
-    if (!editor || !noteId) {
-      return
-    }
-
-    editor.setEditable(false)
-
-    const html = editor.getHTML()
-    const text = editor.getText()
-
-    mutate({ action: 'update', id: noteId, html, text }, { onSettled: onSettledMutation })
-  }, [editor, mutate, noteId, onSettledMutation])
-
-  useGlobalShortcuts(
-    useMemo(
-      () => [
-        {
-          group: 'Note',
-          keybinding: 'Meta+S',
-          label: 'Save',
-          onKeyDown: (event) => {
-            event.preventDefault()
-
-            if (!editorState.pristine) {
-              save()
-            }
-          },
-        },
-      ],
-      [editorState.pristine, save]
-    )
-  )
-
-  const idle = useIdle()
-
-  useEffect(() => {
-    if (idle && !editorState.pristine) {
-      save()
-    }
-  }, [editorState.pristine, idle, save])
-
-  const inspectorDisabled = disabled || isLoading
-
+const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorState, setLinkModalOpened }) => {
   const isCodeBlock = editor?.isActive('codeBlock')
 
   const isH1 = editor?.isActive('heading', { level: 1 })
@@ -172,12 +104,8 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({
   }
 
   return (
-    <Inspector disabled={inspectorDisabled}>
+    <Inspector disabled={disabled}>
       <Inspector.Section className="gap-y-[0.3125rem]">
-        <Inspector.Button onPress={save} primary loading={isLoading} disabled={editorState.pristine}>
-          Save
-        </Inspector.Button>
-        <SyncReport isLoading={isLoading} error={editorState.error} lastSync={editorState.lastSync} />
         <div className="h-0 basis-full" />
         <Inspector.IconButton tooltip="Undo" onPress={undo} icon={RiArrowGoBackLine} disabled={!editor?.can().undo()} />
         <Inspector.IconButton
@@ -321,8 +249,6 @@ interface NoteInspectorProps {
   disabled?: boolean
   editor: Editor | null
   editorState: NoteEditorState
-  noteId?: NoteData['id']
-  onMutation: (error?: unknown) => void
   setLinkModalOpened: React.Dispatch<React.SetStateAction<boolean>>
 }
 

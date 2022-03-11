@@ -33,9 +33,6 @@ const InspectorSection: React.FC<InspectorSectionProps> = ({
 }) => {
   const sectionClasses = clst(
     'shrink-0 pt-2 pb-3 px-3 border-b border-zinc-600/25 last-of-type:border-0 overflow-hidden select-none',
-    {
-      'pt-3': typeof title === 'undefined',
-    },
     sectionClassName
   )
   const titleClasses = clst('mb-2 text-blue-100/75 text-xs font-medium', titleClassName)
