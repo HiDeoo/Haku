@@ -61,6 +61,7 @@ const SidebarMenu: React.FC = () => {
         onPress={toggleSidebarCollapsed}
         icon={sidebarCollapsed ? RiMenuUnfoldLine : RiMenuFoldLine}
         tooltip={`${sidebarCollapsed ? 'Expand' : 'Collapse'} Menu`}
+        key={`sidebar-menu-${sidebarCollapsed ? 'expand' : 'collapse'}-button`}
       />
       <Root>
         <Trigger asChild>
