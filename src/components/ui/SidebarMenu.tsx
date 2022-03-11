@@ -1,5 +1,4 @@
 import { Arrow, Content, Item, Root, Trigger } from '@radix-ui/react-dropdown-menu'
-import { useAtom } from 'jotai'
 import { useAtomValue, useResetAtom, useUpdateAtom } from 'jotai/utils'
 import { forwardRef } from 'react'
 import {
@@ -13,7 +12,7 @@ import {
 
 import { setShortcutModalOpenedAtom } from 'atoms/modal'
 import { deferrefPromptEventAtom } from 'atoms/pwa'
-import { sidebarCollapsedAtom } from 'atoms/sidebar'
+import { sidebarCollapsedAtom, toggleSidebarCollapsedAtom } from 'atoms/sidebar'
 import ContentModal from 'components/content/ContentModal'
 import ContentTypeSwitch from 'components/content/ContentTypeSwitch'
 import FolderModal from 'components/folder/FolderModal'
@@ -27,7 +26,8 @@ import { logout } from 'libs/auth'
 import clst from 'styles/clst'
 
 const SidebarMenu: React.FC = () => {
-  const [sidebarCollapsed, setSidebarCollapsed] = useAtom(sidebarCollapsedAtom)
+  const sidebarCollapsed = useAtomValue(sidebarCollapsedAtom)
+  const toggleSidebarCollapsed = useUpdateAtom(toggleSidebarCollapsedAtom)
 
   const deferrefPromptEvent = useAtomValue(deferrefPromptEventAtom)
   const resetDeferrefPromptEvent = useResetAtom(deferrefPromptEventAtom)
@@ -44,10 +44,6 @@ const SidebarMenu: React.FC = () => {
     resetDeferrefPromptEvent()
   }
 
-  function onPressCollapse() {
-    setSidebarCollapsed((prevSidebarCollapsed) => !prevSidebarCollapsed)
-  }
-
   const menuClasses = clst(
     'z-10 py-2',
     sidebarCollapsed ? 'px-2 h-full gap-1' : 'px-4 border-t border-zinc-600/40 shadow-[0_-1px_1px_0_rgba(0_0_0/1)]'
@@ -62,7 +58,7 @@ const SidebarMenu: React.FC = () => {
       <ShortcutModal />
       <SearchPalette />
       <IconButton
-        onPress={onPressCollapse}
+        onPress={toggleSidebarCollapsed}
         icon={sidebarCollapsed ? RiMenuUnfoldLine : RiMenuFoldLine}
         tooltip={`${sidebarCollapsed ? 'Expand' : 'Collapse'} Menu`}
       />
