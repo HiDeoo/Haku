@@ -3,7 +3,7 @@ import dynamic from 'next/dynamic'
 import { useMemo } from 'react'
 import { RiMenu2Line } from 'react-icons/ri'
 
-import { sidebarCollapsedAtom, toggleSidebarCollapsedAtom } from 'atoms/sidebar'
+import { sidebarCollapsedAtom, toggleSidebarCollapsedAtom } from 'atoms/collapsible'
 import ContentTree from 'components/content/ContentTree'
 import IconButton from 'components/form/IconButton'
 import CommandPalette from 'components/palette/CommandPalette'

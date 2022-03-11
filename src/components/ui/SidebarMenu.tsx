@@ -10,9 +10,9 @@ import {
   RiMore2Fill,
 } from 'react-icons/ri'
 
+import { sidebarCollapsedAtom, toggleSidebarCollapsedAtom } from 'atoms/collapsible'
 import { setShortcutModalOpenedAtom } from 'atoms/modal'
 import { deferrefPromptEventAtom } from 'atoms/pwa'
-import { sidebarCollapsedAtom, toggleSidebarCollapsedAtom } from 'atoms/sidebar'
 import ContentModal from 'components/content/ContentModal'
 import ContentTypeSwitch from 'components/content/ContentTypeSwitch'
 import FolderModal from 'components/folder/FolderModal'

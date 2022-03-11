@@ -3,7 +3,7 @@ import { useAtomValue } from 'jotai/utils'
 import { useRouter } from 'next/router'
 import { RiBookletLine, RiTodoLine } from 'react-icons/ri'
 
-import { sidebarCollapsedAtom } from 'atoms/sidebar'
+import { sidebarCollapsedAtom } from 'atoms/collapsible'
 import Icon from 'components/ui/Icon'
 import Tooltip from 'components/ui/Tooltip'
 import useContentType, { ContentType, getContentType } from 'hooks/useContentType'
