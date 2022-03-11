@@ -16,7 +16,7 @@ const SidebarMenu = dynamic(import('components/ui/SidebarMenu'))
 
 const Sidebar: React.FC = () => {
   const collapsed = useAtomValue(sidebarCollapsedAtom)
-  const toggleSidebarCollapsed = useUpdateAtom(toggleSidebarCollapsedAtom)
+  const toggleCollapsed = useUpdateAtom(toggleSidebarCollapsedAtom)
 
   useGlobalShortcuts(
     useMemo(
@@ -28,11 +28,11 @@ const Sidebar: React.FC = () => {
           onKeyDown: (event) => {
             event.preventDefault()
 
-            toggleSidebarCollapsed()
+            toggleCollapsed()
           },
         },
       ],
-      [toggleSidebarCollapsed]
+      [toggleCollapsed]
     )
   )
 
@@ -55,7 +55,7 @@ const Sidebar: React.FC = () => {
           icon={RiMenu2Line}
           tooltip="Expand Menu"
           iconClassName="w-5 h-5"
-          onPress={toggleSidebarCollapsed}
+          onPress={toggleCollapsed}
           pressedClassName="bg-zinc-500 hover:bg-zinc-500"
           className="fixed bottom-2 left-2 z-30 bg-zinc-900 p-2 shadow shadow-zinc-900 hover:bg-zinc-600 hover:text-blue-50 md:hidden"
         />

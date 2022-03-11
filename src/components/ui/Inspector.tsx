@@ -7,16 +7,30 @@ import Flex from 'components/ui/Flex'
 import { type IconProps } from 'components/ui/Icon'
 import clst from 'styles/clst'
 
-const Inspector: InspectorComponent = ({ children, disabled }) => {
-  return (
-    <Flex direction="col" className="w-[15.2rem] shrink-0 overflow-y-auto border-l border-zinc-600/50 bg-zinc-900">
-      {Children.map(children, (child) => {
-        if (!isValidElement(child)) {
-          return null
-        }
+const Inspector: InspectorComponent = ({ children, collapsed, controls, disabled }) => {
+  const inspectorClasses = clst(
+    'shrink-0 border-l border-zinc-600/50 bg-zinc-900',
+    'motion-safe:transition-[width] motion-safe:duration-150 motion-safe:ease-in-out',
+    collapsed ? 'w-12' : 'w-[15.2rem]'
+  )
 
-        return cloneElement(child, { ...child.props, disabled })
-      })}
+  return (
+    <Flex direction="col" className={inspectorClasses}>
+      <div className="overflow-y-auto">
+        {Children.map(children, (child) => {
+          if (!isValidElement(child)) {
+            return null
+          }
+
+          return cloneElement(child, { ...child.props, collapsed, disabled })
+        })}
+      </div>
+      {controls ? (
+        <>
+          <div className="grow" />
+          <div className="border-t border-zinc-600/40 px-2 py-2 shadow-[0_-1px_1px_0_rgba(0_0_0/1)]">{controls}</div>
+        </>
+      ) : null}
     </Flex>
   )
 }
@@ -25,6 +39,7 @@ export default Inspector
 
 const InspectorSection: React.FC<InspectorSectionProps> = ({
   children,
+  collapsed,
   className,
   disabled,
   sectionClassName,
@@ -32,7 +47,9 @@ const InspectorSection: React.FC<InspectorSectionProps> = ({
   titleClassName,
 }) => {
   const sectionClasses = clst(
-    'shrink-0 pt-2 pb-3 px-3 border-b border-zinc-600/25 last-of-type:border-0 overflow-hidden select-none',
+    'shrink-0 pt-2 pb-3 border-t border-zinc-600/25 first-of-type:border-0 overflow-hidden select-none',
+    { 'pt-3': typeof title === 'undefined' && !collapsed },
+    collapsed ? 'px-2.5 py-2.5' : 'px-3',
     sectionClassName
   )
   const titleClasses = clst('mb-2 text-blue-100/75 text-xs font-medium', titleClassName)
@@ -40,7 +57,7 @@ const InspectorSection: React.FC<InspectorSectionProps> = ({
 
   return (
     <Flex direction="col" className={sectionClasses}>
-      {title ? <div className={titleClasses}>{title}</div> : null}
+      {!collapsed && title ? <div className={titleClasses}>{title}</div> : null}
       <Flex wrap alignItems="baseline" className={contentClasses}>
         {Children.map(children, (child) => {
           if (!isValidElement(child)) {
@@ -57,7 +74,7 @@ const InspectorSection: React.FC<InspectorSectionProps> = ({
 Inspector.Section = InspectorSection
 
 const InspectorButton: React.FC<ButtonProps> = (props) => {
-  const buttonClasses = clst('min-w-[65px] mx-0 py-1 bg-zinc-700 hover:bg-zinc-600 shadow-none', {
+  const buttonClasses = clst('mx-0 py-1 bg-zinc-700 hover:bg-zinc-600 shadow-none', {
     'bg-blue-600 hover:bg-blue-500': props.primary,
   })
   const pressedButtonClasses = clst('bg-zinc-500 hover:bg-zinc-500', {
@@ -175,11 +192,14 @@ type InspectorComponent = React.FC<InspectorProps> & {
 }
 
 interface InspectorProps {
+  collapsed?: boolean
+  controls?: React.StrictReactNode
   disabled?: boolean
 }
 
 interface InspectorSectionProps {
   className?: string
+  collapsed?: boolean
   disabled?: boolean
   sectionClassName?: string
   title?: string

@@ -1,4 +1,5 @@
 import { type Editor } from '@tiptap/react'
+import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import {
   RiArrowDropRightFill,
   RiArrowGoBackLine,
@@ -20,10 +21,14 @@ import {
   RiListOrdered,
   RiListUnordered,
   RiMarkPenLine,
+  RiMenuFoldLine,
+  RiMenuUnfoldLine,
   RiSeparator,
   RiStrikethrough,
 } from 'react-icons/ri'
 
+import { noteInspectorCollapsedAtom, toggleNoteInspectorCollapsedAtom } from 'atoms/collapsible'
+import IconButton from 'components/form/IconButton'
 import { type NoteEditorState } from 'components/note/Note'
 import Flex from 'components/ui/Flex'
 import Icon from 'components/ui/Icon'
@@ -31,6 +36,9 @@ import Inspector from 'components/ui/Inspector'
 import clst from 'styles/clst'
 
 const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorState, setLinkModalOpened }) => {
+  const collapsed = useAtomValue(noteInspectorCollapsedAtom)
+  const toggleCollapsed = useUpdateAtom(toggleNoteInspectorCollapsedAtom)
+
   const isCodeBlock = editor?.isActive('codeBlock')
 
   const isH1 = editor?.isActive('heading', { level: 1 })
@@ -104,9 +112,21 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
   }
 
   return (
-    <Inspector disabled={disabled}>
-      <Inspector.Section className="gap-y-[0.3125rem]">
-        <div className="h-0 basis-full" />
+    <Inspector
+      disabled={disabled}
+      collapsed={collapsed}
+      controls={
+        <>
+          <IconButton
+            onPress={toggleCollapsed}
+            icon={collapsed ? RiMenuFoldLine : RiMenuUnfoldLine}
+            tooltip={`${collapsed ? 'Expand' : 'Collapse'} Inspector`}
+            key={`note-inspector-${collapsed ? 'expand' : 'collapse'}-button`}
+          />
+        </>
+      }
+    >
+      <Inspector.Section>
         <Inspector.IconButton tooltip="Undo" onPress={undo} icon={RiArrowGoBackLine} disabled={!editor?.can().undo()} />
         <Inspector.IconButton
           tooltip="Redo"
@@ -203,7 +223,7 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
           toggled={editor?.isActive('codeBlock')}
         />
       </Inspector.Section>
-      {editorState.toc && editorState.toc.length > 0 ? (
+      {!collapsed && editorState.toc && editorState.toc.length > 0 ? (
         <Inspector.Section
           title="Table of contents"
           titleClassName="pt-2 pb-1.5 px-3 mb-0"

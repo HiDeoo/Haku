@@ -2,6 +2,10 @@ import { atom, type PrimitiveAtom, WritableAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
 export const [sidebarCollapsedAtom, toggleSidebarCollapsedAtom] = createCollapsibleAtom('haku.sidebarCollapsed', false)
+export const [noteInspectorCollapsedAtom, toggleNoteInspectorCollapsedAtom] = createCollapsibleAtom(
+  'haku.noteInspectorCollapsed',
+  true
+)
 
 function createCollapsibleAtom(
   key: string,
