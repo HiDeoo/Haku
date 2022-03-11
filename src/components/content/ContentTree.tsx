@@ -17,7 +17,6 @@ import { type FolderData } from 'libs/db/folder'
 import { type NoteMetadata } from 'libs/db/note'
 import { type TodoMetadata } from 'libs/db/todo'
 import { isTreeFolder, type TreeFolder } from 'libs/tree'
-import clst from 'styles/clst'
 
 const depthOffset = '1.25rem'
 
@@ -38,6 +37,10 @@ const ContentTree: React.FC = () => {
     setContentModalOpened(true)
   }
 
+  if (sidebarCollapsed) {
+    return null
+  }
+
   if (isLoading) {
     return (
       <Shimmer>
@@ -48,10 +51,8 @@ const ContentTree: React.FC = () => {
     )
   }
 
-  const treeClasses = clst({ hidden: sidebarCollapsed })
-
   return (
-    <Root orientation="vertical" asChild className={treeClasses}>
+    <Root orientation="vertical" asChild>
       <Flex as="nav" direction="col" flex className="relative overflow-y-auto">
         <div className="pointer-events-none absolute inset-0 shadow-[inset_-1px_0_1px_0_rgba(0_0_0/0.4)]" />
         {data?.length == 0 ? (
