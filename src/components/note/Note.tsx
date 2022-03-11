@@ -38,36 +38,10 @@ const Note: React.FC<NoteProps> = ({ id }) => {
     setEditorState((prevEditorState) => ({ ...prevEditorState, pristine: !emitUpdate, toc }))
   }, [])
 
-  const onEditorCreate = useCallback(
-    ({ editor }: EditorEvents['create']) => {
-      if (location.hash.length !== 0) {
-        const heading = document.querySelector(location.hash)
-
-        if (heading) {
-          const matches = anchorHeadingRegExp.exec(location.hash)
-          const pos = matches?.groups?.pos
-
-          if (pos) {
-            const headingPos = parseInt(pos, 10)
-
-            editor.chain().setTextSelection(headingPos).focus().run()
-
-            heading.scrollIntoView()
-          }
-        }
-      }
-
-      updateToc({ editor }, false)
-    },
-    [updateToc]
-  )
-
   const editor = useEditor({
     autofocus: 'start',
     className: 'h-full p-3',
-    content: data?.html,
     extensions: [HeadingWithId],
-    onCreate: onEditorCreate,
     onUpdate: updateToc,
     setLinkModalOpened,
   })
@@ -122,6 +96,30 @@ const Note: React.FC<NoteProps> = ({ id }) => {
 
   useLocalShortcuts(EDITOR_SHORTCUTS)
 
+  const onNewContent = useCallback(
+    ({ editor }: EditorEvents['create']) => {
+      if (location.hash.length !== 0) {
+        const heading = document.querySelector(location.hash)
+
+        if (heading) {
+          const matches = anchorHeadingRegExp.exec(location.hash)
+          const pos = matches?.groups?.pos
+
+          if (pos) {
+            const headingPos = parseInt(pos, 10)
+
+            editor.chain().setTextSelection(headingPos).focus().run()
+
+            heading.scrollIntoView()
+          }
+        }
+      }
+
+      updateToc({ editor }, false)
+    },
+    [updateToc]
+  )
+
   useEffect(() => {
     if (editor && data?.html) {
       // Preserve the cursor position if the content is identical.
@@ -129,9 +127,11 @@ const Note: React.FC<NoteProps> = ({ id }) => {
         return
       }
 
-      editor.chain().setContent(data.html).focus().run()
+      editor.chain().setContent(data.html, false).focus().run()
+
+      onNewContent({ editor })
     }
-  }, [data, editor])
+  }, [data, editor, onNewContent])
 
   useEffect(() => {
     if (idle && !editorState.pristine) {
