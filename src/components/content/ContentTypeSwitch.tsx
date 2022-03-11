@@ -27,7 +27,7 @@ const ContentTypeSwitch: React.FC = () => {
     'px-1.5 rounded-md bg-zinc-700/40 border border-zinc-600/40 group',
     'focus:outline-none',
     'focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-zinc-800 focus-visible:ring-offset-2',
-    sidebarCollapsed ? 'mx-0.5 mb-1.5 py-1.5 px-[0.3rem]' : 'mr-4 px-1.5'
+    sidebarCollapsed ? 'mx-0.5 mb-1.5 py-1.5 px-[0.3rem] w-7' : 'mr-4 px-1.5'
   )
   const gridClasses = clst('relative grid gap-1.5', sidebarCollapsed ? 'grid-rows-2' : 'grid-cols-2')
   const altGridClasses = clst(

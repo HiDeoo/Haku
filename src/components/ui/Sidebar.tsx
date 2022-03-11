@@ -18,7 +18,8 @@ const Sidebar: React.FC = () => {
 
   const sidebarClasses = clst(
     'bg-zinc-900 pwa:input-hover:border-t pwa:input-hover:border-zinc-700',
-    collapsed ? 'w-12 hidden md:flex' : 'w-[17rem]'
+    'motion-safe:transition-[width] motion-safe:duration-150 motion-safe:ease-in-out',
+    collapsed ? 'w-0 opacity-0 md:opacity-100 overflow-hidden md:w-12 md:flex' : 'w-[17rem]'
   )
 
   return (
