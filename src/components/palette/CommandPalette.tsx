@@ -10,12 +10,14 @@ import {
   RiKeyboardFill,
   RiLink,
   RiLogoutCircleRLine,
+  RiMenu2Line,
   RiSearchLine,
   RiTodoLine,
 } from 'react-icons/ri'
 
 import { setContentModalOpenedAtom, setFolderModalOpenedAtom, setShortcutModalOpenedAtom } from 'atoms/modal'
 import { commandPaletteOpenedAtom, navigationPaletteOpenedAtom, searchPaletteOpenedAtom } from 'atoms/palette'
+import { toggleSidebarCollapsedAtom } from 'atoms/sidebar'
 import { type PaletteProps } from 'components/palette/Palette'
 import { type IconProps } from 'components/ui/Icon'
 import useContentType, { ContentType, getContentType } from 'hooks/useContentType'
@@ -40,6 +42,8 @@ const CommandPalette: React.FC = () => {
   const setContentModalOpened = useUpdateAtom(setContentModalOpenedAtom)
   const setFolderModalOpened = useUpdateAtom(setFolderModalOpenedAtom)
   const setShortcutModalOpened = useUpdateAtom(setShortcutModalOpenedAtom)
+
+  const toggleSidebarCollapsed = useUpdateAtom(toggleSidebarCollapsedAtom)
 
   useGlobalShortcuts(
     useMemo(
@@ -97,6 +101,11 @@ const CommandPalette: React.FC = () => {
         },
       },
       {
+        name: `Collapse / Expand Menu`,
+        icon: RiMenu2Line,
+        action: toggleSidebarCollapsed,
+      },
+      {
         name: 'Display Keyboard Shortcuts',
         icon: RiKeyboardFill,
         action: () => {
@@ -121,6 +130,7 @@ const CommandPalette: React.FC = () => {
       setNavigationPaletteOpened,
       setSearchPaletteOpened,
       setShortcutModalOpened,
+      toggleSidebarCollapsed,
     ]
   )
 
