@@ -144,7 +144,13 @@ const Note: React.FC<NoteProps> = ({ id }) => {
   return (
     <>
       <Title pageTitle={data?.name} />
-      <NoteNavbar disabled={isLoadingOrSaving} editorState={editorState} save={save} isSaving={isSaving} />
+      <NoteNavbar
+        save={save}
+        isSaving={isSaving}
+        noteName={data?.name}
+        editorState={editorState}
+        disabled={isLoadingOrSaving}
+      />
       <Flex fullHeight className="overflow-hidden">
         {isLoading ? (
           <Shimmer>

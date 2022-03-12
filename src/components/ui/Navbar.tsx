@@ -4,9 +4,12 @@ import Button, { ButtonProps } from 'components/form/Button'
 import Flex from 'components/ui/Flex'
 import clst from 'styles/clst'
 
-const Navbar: NavbarComponent = ({ children, disabled }) => {
+const Navbar: NavbarComponent = ({ children, disabled, title }) => {
   return (
-    <Flex alignItems="center" className="gap-3 border-b border-zinc-600/50 bg-zinc-900 px-2 py-2 text-sm">
+    <Flex alignItems="center" className="gap-3 border-b border-zinc-600/50 bg-zinc-900 py-2 px-2.5 text-sm">
+      {title && title.length > 0 && (
+        <div className="grow truncate font-semibold text-zinc-50">{`${title} `.repeat(4)}</div>
+      )}
       {Children.map(children, (child) => {
         if (!isValidElement(child)) {
           return null
@@ -34,7 +37,7 @@ const NavbarButton: React.FC<ButtonProps> = (props) => {
 Navbar.Button = NavbarButton
 
 const NavbarSpacer: React.FC = () => {
-  return <div className="grow-1 w-full" />
+  return <div className="grow" />
 }
 
 Navbar.Spacer = NavbarSpacer
@@ -46,4 +49,5 @@ type NavbarComponent = React.FC<NavbarProps> & {
 
 interface NavbarProps {
   disabled?: boolean
+  title?: string
 }
