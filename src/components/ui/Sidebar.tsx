@@ -5,10 +5,10 @@ import { RiMenu2Line } from 'react-icons/ri'
 
 import { sidebarCollapsedAtom, toggleSidebarCollapsedAtom } from 'atoms/collapsible'
 import ContentTree from 'components/content/ContentTree'
-import IconButton from 'components/form/IconButton'
 import CommandPalette from 'components/palette/CommandPalette'
 import NavigationPalette from 'components/palette/NavigationPalette'
 import Flex from 'components/ui/Flex'
+import FloatingButton from 'components/ui/FloatingButton'
 import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
 import clst from 'styles/clst'
 
@@ -50,16 +50,13 @@ const Sidebar: React.FC = () => {
         <ContentTree />
         <SidebarMenu />
       </Flex>
-      {collapsed ? (
-        <IconButton
-          icon={RiMenu2Line}
-          tooltip="Expand Menu"
-          iconClassName="w-5 h-5"
-          onPress={toggleCollapsed}
-          pressedClassName="bg-zinc-500 hover:bg-zinc-500"
-          className="fixed bottom-2 left-2 z-30 bg-zinc-900 p-2 shadow shadow-zinc-900 hover:bg-zinc-600 hover:text-blue-50 md:hidden"
-        />
-      ) : null}
+      <FloatingButton
+        icon={RiMenu2Line}
+        className="left-2"
+        visible={collapsed}
+        tooltip="Expand Menu"
+        onPress={toggleCollapsed}
+      />
     </>
   )
 }

@@ -10,8 +10,8 @@ import clst from 'styles/clst'
 const Inspector: InspectorComponent = ({ children, collapsed, controls, disabled }) => {
   const inspectorClasses = clst(
     'shrink-0 border-l border-zinc-600/50 bg-zinc-900',
-    'motion-safe:transition-[width] motion-safe:duration-150 motion-safe:ease-in-out',
-    collapsed ? 'w-12' : 'w-[15.2rem]'
+    'motion-safe:transition-[width,opacity] motion-safe:duration-150 motion-safe:ease-in-out',
+    collapsed ? 'w-0 md:w-12 opacity-0 md:opacity-100' : 'w-[15.2rem]'
   )
 
   return (
@@ -64,7 +64,7 @@ const InspectorSection: React.FC<InspectorSectionProps> = ({
             return null
           }
 
-          return cloneElement(child, { ...child.props, disabled: child.props.disabled || disabled })
+          return cloneElement(child, { ...child.props, collapsed, disabled: child.props.disabled || disabled })
         })}
       </Flex>
     </Flex>
@@ -134,7 +134,14 @@ const InspectorIconButton = forwardRef<HTMLButtonElement, React.PropsWithChildre
 InspectorIconButton.displayName = 'InspectorIconButton'
 Inspector.IconButton = InspectorIconButton
 
-const InspectorIconMenu: React.FC<InspectorIconButtonMenuProps> = ({ children, disabled, icon, toggled, tooltip }) => {
+const InspectorIconMenu: React.FC<InspectorIconButtonMenuProps> = ({
+  children,
+  collapsed,
+  disabled,
+  icon,
+  toggled,
+  tooltip,
+}) => {
   const buttonClasses = clst({
     'bg-blue-500 hover:bg-blue-400 border-blue-400': toggled,
   })
@@ -157,7 +164,12 @@ const InspectorIconMenu: React.FC<InspectorIconButtonMenuProps> = ({ children, d
           pressedClassName={pressedButtonClasses}
         />
       </Trigger>
-      <Content loop onCloseAutoFocus={onCloseAutoFocus}>
+      <Content
+        loop
+        sideOffset={collapsed ? 7 : 0}
+        onCloseAutoFocus={onCloseAutoFocus}
+        side={collapsed ? 'left' : 'bottom'}
+      >
         <Flex direction="col" className="mt-[2px] rounded-md bg-zinc-700 shadow-sm shadow-black/50">
           {children}
         </Flex>
@@ -222,6 +234,7 @@ interface InspectorToggleProps extends Omit<InspectorIconButtonProps, 'onPress'>
 }
 
 interface InspectorIconButtonMenuProps {
+  collapsed?: boolean
   disabled?: boolean
   icon: IconProps['icon']
   toggled?: boolean
