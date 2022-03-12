@@ -1,9 +1,10 @@
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import dynamic from 'next/dynamic'
+import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 import { RiMenu2Line } from 'react-icons/ri'
 
-import { sidebarCollapsedAtom, toggleSidebarCollapsedAtom } from 'atoms/collapsible'
+import { noteInspectorCollapsedAtom, sidebarCollapsedAtom, toggleSidebarCollapsedAtom } from 'atoms/collapsible'
 import ContentTree from 'components/content/ContentTree'
 import CommandPalette from 'components/palette/CommandPalette'
 import NavigationPalette from 'components/palette/NavigationPalette'
@@ -15,8 +16,13 @@ import clst from 'styles/clst'
 const SidebarMenu = dynamic(import('components/ui/SidebarMenu'))
 
 const Sidebar: React.FC = () => {
+  const router = useRouter()
+  const isOnNotePage = router.pathname.startsWith('/notes/')
+
   const collapsed = useAtomValue(sidebarCollapsedAtom)
   const toggleCollapsed = useUpdateAtom(toggleSidebarCollapsedAtom)
+
+  const noteInspectorCollapsed = useAtomValue(noteInspectorCollapsedAtom)
 
   useGlobalShortcuts(
     useMemo(
@@ -53,9 +59,9 @@ const Sidebar: React.FC = () => {
       <FloatingButton
         icon={RiMenu2Line}
         className="left-2"
-        visible={collapsed}
         tooltip="Expand Menu"
         onPress={toggleCollapsed}
+        visible={(!isOnNotePage && collapsed) || (isOnNotePage && collapsed && noteInspectorCollapsed)}
       />
     </>
   )

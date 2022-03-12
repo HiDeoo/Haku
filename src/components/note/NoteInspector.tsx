@@ -28,7 +28,7 @@ import {
   RiStrikethrough,
 } from 'react-icons/ri'
 
-import { noteInspectorCollapsedAtom, toggleNoteInspectorCollapsedAtom } from 'atoms/collapsible'
+import { noteInspectorCollapsedAtom, sidebarCollapsedAtom, toggleNoteInspectorCollapsedAtom } from 'atoms/collapsible'
 import IconButton from 'components/form/IconButton'
 import { type NoteEditorState } from 'components/note/Note'
 import Flex from 'components/ui/Flex'
@@ -40,6 +40,8 @@ import clst from 'styles/clst'
 const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorState, setLinkModalOpened }) => {
   const collapsed = useAtomValue(noteInspectorCollapsedAtom)
   const toggleCollapsed = useUpdateAtom(toggleNoteInspectorCollapsedAtom)
+
+  const sidebarCollapsed = useAtomValue(sidebarCollapsedAtom)
 
   const isCodeBlock = editor?.isActive('codeBlock')
 
@@ -252,9 +254,9 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
       <FloatingButton
         icon={RiEditLine}
         className="right-2"
-        visible={collapsed}
         onPress={toggleCollapsed}
         tooltip="Expand Inspector"
+        visible={collapsed && sidebarCollapsed}
       />
     </>
   )
