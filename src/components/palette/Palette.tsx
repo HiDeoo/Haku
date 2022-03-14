@@ -6,11 +6,11 @@ import { MODAL_CONTENT_CLASSES, MODAL_OVERLAY_CLASSES } from 'components/ui/Moda
 import clst from 'styles/clst'
 
 const Palette = <TItem,>({ forwardedRef, ...props }: PaletteProps<TItem>) => {
-  const overlayClasses = clst(MODAL_OVERLAY_CLASSES, 'pt-0')
+  const overlayClasses = clst(MODAL_OVERLAY_CLASSES, 'pt-0 md:pt-0')
 
   const contentClasses = clst(
     MODAL_CONTENT_CLASSES,
-    'flex flex-col my-0 max-h-[500px] w-[400px] animate-palette-content overflow-y-hidden rounded-t-none'
+    'flex flex-col my-0 xs:my-0 max-h-[500px] xs:w-[400px] animate-palette-content overflow-y-hidden rounded-t-none'
   )
 
   return (
