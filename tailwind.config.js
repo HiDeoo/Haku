@@ -1,6 +1,14 @@
+const defaultTheme = require('tailwindcss/defaultTheme')
+
 module.exports = {
   content: ['./src/pages/**/*.{ts,tsx}', './src/components/**/*.{ts,tsx}', './src/styles/**/*.css'],
   theme: {
+    // We cannot extend the default theme to add a smaller breakpoint as they need to be sorted from smallest to largest
+    // in order to work as expected with a min-width breakpoint system
+    screens: {
+      xs: '481px',
+      ...defaultTheme.screens,
+    },
     extend: {
       animation: {
         'bounce-in': 'bounceIn 300ms cubic-bezier(0.55, 1.15, 0.35, 1.15)',
