@@ -45,8 +45,10 @@ const SidebarMenu: React.FC = () => {
   }
 
   const menuClasses = clst(
-    'z-10 py-2',
-    sidebarCollapsed ? 'px-2 h-full gap-1' : 'px-4 border-t border-zinc-600/40 shadow-[0_-1px_1px_0_rgba(0_0_0/1)]'
+    'z-10 py-2 supports-max:pb-[calc(theme(spacing.2)+max(0px,env(safe-area-inset-bottom)))]',
+    sidebarCollapsed
+      ? 'px-2 supports-max:pl-[calc(theme(spacing.2)+max(0px,env(safe-area-inset-left)))] h-full gap-1'
+      : 'px-4 supports-max:pl-[calc(theme(spacing.4)+max(0px,env(safe-area-inset-left)))] border-t border-zinc-600/40 shadow-[0_-1px_1px_0_rgba(0_0_0/1)]'
   )
 
   return (

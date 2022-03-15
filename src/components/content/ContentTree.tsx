@@ -20,6 +20,8 @@ import { isTreeFolder, type TreeFolder } from 'libs/tree'
 
 const depthOffset = '1.25rem'
 
+const supportsMaxCss = window.CSS.supports('padding', 'max(0px)')
+
 const ContentTree: React.FC = () => {
   const contentType = useContentType()
 
@@ -173,7 +175,11 @@ function getNodeStyle(
   depth: number,
   includeDefaultPadding = true
 ): NonNullable<React.HtmlHTMLAttributes<HTMLElement>['style']> {
-  return { paddingLeft: `calc(${includeDefaultPadding ? '0.75rem + ' : ''}${depthOffset} * ${depth})` }
+  return {
+    paddingLeft: `calc((${includeDefaultPadding ? '0.75rem + ' : ''}${depthOffset} * ${depth})${
+      supportsMaxCss ? ' + max(0px, env(safe-area-inset-left))' : ''
+    })`,
+  }
 }
 
 interface ShimmerNodeProps {
