@@ -75,7 +75,7 @@ div#__next {
 }
 
 body {
-  @apply touch-pan-x touch-pan-y touch-pinch-zoom bg-zinc-800 text-sm text-blue-50 caret-blue-400;
+  @apply touch-pan-x touch-pan-y bg-zinc-800 text-sm text-blue-50 caret-blue-400;
 }
 
 div#__next {
