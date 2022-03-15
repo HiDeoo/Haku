@@ -57,14 +57,14 @@ const ContentTree: React.FC = () => {
     <Root orientation="vertical" asChild>
       <Flex as="nav" direction="col" flex className="relative overflow-y-auto">
         <div className="pointer-events-none absolute inset-0 shadow-[inset_-1px_0_1px_0_rgba(0_0_0/0.4)]" />
-        {data?.length == 0 ? (
+        {data?.length === 0 ? (
           <Flex
             fullWidth
             fullHeight
             direction="col"
             alignItems="center"
             justifyContent="center"
-            className="gap-6 p-3 text-center"
+            className="gap-6 p-3 text-center supports-max:pl-[calc(theme(spacing.3)+max(0px,env(safe-area-inset-left)))]"
           >
             <span>Start by creating a new {contentType.lcType}.</span>
             <Button onPress={openNewContentModal} primary>
@@ -76,9 +76,21 @@ const ContentTree: React.FC = () => {
             const key = getNodeKey(item)
 
             return isTreeFolder(item) ? (
-              <Folder key={key} folder={item} selectedId={contentId} contentType={contentType} />
+              <Folder
+                key={key}
+                folder={item}
+                selectedId={contentId}
+                style={getNodeStyle(0)}
+                contentType={contentType}
+              />
             ) : (
-              <Content key={key} content={item} selectedId={contentId} contentType={contentType} />
+              <Content
+                key={key}
+                content={item}
+                selectedId={contentId}
+                style={getNodeStyle(0)}
+                contentType={contentType}
+              />
             )
           })
         )}
