@@ -94,10 +94,7 @@ const InspectorToggle: React.FC<InspectorToggleProps> = ({ onToggle, toggled, ..
   const buttonClasses = clst({
     'bg-blue-500 hover:bg-blue-400 border-blue-400': toggled,
   })
-  const pressedButtonClasses = clst({
-    'bg-zinc-400 hover:bg-zinc-500': !toggled,
-    'bg-blue-300 hover:bg-blue-300': toggled,
-  })
+  const pressedButtonClasses = clst(toggled ? 'bg-blue-300 hover:bg-blue-300' : 'bg-zinc-400 hover:bg-zinc-500')
 
   function onPress() {
     onToggle(!toggled)
