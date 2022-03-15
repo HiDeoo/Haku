@@ -280,7 +280,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
 
   const contentClasses = clst(
     styles.content,
-    'min-h-[1.5rem] pr-2 break-words outline-none grow leading-relaxed supports-max:pr-[calc(theme(spacing.2)+max(0px,env(safe-area-inset-right)))]',
+    'min-h-[1.5rem] pr-2 break-words outline-none grow leading-relaxed supports-max:pr-[calc(theme(spacing.2)+max(0px,env(safe-area-inset-right)))] whitespace-pre-wrap',
     {
       'cursor-not-allowed': isLoading,
       'line-through text-zinc-400': node.completed,
