@@ -40,7 +40,7 @@ const Note: React.FC<NoteProps> = ({ id }) => {
 
   const editor = useEditor({
     autofocus: 'start',
-    className: 'h-full p-3',
+    className: 'h-full p-3 min-w-0',
     extensions: [HeadingWithId],
     onUpdate: updateToc,
     setLinkModalOpened,
