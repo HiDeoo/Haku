@@ -19,7 +19,7 @@ const TodoNodeHandle: React.FC<TodoNodeHandleProps> = ({ collapsed, completed, h
   const circleClasses = clst('h-[0.45rem] w-[0.45rem]', circleBaseClasses)
 
   const collapsedCircleClasses = clst(
-    'absolute h-[0.93rem] w-[0.93rem] top-[0.02rem] -left-[0.25rem] group-hover:invisible',
+    'absolute h-[0.93rem] w-[0.93rem] top-[0.02rem] -left-1 group-hover:invisible',
     circleBaseClasses
   )
 

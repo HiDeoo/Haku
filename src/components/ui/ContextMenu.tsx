@@ -16,7 +16,7 @@ const ContextMenu: ContextMenuComponent = ({ children, trigger }) => {
   return (
     <Root>
       <Trigger asChild>{trigger}</Trigger>
-      <Content className="min-w-[8rem] overflow-hidden rounded-md bg-zinc-700 p-1.5 shadow shadow-black/75">
+      <Content className="min-w-[theme(spacing.32)] overflow-hidden rounded-md bg-zinc-700 p-1.5 shadow shadow-black/75">
         {children}
       </Content>
     </Root>

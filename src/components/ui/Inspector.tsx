@@ -30,7 +30,7 @@ const Inspector: InspectorComponent = ({ children, collapsed, controls, disabled
       {controls ? (
         <>
           <div className="grow" />
-          <div className="border-t border-zinc-600/40 px-2 py-2 shadow-[0_-1px_1px_0_rgba(0_0_0/1)] supports-max:pr-[calc(theme(spacing.2)+max(0px,env(safe-area-inset-right)))] supports-max:pb-[calc(theme(spacing.2)+max(0px,env(safe-area-inset-bottom)))]">
+          <div className="border-t border-zinc-600/40 px-2 py-2 shadow-[0_-1px_1px_0_theme(colors.black)] supports-max:pr-[calc(theme(spacing.2)+max(0px,env(safe-area-inset-right)))] supports-max:pb-[calc(theme(spacing.2)+max(0px,env(safe-area-inset-bottom)))]">
             {controls}
           </div>
         </>
@@ -171,7 +171,7 @@ const InspectorIconMenu: React.FC<InspectorIconButtonMenuProps> = ({
         onCloseAutoFocus={onCloseAutoFocus}
         side={collapsed ? 'left' : 'bottom'}
       >
-        <Flex direction="col" className="mt-[2px] rounded-md bg-zinc-700 shadow-sm shadow-black/50">
+        <Flex direction="col" className="mt-[theme(spacing[0.5])] rounded-md bg-zinc-700 shadow-sm shadow-black/50">
           {children}
         </Flex>
       </Content>
