@@ -115,7 +115,12 @@ const Todo: React.FC<TodoProps> = ({ id }) => {
           </Shimmer>
         ) : (
           <TodoContext.Provider value={todoNodeContentRefs}>
-            <Flex fullHeight fullWidth direction="col" className="overflow-y-auto">
+            <Flex
+              fullHeight
+              fullWidth
+              direction="col"
+              className="overflow-y-auto supports-max:pb-[max(0px,env(safe-area-inset-bottom))]"
+            >
               <TodoNodeChildren onFocusTodoNode={setTodoFocus} setTodoNodeItemRef={setTodoNodeItemRef} />
             </Flex>
           </TodoContext.Provider>
