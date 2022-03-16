@@ -36,7 +36,7 @@ const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, focusTodoNode, todoId
     (_: unknown, error: unknown) => {
       setEditorState({ error, isLoading: false, lastSync: error ? undefined : new Date() })
 
-      focusTodoNode()
+      focusTodoNode(false)
     },
     [focusTodoNode, setEditorState]
   )
@@ -125,7 +125,7 @@ export default TodoNavbar
 
 interface TodoNavbarProps {
   disabled?: boolean
-  focusTodoNode: () => void
+  focusTodoNode: (scrollIntoView?: boolean) => void
   todoId: TodoMetadata['id']
   todoName?: TodoMetadata['name']
 }
