@@ -173,16 +173,25 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     event.stopPropagation()
 
     const text = event.clipboardData.getData('text/plain').replaceAll(/\n/gm, ' ')
+    const range = window.getSelection()?.getRangeAt(0)
 
-    if (node?.id) {
-      updateContent({ id: node.id, content: text.replaceAll(/\n/gm, ' ') })
+    if (range && node?.id) {
+      updateContent({
+        id: node.id,
+        content: `${node.content.substring(0, range.startOffset)}${text.replaceAll(
+          /\n/gm,
+          ' '
+        )}${node.content.substring(range.endOffset)}`,
+      })
+
+      const nextCaretIndex = range.startOffset + text.length
+
+      // Pasting large content may lead to a loss of focus, we can safely prevent that by refocusing the current node
+      // and having the caret being placed right after the pasted content.
+      requestAnimationFrame(() => {
+        focusContent(nextCaretIndex)
+      })
     }
-
-    // Pasting large content may lead to a loss of focus, we can safely prevent that by refocusing the current node and
-    // having the caret being placed at the end of the content text node.
-    requestAnimationFrame(() => {
-      focusContent(text.length)
-    })
   }
 
   function preserveCaret(callback: () => void) {
