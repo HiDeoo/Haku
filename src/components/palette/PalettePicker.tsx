@@ -20,6 +20,7 @@ const shortcutMap = getShortcutMap([{ keybinding: 'Escape' }])
 
 const PalettePicker = <TItem,>(
   {
+    enterKeyHint,
     fuzzy = true,
     infinite = false,
     initialQuery = '',
@@ -155,6 +156,7 @@ const PalettePicker = <TItem,>(
     <>
       <div {...getComboboxProps({ className: 'relative p-3' })}>
         <TextInput
+          enterKeyHint={enterKeyHint}
           {...getInputProps({
             className: showLoadingSpinner ? 'pr-8' : undefined,
             onKeyDown,

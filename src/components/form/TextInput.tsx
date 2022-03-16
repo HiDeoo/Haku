@@ -30,6 +30,7 @@ const TextInput = forwardRef<HTMLInputElement, React.PropsWithChildren<TextInput
         disabled={props.disabled}
         defaultValue={defaultValue}
         spellCheck={props.spellCheck}
+        enterKeyHint={props.enterKeyHint}
       />
     )
 
@@ -60,6 +61,7 @@ interface TextInputProps extends Partial<Omit<UseFormRegisterReturn, 'ref'>> {
   className?: string
   defaultValue?: React.InputHTMLAttributes<HTMLInputElement>['defaultValue']
   disabled?: boolean
+  enterKeyHint?: React.InputHTMLAttributes<HTMLInputElement>['enterKeyHint']
   errorMessage?: string
   label?: string
   placeholder: string

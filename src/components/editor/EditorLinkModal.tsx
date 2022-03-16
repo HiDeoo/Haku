@@ -39,6 +39,7 @@ const EditorLinkModal: React.FC<EditorLinkModalProps> = ({ editor, opened, onOpe
         <TextInput
           type="url"
           label="URL"
+          enterKeyHint="done"
           {...register('url')}
           placeholder="https://address.com"
           errorMessage={errors.url?.message}

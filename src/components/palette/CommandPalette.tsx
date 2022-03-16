@@ -155,6 +155,7 @@ const CommandPalette: React.FC = () => {
       opened={opened}
       onPick={onPick}
       items={commands}
+      enterKeyHint="done"
       itemToIcon={itemToIcon}
       onOpenChange={setOpened}
       itemToString={itemToString}

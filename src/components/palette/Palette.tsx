@@ -29,6 +29,7 @@ const Palette = <TItem,>({ forwardedRef, ...props }: PaletteProps<TItem>) => {
 export default Palette
 
 export interface PaletteProps<TItem> {
+  enterKeyHint?: React.InputHTMLAttributes<HTMLInputElement>['enterKeyHint']
   forwardedRef?: React.ForwardedRef<HTMLInputElement>
   fuzzy?: boolean
   infinite?: boolean

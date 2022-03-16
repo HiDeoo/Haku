@@ -29,6 +29,7 @@ const Login: Page = () => {
           autoFocus
           type="email"
           label="Email"
+          enterKeyHint="done"
           placeholder="user@address.com"
           errorMessage={errors.email?.message}
           {...register('email', { required: 'required' })}

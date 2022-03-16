@@ -78,6 +78,7 @@ const FolderModal: React.FC = () => {
           <TextInput
             type="text"
             label="Name"
+            enterKeyHint="done"
             disabled={isLoading}
             placeholder="Recipes"
             defaultValue={folder?.name ?? ''}
