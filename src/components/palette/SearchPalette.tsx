@@ -104,6 +104,7 @@ const SearchPalette: React.FC = () => {
         fuzzy={false}
         opened={opened}
         onPick={onPick}
+        enterKeyHint="go"
         initialQuery={query}
         isLoading={isLoading}
         itemToIcon={itemToIcon}

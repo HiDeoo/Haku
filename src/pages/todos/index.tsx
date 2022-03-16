@@ -1,9 +1,7 @@
+import Safe from 'components/ui/Safe'
+
 const Todos: Page = () => {
-  return (
-    <>
-      <div>todos</div>
-    </>
-  )
+  return <Safe>todos</Safe>
 }
 
 export default Todos

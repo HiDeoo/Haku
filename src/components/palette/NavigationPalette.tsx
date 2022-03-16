@@ -64,6 +64,7 @@ const NavigationPalette: React.FC = () => {
     <Palette
       opened={opened}
       onPick={onPick}
+      enterKeyHint="go"
       items={data ?? []}
       isLoading={isLoading}
       itemToIcon={itemToIcon}

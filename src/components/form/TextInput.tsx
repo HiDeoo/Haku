@@ -12,7 +12,8 @@ const TextInput = forwardRef<HTMLInputElement, React.PropsWithChildren<TextInput
     const { labelProps, inputProps, errorMessageProps } = useTextField(props, ref)
 
     const inputClasses = clst(
-      'w-full bg-zinc-600 rounded-md px-3 py-1.5 placeholder:text-blue-50/40 disabled:cursor-not-allowed',
+      'w-full px-3 py-1.5',
+      'bg-zinc-600 rounded-md placeholder:text-blue-50/40 disabled:cursor-not-allowed appearance-none',
       'focus:outline-none focus:ring-2 focus:ring-offset-zinc-800 focus:ring-offset-2',
       props.errorMessage ? 'focus:ring-red-400' : 'focus:ring-blue-600',
       { 'opacity-50': props.disabled },
@@ -29,6 +30,7 @@ const TextInput = forwardRef<HTMLInputElement, React.PropsWithChildren<TextInput
         disabled={props.disabled}
         defaultValue={defaultValue}
         spellCheck={props.spellCheck}
+        enterKeyHint={props.enterKeyHint}
       />
     )
 
@@ -59,6 +61,7 @@ interface TextInputProps extends Partial<Omit<UseFormRegisterReturn, 'ref'>> {
   className?: string
   defaultValue?: React.InputHTMLAttributes<HTMLInputElement>['defaultValue']
   disabled?: boolean
+  enterKeyHint?: React.InputHTMLAttributes<HTMLInputElement>['enterKeyHint']
   errorMessage?: string
   label?: string
   placeholder: string

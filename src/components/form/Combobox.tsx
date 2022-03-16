@@ -31,6 +31,7 @@ const Combobox = <TItem, TFormFields extends FieldValues>({
   control,
   defaultItem,
   disabled,
+  enterKeyHint,
   errorMessage,
   items,
   itemToMenuItem,
@@ -194,6 +195,7 @@ const Combobox = <TItem, TFormFields extends FieldValues>({
           spellCheck={false}
           disabled={isDisabled()}
           value={getInputValue()}
+          enterKeyHint={enterKeyHint}
           errorMessage={errorMessage}
         />
         <Button
@@ -228,6 +230,7 @@ interface ComboboxProps<TItem, TFormFields extends FieldValues> {
   control: Control<TFormFields>
   defaultItem: TItem
   disabled?: boolean
+  enterKeyHint?: React.InputHTMLAttributes<HTMLInputElement>['enterKeyHint']
   errorMessage?: string
   items: TItem[]
   itemToMenuItem?: (item: TItem | null) => string

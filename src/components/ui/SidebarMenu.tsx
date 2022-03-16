@@ -1,8 +1,16 @@
 import { Arrow, Content, Item, Root, Trigger } from '@radix-ui/react-dropdown-menu'
 import { useAtomValue, useResetAtom, useUpdateAtom } from 'jotai/utils'
 import { forwardRef } from 'react'
-import { RiInstallLine, RiKeyboardFill, RiLogoutCircleRLine, RiMore2Fill } from 'react-icons/ri'
+import {
+  RiInstallLine,
+  RiKeyboardFill,
+  RiLogoutCircleRLine,
+  RiMenuFoldLine,
+  RiMenuUnfoldLine,
+  RiMore2Fill,
+} from 'react-icons/ri'
 
+import { sidebarCollapsedAtom, toggleSidebarCollapsedAtom } from 'atoms/collapsible'
 import { setShortcutModalOpenedAtom } from 'atoms/modal'
 import { deferrefPromptEventAtom } from 'atoms/pwa'
 import ContentModal from 'components/content/ContentModal'
@@ -18,6 +26,9 @@ import { logout } from 'libs/auth'
 import clst from 'styles/clst'
 
 const SidebarMenu: React.FC = () => {
+  const sidebarCollapsed = useAtomValue(sidebarCollapsedAtom)
+  const toggleSidebarCollapsed = useUpdateAtom(toggleSidebarCollapsedAtom)
+
   const deferrefPromptEvent = useAtomValue(deferrefPromptEventAtom)
   const resetDeferrefPromptEvent = useResetAtom(deferrefPromptEventAtom)
 
@@ -33,22 +44,40 @@ const SidebarMenu: React.FC = () => {
     resetDeferrefPromptEvent()
   }
 
+  const menuClasses = clst(
+    'z-10 py-2 supports-max:pb-[calc(theme(spacing.2)+max(0px,env(safe-area-inset-bottom)))]',
+    sidebarCollapsed
+      ? 'px-2 supports-max:pl-[calc(theme(spacing.2)+max(0px,env(safe-area-inset-left)))] h-full gap-1'
+      : [
+          'px-4 supports-max:pl-[calc(theme(spacing.4)+max(0px,env(safe-area-inset-left)))]',
+          'border-t border-zinc-600/40 shadow-[0_-1px_1px_0_theme(colors.black)]',
+        ]
+  )
+
   return (
-    <Flex
-      justifyContent="center"
-      className="z-10 border-t border-zinc-600/40 px-4 py-2 shadow-[0_-1px_1px_0_rgba(0_0_0/1)]"
-    >
+    <Flex justifyContent="center" direction={sidebarCollapsed ? 'col' : 'row'} className={menuClasses}>
       <ContentTypeSwitch />
+      <div className="grow" />
       <ContentModal />
       <FolderModal />
       <ShortcutModal />
       <SearchPalette />
+      <IconButton
+        onPress={toggleSidebarCollapsed}
+        icon={sidebarCollapsed ? RiMenuUnfoldLine : RiMenuFoldLine}
+        tooltip={`${sidebarCollapsed ? 'Expand' : 'Collapse'} Menu`}
+        key={`sidebar-menu-${sidebarCollapsed ? 'expand' : 'collapse'}-button`}
+      />
       <Root>
         <Trigger asChild>
-          <IconButton icon={RiMore2Fill} tooltip="More" />
+          <IconButton icon={RiMore2Fill} tooltip="More" className="last-of-type:mr-0.5" />
         </Trigger>
-        <Content side="top" className="animate-tooltip text-[0.84rem] leading-[1.2rem]" loop>
-          <Arrow className="fill-zinc-700" width={16} height={8} />
+        <Content
+          loop
+          side={sidebarCollapsed ? 'right' : 'top'}
+          className="animate-tooltip text-[0.84rem] leading-[1.2rem]"
+        >
+          <Arrow className="fill-zinc-700" width={16} height={8} offset={sidebarCollapsed ? 7 : 0} />
           <Flex direction="col" className="rounded-md bg-zinc-700 p-1.5 shadow shadow-black/75">
             <Item asChild>
               <SidebarMenuItem label="Logout" icon={RiLogoutCircleRLine} onClick={logout} />

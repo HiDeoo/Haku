@@ -14,10 +14,11 @@ const nodeClasses = clst(
 const ContentTreeNode = forwardRef<HTMLDivElement | HTMLAnchorElement, React.PropsWithChildren<ContentTreeNodeProps>>(
   ({ children, href, icon, iconLabel, selected, style, text, ...props }, forwardedRef) => {
     const anchorClasses = href
-      ? clst('flex w-full items-center', nodeClasses, {
-          'hover:bg-blue-600 hover:text-blue-50': !selected,
-          'bg-zinc-700/60 text-blue-50': selected,
-        })
+      ? clst(
+          'flex w-full items-center',
+          nodeClasses,
+          selected ? 'bg-zinc-700/60 text-blue-50' : 'hover:bg-blue-600 hover:text-blue-50'
+        )
       : undefined
 
     const content = (

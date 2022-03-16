@@ -31,7 +31,7 @@
     "@react-aria/button": "3.3.4",
     "@react-aria/textfield": "3.5.0",
     "@react-aria/utils": "3.11.0",
-    "@tiptap/core": "2.0.0-beta.172",
+    "@tiptap/core": "2.0.0-beta.174",
     "@tiptap/extension-code-block-lowlight": "2.0.0-beta.65",
     "@tiptap/extension-highlight": "2.0.0-beta.32",
     "@tiptap/extension-link": "2.0.0-beta.35",

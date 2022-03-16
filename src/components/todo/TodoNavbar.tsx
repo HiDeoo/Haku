@@ -11,7 +11,7 @@ import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
 import useIdle from 'hooks/useIdle'
 import { type TodoMetadata } from 'libs/db/todo'
 
-const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, focusTodoNode, todoId }) => {
+const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, focusTodoNode, todoId, todoName }) => {
   const [editorState, setEditorState] = useAtom(todoEditorStateAtom)
   const resetMutations = useResetAtom(todoNodeMutations)
 
@@ -111,7 +111,7 @@ const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, focusTodoNode, todoId
   }, [editorState.pristine, idle, save])
 
   return (
-    <Navbar disabled={navbarDisabled}>
+    <Navbar disabled={navbarDisabled} title={todoName}>
       <Navbar.Spacer />
       <SyncReport isLoading={isLoading} error={editorState.error} lastSync={editorState.lastSync} />
       <Navbar.Button primary onPress={save} loading={isLoading} disabled={editorState.pristine}>
@@ -127,4 +127,5 @@ interface TodoNavbarProps {
   disabled?: boolean
   focusTodoNode: () => void
   todoId: TodoMetadata['id']
+  todoName?: TodoMetadata['name']
 }

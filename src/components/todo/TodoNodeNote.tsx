@@ -5,6 +5,9 @@ import { EditorContent, EditorEvents, useEditor } from 'hooks/useEditor'
 import { type TodoNodeDataWithParentId } from 'libs/db/todoNodes'
 import { ShiftEnter } from 'libs/editor'
 
+const editorContentClasses =
+  'pr-2 text-[0.84rem] leading-[1.2rem] supports-max:pr-[calc(theme(spacing.2)+max(0px,env(safe-area-inset-right)))]'
+
 const TodoNodeNote: React.ForwardRefRenderFunction<TodoNodeNoteHandle, TodoNodeNoteProps> = (
   { node, onBlur, onChange, onShiftEnter },
   forwardedRef
@@ -39,7 +42,7 @@ const TodoNodeNote: React.ForwardRefRenderFunction<TodoNodeNoteHandle, TodoNodeN
   return (
     <EditorContent
       editor={editor}
-      className="pr-2 text-[0.84rem] leading-[1.2rem]"
+      className={editorContentClasses}
       style={{
         '--editor-text-color': node.completed
           ? 'var(--todo-node-completed-note-editor-text-color)'

@@ -48,7 +48,7 @@ const ShortcutGroup: React.FC<ShortcutGroupProps> = ({ group, shortcuts }) => {
             key={shortcut.keybinding}
             className="group py-1 px-4 last:mb-0 hover:bg-zinc-700"
           >
-            <div>{shortcut.label}</div>
+            <div className="truncate">{shortcut.label}</div>
             <ShortcutKeybinding keybinding={shortcut.parsedKeybinding} />
           </Flex>
         )

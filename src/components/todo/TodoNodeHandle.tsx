@@ -9,7 +9,8 @@ import clst from 'styles/clst'
 
 const TodoNodeHandle: React.FC<TodoNodeHandleProps> = ({ collapsed, completed, hasChildren, id, toggleCollapsed }) => {
   const buttonClasses = clst(
-    'relative m-0 min-w-0 shrink-0 bg-transparent p-0 text-zinc-300 shadow-none last-of-type:mr-1 rounded-none py-1 pr-1',
+    'relative m-0 min-w-0 shrink-0 p-0 last-of-type:mr-1 py-1 pr-1',
+    'bg-transparent text-zinc-300 shadow-none rounded-none',
     'hover:bg-inherit disabled:opacity-100 disabled:cursor-default disabled:bg-transparent',
     { 'text-zinc-400': completed }
   )
@@ -19,7 +20,7 @@ const TodoNodeHandle: React.FC<TodoNodeHandleProps> = ({ collapsed, completed, h
   const circleClasses = clst('h-[0.45rem] w-[0.45rem]', circleBaseClasses)
 
   const collapsedCircleClasses = clst(
-    'absolute h-[0.93rem] w-[0.93rem] top-[0.02rem] -left-[0.25rem] group-hover:invisible',
+    'absolute h-[0.93rem] w-[0.93rem] top-[0.02rem] -left-1 group-hover:invisible',
     circleBaseClasses
   )
 

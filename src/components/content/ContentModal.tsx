@@ -83,6 +83,7 @@ const ContentModal: React.FC = () => {
           <TextInput
             type="text"
             label="Name"
+            enterKeyHint="done"
             disabled={isLoading}
             placeholder="Beef Bourguignon"
             defaultValue={content?.name ?? ''}

@@ -33,6 +33,7 @@ const FolderPicker = <TFormFields extends FieldValues>({
       name={name}
       items={folders}
       control={control}
+      enterKeyHint="done"
       loading={isLoading}
       disabled={disabled}
       label={label ?? 'Folder'}

@@ -1,9 +1,7 @@
+import Safe from 'components/ui/Safe'
+
 const Notes: Page = () => {
-  return (
-    <>
-      <div>notes</div>
-    </>
-  )
+  return <Safe>notes</Safe>
 }
 
 export default Notes
