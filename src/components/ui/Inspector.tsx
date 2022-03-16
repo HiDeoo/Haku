@@ -7,12 +7,21 @@ import Flex from 'components/ui/Flex'
 import { type IconProps } from 'components/ui/Icon'
 import clst from 'styles/clst'
 
+const controlClasses = clst(
+  'border-t border-zinc-600/40 px-2 py-2 shadow-[0_-1px_1px_0_theme(colors.black)]',
+  'supports-max:pr-[calc(theme(spacing.2)+max(0px,env(safe-area-inset-right)))]',
+  'supports-max:pb-[calc(theme(spacing.2)+max(0px,env(safe-area-inset-bottom)))]'
+)
+
 const Inspector: InspectorComponent = ({ children, collapsed, controls, disabled }) => {
   const inspectorClasses = clst(
     'shrink-0 border-l border-zinc-600/50 bg-zinc-900',
     'motion-safe:transition-[width,opacity] motion-safe:duration-150 motion-safe:ease-in-out',
     collapsed
-      ? 'w-0 md:w-12 md:supports-max:w-[calc(theme(spacing.12)+max(0px,env(safe-area-inset-right)))] opacity-0 md:opacity-100'
+      ? [
+          'w-0 md:w-12 md:supports-max:w-[calc(theme(spacing.12)+max(0px,env(safe-area-inset-right)))]',
+          ' opacity-0 md:opacity-100',
+        ]
       : 'w-[15.2rem] supports-max:w-[calc(15.2rem+max(0px,env(safe-area-inset-left)))]'
   )
 
@@ -30,9 +39,7 @@ const Inspector: InspectorComponent = ({ children, collapsed, controls, disabled
       {controls ? (
         <>
           <div className="grow" />
-          <div className="border-t border-zinc-600/40 px-2 py-2 shadow-[0_-1px_1px_0_theme(colors.black)] supports-max:pr-[calc(theme(spacing.2)+max(0px,env(safe-area-inset-right)))] supports-max:pb-[calc(theme(spacing.2)+max(0px,env(safe-area-inset-bottom)))]">
-            {controls}
-          </div>
+          <div className={controlClasses}>{controls}</div>
         </>
       ) : null}
     </Flex>

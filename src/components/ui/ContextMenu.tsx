@@ -11,14 +11,13 @@ import { forwardRef } from 'react'
 import clst from 'styles/clst'
 
 const itemClasses = 'block w-full text-left focus:outline-none px-2 py-1 rounded select-none'
+const contentClasses = 'min-w-[theme(spacing.32)] overflow-hidden rounded-md bg-zinc-700 p-1.5 shadow shadow-black/75'
 
 const ContextMenu: ContextMenuComponent = ({ children, trigger }) => {
   return (
     <Root>
       <Trigger asChild>{trigger}</Trigger>
-      <Content className="min-w-[theme(spacing.32)] overflow-hidden rounded-md bg-zinc-700 p-1.5 shadow shadow-black/75">
-        {children}
-      </Content>
+      <Content className={contentClasses}>{children}</Content>
     </Root>
   )
 }

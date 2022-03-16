@@ -22,6 +22,8 @@ const depthOffset = '1.25rem'
 
 const supportsMaxCss = window.CSS.supports('padding', 'max(0px)')
 
+const nisClasses = 'gap-6 p-3 text-center supports-max:pl-[calc(theme(spacing.3)+max(0px,env(safe-area-inset-left)))]'
+
 const ContentTree: React.FC = () => {
   const contentType = useContentType()
 
@@ -58,14 +60,7 @@ const ContentTree: React.FC = () => {
       <Flex as="nav" direction="col" flex className="relative overflow-y-auto">
         <div className="pointer-events-none absolute inset-0 shadow-[inset_-1px_0_1px_0_rgba(0_0_0/0.4)]" />
         {data?.length === 0 ? (
-          <Flex
-            fullWidth
-            fullHeight
-            direction="col"
-            alignItems="center"
-            justifyContent="center"
-            className="gap-6 p-3 text-center supports-max:pl-[calc(theme(spacing.3)+max(0px,env(safe-area-inset-left)))]"
-          >
+          <Flex fullWidth fullHeight direction="col" alignItems="center" justifyContent="center" className={nisClasses}>
             <span>Start by creating a new {contentType.lcType}.</span>
             <Button onPress={openNewContentModal} primary>
               Create

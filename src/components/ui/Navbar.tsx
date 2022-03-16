@@ -4,12 +4,14 @@ import Button, { ButtonProps } from 'components/form/Button'
 import Flex from 'components/ui/Flex'
 import clst from 'styles/clst'
 
+const navbarClasses = clst(
+  'py-2 px-2.5 supports-max:pr-[calc(theme(spacing[2.5])+max(0px,env(safe-area-inset-right)))]',
+  'gap-3 border-b border-zinc-600/50 bg-zinc-900 text-sm'
+)
+
 const Navbar: NavbarComponent = ({ children, disabled, title }) => {
   return (
-    <Flex
-      alignItems="center"
-      className="gap-3 border-b border-zinc-600/50 bg-zinc-900 py-2 px-2.5 text-sm supports-max:pr-[calc(theme(spacing[2.5])+max(0px,env(safe-area-inset-right)))]"
-    >
+    <Flex alignItems="center" className={navbarClasses}>
       {title && title.length > 0 && (
         <div className="grow truncate font-semibold text-zinc-50">{`${title} `.repeat(4)}</div>
       )}

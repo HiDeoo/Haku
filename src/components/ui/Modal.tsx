@@ -6,8 +6,10 @@ import IconButton from 'components/form/IconButton'
 import Flex from 'components/ui/Flex'
 import clst from 'styles/clst'
 
-export const MODAL_CONTENT_CLASSES =
-  'z-50 my-auto xs:m-auto outline-none w-full xs:w-auto xs:min-w-[400px] xs:max-w-[75%] bg-zinc-800 rounded-md shadow shadow-black/75'
+export const MODAL_CONTENT_CLASSES = clst(
+  'z-50 my-auto xs:m-auto w-full xs:w-auto xs:min-w-[400px] xs:max-w-[75%] bg-zinc-800 rounded-md',
+  'outline-none shadow shadow-black/75'
+)
 
 export const MODAL_OVERLAY_CLASSES =
   'animate-modal-overlay fixed inset-0 z-40 flex flex-col overflow-y-auto bg-zinc-900/80 p-4 md:p-10'

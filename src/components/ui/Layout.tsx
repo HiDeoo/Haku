@@ -14,7 +14,11 @@ const Layout: React.FC<LayoutProps> = ({ children, sidebar }) => {
     'overflow-hidden pwa:input-hover:border-t pwa:input-hover:border-t-zinc-700',
     sidebar
       ? 'md:border-l md:border-l-zinc-600/30'
-      : 'supports-max:pb-[max(0px,env(safe-area-inset-bottom))] supports-max:pl-[max(0px,env(safe-area-inset-left))] supports-max:pr-[max(0px,env(safe-area-inset-right))]',
+      : [
+          'supports-max:pb-[max(0px,env(safe-area-inset-bottom))]',
+          'supports-max:pl-[max(0px,env(safe-area-inset-left))]',
+          ' supports-max:pr-[max(0px,env(safe-area-inset-right))]',
+        ],
     {
       'border-l border-l-zinc-600/30': sidebar && !sidebarCollapsed,
     }
