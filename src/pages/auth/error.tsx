@@ -15,7 +15,7 @@ const Error: Page = () => {
 
   return (
     <Flex direction="col" alignItems="center">
-      <Callout intent="error" title="Unable to login" message={getAuthErrorMesssage(query.error)} />
+      <Callout intent="error" title="Unable to login" message={getAuthErrorMesssage(query.error)} className="mx-4" />
       <div>
         <Button primary onPress={login} className="mt-3">
           Try Again
