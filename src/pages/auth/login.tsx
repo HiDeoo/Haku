@@ -93,6 +93,7 @@ const Login: Page = () => {
           type="email"
           label="Email"
           enterKeyHint="done"
+          autoComplete="email"
           {...emailInputProps}
           ref={setEmailInputRef}
           placeholder="user@address.com"
