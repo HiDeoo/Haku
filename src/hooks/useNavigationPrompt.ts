@@ -52,11 +52,17 @@ export default function useNavigationPrompt(
     }
 
     router.events.on('routeChangeStart', onRouteChangeStart)
-    window.addEventListener('beforeunload', onBeforeUnload)
+
+    if (enabled) {
+      window.addEventListener('beforeunload', onBeforeUnload)
+    }
 
     return () => {
       router.events.off('routeChangeStart', onRouteChangeStart)
-      window.removeEventListener('beforeunload', onBeforeUnload)
+
+      if (enabled) {
+        window.removeEventListener('beforeunload', onBeforeUnload)
+      }
     }
   }, [enabled, message, router])
 }
