@@ -97,7 +97,7 @@ const Login: Page = () => {
           ref={setEmailInputRef}
           placeholder="user@address.com"
           errorMessage={errors.email?.message}
-          disabled={isValidating || shouldShowCodeInput}
+          readOnly={isValidating || shouldShowCodeInput}
         />
         {shouldShowCodeInput ? (
           <MagicCodeInput
