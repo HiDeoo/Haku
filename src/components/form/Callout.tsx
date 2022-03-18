@@ -29,7 +29,7 @@ const Callout = forwardRef<HTMLDivElement, CalloutProps>(
     const titleClasses = clst('block mb-1 -mt-0.5 text-base font-semibold', altClasses)
 
     return (
-      <Flex className={containerClasses} ref={forwardedRef} {...props}>
+      <Flex className={containerClasses} ref={forwardedRef} role="alert" {...props}>
         <div className={iconClasses}>
           <Icon icon={icon} label={iconLabel} />
         </div>

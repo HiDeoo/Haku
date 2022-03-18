@@ -101,6 +101,7 @@ const SearchPalette: React.FC = () => {
     <>
       <IconButton icon={RiSearchLine} tooltip="Search" onPress={onPressTrigger} ref={trigger} />
       <Palette
+        role="search"
         fuzzy={false}
         opened={opened}
         onPick={onPick}

@@ -5,7 +5,7 @@ import { type IconProps } from 'components/ui/Icon'
 import { MODAL_CONTENT_CLASSES, MODAL_OVERLAY_CLASSES } from 'components/ui/Modal'
 import clst from 'styles/clst'
 
-const Palette = <TItem,>({ forwardedRef, ...props }: PaletteProps<TItem>) => {
+const Palette = <TItem,>({ forwardedRef, role, ...props }: PaletteProps<TItem>) => {
   const overlayClasses = clst(MODAL_OVERLAY_CLASSES, 'pt-0 md:pt-0')
 
   const contentClasses = clst(
@@ -17,7 +17,7 @@ const Palette = <TItem,>({ forwardedRef, ...props }: PaletteProps<TItem>) => {
     <Root open={props.opened} onOpenChange={props.onOpenChange}>
       <Portal>
         <Overlay className={overlayClasses}>
-          <Content className={contentClasses}>
+          <Content className={contentClasses} role={role}>
             <PalettePicker {...props} ref={forwardedRef} />
           </Content>
         </Overlay>
@@ -47,4 +47,5 @@ export interface PaletteProps<TItem> {
   onQueryChange?: (query?: string) => void
   opened?: boolean
   placeholder: string
+  role?: React.HtmlHTMLAttributes<HTMLElement>['role']
 }

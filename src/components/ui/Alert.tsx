@@ -42,6 +42,7 @@ const Alert: React.FC<AlertProps> = ({
     <Modal
       title={title}
       opened={opened}
+      role="alertdialog"
       disabled={disabled}
       onOpenChange={onOpenChange}
       contentClassName="max-w-[400px]"

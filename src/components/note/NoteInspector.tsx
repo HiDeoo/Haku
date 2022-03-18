@@ -240,6 +240,7 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
         </Inspector.Section>
         {!collapsed && editorState.toc && editorState.toc.length > 0 ? (
           <Inspector.Section
+            role="tree"
             title="Table of contents"
             titleClassName="pt-2 pb-1.5 px-3 mb-0"
             sectionClassName="shrink p-0 min-h-[150px]"
@@ -276,6 +277,7 @@ const TocEntry: React.FC<TocEntryProps> = ({ editor, entry }) => {
 
   return (
     <Flex
+      role="treeitem"
       alignItems="center"
       className="w-full text-blue-100/90"
       style={{ paddingLeft: `calc(0.625rem * (${entry.level - 1}))` }}

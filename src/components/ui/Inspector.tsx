@@ -27,7 +27,12 @@ const Inspector: InspectorComponent = ({ children, collapsed, controls, disabled
 
   return (
     <Flex direction="col" className={inspectorClasses}>
-      <Flex direction="col" className="overflow-y-auto supports-max:pr-[max(0px,env(safe-area-inset-right))]">
+      <Flex
+        role="toolbar"
+        direction="col"
+        aria-orientation="vertical"
+        className="overflow-y-auto supports-max:pr-[max(0px,env(safe-area-inset-right))]"
+      >
         {Children.map(children, (child) => {
           if (!isValidElement(child)) {
             return null
@@ -53,6 +58,7 @@ const InspectorSection: React.FC<InspectorSectionProps> = ({
   collapsed,
   className,
   disabled,
+  role,
   sectionClassName,
   title,
   titleClassName,
@@ -67,7 +73,7 @@ const InspectorSection: React.FC<InspectorSectionProps> = ({
   const contentClasses = clst('gap-2.5', className)
 
   return (
-    <Flex direction="col" className={sectionClasses}>
+    <Flex direction="col" className={sectionClasses} role={role}>
       {!collapsed && title ? <div className={titleClasses}>{title}</div> : null}
       <Flex wrap alignItems="baseline" className={contentClasses}>
         {Children.map(children, (child) => {
@@ -221,6 +227,7 @@ interface InspectorSectionProps {
   className?: string
   collapsed?: boolean
   disabled?: boolean
+  role?: React.HtmlHTMLAttributes<HTMLElement>['role']
   sectionClassName?: string
   title?: string
   titleClassName?: string
