@@ -24,6 +24,6 @@ async function sendEmail(templateId: string, templateParams: Record<string, stri
   }
 }
 
-export function sendLoginEmail(to: string, url: string) {
-  return sendEmail(process.env.EMAIL_JS_TEMPLATE_ID_LOGIN, { to, url })
+export function sendLoginEmail(params: { code: string; expiresIn: string; to: string }) {
+  return sendEmail(process.env.EMAIL_JS_TEMPLATE_ID_LOGIN, params)
 }

@@ -1,7 +1,7 @@
 import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import NextAuth, { type CallbacksOptions } from 'next-auth'
 
-import { EmailApiProvider, type EmailApiProviderUserOptions } from 'libs/auth'
+import { AUTH_TOKEN_MAX_AGE_IN_MINUTES, EmailApiProvider, type EmailApiProviderUserOptions } from 'libs/auth'
 import { prisma } from 'libs/db'
 import { getAllowedEmailByEmail } from 'libs/db/emailAllowList'
 import { sendLoginEmail } from 'libs/email'
@@ -12,7 +12,6 @@ const auth = NextAuth({
   pages: {
     error: '/auth/error',
     signIn: '/auth/login',
-    verifyRequest: '/auth/verify',
   },
   providers: [EmailApiProvider({ sendVerificationRequest })],
   secret: process.env.NEXTAUTH_SECRET,
@@ -31,7 +30,7 @@ async function canLogin({ email, user }: Parameters<CallbacksOptions['signIn']>[
     const allowedEmail = await getAllowedEmailByEmail(user.email)
 
     if (!allowedEmail) {
-      return '/auth/error?error=AccessDenied'
+      return false
     }
   }
 
@@ -40,13 +39,17 @@ async function canLogin({ email, user }: Parameters<CallbacksOptions['signIn']>[
 
 function sendVerificationRequest({
   identifier: email,
-  url,
+  token,
 }: Parameters<EmailApiProviderUserOptions['sendVerificationRequest']>[0]) {
   if (process.env.NODE_ENV === 'development' && email.endsWith('@example.com')) {
-    console.info(`Magic link for ${email}: ${url}`)
+    console.info(`Magic code for ${email}: ${token}`)
 
     return
   }
 
-  return sendLoginEmail(email, url)
+  return sendLoginEmail({
+    code: token,
+    expiresIn: AUTH_TOKEN_MAX_AGE_IN_MINUTES.toString(),
+    to: email,
+  })
 }

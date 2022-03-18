@@ -1,7 +1,7 @@
-import { useTextField } from '@react-aria/textfield'
+import { type AriaTextFieldOptions, useTextField } from '@react-aria/textfield'
 import { useObjectRef } from '@react-aria/utils'
 import { forwardRef } from 'react'
-import { type UseFormRegisterReturn } from 'react-hook-form'
+import { type ChangeHandler, type UseFormRegisterReturn } from 'react-hook-form'
 
 import Label from 'components/form/Label'
 import clst from 'styles/clst'
@@ -56,15 +56,23 @@ TextInput.displayName = 'TextInput'
 
 export default TextInput
 
-interface TextInputProps extends Partial<Omit<UseFormRegisterReturn, 'ref'>> {
+interface TextInputProps extends Partial<Omit<UseFormRegisterReturn, 'ref' | 'onBlur' | 'onChange'>> {
+  autoComplete?: React.InputHTMLAttributes<HTMLInputElement>['autoComplete']
   autoFocus?: React.InputHTMLAttributes<HTMLInputElement>['autoFocus']
   className?: string
   defaultValue?: React.InputHTMLAttributes<HTMLInputElement>['defaultValue']
   disabled?: boolean
   enterKeyHint?: React.InputHTMLAttributes<HTMLInputElement>['enterKeyHint']
   errorMessage?: string
+  id?: React.InputHTMLAttributes<HTMLInputElement>['id']
+  inputMode?: React.InputHTMLAttributes<HTMLInputElement>['inputMode']
   label?: string
+  onBlur: AriaTextFieldOptions<'input'>['onBlur']
+  onChange: ChangeHandler | React.ChangeEventHandler<HTMLInputElement>
+  onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>
+  onPaste?: React.ClipboardEventHandler<HTMLInputElement>
   placeholder: string
   spellCheck?: React.InputHTMLAttributes<HTMLInputElement>['spellCheck']
   type?: 'text' | 'email' | 'url'
+  value?: string
 }

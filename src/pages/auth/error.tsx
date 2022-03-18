@@ -10,7 +10,7 @@ const Error: Page = () => {
   const { query } = useRouter()
 
   function login() {
-    signIn()
+    signIn(undefined, { callbackUrl: '/' })
   }
 
   return (
