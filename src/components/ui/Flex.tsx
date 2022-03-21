@@ -84,6 +84,7 @@ type FlexProps<TElement extends React.ElementType> = {
   fullHeight?: boolean
   fullWidth?: boolean
   justifyContent?: 'start' | 'end' | 'center' | 'between' | 'around' | 'evenly'
+  id?: React.HtmlHTMLAttributes<HTMLElement>['id']
   role?: React.HtmlHTMLAttributes<HTMLElement>['role']
   style?: React.HtmlHTMLAttributes<HTMLElement>['style']
   wrap?: true | 'reverse'

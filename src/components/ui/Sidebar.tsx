@@ -15,6 +15,11 @@ import clst from 'styles/clst'
 
 const SidebarMenu = dynamic(import('components/ui/SidebarMenu'))
 
+const skipLinksClasses = clst(
+  'absolute -top-full left-0 z-[70] rounded-br-lg bg-blue-600 px-3.5 py-2.5 outline-none hover:underline',
+  'focus:top-0 focus:border-r-2 focus:border-b-2 focus:border-blue-300'
+)
+
 const Sidebar: React.FC = () => {
   const router = useRouter()
   const isOnNotePage = router.pathname.startsWith('/notes/')
@@ -57,6 +62,9 @@ const Sidebar: React.FC = () => {
     <>
       <NavigationPalette />
       <CommandPalette />
+      <a className={skipLinksClasses} href="#main">
+        Skip to content
+      </a>
       <Flex direction="col" className={sidebarClasses}>
         <ContentTree />
         <SidebarMenu />
