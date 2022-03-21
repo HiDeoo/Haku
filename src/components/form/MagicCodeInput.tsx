@@ -3,7 +3,7 @@ import { type FieldPath, useController, type Control, type FieldValues } from 'r
 
 import Label from 'components/form/Label'
 import TextInput from 'components/form/TextInput'
-import { AUTH_TOKEN_LENGTH } from 'libs/auth'
+import { AUTH_TOKEN_LENGTH } from 'constants/auth'
 import clst from 'styles/clst'
 
 const MagicCodeInput = <TFormFields extends FieldValues>(
