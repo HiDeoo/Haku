@@ -96,8 +96,8 @@ const ContentTree: React.FC = () => {
 
 export default ContentTree
 
-const ShimmerNode: React.FC<ShimmerNodeProps> = ({ depth }) => {
-  return <Shimmer.Line style={getNodeStyle(depth, false)} />
+const ShimmerNode: React.FC<ShimmerNodeProps> = ({ depth, ...props }) => {
+  return <Shimmer.Line style={getNodeStyle(depth, false)} {...props} />
 }
 
 const Folder: React.FC<FolderProps> = ({ contentType, depth = 1, folder, selectedId, style }) => {
