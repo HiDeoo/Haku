@@ -56,8 +56,8 @@ const ContentTree: React.FC = () => {
   }
 
   return (
-    <Root orientation="vertical" asChild>
-      <Flex as="nav" direction="col" flex className="relative overflow-y-auto">
+    <Root orientation="vertical" asChild role="navigation">
+      <Flex as="nav" direction="col" flex className="relative overflow-y-auto" role="tree">
         <div className="pointer-events-none absolute inset-0 shadow-[inset_-1px_0_1px_0_rgba(0_0_0/0.4)]" />
         {data?.length === 0 ? (
           <Flex fullWidth fullHeight direction="col" alignItems="center" justifyContent="center" className={nisClasses}>
@@ -96,8 +96,8 @@ const ContentTree: React.FC = () => {
 
 export default ContentTree
 
-const ShimmerNode: React.FC<ShimmerNodeProps> = ({ depth }) => {
-  return <Shimmer.Line style={getNodeStyle(depth, false)} />
+const ShimmerNode: React.FC<ShimmerNodeProps> = ({ depth, ...props }) => {
+  return <Shimmer.Line style={getNodeStyle(depth, false)} {...props} />
 }
 
 const Folder: React.FC<FolderProps> = ({ contentType, depth = 1, folder, selectedId, style }) => {

@@ -29,6 +29,7 @@ const Layout: React.FC<LayoutProps> = ({ children, sidebar }) => {
       {sidebar ? <Sidebar /> : null}
       <Flex
         flex
+        id="main"
         as="main"
         direction="col"
         className={mainClasses}

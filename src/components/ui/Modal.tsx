@@ -14,7 +14,16 @@ export const MODAL_CONTENT_CLASSES = clst(
 export const MODAL_OVERLAY_CLASSES =
   'animate-modal-overlay fixed inset-0 z-40 flex flex-col overflow-y-auto bg-zinc-900/80 p-4 md:p-10'
 
-const Modal: ModalComponent = ({ children, contentClassName, disabled, onOpenChange, opened, title, trigger }) => {
+const Modal: ModalComponent = ({
+  children,
+  contentClassName,
+  disabled,
+  onOpenChange,
+  opened,
+  role,
+  title,
+  trigger,
+}) => {
   function onCloseInteraction(event: KeyboardEvent | CustomEvent) {
     if (disabled) {
       event.preventDefault()
@@ -29,6 +38,7 @@ const Modal: ModalComponent = ({ children, contentClassName, disabled, onOpenCha
       <Portal>
         <Overlay className={MODAL_OVERLAY_CLASSES}>
           <Content
+            role={role}
             className={contentClasses}
             onEscapeKeyDown={onCloseInteraction}
             onInteractOutside={onCloseInteraction}
@@ -83,6 +93,7 @@ export interface ModalProps {
   disabled?: boolean
   onOpenChange: (opened: boolean) => void
   opened: boolean
+  role?: React.HtmlHTMLAttributes<HTMLElement>['role']
   title: string
   trigger?: React.StrictReactNode
 }

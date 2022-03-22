@@ -4,6 +4,7 @@
   "categories": ["productivity", "utilities"],
   "lang": "en",
   "scope": "/",
+  "id": "/",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",

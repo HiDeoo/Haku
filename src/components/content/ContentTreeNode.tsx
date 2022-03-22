@@ -32,7 +32,7 @@ const ContentTreeNode = forwardRef<HTMLDivElement | HTMLAnchorElement, React.Pro
       <ContextMenu
         trigger={
           href ? (
-            <Flex alignItems="center">
+            <Flex alignItems="center" role="treeitem">
               <Link href={href} prefetch={false}>
                 <a
                   {...props}
@@ -48,6 +48,7 @@ const ContentTreeNode = forwardRef<HTMLDivElement | HTMLAnchorElement, React.Pro
           ) : (
             <Flex
               {...props}
+              role="group"
               style={style}
               alignItems="center"
               className={nodeClasses}

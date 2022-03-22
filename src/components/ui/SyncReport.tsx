@@ -8,7 +8,11 @@ const SyncReport: React.FC<SyncReportProps> = ({ error, isLoading, lastSync }) =
     'text-red-500 font-semibold': error,
   })
 
-  return <div className={syncClasses}>{syncText}</div>
+  return (
+    <div className={syncClasses} role="status">
+      {syncText}
+    </div>
+  )
 }
 
 export default SyncReport

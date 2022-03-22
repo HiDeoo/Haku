@@ -1,12 +1,18 @@
+import { randomBytes } from 'crypto'
+
 import { Html, Head, Main, NextScript } from 'next/document'
 
+// iOS launch screen images generated using https://github.com/onderceylan/pwa-asset-generator with bg.png being a
+// 1x1px image filled with the #27272a (bg-zinc-800) color.
+// $ pnpm dlx pwa-asset-generator bg.png --splash-only --background "#27272a" --path "/images/startup" --xhtml
 const Document: React.FC = () => {
-  // iOS launch screen images generated using https://github.com/onderceylan/pwa-asset-generator with bg.png being a
-  // 1x1px image filled with the #27272a (bg-zinc-800) color.
-  // $ pnpm dlx pwa-asset-generator bg.png --splash-only --background "#27272a" --path "/images/startup" --xhtml
+  // https://github.com/vercel/next.js/issues/18557#issuecomment-727161142
+  const nonce = randomBytes(8).toString('base64')
+
   return (
     <Html lang="en">
-      <Head>
+      <Head nonce={nonce}>
+        <meta httpEquiv="Content-Security-Policy" content={getContentSecurityPolicy(nonce)} />
         <meta name="color-scheme" content="dark" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <link rel="manifest" href="/manifest.webmanifest" />
@@ -144,10 +150,33 @@ const Document: React.FC = () => {
       </Head>
       <body>
         <Main />
-        <NextScript />
+        <NextScript nonce={nonce} />
       </body>
     </Html>
   )
 }
 
 export default Document
+
+function getContentSecurityPolicy(nonce: string): string {
+  const isProd = process.env.NODE_ENV === 'production'
+
+  const policies: string[] = [
+    "default-src 'none'",
+    "script-src-elem 'self'",
+    // https://github.com/vercel/next.js/issues/14221#issuecomment-657258278
+    `script-src '${isProd ? 'self' : 'unsafe-eval'}' 'nonce-${nonce}'`,
+    // https://github.com/vercel/next.js/issues/35389
+    "style-src 'self' 'unsafe-inline'",
+    'img-src *',
+    "manifest-src 'self'",
+    "worker-src 'self'",
+    "prefetch-src 'self'",
+  ]
+
+  if (!isProd) {
+    policies.push("connect-src 'self'")
+  }
+
+  return policies.join('; ')
+}

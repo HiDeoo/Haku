@@ -1,7 +1,10 @@
+import crypto from 'crypto'
+
 import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import NextAuth, { type CallbacksOptions } from 'next-auth'
+import { type EmailConfig } from 'next-auth/providers'
 
-import { EmailApiProvider, type EmailApiProviderUserOptions } from 'libs/auth'
+import { AUTH_TOKEN_LENGTH, AUTH_TOKEN_MAX_AGE_IN_MINUTES } from 'constants/auth'
 import { prisma } from 'libs/db'
 import { getAllowedEmailByEmail } from 'libs/db/emailAllowList'
 import { sendLoginEmail } from 'libs/email'
@@ -12,13 +15,39 @@ const auth = NextAuth({
   pages: {
     error: '/auth/error',
     signIn: '/auth/login',
-    verifyRequest: '/auth/verify',
   },
   providers: [EmailApiProvider({ sendVerificationRequest })],
   secret: process.env.NEXTAUTH_SECRET,
 })
 
 export default auth
+
+function EmailApiProvider(options: EmailApiProviderUserOptions): EmailConfig {
+  return {
+    id: 'email-api',
+    generateVerificationToken,
+    maxAge: AUTH_TOKEN_MAX_AGE_IN_MINUTES * 60,
+    name: 'Email',
+    sendVerificationRequest: options.sendVerificationRequest,
+    server: '',
+    type: 'email',
+    options,
+  }
+}
+
+function generateVerificationToken() {
+  return new Promise<string>((resolve, reject) =>
+    crypto.randomBytes(AUTH_TOKEN_LENGTH, (error, buffer) => {
+      if (error) {
+        reject(error)
+
+        return
+      }
+
+      resolve(parseInt(buffer.toString('hex'), 16).toString().substring(0, AUTH_TOKEN_LENGTH))
+    })
+  )
+}
 
 function getSession({ session, user }: Parameters<CallbacksOptions['session']>[0]) {
   session.user = { id: user.id, email: user.email }
@@ -31,7 +60,7 @@ async function canLogin({ email, user }: Parameters<CallbacksOptions['signIn']>[
     const allowedEmail = await getAllowedEmailByEmail(user.email)
 
     if (!allowedEmail) {
-      return '/auth/error?error=AccessDenied'
+      return false
     }
   }
 
@@ -40,13 +69,21 @@ async function canLogin({ email, user }: Parameters<CallbacksOptions['signIn']>[
 
 function sendVerificationRequest({
   identifier: email,
-  url,
+  token,
 }: Parameters<EmailApiProviderUserOptions['sendVerificationRequest']>[0]) {
   if (process.env.NODE_ENV === 'development' && email.endsWith('@example.com')) {
-    console.info(`Magic link for ${email}: ${url}`)
+    console.info(`Magic code for ${email}: ${token}`)
 
     return
   }
 
-  return sendLoginEmail(email, url)
+  return sendLoginEmail({
+    code: token,
+    expiresIn: AUTH_TOKEN_MAX_AGE_IN_MINUTES.toString(),
+    to: email,
+  })
+}
+
+interface EmailApiProviderUserOptions {
+  sendVerificationRequest: EmailConfig['sendVerificationRequest']
 }

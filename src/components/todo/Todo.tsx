@@ -60,17 +60,23 @@ const Todo: React.FC<TodoProps> = ({ id }) => {
     resetTodoAtoms()
   })
 
-  const focusTodoNode = useCallback(() => {
-    requestAnimationFrame(async () => {
-      const focusedTodoNodeId = await getFocusedTodoNode()
-      const focusedTodoNode: TodoNodeItemHandle | undefined = focusedTodoNodeId
-        ? todoNodeItems.get(focusedTodoNodeId)
-        : todoNodeItems.values().next().value
+  const focusTodoNode = useCallback(
+    (scrollIntoView = true) => {
+      requestAnimationFrame(async () => {
+        const focusedTodoNodeId = await getFocusedTodoNode()
+        const focusedTodoNode: TodoNodeItemHandle | undefined = focusedTodoNodeId
+          ? todoNodeItems.get(focusedTodoNodeId)
+          : todoNodeItems.values().next().value
 
-      focusedTodoNode?.focusContent()
-      focusedTodoNode?.scrollIntoView()
-    })
-  }, [getFocusedTodoNode, todoNodeItems])
+        focusedTodoNode?.focusContent()
+
+        if (scrollIntoView) {
+          focusedTodoNode?.scrollIntoView()
+        }
+      })
+    },
+    [getFocusedTodoNode, todoNodeItems]
+  )
 
   const setTodoNodeItemRef = useCallback(
     async (id: TodoNodeData['id'], item: TodoNodeItemHandle | null) => {

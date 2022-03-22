@@ -17,7 +17,7 @@ import useLocalShortcuts from 'hooks/useLocalShortcuts'
 import useNavigationPrompt from 'hooks/useNavigationPrompt'
 import useNoteQuery from 'hooks/useNoteQuery'
 import { type TodoMetadata } from 'libs/db/todo'
-import { getToc, HeadingWithId, type ToC } from 'libs/editor'
+import { getToc, HeadingWithId, ReplaceContent, type ToC } from 'libs/editor'
 
 const anchorHeadingRegExp = /^#.*-(?<pos>\d+)$/
 
@@ -41,7 +41,7 @@ const Note: React.FC<NoteProps> = ({ id }) => {
   const editor = useEditor({
     autofocus: 'start',
     className: 'h-full p-3 min-w-0',
-    extensions: [HeadingWithId],
+    extensions: [ReplaceContent, HeadingWithId],
     onUpdate: updateToc,
     setLinkModalOpened,
   })
@@ -127,7 +127,7 @@ const Note: React.FC<NoteProps> = ({ id }) => {
         return
       }
 
-      editor.chain().setContent(data.html, false).focus().run()
+      editor.chain().replaceContent(data.html).focus().run()
 
       onNewContent({ editor })
     }

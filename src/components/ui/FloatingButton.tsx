@@ -5,7 +5,8 @@ import clst from 'styles/clst'
 
 const FloatingButton: React.FC<FloatingButtonProps> = ({ className, icon, onPress, tooltip, visible }) => {
   const buttonClasses = clst(
-    'fixed bottom-2 z-30 bg-zinc-900 p-2 shadow shadow-zinc-900 hover:bg-zinc-600 hover:text-blue-50 md:hidden',
+    'fixed z-30 bg-zinc-900 p-2 shadow shadow-zinc-900 hover:bg-zinc-600 hover:text-blue-50 md:hidden',
+    'supports-max:bottom-[calc(theme(spacing.2)+max(0px,env(safe-area-inset-bottom)))]',
     className
   )
 

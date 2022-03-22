@@ -105,6 +105,25 @@ export const HeadingWithId = Node.create({
   },
 })
 
+export const ReplaceContent = Extension.create({
+  name: 'replaceContent',
+  addCommands() {
+    return {
+      replaceContent:
+        (content: string) =>
+        ({ commands, dispatch, tr }) => {
+          commands.setContent(content)
+
+          if (dispatch) {
+            tr.setMeta('addToHistory', false)
+          }
+
+          return true
+        },
+    }
+  },
+})
+
 export const ShiftEnter = Extension.create<{ callback: () => void }>({
   name: 'shiftEnterExtension',
   addKeyboardShortcuts() {
