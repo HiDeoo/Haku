@@ -6,6 +6,7 @@ import { type AppProps } from 'next/app'
 import { QueryClient, QueryClientProvider } from 'react-query'
 
 import ErrorBoundary from 'components/app/ErrorBoundary'
+import NetworkAgent from 'components/app/NetworkAgent'
 import Route from 'components/app/Route'
 import Title from 'components/app/Title'
 import Layout from 'components/ui/Layout'
@@ -33,6 +34,7 @@ function Haku({ Component, pageProps: { session, ...pageProps } }: AppPropsWithL
             </Route>
           </TooltipProvider>
           <Toaster />
+          <NetworkAgent />
         </SessionProvider>
       </QueryClientProvider>
     </ErrorBoundary>

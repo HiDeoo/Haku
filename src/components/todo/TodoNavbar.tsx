@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { todoEditorStateAtom } from 'atoms/todo'
 import { todoNodeChildrenAtom, todoNodeMutations, todoNodeNodesAtom } from 'atoms/todoNode'
 import Navbar from 'components/ui/Navbar'
+import NetworkStatus from 'components/ui/NetworkStatus'
 import SyncReport from 'components/ui/SyncReport'
 import useContentMutation, { type ContentMutation } from 'hooks/useContentMutation'
 import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
@@ -114,6 +115,7 @@ const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, focusTodoNode, todoId
     <Navbar disabled={navbarDisabled} title={todoName}>
       <Navbar.Spacer />
       <SyncReport isLoading={isLoading} error={editorState.error} lastSync={editorState.lastSync} />
+      <NetworkStatus />
       <Navbar.Button primary onPress={save} loading={isLoading} disabled={editorState.pristine}>
         Save
       </Navbar.Button>
