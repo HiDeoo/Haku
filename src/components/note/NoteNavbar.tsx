@@ -2,15 +2,18 @@ import { type NoteEditorState } from 'components/note/Note'
 import Navbar from 'components/ui/Navbar'
 import NetworkStatus from 'components/ui/NetworkStatus'
 import SyncReport from 'components/ui/SyncReport'
+import { useNetworkStatus } from 'hooks/useNetworkStatus'
 import { type NoteMetadata } from 'libs/db/note'
 
 const NoteNavbar: React.FC<NoteNavbarProps> = ({ disabled, editorState, isSaving, noteName, save }) => {
+  const { offline } = useNetworkStatus()
+
   return (
     <Navbar disabled={disabled} title={noteName}>
       <Navbar.Spacer />
       <SyncReport isLoading={isSaving} error={editorState.error} lastSync={editorState.lastSync} />
       <NetworkStatus />
-      <Navbar.Button primary onPress={save} loading={isSaving} disabled={editorState.pristine}>
+      <Navbar.Button primary onPress={save} loading={isSaving} disabled={offline || editorState.pristine}>
         Save
       </Navbar.Button>
     </Navbar>

@@ -2,8 +2,8 @@ import { useAtomValue } from 'jotai/utils'
 
 import { onlineAtom } from 'atoms/network'
 
-export function useOnline() {
+export function useNetworkStatus() {
   const online = useAtomValue(onlineAtom)
 
-  return online
+  return { offline: !online, online }
 }

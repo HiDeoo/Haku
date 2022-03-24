@@ -3,10 +3,10 @@ import { RiCloudOffLine } from 'react-icons/ri'
 import Flex from 'components/ui/Flex'
 import Icon from 'components/ui/Icon'
 import Tooltip from 'components/ui/Tooltip'
-import { useOnline } from 'hooks/useOnline'
+import { useNetworkStatus } from 'hooks/useNetworkStatus'
 
 const NetworkStatus: React.FC = () => {
-  const online = useOnline()
+  const { online } = useNetworkStatus()
 
   if (online) {
     return null
