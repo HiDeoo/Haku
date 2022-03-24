@@ -8,20 +8,24 @@ const buildManifestPath = '.next/build-manifest.json'
 const pageToIgnore = ['/_app', '/_error']
 const pathPrefix = '/_next/'
 
-// TODO(HiDeoo) process.env
+const [, , ...args] = process.argv
+const isProd = args.includes('--prod')
 
 function generateServiceWorkerCacheableAssetList() {
   let buildManifest: BuildManifest
 
-  try {
+  if (isProd) {
+    if (!fs.existsSync(buildManifestPath)) {
+      throw new Error(`Unable to find build manifest at '${buildManifestPath}'.`)
+    }
+
     const rawBuildManifest = fs.readFileSync(buildManifestPath, 'utf8')
     buildManifest = JSON.parse(rawBuildManifest)
-  } catch (error) {
-    // FIXME(HiDeoo)
-    buildManifest = { polyfillFiles: [], pages: {} } as unknown as BuildManifest
+  } else {
+    buildManifest = { lowPriorityFiles: [], pages: {}, polyfillFiles: [] } as unknown as BuildManifest
   }
 
-  const assets = new Set<string>(['/offline', '/manifest.webmanifest'])
+  const assets = new Set<string>(isProd ? ['/offline', '/manifest.webmanifest'] : [])
 
   Object.entries(buildManifest.pages).forEach(([page, files]) => {
     if (!pageToIgnore.includes(page)) {
@@ -34,9 +38,11 @@ function generateServiceWorkerCacheableAssetList() {
   buildManifest.lowPriorityFiles.forEach((file) => assets.add(getAssetPath(file)))
   buildManifest.polyfillFiles.forEach((file) => assets.add(getAssetPath(file)))
 
-  const content = `const HAKU_VERSION = '${pkg.version}';
+  const content = `const VERSION = '${pkg.version}';
 
-const HAKU_ASSETS = ${JSON.stringify(Array.from(assets))};`
+const IS_PROD = ${isProd};
+
+const ASSETS = ${JSON.stringify(Array.from(assets))};`
 
   fs.writeFileSync('./public/sw-cache.js', content)
 }

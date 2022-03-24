@@ -26,7 +26,7 @@ function handleInstallEvent(event: ExtendableEvent) {
 
       const cache = await caches.open(Caches.Assets)
 
-      for (const asset of HAKU_ASSETS) {
+      for (const asset of ASSETS) {
         await cache.add(new Request(asset, { cache: 'reload' }))
       }
     })()
@@ -72,29 +72,31 @@ function handleFetchEvent(event: FetchEvent) {
 
   const requestUrl = new URL(event.request.url)
 
-  if (requestUrl.origin === location.origin) {
-    const isDev = requestUrl.searchParams.get('ts')
-
-    if (!isDev) {
-      if (/^\/(?:_next\/static|images)\/.*\.(?:js|css|png|jpg)$/i.test(requestUrl.pathname)) {
-        return respondWithCacheThenNetwork(event, Caches.Assets)
-      } else if (/^\/api\/.*(?<!csrf)$/i.test(requestUrl.pathname)) {
-        return respondWithNetworkThenCache(event, Caches.Api)
-      } else if (
-        event.request.mode === 'navigate' ||
-        event.request.headers.get('accept')?.startsWith('text/html') ||
-        requestUrl.pathname === '/manifest.webmanifest'
-      ) {
-        return respondWithPage(event, requestUrl.pathname)
-      } else {
-        // FIXME(HiDeoo)
-        console.log('NOT HANDLED', event.request.url)
-      }
-    } else {
-      // FIXME(HiDeoo)
-      console.log('IS DEV', event.request.url)
+  if (IS_PROD && requestUrl.origin === location.origin) {
+    if (/^\/(?:_next\/static|images)\/.*\.(?:js|css|png|jpg)$/i.test(requestUrl.pathname)) {
+      return respondWithCacheThenNetwork(event, Caches.Assets)
+    } else if (/^\/api\/.*(?<!csrf)$/i.test(requestUrl.pathname)) {
+      return respondWithNetworkThenCache(event, Caches.Api)
+    } else if (
+      event.request.mode === 'navigate' ||
+      event.request.headers.get('accept')?.startsWith('text/html') ||
+      requestUrl.pathname === '/manifest.webmanifest'
+    ) {
+      return respondWithPage(event, requestUrl.pathname)
     }
   }
+
+  event.respondWith(
+    (async function () {
+      const preloadResponse = await event.preloadResponse
+
+      if (preloadResponse) {
+        return preloadResponse
+      }
+
+      return fetch(event.request)
+    })()
+  )
 }
 
 function respondWithCacheThenNetwork(event: FetchEvent, cacheName: string) {
@@ -239,4 +241,5 @@ async function clearCache(cacheName: string, maxEntries: number) {
   }
 }
 
-declare const HAKU_ASSETS: string[]
+declare const ASSETS: string[]
+declare const IS_PROD: boolean

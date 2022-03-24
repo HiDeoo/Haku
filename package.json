@@ -4,9 +4,9 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "pnpm build:sw && next dev",
     "dev:migrate": "dotenv -c -- ts-node prisma/migrate.ts",
-    "build": "next build && pnpm build:sw",
+    "build": "next build && pnpm build:sw -- --prod",
     "build:sw": "tsc -p src/sw/tsconfig.json && ts-node sw-cache.ts",
     "build:analyze": "ANALYZE=true pnpm build",
     "start": "next start",
