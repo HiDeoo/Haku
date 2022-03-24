@@ -21,7 +21,7 @@ const Shimmer: ShimmerComponent = ({ children }) => {
   const pastDelay = useDelay()
 
   return (
-    <Flex direction="col" className="h-full w-full select-none gap-3 p-2.5">
+    <Flex direction="col" className="h-full w-full select-none gap-2.5 p-2.5">
       {pastDelay
         ? Children.map(children, (child, index) => {
             if (!isValidElement(child)) {
