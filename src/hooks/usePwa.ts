@@ -22,6 +22,10 @@ export default function usePwa() {
           type: 'background',
         })
       })
+
+      if (navigator.serviceWorker.controller?.state === 'activated') {
+        navigator.serviceWorker.controller.postMessage({ type: 'CLEAR' })
+      }
     }
 
     window.addEventListener('load', onLoad, { once: true, passive: true })

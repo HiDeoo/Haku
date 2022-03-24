@@ -1,12 +1,13 @@
 {
   "name": "haku",
   "description": "Craft, consolidate and tackle your notebooks and to-do lists all in one place.",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "dev:migrate": "dotenv -c -- ts-node prisma/migrate.ts",
     "build": "next build && pnpm build:sw",
-    "build:sw": "tsc -p src/sw/tsconfig.json",
+    "build:sw": "tsc -p src/sw/tsconfig.json && ts-node sw-cache.ts",
     "build:analyze": "ANALYZE=true pnpm build",
     "start": "next start",
     "lint": "next lint -d . --max-warnings=0 && tsc --noEmit && tsc --noEmit -p src/sw/tsconfig.json",

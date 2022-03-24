@@ -4,7 +4,7 @@ export async function registerServiceWorker(swPath: string, onAvailableUpdate: S
   }
 
   try {
-    const registration = await navigator.serviceWorker.register(swPath)
+    const registration = await navigator.serviceWorker.register(swPath, { updateViaCache: 'none' })
 
     handleServiceWorkerUpdate(registration, onAvailableUpdate)
   } catch (error) {
