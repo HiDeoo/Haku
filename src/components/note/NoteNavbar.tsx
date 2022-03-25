@@ -13,7 +13,13 @@ const NoteNavbar: React.FC<NoteNavbarProps> = ({ disabled, editorState, isSaving
       <Navbar.Spacer />
       <SyncReport isLoading={isSaving} error={editorState.error} lastSync={editorState.lastSync} />
       <NetworkStatus />
-      <Navbar.Button primary onPress={save} loading={isSaving} disabled={offline || editorState.pristine}>
+      <Navbar.Button
+        primary
+        onPress={save}
+        loading={isSaving}
+        disabled={offline || editorState.pristine}
+        pinged={!editorState.pristine && !isSaving}
+      >
         Save
       </Navbar.Button>
     </Navbar>

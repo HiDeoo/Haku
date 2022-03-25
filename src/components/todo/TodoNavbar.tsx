@@ -119,7 +119,13 @@ const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, focusTodoNode, todoId
       <Navbar.Spacer />
       <SyncReport isLoading={isLoading} error={editorState.error} lastSync={editorState.lastSync} />
       <NetworkStatus />
-      <Navbar.Button primary onPress={save} loading={isLoading} disabled={offline || editorState.pristine}>
+      <Navbar.Button
+        primary
+        onPress={save}
+        loading={isLoading}
+        disabled={offline || editorState.pristine}
+        pinged={!editorState.pristine && !isLoading}
+      >
         Save
       </Navbar.Button>
     </Navbar>
