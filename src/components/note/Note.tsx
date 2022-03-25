@@ -5,6 +5,7 @@ import EditorLinkModal from 'components/editor/EditorLinkModal'
 import NoteInspector from 'components/note/NoteInspector'
 import NoteNavbar from 'components/note/NoteNavbar'
 import Flex from 'components/ui/Flex'
+import Offline from 'components/ui/Offline'
 import Shimmer from 'components/ui/Shimmer'
 import { type SyncStatus } from 'components/ui/SyncReport'
 import { NOTE_SHIMMER_CLASSES } from 'constants/shimmer'
@@ -142,6 +143,7 @@ const Note: React.FC<NoteProps> = ({ id }) => {
     }
   }, [editorState.pristine, idle, save])
 
+  const isOfflineWithoutData = offline && isLoading && !data
   const isLoadingOrSaving = isLoading || isSaving
 
   return (
@@ -152,10 +154,12 @@ const Note: React.FC<NoteProps> = ({ id }) => {
         isSaving={isSaving}
         noteName={data?.name}
         editorState={editorState}
-        disabled={isLoadingOrSaving}
+        disabled={isLoadingOrSaving || isOfflineWithoutData}
       />
       <Flex fullHeight className="overflow-hidden">
-        {isLoading ? (
+        {isOfflineWithoutData ? (
+          <Offline />
+        ) : isLoading ? (
           <Shimmer>
             {NOTE_SHIMMER_CLASSES.map((shimmerClass, index) => (
               <Shimmer.Line key={index} className={shimmerClass} />
@@ -170,7 +174,7 @@ const Note: React.FC<NoteProps> = ({ id }) => {
         <NoteInspector
           editor={editor}
           editorState={editorState}
-          disabled={isLoadingOrSaving}
+          disabled={isLoadingOrSaving || isOfflineWithoutData}
           setLinkModalOpened={setLinkModalOpened}
         />
         <EditorLinkModal opened={linkModalOpened} onOpenChange={setLinkModalOpened} editor={editor} />
