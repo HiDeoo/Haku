@@ -50,7 +50,7 @@ const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, focusTodoNode, todoId
   }, [resetMutations])
 
   const save = useCallback(async () => {
-    if (!todoId) {
+    if (offline || !todoId) {
       return
     }
 
@@ -86,7 +86,7 @@ const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, focusTodoNode, todoId
     setEditorState({ isLoading: true })
 
     mutate(mutationData, { onSettled: onSettledMutation, onSuccess: onSuccessMutation })
-  }, [getTodoAtoms, mutate, onSettledMutation, onSuccessMutation, setEditorState, todoId])
+  }, [getTodoAtoms, mutate, offline, onSettledMutation, onSuccessMutation, setEditorState, todoId])
 
   useGlobalShortcuts(
     useMemo(

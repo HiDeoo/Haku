@@ -15,6 +15,7 @@ import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
 import useIdle from 'hooks/useIdle'
 import useLocalShortcuts from 'hooks/useLocalShortcuts'
 import useNavigationPrompt from 'hooks/useNavigationPrompt'
+import { useNetworkStatus } from 'hooks/useNetworkStatus'
 import useNoteQuery from 'hooks/useNoteQuery'
 import { type TodoMetadata } from 'libs/db/todo'
 import { getToc, HeadingWithId, ReplaceContent, type ToC } from 'libs/editor'
@@ -22,6 +23,8 @@ import { getToc, HeadingWithId, ReplaceContent, type ToC } from 'libs/editor'
 const anchorHeadingRegExp = /^#.*-(?<pos>\d+)$/
 
 const Note: React.FC<NoteProps> = ({ id }) => {
+  const { offline } = useNetworkStatus()
+
   const [linkModalOpened, setLinkModalOpened] = useState(false)
   const [editorState, setEditorState] = useState<NoteEditorState>({ pristine: true })
 
@@ -47,7 +50,7 @@ const Note: React.FC<NoteProps> = ({ id }) => {
   })
 
   const save = useCallback(() => {
-    if (!editor || !id) {
+    if (offline || !editor || !id) {
       return
     }
 
@@ -72,7 +75,7 @@ const Note: React.FC<NoteProps> = ({ id }) => {
         },
       }
     )
-  }, [editor, mutate, id])
+  }, [editor, id, mutate, offline])
 
   useGlobalShortcuts(
     useMemo(
