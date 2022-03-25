@@ -65,7 +65,7 @@ const ContentTree: React.FC = () => {
         {data?.length === 0 ? (
           <Flex fullWidth fullHeight direction="col" alignItems="center" justifyContent="center" className={nisClasses}>
             <span>Start by creating a new {contentType.lcType}.</span>
-            <Button onPress={openNewContentModal} primary>
+            <Button onPress={openNewContentModal} primary disabled={offline}>
               Create
             </Button>
           </Flex>
