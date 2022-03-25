@@ -1,5 +1,6 @@
 import { atom, type PrimitiveAtom, type WritableAtom } from 'jotai'
 
+import { onlineAtom } from 'atoms/network'
 import { type MutationAction } from 'libs/api/client'
 import { type FolderData } from 'libs/db/folder'
 import { type NoteMetadata } from 'libs/db/note'
@@ -21,7 +22,9 @@ function createMutationModalAtom<TData>(): [
   })
 
   const setModalOpenedAtom: WritableAtom<null, boolean> = atom(null, (get, set, opened: boolean) => {
-    return set(modalAtom, { ...get(modalAtom), action: 'insert', data: undefined, opened })
+    const online = get(onlineAtom)
+
+    return set(modalAtom, { ...get(modalAtom), action: 'insert', data: undefined, opened: !online ? false : opened })
   })
 
   return [modalAtom, setModalOpenedAtom]

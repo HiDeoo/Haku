@@ -13,9 +13,12 @@ import Alert from 'components/ui/Alert'
 import Modal from 'components/ui/Modal'
 import { ROOT_FOLDER_ID } from 'constants/folder'
 import useFolderMutation, { type FolderMutation } from 'hooks/useFolderMutation'
+import { useNetworkStatus } from 'hooks/useNetworkStatus'
 import { type FolderData } from 'libs/db/folder'
 
 const FolderModal: React.FC = () => {
+  const { offline } = useNetworkStatus()
+
   const {
     control,
     register,
@@ -72,7 +75,7 @@ const FolderModal: React.FC = () => {
         onOpenChange={setOpened}
         opened={opened && !isRemoving}
         title={`${isUpdating ? 'Edit' : 'New'} Folder`}
-        trigger={<IconButton icon={RiFolderAddLine} tooltip="New Folder" />}
+        trigger={<IconButton icon={RiFolderAddLine} tooltip="New Folder" disabled={offline} />}
       >
         <Form onSubmit={onSubmit} error={error}>
           <TextInput
@@ -94,7 +97,7 @@ const FolderModal: React.FC = () => {
             errorMessage={errors.parentFolder?.message}
           />
           <Modal.Footer disabled={isLoading}>
-            <Button type="submit" primary disabled={isLoading} loading={isLoading}>
+            <Button type="submit" primary disabled={isLoading || offline} loading={isLoading}>
               {isUpdating ? 'Update' : 'Create'}
             </Button>
           </Modal.Footer>
