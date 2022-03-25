@@ -23,7 +23,7 @@ export default function usePwa() {
         })
       })
 
-      if (navigator.serviceWorker.controller?.state === 'activated') {
+      if ('serviceWorker' in navigator && navigator.serviceWorker.controller?.state === 'activated') {
         navigator.serviceWorker.controller.postMessage({ type: 'CLEAR' })
       }
     }
