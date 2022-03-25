@@ -5,7 +5,7 @@ import { type IconProps } from 'components/ui/Icon'
 import { MODAL_CONTENT_CLASSES, MODAL_OVERLAY_CLASSES } from 'components/ui/Modal'
 import clst from 'styles/clst'
 
-const Palette = <TItem,>({ forwardedRef, role, ...props }: PaletteProps<TItem>) => {
+const Palette = <TItem extends PaletteItem>({ forwardedRef, role, ...props }: PaletteProps<TItem>) => {
   const overlayClasses = clst(MODAL_OVERLAY_CLASSES, 'pt-0 md:pt-0')
 
   const contentClasses = clst(
@@ -28,7 +28,7 @@ const Palette = <TItem,>({ forwardedRef, role, ...props }: PaletteProps<TItem>) 
 
 export default Palette
 
-export interface PaletteProps<TItem> {
+export interface PaletteProps<TItem extends PaletteItem> {
   enterKeyHint?: React.InputHTMLAttributes<HTMLInputElement>['enterKeyHint']
   forwardedRef?: React.ForwardedRef<HTMLInputElement>
   fuzzy?: boolean
@@ -48,4 +48,8 @@ export interface PaletteProps<TItem> {
   opened?: boolean
   placeholder: string
   role?: React.HtmlHTMLAttributes<HTMLElement>['role']
+}
+
+export interface PaletteItem {
+  disabled?: boolean
 }

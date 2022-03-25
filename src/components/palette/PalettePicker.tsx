@@ -8,7 +8,7 @@ import fuzzaldrin from 'fuzzaldrin-plus'
 import { forwardRef, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import TextInput from 'components/form/TextInput'
-import { type PaletteProps } from 'components/palette/Palette'
+import { type PaletteItem, type PaletteProps } from 'components/palette/Palette'
 import Icon from 'components/ui/Icon'
 import Spinner from 'components/ui/Spinner'
 import useIntersectionObserver from 'hooks/useIntersectionObserver'
@@ -18,7 +18,7 @@ import styles from 'styles/PalettePicker.module.css'
 
 const shortcutMap = getShortcutMap([{ keybinding: 'Escape' }])
 
-const PalettePicker = <TItem,>(
+const PalettePicker = <TItem extends PaletteItem>(
   {
     enterKeyHint,
     fuzzy = true,
@@ -178,6 +178,10 @@ const PalettePicker = <TItem,>(
         ) : (
           <>
             {filteredItems.map((item, index) => {
+              if (item.disabled) {
+                return null
+              }
+
               const itemStr = itemToString(item)
               const itemIcon = itemToIcon ? itemToIcon(item) : undefined
               const isHighlighted = highlightedIndex === index

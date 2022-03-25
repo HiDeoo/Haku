@@ -5,13 +5,13 @@ import { useMemo } from 'react'
 import { RiBookletLine, RiTodoLine } from 'react-icons/ri'
 
 import { navigationPaletteOpenedAtom } from 'atoms/palette'
-import { type PaletteProps } from 'components/palette/Palette'
+import { type PaletteItem, type PaletteProps } from 'components/palette/Palette'
 import { ContentType, getContentType } from 'hooks/useContentType'
 import useFilesQuery from 'hooks/useFilesQuery'
 import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
 import { type FileData } from 'libs/db/file'
 
-const Palette = dynamic<PaletteProps<FileData>>(import('components/palette/Palette'))
+const Palette = dynamic<PaletteProps<Navigation>>(import('components/palette/Palette'))
 
 const NavigationPalette: React.FC = () => {
   const { push } = useRouter()
@@ -76,3 +76,5 @@ const NavigationPalette: React.FC = () => {
 }
 
 export default NavigationPalette
+
+type Navigation = FileData & PaletteItem
