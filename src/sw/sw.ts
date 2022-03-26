@@ -16,14 +16,6 @@ sw.addEventListener('fetch', handleFetchEvent)
 function handleInstallEvent(event: ExtendableEvent) {
   event.waitUntil(
     (async () => {
-      const cacheKeys = await caches.keys()
-
-      for (const key of cacheKeys) {
-        if (key === Caches.Assets) {
-          await caches.delete(key)
-        }
-      }
-
       const cache = await caches.open(Caches.Assets)
 
       for (const asset of ASSETS) {
@@ -51,6 +43,21 @@ function handleMessageEvent(event: ExtendableMessageEvent) {
   switch (event.data.type) {
     case 'UPDATE': {
       sw.skipWaiting()
+
+      event.waitUntil(
+        (async () => {
+          const cache = await caches.open(Caches.Assets)
+          const requests = await cache.keys()
+
+          for (const request of requests) {
+            const requestUrl = new URL(request.url)
+
+            if (!ASSETS.includes(requestUrl.pathname)) {
+              await cache.delete(request)
+            }
+          }
+        })()
+      )
 
       break
     }
@@ -230,12 +237,12 @@ function respondWithNetworkError() {
 
 async function clearCache(cacheName: string, maxEntries: number) {
   const cache = await caches.open(cacheName)
-  const cacheKeys = await cache.keys()
-  const firstKey = cacheKeys[0]
+  const requests = await cache.keys()
+  const firstRequest = requests[0]
 
   // Delete a bit more entries so that we don't have to clear the cache too often.
-  if (cacheKeys.length > maxEntries - Math.round(maxEntries / 5) && firstKey) {
-    await cache.delete(firstKey)
+  if (requests.length > maxEntries - Math.round(maxEntries / 5) && firstRequest) {
+    await cache.delete(firstRequest)
 
     clearCache(cacheName, maxEntries)
   }
