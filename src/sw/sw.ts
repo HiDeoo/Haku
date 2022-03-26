@@ -75,7 +75,7 @@ function handleFetchEvent(event: FetchEvent) {
   if (IS_PROD && requestUrl.origin === location.origin) {
     if (/^\/(?:_next\/static|images)\/.*\.(?:js|css|png|jpg)$/i.test(requestUrl.pathname)) {
       return respondWithCacheThenNetwork(event, Caches.Assets)
-    } else if (/^\/api\/.*(?<!csrf)$/i.test(requestUrl.pathname)) {
+    } else if (/^\/api\/(?!.*csrf$)[/\w-]+$/i.test(requestUrl.pathname)) {
       return respondWithNetworkThenCache(event, Caches.Api)
     } else if (
       event.request.mode === 'navigate' ||
