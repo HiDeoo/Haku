@@ -1,5 +1,6 @@
-import fs from 'fs'
+import fs from 'fs/promises'
 
+import esbuild from 'esbuild'
 import { type BuildManifest } from 'next/dist/server/get-page-files'
 
 import pkg from './package.json'
@@ -13,16 +14,37 @@ const pathPrefix = '/_next/'
 const [, , ...args] = process.argv
 const isProd = args.includes('--prod')
 
-function generateServiceWorkerCacheableAssetList() {
+async function build() {
+  try {
+    await buildServiceWorker()
+    await buildServiceWorkerConfig()
+  } catch (error) {
+    console.error('Unable to build service worker:', error)
+
+    process.exit(1)
+  }
+}
+
+function buildServiceWorker() {
+  return esbuild.build({
+    bundle: true,
+    entryPoints: ['src/sw/sw.ts'],
+    minify: isProd,
+    outfile: 'public/sw.js',
+    target: 'es6',
+  })
+}
+
+async function buildServiceWorkerConfig() {
   let buildManifest: BuildManifest
 
   if (isProd) {
-    if (!fs.existsSync(buildManifestPath)) {
-      throw new Error(`Unable to find build manifest at '${buildManifestPath}'.`)
+    try {
+      const rawBuildManifest = await fs.readFile(buildManifestPath, 'utf8')
+      buildManifest = JSON.parse(rawBuildManifest)
+    } catch (error) {
+      throw new Error(`Unable to open build manifest at '${buildManifestPath}'.`)
     }
-
-    const rawBuildManifest = fs.readFileSync(buildManifestPath, 'utf8')
-    buildManifest = JSON.parse(rawBuildManifest)
   } else {
     buildManifest = { lowPriorityFiles: [], pages: {}, polyfillFiles: [] } as unknown as BuildManifest
   }
@@ -40,19 +62,25 @@ function generateServiceWorkerCacheableAssetList() {
   buildManifest.lowPriorityFiles.forEach((file) => assets.add(getAssetPath(file)))
   buildManifest.polyfillFiles.forEach((file) => assets.add(getAssetPath(file)))
 
-  const content = `const VERSION = '${pkg.version}';
+  const { code: config } = await esbuild.transform(
+    `const VERSION = '${pkg.version}';
 
 const IS_PROD = ${isProd};
 
 const ASSETS = ${JSON.stringify(Array.from(assets))};
 
-const CACHES = ${JSON.stringify(SW_CACHES)};`
+const CACHES = ${JSON.stringify(SW_CACHES)};`,
+    {
+      minify: isProd,
+      target: 'es6',
+    }
+  )
 
-  fs.writeFileSync('./public/sw-cache.js', content)
+  return fs.writeFile('./public/sw-config.js', config)
 }
 
 function getAssetPath(file: string) {
   return `${pathPrefix}${file}`
 }
 
-generateServiceWorkerCacheableAssetList()
+build()

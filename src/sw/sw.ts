@@ -1,7 +1,7 @@
 // https://github.com/microsoft/TypeScript/issues/14877#issuecomment-872329108
 const sw = self as ServiceWorkerGlobalScope & typeof globalThis
 
-self.importScripts('/sw-cache.js')
+self.importScripts('/sw-config.js')
 
 sw.addEventListener('install', handleInstallEvent)
 sw.addEventListener('activate', handleActivateEvent)
