@@ -36,6 +36,11 @@ function handleMessageEvent(event: ExtendableMessageEvent) {
   }
 
   switch (event.data.type) {
+    case 'INSTALL': {
+      event.waitUntil(sw.clients.claim())
+
+      break
+    }
     case 'UPDATE': {
       sw.skipWaiting()
 

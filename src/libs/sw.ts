@@ -38,9 +38,13 @@ function handleServiceWorkerUpdate(
 
   registration.addEventListener('updatefound', () => {
     registration.installing?.addEventListener('statechange', () => {
-      // Wait until a new version is fully installed before triggering the update flow.
-      if (registration.waiting && navigator.serviceWorker.controller) {
-        onAvailableUpdate(updateServiceWorker)
+      // Wait until a (new) version is fully installed before triggering the install/update flow.
+      if (registration.waiting) {
+        if (navigator.serviceWorker.controller) {
+          onAvailableUpdate(updateServiceWorker)
+        } else {
+          registration.waiting?.postMessage({ type: 'INSTALL' })
+        }
       }
     })
   })
