@@ -61,13 +61,18 @@ function handleMessageEvent(event: ExtendableMessageEvent) {
 
       break
     }
-    case 'CLEAR': {
+    case 'LOAD': {
       clearCache(CACHES.Api, 50)
 
       break
     }
+    case 'LOGOUT': {
+      event.waitUntil(caches.delete(CACHES.Api))
+
+      break
+    }
     default: {
-      console.error('Unsupported service worker message type.')
+      console.error(`Unsupported service worker message type '${event.data.type}'.`)
     }
   }
 }

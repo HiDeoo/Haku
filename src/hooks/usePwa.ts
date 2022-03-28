@@ -4,7 +4,7 @@ import { RiRefreshLine } from 'react-icons/ri'
 
 import { deferrefPromptEventAtom } from 'atoms/pwa'
 import useToast from 'hooks/useToast'
-import { registerServiceWorker } from 'libs/sw'
+import { registerServiceWorker, sendServiceWorkerMessage } from 'libs/sw'
 
 export default function usePwa() {
   const { addToast } = useToast()
@@ -23,9 +23,7 @@ export default function usePwa() {
         })
       })
 
-      if ('serviceWorker' in navigator && navigator.serviceWorker.controller?.state === 'activated') {
-        navigator.serviceWorker.controller.postMessage({ type: 'CLEAR' })
-      }
+      sendServiceWorkerMessage({ type: 'LOAD' })
     }
 
     window.addEventListener('load', onLoad, { once: true, passive: true })

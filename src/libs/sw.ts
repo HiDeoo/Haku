@@ -12,6 +12,12 @@ export async function registerServiceWorker(swPath: string, onAvailableUpdate: S
   }
 }
 
+export function sendServiceWorkerMessage<TMessage extends ServiceWorkerMessage>(message: TMessage) {
+  if ('serviceWorker' in navigator && navigator.serviceWorker.controller?.state === 'activated') {
+    navigator.serviceWorker.controller.postMessage(message)
+  }
+}
+
 export async function isResourceCached(cacheName: string, resource: RequestInfo) {
   if (!('serviceWorker' in navigator) || !('caches' in window)) {
     return false
@@ -56,3 +62,7 @@ function handleServiceWorkerUpdate(
 }
 
 type ServiceWorkerRegistrationUpdateHandler = (updateServiceWorker: () => void) => void
+
+interface ServiceWorkerMessage {
+  type: string
+}
