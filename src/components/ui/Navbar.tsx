@@ -2,6 +2,8 @@ import { Children, cloneElement, isValidElement } from 'react'
 
 import Button, { ButtonProps } from 'components/form/Button'
 import Flex from 'components/ui/Flex'
+import Icon, { IconProps } from 'components/ui/Icon'
+import Tooltip from 'components/ui/Tooltip'
 import clst from 'styles/clst'
 
 const navbarClasses = clst(
@@ -52,6 +54,18 @@ const NavbarButton: React.FC<NavbarButtonProps> = ({ pinged, ...props }) => {
 
 Navbar.Button = NavbarButton
 
+const NavbarIcon: React.FC<NavbarIconProps> = ({ icon, iconLabel, tooltip }) => {
+  return (
+    <Tooltip content={tooltip}>
+      <Flex fullHeight alignItems="center" className="shrink-0">
+        <Icon icon={icon} className="h-4 w-4 text-zinc-500" label={iconLabel} />
+      </Flex>
+    </Tooltip>
+  )
+}
+
+Navbar.Icon = NavbarIcon
+
 const NavbarSpacer: React.FC = () => {
   return <div className="grow" />
 }
@@ -60,6 +74,7 @@ Navbar.Spacer = NavbarSpacer
 
 type NavbarComponent = React.FC<NavbarProps> & {
   Button: typeof NavbarButton
+  Icon: typeof NavbarIcon
   Spacer: typeof NavbarSpacer
 }
 
@@ -70,4 +85,10 @@ interface NavbarProps {
 
 interface NavbarButtonProps extends ButtonProps {
   pinged?: boolean
+}
+
+interface NavbarIconProps {
+  icon: IconProps['icon']
+  iconLabel: string
+  tooltip: string
 }

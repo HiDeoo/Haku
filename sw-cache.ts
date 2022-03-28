@@ -4,6 +4,8 @@ import { type BuildManifest } from 'next/dist/server/get-page-files'
 
 import pkg from './package.json'
 
+import { SW_CACHES } from 'constants/sw'
+
 const buildManifestPath = '.next/build-manifest.json'
 const pageToIgnore = ['/_app', '/_error']
 const pathPrefix = '/_next/'
@@ -42,7 +44,9 @@ function generateServiceWorkerCacheableAssetList() {
 
 const IS_PROD = ${isProd};
 
-const ASSETS = ${JSON.stringify(Array.from(assets))};`
+const ASSETS = ${JSON.stringify(Array.from(assets))};
+
+const CACHES = ${JSON.stringify(SW_CACHES)};`
 
   fs.writeFileSync('./public/sw-cache.js', content)
 }

@@ -12,6 +12,17 @@ export async function registerServiceWorker(swPath: string, onAvailableUpdate: S
   }
 }
 
+export async function isResourceCached(cacheName: string, resource: RequestInfo) {
+  if (!('serviceWorker' in navigator) || !('caches' in window)) {
+    return false
+  }
+
+  const cache = await caches.open(cacheName)
+  const response = await cache.match(resource)
+
+  return typeof response !== 'undefined'
+}
+
 function handleServiceWorkerUpdate(
   registration: ServiceWorkerRegistration,
   onAvailableUpdate: ServiceWorkerRegistrationUpdateHandler

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 
 import { todoEditorStateAtom } from 'atoms/todo'
 import { todoNodeChildrenAtom, todoNodeMutations, todoNodeNodesAtom } from 'atoms/todoNode'
+import CacheStatus from 'components/ui/CacheStatus'
 import Navbar from 'components/ui/Navbar'
 import NetworkStatus from 'components/ui/NetworkStatus'
 import SyncReport from 'components/ui/SyncReport'
@@ -119,6 +120,7 @@ const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, focusTodoNode, todoId
       <Navbar.Spacer />
       <SyncReport isLoading={isLoading} error={editorState.error} lastSync={editorState.lastSync} />
       <NetworkStatus />
+      <CacheStatus />
       <Navbar.Button
         primary
         onPress={save}

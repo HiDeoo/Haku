@@ -1,11 +1,6 @@
 // https://github.com/microsoft/TypeScript/issues/14877#issuecomment-872329108
 const sw = self as ServiceWorkerGlobalScope & typeof globalThis
 
-const Caches = {
-  Api: 'api',
-  Assets: 'assets',
-}
-
 self.importScripts('/sw-cache.js')
 
 sw.addEventListener('install', handleInstallEvent)
@@ -16,7 +11,7 @@ sw.addEventListener('fetch', handleFetchEvent)
 function handleInstallEvent(event: ExtendableEvent) {
   event.waitUntil(
     (async () => {
-      const cache = await caches.open(Caches.Assets)
+      const cache = await caches.open(CACHES.Assets)
 
       for (const asset of ASSETS) {
         await cache.add(new Request(asset, { cache: 'reload' }))
@@ -46,7 +41,7 @@ function handleMessageEvent(event: ExtendableMessageEvent) {
 
       event.waitUntil(
         (async () => {
-          const cache = await caches.open(Caches.Assets)
+          const cache = await caches.open(CACHES.Assets)
           const requests = await cache.keys()
 
           for (const request of requests) {
@@ -62,7 +57,7 @@ function handleMessageEvent(event: ExtendableMessageEvent) {
       break
     }
     case 'CLEAR': {
-      clearCache(Caches.Api, 50)
+      clearCache(CACHES.Api, 50)
 
       break
     }
@@ -81,9 +76,9 @@ function handleFetchEvent(event: FetchEvent) {
 
   if (IS_PROD && requestUrl.origin === location.origin) {
     if (/^\/(?:_next\/static|images)\/.*\.(?:js|css|png|jpg)$/i.test(requestUrl.pathname)) {
-      return respondWithCacheThenNetwork(event, Caches.Assets)
+      return respondWithCacheThenNetwork(event, CACHES.Assets)
     } else if (/^\/api\/(?!.*csrf$)[/\w-]+$/i.test(requestUrl.pathname)) {
-      return respondWithNetworkThenCache(event, Caches.Api)
+      return respondWithNetworkThenCache(event, CACHES.Api)
     } else if (
       event.request.mode === 'navigate' ||
       event.request.headers.get('accept')?.startsWith('text/html') ||
@@ -154,7 +149,7 @@ function respondWithPage(event: FetchEvent, pathName: string) {
         // For navigation related event, it looks like we have to consume the preload response first before even
         // querying the cache or the browser will emit an error about the preload request being cancelled before the
         // response.
-        const preloadResponse = await preloadAndCacheResponse(event, Caches.Assets, requestInfo)
+        const preloadResponse = await preloadAndCacheResponse(event, CACHES.Assets, requestInfo)
 
         if (preloadResponse) {
           return preloadResponse
@@ -163,7 +158,7 @@ function respondWithPage(event: FetchEvent, pathName: string) {
         // Silently fallback to the cache if the preload request failed.
       }
 
-      const cache = await caches.open(Caches.Assets)
+      const cache = await caches.open(CACHES.Assets)
       const cachedResponse = await cache.match(requestInfo)
 
       if (cachedResponse) {
@@ -171,7 +166,7 @@ function respondWithPage(event: FetchEvent, pathName: string) {
       }
 
       try {
-        return await fetchAndCacheResponse(event, Caches.Assets, true, requestInfo, false)
+        return await fetchAndCacheResponse(event, CACHES.Assets, true, requestInfo, false)
       } catch (error) {
         return cache.match('/offline')
       }
@@ -249,4 +244,5 @@ async function clearCache(cacheName: string, maxEntries: number) {
 }
 
 declare const ASSETS: string[]
+declare const CACHES: { Api: string; Assets: string }
 declare const IS_PROD: boolean

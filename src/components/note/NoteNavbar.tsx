@@ -1,4 +1,5 @@
 import { type NoteEditorState } from 'components/note/Note'
+import CacheStatus from 'components/ui/CacheStatus'
 import Navbar from 'components/ui/Navbar'
 import NetworkStatus from 'components/ui/NetworkStatus'
 import SyncReport from 'components/ui/SyncReport'
@@ -13,6 +14,7 @@ const NoteNavbar: React.FC<NoteNavbarProps> = ({ disabled, editorState, isSaving
       <Navbar.Spacer />
       <SyncReport isLoading={isSaving} error={editorState.error} lastSync={editorState.lastSync} />
       <NetworkStatus />
+      <CacheStatus />
       <Navbar.Button
         primary
         onPress={save}
