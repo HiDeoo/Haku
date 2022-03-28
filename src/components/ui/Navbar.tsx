@@ -2,11 +2,20 @@ import { Children, cloneElement, isValidElement } from 'react'
 
 import Button, { ButtonProps } from 'components/form/Button'
 import Flex from 'components/ui/Flex'
+import Icon, { IconProps } from 'components/ui/Icon'
+import Tooltip from 'components/ui/Tooltip'
 import clst from 'styles/clst'
 
 const navbarClasses = clst(
   'py-2 px-2.5 supports-max:pr-[calc(theme(spacing[2.5])+max(0px,env(safe-area-inset-right)))]',
   'gap-3 border-b border-zinc-600/50 bg-zinc-900 text-sm'
+)
+
+const buttonPingClasses = clst(
+  'before:absolute before:-top-[0.16rem] before:-right-[0.16rem] before:w-2 before:h-2 before:rounded-full',
+  'before:bg-blue-200 before:motion-safe:animate-ping',
+  'after:absolute after:-top-[0.16rem] after:-right-[0.16rem] after:w-2 after:h-2 after:rounded-full',
+  'after:bg-blue-300'
 )
 
 const Navbar: NavbarComponent = ({ children, disabled, title }) => {
@@ -28,10 +37,14 @@ const Navbar: NavbarComponent = ({ children, disabled, title }) => {
 
 export default Navbar
 
-const NavbarButton: React.FC<ButtonProps> = (props) => {
-  const buttonClasses = clst('min-w-[65px] mx-0 py-1 bg-zinc-700 hover:bg-zinc-600 shadow-none', {
-    'bg-blue-600 hover:bg-blue-500': props.primary,
-  })
+const NavbarButton: React.FC<NavbarButtonProps> = ({ pinged, ...props }) => {
+  const buttonClasses = clst(
+    'min-w-[65px] mx-0 py-1 bg-zinc-700 hover:bg-zinc-600 shadow-none',
+    {
+      'bg-blue-600 hover:bg-blue-500': props.primary,
+    },
+    pinged && ['relative', buttonPingClasses]
+  )
   const pressedButtonClasses = clst('bg-zinc-500 hover:bg-zinc-500', {
     'bg-blue-400 hover:bg-blue-400': props.primary,
   })
@@ -41,6 +54,18 @@ const NavbarButton: React.FC<ButtonProps> = (props) => {
 
 Navbar.Button = NavbarButton
 
+const NavbarIcon: React.FC<NavbarIconProps> = ({ icon, iconLabel, tooltip }) => {
+  return (
+    <Tooltip content={tooltip}>
+      <Flex fullHeight alignItems="center" className="shrink-0">
+        <Icon icon={icon} className="h-4 w-4 text-zinc-500" label={iconLabel} />
+      </Flex>
+    </Tooltip>
+  )
+}
+
+Navbar.Icon = NavbarIcon
+
 const NavbarSpacer: React.FC = () => {
   return <div className="grow" />
 }
@@ -49,10 +74,21 @@ Navbar.Spacer = NavbarSpacer
 
 type NavbarComponent = React.FC<NavbarProps> & {
   Button: typeof NavbarButton
+  Icon: typeof NavbarIcon
   Spacer: typeof NavbarSpacer
 }
 
 interface NavbarProps {
   disabled?: boolean
   title?: string
+}
+
+interface NavbarButtonProps extends ButtonProps {
+  pinged?: boolean
+}
+
+interface NavbarIconProps {
+  icon: IconProps['icon']
+  iconLabel: string
+  tooltip: string
 }

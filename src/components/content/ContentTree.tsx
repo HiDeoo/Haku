@@ -13,6 +13,7 @@ import { CONTENT_TREE_SHIMMER_DEPTHS } from 'constants/shimmer'
 import useContentId from 'hooks/useContentId'
 import useContentTreeQuery from 'hooks/useContentTreeQuery'
 import useContentType, { type UseContentTypeReturnValue } from 'hooks/useContentType'
+import { useNetworkStatus } from 'hooks/useNetworkStatus'
 import { type FolderData } from 'libs/db/folder'
 import { type NoteMetadata } from 'libs/db/note'
 import { type TodoMetadata } from 'libs/db/todo'
@@ -30,6 +31,8 @@ const ContentTree: React.FC = () => {
   if (!contentType.type) {
     throw new Error('Missing content type to render the content tree.')
   }
+
+  const { offline } = useNetworkStatus()
 
   const sidebarCollapsed = useAtomValue(sidebarCollapsedAtom)
 
@@ -62,7 +65,7 @@ const ContentTree: React.FC = () => {
         {data?.length === 0 ? (
           <Flex fullWidth fullHeight direction="col" alignItems="center" justifyContent="center" className={nisClasses}>
             <span>Start by creating a new {contentType.lcType}.</span>
-            <Button onPress={openNewContentModal} primary>
+            <Button onPress={openNewContentModal} primary disabled={offline}>
               Create
             </Button>
           </Flex>
@@ -74,6 +77,7 @@ const ContentTree: React.FC = () => {
               <Folder
                 key={key}
                 folder={item}
+                offline={offline}
                 selectedId={contentId}
                 style={getNodeStyle(0)}
                 contentType={contentType}
@@ -82,6 +86,7 @@ const ContentTree: React.FC = () => {
               <Content
                 key={key}
                 content={item}
+                offline={offline}
                 selectedId={contentId}
                 style={getNodeStyle(0)}
                 contentType={contentType}
@@ -100,7 +105,7 @@ const ShimmerNode: React.FC<ShimmerNodeProps> = ({ depth, ...props }) => {
   return <Shimmer.Line style={getNodeStyle(depth, false)} {...props} />
 }
 
-const Folder: React.FC<FolderProps> = ({ contentType, depth = 1, folder, selectedId, style }) => {
+const Folder: React.FC<FolderProps> = ({ contentType, depth = 1, folder, offline, selectedId, style }) => {
   const setFolderModal = useUpdateAtom(folderModalAtom)
 
   function openEditModal() {
@@ -117,14 +122,15 @@ const Folder: React.FC<FolderProps> = ({ contentType, depth = 1, folder, selecte
         <ContentTreeNode style={style} text={folder.name} iconLabel="folder" icon={RiFolderLine}>
           <ContextMenu.Label text={`Folder: ${folder.name}`} />
           <ContextMenu.Separator />
-          <ContextMenu.Item text="Edit" onClick={openEditModal} />
-          <ContextMenu.Item intent="error" text="Delete" onClick={openDeleteModal} />
+          <ContextMenu.Item text="Edit" onClick={openEditModal} disabled={offline} />
+          <ContextMenu.Item intent="error" text="Delete" onClick={openDeleteModal} disabled={offline} />
         </ContentTreeNode>
       </Roving>
       {folder.children.map((child) => (
         <Folder
           folder={child}
           depth={depth + 1}
+          offline={offline}
           selectedId={selectedId}
           key={getNodeKey(child)}
           contentType={contentType}
@@ -135,6 +141,7 @@ const Folder: React.FC<FolderProps> = ({ contentType, depth = 1, folder, selecte
         <Content
           depth={depth}
           content={content}
+          offline={offline}
           selectedId={selectedId}
           key={getNodeKey(content)}
           contentType={contentType}
@@ -144,7 +151,7 @@ const Folder: React.FC<FolderProps> = ({ contentType, depth = 1, folder, selecte
   )
 }
 
-const Content: React.FC<ContentProps> = ({ content, contentType, depth = 0, selectedId }) => {
+const Content: React.FC<ContentProps> = ({ content, contentType, depth = 0, offline, selectedId }) => {
   const setContentModal = useUpdateAtom(contentModalAtom)
 
   function openEditModal() {
@@ -167,8 +174,8 @@ const Content: React.FC<ContentProps> = ({ content, contentType, depth = 0, sele
       >
         <ContextMenu.Label text={`${contentType.cType}: ${content.name}`} />
         <ContextMenu.Separator />
-        <ContextMenu.Item text="Edit" onClick={openEditModal} />
-        <ContextMenu.Item intent="error" text="Delete" onClick={openDeleteModal} />
+        <ContextMenu.Item text="Edit" onClick={openEditModal} disabled={offline} />
+        <ContextMenu.Item intent="error" text="Delete" onClick={openDeleteModal} disabled={offline} />
       </ContentTreeNode>
     </Roving>
   )
@@ -196,6 +203,7 @@ interface ShimmerNodeProps {
 interface NodeProps {
   contentType: UseContentTypeReturnValue
   depth?: number
+  offline: boolean
   selectedId?: string
   style?: React.HtmlHTMLAttributes<HTMLElement>['style']
 }

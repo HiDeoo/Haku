@@ -14,9 +14,12 @@ import Modal from 'components/ui/Modal'
 import { ROOT_FOLDER_ID } from 'constants/folder'
 import useContentType from 'hooks/useContentType'
 import useMetadataMutation, { type MetadataMutation } from 'hooks/useMetadataMutation'
+import { useNetworkStatus } from 'hooks/useNetworkStatus'
 import { type FolderData } from 'libs/db/folder'
 
 const ContentModal: React.FC = () => {
+  const { offline } = useNetworkStatus()
+
   const { cType, lcType } = useContentType()
 
   const {
@@ -77,7 +80,7 @@ const ContentModal: React.FC = () => {
         disabled={isLoading}
         onOpenChange={setOpened}
         opened={opened && !isRemoving}
-        trigger={<IconButton icon={RiFileAddLine} tooltip={title} />}
+        trigger={<IconButton icon={RiFileAddLine} tooltip={title} disabled={offline} />}
       >
         <Form onSubmit={onSubmit} error={error}>
           <TextInput
@@ -98,7 +101,7 @@ const ContentModal: React.FC = () => {
             errorMessage={errors.folder?.message}
           />
           <Modal.Footer disabled={isLoading}>
-            <Button type="submit" primary disabled={isLoading} loading={isLoading}>
+            <Button type="submit" primary disabled={isLoading || offline} loading={isLoading}>
               {isUpdating ? 'Update' : 'Create'}
             </Button>
           </Modal.Footer>

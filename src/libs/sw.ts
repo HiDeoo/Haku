@@ -4,12 +4,29 @@ export async function registerServiceWorker(swPath: string, onAvailableUpdate: S
   }
 
   try {
-    const registration = await navigator.serviceWorker.register(swPath)
+    const registration = await navigator.serviceWorker.register(swPath, { updateViaCache: 'none' })
 
     handleServiceWorkerUpdate(registration, onAvailableUpdate)
   } catch (error) {
     console.error('Error while registering service worker:', error)
   }
+}
+
+export function sendServiceWorkerMessage<TMessage extends ServiceWorkerMessage>(message: TMessage) {
+  if ('serviceWorker' in navigator && navigator.serviceWorker.controller?.state === 'activated') {
+    navigator.serviceWorker.controller.postMessage(message)
+  }
+}
+
+export async function isResourceCached(cacheName: string, resource: RequestInfo) {
+  if (!('serviceWorker' in navigator) || !('caches' in window)) {
+    return false
+  }
+
+  const cache = await caches.open(cacheName)
+  const response = await cache.match(resource)
+
+  return typeof response !== 'undefined'
 }
 
 function handleServiceWorkerUpdate(
@@ -27,9 +44,13 @@ function handleServiceWorkerUpdate(
 
   registration.addEventListener('updatefound', () => {
     registration.installing?.addEventListener('statechange', () => {
-      // Wait until a new version is fully installed before triggering the update flow.
-      if (registration.waiting && navigator.serviceWorker.controller) {
-        onAvailableUpdate(updateServiceWorker)
+      // Wait until a (new) version is fully installed before triggering the install/update flow.
+      if (registration.waiting) {
+        if (navigator.serviceWorker.controller) {
+          onAvailableUpdate(updateServiceWorker)
+        } else {
+          registration.waiting?.postMessage({ type: 'INSTALL' })
+        }
       }
     })
   })
@@ -41,3 +62,7 @@ function handleServiceWorkerUpdate(
 }
 
 type ServiceWorkerRegistrationUpdateHandler = (updateServiceWorker: () => void) => void
+
+interface ServiceWorkerMessage {
+  type: string
+}

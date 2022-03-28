@@ -161,7 +161,7 @@ export default Document
 function getContentSecurityPolicy(nonce: string): string {
   const isProd = process.env.NODE_ENV === 'production'
 
-  const policies: string[] = [
+  return [
     "default-src 'none'",
     "script-src-elem 'self'",
     // https://github.com/vercel/next.js/issues/14221#issuecomment-657258278
@@ -172,11 +172,6 @@ function getContentSecurityPolicy(nonce: string): string {
     "manifest-src 'self'",
     "worker-src 'self'",
     "prefetch-src 'self'",
-  ]
-
-  if (!isProd) {
-    policies.push("connect-src 'self'")
-  }
-
-  return policies.join('; ')
+    "connect-src 'self'",
+  ].join('; ')
 }

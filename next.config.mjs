@@ -27,6 +27,14 @@ const nextConfig = {
     return [{ source: '/:path*', headers: commonHeaders }]
   },
   reactStrictMode: true,
+  rewrites() {
+    return [
+      {
+        source: '/offline',
+        destination: '/offline.html',
+      },
+    ]
+  },
 }
 
 export default withBundleAnalyzer(nextConfig)

@@ -6,7 +6,7 @@ import { RiBookletLine, RiSearchLine, RiTodoLine } from 'react-icons/ri'
 
 import { searchPaletteOpenedAtom } from 'atoms/palette'
 import IconButton from 'components/form/IconButton'
-import { type PaletteProps } from 'components/palette/Palette'
+import { type PaletteItem, type PaletteProps } from 'components/palette/Palette'
 import { ContentType } from 'constants/contentType'
 import { SEARCH_QUERY_MIN_LENGTH } from 'constants/search'
 import { getContentType } from 'hooks/useContentType'
@@ -15,7 +15,7 @@ import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
 import useSearchQuery from 'hooks/useSearchQuery'
 import { type SearchResultData } from 'libs/db/file'
 
-const Palette = dynamic<PaletteProps<SearchResultData>>(import('components/palette/Palette'))
+const Palette = dynamic<PaletteProps<SearchResult>>(import('components/palette/Palette'))
 
 const SearchPalette: React.FC = () => {
   const { push } = useRouter()
@@ -126,3 +126,5 @@ const SearchPalette: React.FC = () => {
 }
 
 export default SearchPalette
+
+type SearchResult = SearchResultData & PaletteItem

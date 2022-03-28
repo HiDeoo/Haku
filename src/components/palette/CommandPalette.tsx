@@ -18,15 +18,18 @@ import {
 import { toggleSidebarCollapsedAtom } from 'atoms/collapsible'
 import { setContentModalOpenedAtom, setFolderModalOpenedAtom, setShortcutModalOpenedAtom } from 'atoms/modal'
 import { commandPaletteOpenedAtom, navigationPaletteOpenedAtom, searchPaletteOpenedAtom } from 'atoms/palette'
-import { type PaletteProps } from 'components/palette/Palette'
+import { type PaletteItem, type PaletteProps } from 'components/palette/Palette'
 import { type IconProps } from 'components/ui/Icon'
 import useContentType, { ContentType, getContentType } from 'hooks/useContentType'
 import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
+import { useNetworkStatus } from 'hooks/useNetworkStatus'
 import { logout } from 'libs/auth'
 
 const Palette = dynamic<PaletteProps<Command>>(import('components/palette/Palette'))
 
 const CommandPalette: React.FC = () => {
+  const { offline } = useNetworkStatus()
+
   const { push } = useRouter()
 
   const [opened, setOpened] = useAtom(commandPaletteOpenedAtom)
@@ -68,6 +71,7 @@ const CommandPalette: React.FC = () => {
       {
         name: `Create New ${cType}`,
         icon: RiFileAddLine,
+        disabled: offline,
         action: () => {
           setContentModalOpened(true)
         },
@@ -75,6 +79,7 @@ const CommandPalette: React.FC = () => {
       {
         name: 'Create New Folder',
         icon: RiFolderAddLine,
+        disabled: offline,
         action: () => {
           setFolderModalOpened(true)
         },
@@ -115,6 +120,7 @@ const CommandPalette: React.FC = () => {
       {
         name: 'Logout',
         icon: RiLogoutCircleRLine,
+        disabled: offline,
         action: () => {
           logout()
         },
@@ -124,6 +130,7 @@ const CommandPalette: React.FC = () => {
       altContentType,
       altIcon,
       cType,
+      offline,
       push,
       setContentModalOpened,
       setFolderModalOpened,
@@ -166,7 +173,7 @@ const CommandPalette: React.FC = () => {
 
 export default CommandPalette
 
-interface Command {
+interface Command extends PaletteItem {
   action: () => void
   icon: IconProps['icon']
   name: string

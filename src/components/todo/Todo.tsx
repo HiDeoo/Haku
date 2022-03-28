@@ -8,12 +8,14 @@ import TodoNavbar from 'components/todo/TodoNavbar'
 import TodoNodeChildren from 'components/todo/TodoNodeChildren'
 import { type TodoNodeItemHandle } from 'components/todo/TodoNodeItem'
 import Flex from 'components/ui/Flex'
+import Offline from 'components/ui/Offline'
 import Shimmer from 'components/ui/Shimmer'
 import { TODO_SHIMMER_CLASSES_AND_LEVELS } from 'constants/shimmer'
 import { TODO_NODE_ITEM_SHORTCUTS } from 'constants/shortcut'
 import { TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS } from 'constants/ui'
 import useLocalShortcuts from 'hooks/useLocalShortcuts'
 import useNavigationPrompt from 'hooks/useNavigationPrompt'
+import { useNetworkStatus } from 'hooks/useNetworkStatus'
 import useRouteChange from 'hooks/useRouteChange'
 import { TodoContext, todoNodeContentRefs } from 'hooks/useTodoNode'
 import useTodoQuery from 'hooks/useTodoQuery'
@@ -25,6 +27,8 @@ function pristineStateSelector(state: TodoEditorState) {
 }
 
 const Todo: React.FC<TodoProps> = ({ id }) => {
+  const { offline } = useNetworkStatus()
+
   const didFocusOnMount = useRef<boolean>(false)
 
   const todoNodeItems = useContext(TodoContext)
@@ -104,12 +108,21 @@ const Todo: React.FC<TodoProps> = ({ id }) => {
     [id, setFocusedTodoNodes]
   )
 
+  const isOfflineWithoutData = offline && isLoading && !data
+
   return (
     <>
       <Title pageTitle={data?.name} />
       <Flex direction="col" fullHeight className="overflow-hidden">
-        <TodoNavbar disabled={isLoading} todoId={id} todoName={data?.name} focusTodoNode={focusTodoNode} />
-        {isLoading ? (
+        <TodoNavbar
+          todoId={id}
+          todoName={data?.name}
+          focusTodoNode={focusTodoNode}
+          disabled={isLoading || isOfflineWithoutData}
+        />
+        {isOfflineWithoutData ? (
+          <Offline />
+        ) : isLoading ? (
           <Shimmer>
             {TODO_SHIMMER_CLASSES_AND_LEVELS.map(([shimmerClass, shimmerLevel], index) => (
               <Shimmer.Line

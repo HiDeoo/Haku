@@ -1,5 +1,7 @@
 import { signOut } from 'next-auth/react'
 
+import { sendServiceWorkerMessage } from 'libs/sw'
+
 const errorMessages: Partial<Record<ErrorType, string>> = {
   AccessDenied: 'You do not have permission to login.',
   EmailSignin: 'The login email could not be sent, please try again.',
@@ -14,6 +16,8 @@ export function getAuthErrorMesssage(queryStringErrorType: QueryStringErrorType)
 
 export function logout() {
   signOut({ callbackUrl: `/auth/login` })
+
+  sendServiceWorkerMessage({ type: 'LOGOUT' })
 }
 
 function isErrorType(error: string | string[] | undefined): error is ErrorType {

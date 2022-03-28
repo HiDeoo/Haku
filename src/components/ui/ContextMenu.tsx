@@ -23,15 +23,16 @@ const ContextMenu: ContextMenuComponent = ({ children, trigger }) => {
 }
 
 const Item = forwardRef<HTMLButtonElement, React.PropsWithChildren<ItemProps>>(
-  ({ intent, onClick, text }, forwardedRef) => {
-    const buttonClasses = clst(itemClasses, 'font-medium', {
+  ({ disabled, intent, onClick, text }, forwardedRef) => {
+    const buttonClasses = clst(itemClasses, 'font-medium disabled:cursor-not-allowed disabled:opacity-50', {
       'focus:bg-blue-600': !intent,
-      'text-red-400 focus:bg-red-500 focus:text-red-50': intent === 'error',
+      'text-red-400 focus:bg-red-500 focus:text-red-50 disabled:opacity-100 disabled:text-red-400/75':
+        intent === 'error',
     })
 
     return (
-      <MenuItem asChild>
-        <button ref={forwardedRef} onClick={onClick} className={buttonClasses}>
+      <MenuItem asChild disabled={disabled}>
+        <button ref={forwardedRef} onClick={onClick} className={buttonClasses} disabled={disabled}>
           {text}
         </button>
       </MenuItem>
@@ -67,6 +68,7 @@ interface ContextMenuProps {
 }
 
 interface ItemProps {
+  disabled?: boolean
   intent?: undefined | 'error'
   onClick: () => void
   text: string
