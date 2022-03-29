@@ -11,7 +11,9 @@ const Toaster: React.FC = () => {
   const toasts = useAtomValue(toastsAtom)
 
   const viewportClasses = clst(
-    'fixed bottom-0 right-0 max-h-screen z-[60] flex max-w-md flex-col items-end gap-2.5 p-3.5',
+    'fixed max-h-screen z-[60] flex max-w-md flex-col items-end gap-2.5 p-3.5',
+    'supports-max:bottom-[max(0px,env(safe-area-inset-bottom))]',
+    'supports-max:right-[max(0px,env(safe-area-inset-right))]',
     'overflow-y-auto overflow-x-hidden',
     'focus:outline-none',
     {

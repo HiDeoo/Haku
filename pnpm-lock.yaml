@@ -105,6 +105,7 @@ dependencies:
   '@tiptap/react': 2.0.0-beta.107_f9947707ac080ff24f30e061131767eb
   '@tiptap/starter-kit': 2.0.0-beta.168
   clsx: 1.1.1
+  cuid: 2.1.8
   downshift: 6.1.7_react@17.0.2
   fuzzaldrin-plus: 0.6.0
   highlight.js: 11.4.0
@@ -141,7 +142,6 @@ devDependencies:
   '@typescript-eslint/eslint-plugin': 5.5.0_7c169a00409c2e526b5f12016a48db45
   '@typescript-eslint/parser': 5.9.1_eslint@8.4.0+typescript@4.5.2
   autoprefixer: 10.4.0_postcss@8.4.4
-  cuid: 2.1.8
   docker-compose: 0.23.14
   dotenv-cli: 4.1.1
   esbuild: 0.14.28
@@ -3106,7 +3106,7 @@ packages:
 
   /cuid/2.1.8:
     resolution: {integrity: sha512-xiEMER6E7TlTPnDxrM4eRiC6TRgjNX9xzEZ5U/Se2YJKr7Mq4pJn/2XEHjl3STcSh96GmkHPcBXLES8M29wyyg==}
-    dev: true
+    dev: false
 
   /damerau-levenshtein/1.0.7:
     resolution: {integrity: sha512-VvdQIPGdWP0SqFXghj79Wf/5LArmreyMsGLa6FG6iC4t3j7j5s71TrwWmT/4akbDQIqjfACkLZmjXhA7g2oUZw==}
