@@ -20,6 +20,9 @@ export function ImageKitTiptapNode(options: ImageKitTiptapNodeOptions) {
         pending: {
           default: false,
         },
+        pendingName: {
+          default: null,
+        },
         src: {
           default: null,
         },
@@ -47,9 +50,7 @@ export function ImageKitTiptapNode(options: ImageKitTiptapNodeOptions) {
     ],
     renderHTML({ HTMLAttributes }) {
       if (HTMLAttributes.pending) {
-        // TODO(HiDeoo) Show the file name
-        // TODO(HiDeoo) Custom style during upload
-        return ['div', {}, 'Uploading…']
+        return ['div', { class: 'italic text-blue-200' }, `Uploading ${HTMLAttributes.pendingName}…`]
       }
 
       return ['img', { src: HTMLAttributes.src }]
@@ -109,7 +110,7 @@ function imageKitProseMirrorPlugin(editor: Editor, options: ImageKitTiptapNodeOp
           }
 
           const id = cuid()
-          const node = view.state.schema.nodes[tiptapNodeName].create({ id, pending: true })
+          const node = view.state.schema.nodes[tiptapNodeName].create({ id, pending: true, pendingName: image.name })
 
           view.dispatch(view.state.tr.replaceWith(position, position, node))
 
@@ -188,7 +189,7 @@ async function upload(_image: File) {
     setTimeout(() => {
       // resolve('/images/icons/512.png')
       reject(new Error('plop'))
-    }, 2000)
+    }, 20000)
   })
 }
 

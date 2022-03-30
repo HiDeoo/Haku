@@ -2,7 +2,7 @@ const defaultTheme = require('tailwindcss/defaultTheme')
 const plugin = require('tailwindcss/plugin')
 
 module.exports = {
-  content: ['./src/{components,constants,pages}/**/*.{ts,tsx}', './src/styles/**/*.css'],
+  content: ['./src/{components,constants,libs,pages}/**/*.{ts,tsx}', './src/styles/**/*.css'],
   theme: {
     // We cannot extend the default theme to add a smaller breakpoint as they need to be sorted from smallest to largest
     // in order to work as expected with a min-width breakpoint system
