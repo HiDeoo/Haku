@@ -25,6 +25,20 @@ export const ImageKitTiptapNode = Node.create({
   group() {
     return 'block'
   },
+  parseHTML: () => [
+    {
+      tag: 'img[src]',
+      getAttrs(element) {
+        if (!(element instanceof HTMLImageElement)) {
+          return false
+        }
+
+        return {
+          src: element.getAttribute('src'),
+        }
+      },
+    },
+  ],
   renderHTML({ HTMLAttributes }) {
     if (HTMLAttributes.pending) {
       // TODO(HiDeoo) Show the file name
@@ -32,7 +46,7 @@ export const ImageKitTiptapNode = Node.create({
       return ['div', {}, 'Uploading…']
     }
 
-    return ['div', {}, HTMLAttributes.src]
+    return ['img', { src: HTMLAttributes.src }]
   },
 })
 
@@ -121,7 +135,7 @@ async function upload(_image: File) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   return new Promise((resolve, _reject) => {
     setTimeout(() => {
-      resolve('https://picsum.photos/200/300')
+      resolve('/images/icons/512.png')
       // reject(new Error('plop'))
     }, 1000)
   })
