@@ -79,8 +79,6 @@ function imageKitProseMirrorPlugin(editor: Editor, options: ImageKitTiptapNodeOp
           return false
         }
 
-        const position = view.state.selection.from
-
         if (!view.state.tr.selection.empty) {
           view.dispatch(view.state.tr.deleteSelection())
         }
@@ -112,7 +110,7 @@ function imageKitProseMirrorPlugin(editor: Editor, options: ImageKitTiptapNodeOp
           const id = cuid()
           const node = view.state.schema.nodes[tiptapNodeName].create({ id, pending: true, pendingName: image.name })
 
-          view.dispatch(view.state.tr.replaceWith(position, position, node))
+          view.dispatch(view.state.tr.replaceSelectionWith(node))
 
           uploadQueue.add(id)
 
@@ -189,7 +187,7 @@ async function upload(_image: File) {
     setTimeout(() => {
       // resolve('/images/icons/512.png')
       reject(new Error('plop'))
-    }, 20000)
+    }, 2000)
   })
 }
 
