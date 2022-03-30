@@ -18,7 +18,7 @@ import EditorCodeBlock from 'components/editor/EditorCodeBlock'
 import { CODE_BLOCK_DEFAULT_LANGUAGE } from 'constants/editor'
 import useToast from 'hooks/useToast'
 import { getLowlight, ImageKit } from 'libs/editor'
-import { type ImageKitTiptapNodeOptions } from 'libs/imageKit'
+import { type ImageKitError, type ImageKitTiptapNodeOptions } from 'libs/imageKit'
 import clst from 'styles/clst'
 import styles from 'styles/Editor.module.css'
 
@@ -42,13 +42,18 @@ export function useEditor(options: UseEditorOptions, deps?: DependencyList): Edi
 
   const editorClasses = clst(styles.editor, className)
 
-  const onUploadError = useCallback(() => {
-    addToast({
-      icon: RiErrorWarningLine,
-      text: 'Failed to upload an image.',
-      type: 'foreground',
-    })
-  }, [addToast])
+  const onUploadError = useCallback(
+    (error: ImageKitError) => {
+      addToast({
+        details: error.details,
+        duration: 10_000, // 10 seconds.
+        icon: RiErrorWarningLine,
+        text: error.message,
+        type: 'foreground',
+      })
+    },
+    [addToast]
+  )
 
   const editor = useTipTap(
     {

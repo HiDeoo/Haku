@@ -42,6 +42,7 @@ const Toast: React.FC<ToastProps> = ({ toast }) => {
       </div>
       <Description className="mt-0.5 pr-2">
         <p>{toast.text}</p>
+        {toast.details ? <p className="mt-1 text-zinc-300">{toast.details}</p> : null}
         {toast.action && toast.actionLabel ? (
           <Action asChild onClick={toast.action} altText={toast.actionLabel}>
             <Button

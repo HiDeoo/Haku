@@ -5,6 +5,8 @@ import { Plugin } from 'prosemirror-state'
 
 const tiptapNodeName = 'imagekit-image'
 
+const supportedImageTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp']
+
 export function ImageKitTiptapNode(options: ImageKitTiptapNodeOptions) {
   return Node.create({
     name: tiptapNodeName,
@@ -59,7 +61,18 @@ function imageKitProseMirrorPlugin(editor: Editor, options: ImageKitTiptapNodeOp
       handlePaste(view, event) {
         const items = Array.from(event.clipboardData?.items || [])
 
-        if (!items.every((item) => item.type.startsWith('image/'))) {
+        if (!items.every((item) => supportedImageTypes.includes(item.type))) {
+          const formatter = new Intl.ListFormat('en', { style: 'short', type: 'conjunction' })
+
+          options.onUploadError?.(
+            new ImageKitError(
+              'Invalid image file type.',
+              `The supported formats are ${formatter.format(
+                supportedImageTypes.map((format) => format.replace('image/', ''))
+              )}.`
+            )
+          )
+
           return false
         }
 
@@ -131,9 +144,7 @@ async function uploadImageToEditor(
 
     uploadQueue.delete(id)
 
-    if (uploadQueue.size === 0) {
-      options.onUploadError?.()
-    }
+    options.onUploadError?.(new Error('Failed to upload an image.'))
   } finally {
     if (uploadQueue.size === 0) {
       editor.setEditable(true)
@@ -163,16 +174,24 @@ function getImageKitNodePositionWithId(editor: Editor, id: string): number | und
 async function upload(_image: File) {
   // FIXME(HiDeoo)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  return new Promise((_resolve, reject) => {
+  return new Promise((resolve, reject) => {
     setTimeout(() => {
       // resolve('/images/icons/512.png')
       reject(new Error('plop'))
-    }, 5000)
+    }, 2000)
   })
 }
 
+export class ImageKitError extends Error {
+  constructor(public message: string, public details?: string) {
+    super(message)
+
+    Object.setPrototypeOf(this, new.target.prototype)
+  }
+}
+
 export interface ImageKitTiptapNodeOptions {
-  onUploadError?: () => void
+  onUploadError?: (error: ImageKitError) => void
 }
 
 type UploadQueue = Set<string>
