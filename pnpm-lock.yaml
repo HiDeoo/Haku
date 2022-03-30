@@ -22,7 +22,6 @@ specifiers:
   '@testing-library/react-hooks': 7.0.2
   '@tiptap/core': 2.0.0-beta.174
   '@tiptap/extension-code-block-lowlight': 2.0.0-beta.65
-  '@tiptap/extension-gapcursor': 2.0.0-beta.34
   '@tiptap/extension-highlight': 2.0.0-beta.32
   '@tiptap/extension-link': 2.0.0-beta.35
   '@tiptap/extension-strike': 2.0.0-beta.27
@@ -100,7 +99,6 @@ dependencies:
   '@react-aria/utils': 3.11.0_react@17.0.2
   '@tiptap/core': 2.0.0-beta.174
   '@tiptap/extension-code-block-lowlight': 2.0.0-beta.65_@tiptap+core@2.0.0-beta.174
-  '@tiptap/extension-gapcursor': 2.0.0-beta.34_@tiptap+core@2.0.0-beta.174
   '@tiptap/extension-highlight': 2.0.0-beta.32_@tiptap+core@2.0.0-beta.174
   '@tiptap/extension-link': 2.0.0-beta.35_@tiptap+core@2.0.0-beta.174
   '@tiptap/extension-strike': 2.0.0-beta.27_@tiptap+core@2.0.0-beta.174
