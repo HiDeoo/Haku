@@ -31,6 +31,7 @@ export function ImageKitTiptapNode(options: ImageKitTiptapNodeOptions) {
     addProseMirrorPlugins() {
       return [imageKitProseMirrorPlugin(this.editor, options)]
     },
+    draggable: true,
     group() {
       return 'block'
     },
@@ -63,6 +64,11 @@ function imageKitProseMirrorPlugin(editor: Editor, options: ImageKitTiptapNodeOp
     props: {
       handlePaste(view, event) {
         const items = Array.from(event.clipboardData?.items || [])
+
+        // We do not care about paste events that contains HTML, e.g. pasting from Word or the editor itself.
+        if (items.some((item) => item.type === 'text/html')) {
+          return false
+        }
 
         if (!items.every((item) => supportedImageTypes.includes(item.type))) {
           const formatter = new Intl.ListFormat('en', { style: 'short', type: 'conjunction' })
