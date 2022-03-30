@@ -3,6 +3,10 @@
     overflow-wrap: anywhere;
   }
 
+  :global(.ProseMirror-gapcursor) {
+    @apply after:top-2.5 after:border-blue-400;
+  }
+
   @apply outline-none;
 
   h1,

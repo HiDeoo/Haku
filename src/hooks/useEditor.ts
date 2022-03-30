@@ -1,4 +1,5 @@
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
+import Gapcursor from '@tiptap/extension-gapcursor'
 import Highlight from '@tiptap/extension-highlight'
 import Link from '@tiptap/extension-link'
 import Strike from '@tiptap/extension-strike'
@@ -27,6 +28,7 @@ const defaultExtensions: Extensions = [
   Highlight,
   Strike,
   Link,
+  Gapcursor,
   CodeBlockLowlight.extend({ addNodeView: addCodeBlockLowlightNodeView }).configure({
     defaultLanguage: CODE_BLOCK_DEFAULT_LANGUAGE,
     lowlight: getLowlight(),
