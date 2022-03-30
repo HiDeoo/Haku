@@ -109,17 +109,13 @@ const Todo: React.FC<TodoProps> = ({ id }) => {
   )
 
   const isOfflineWithoutData = offline && isLoading && !data
+  const disabled = isLoading || isOfflineWithoutData
 
   return (
     <>
       <Title pageTitle={data?.name} />
       <Flex direction="col" fullHeight className="overflow-hidden">
-        <TodoNavbar
-          todoId={id}
-          todoName={data?.name}
-          focusTodoNode={focusTodoNode}
-          disabled={isLoading || isOfflineWithoutData}
-        />
+        <TodoNavbar todoId={id} disabled={disabled} todoName={data?.name} focusTodoNode={focusTodoNode} />
         {isOfflineWithoutData ? (
           <Offline />
         ) : isLoading ? (

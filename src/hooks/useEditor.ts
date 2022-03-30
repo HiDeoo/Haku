@@ -10,11 +10,14 @@ import {
   ReactNodeViewRenderer,
 } from '@tiptap/react'
 import StarterKit, { type StarterKitOptions } from '@tiptap/starter-kit'
-import { type DependencyList } from 'react'
+import { useCallback, type DependencyList } from 'react'
+import { RiErrorWarningLine } from 'react-icons/ri'
 
 import EditorCodeBlock from 'components/editor/EditorCodeBlock'
 import { CODE_BLOCK_DEFAULT_LANGUAGE } from 'constants/editor'
+import useToast from 'hooks/useToast'
 import { getLowlight, ImageKit } from 'libs/editor'
+import { type ImageKitTiptapNodeOptions } from 'libs/imageKit'
 import clst from 'styles/clst'
 import styles from 'styles/Editor.module.css'
 
@@ -28,19 +31,28 @@ const defaultExtensions: Extensions = [
     defaultLanguage: CODE_BLOCK_DEFAULT_LANGUAGE,
     lowlight: getLowlight(),
   }),
-  ImageKit,
 ]
 
 export function useEditor(options: UseEditorOptions, deps?: DependencyList): Editor | null {
+  const { addToast } = useToast()
+
   const { className, extensions, setLinkModalOpened, spellcheck, starterKitOptions, ...editorOptions } = options
 
   const editorClasses = clst(styles.editor, className)
+
+  const onUploadError = useCallback(() => {
+    addToast({
+      icon: RiErrorWarningLine,
+      text: 'Failed to upload an image.',
+      type: 'foreground',
+    })
+  }, [addToast])
 
   const editor = useTipTap(
     {
       ...editorOptions,
       editorProps: { attributes: { class: editorClasses, spellcheck: spellcheck ?? 'false' } },
-      extensions: getExtensions(starterKitOptions, extensions, setLinkModalOpened),
+      extensions: getExtensions(starterKitOptions, { onUploadError }, extensions, setLinkModalOpened),
     },
     deps
   )
@@ -50,6 +62,7 @@ export function useEditor(options: UseEditorOptions, deps?: DependencyList): Edi
 
 function getExtensions(
   starterKitOptions: Partial<StarterKitOptions> = { codeBlock: false, strike: false },
+  imageKitOptions: ImageKitTiptapNodeOptions = {},
   extensions: Extensions = [],
   setLinkModalOpened?: React.Dispatch<React.SetStateAction<boolean>>
 ): Extensions {
@@ -72,6 +85,7 @@ function getExtensions(
 
       return extension
     }),
+    ImageKit(imageKitOptions),
     ...extensions,
   ]
 }

@@ -144,18 +144,12 @@ const Note: React.FC<NoteProps> = ({ id }) => {
   }, [editorState.pristine, idle, save])
 
   const isOfflineWithoutData = offline && isLoading && !data
-  const isLoadingOrSaving = isLoading || isSaving
+  const disabled = isLoading || isSaving || !editor?.isEditable || isOfflineWithoutData
 
   return (
     <>
       <Title pageTitle={data?.name} />
-      <NoteNavbar
-        save={save}
-        isSaving={isSaving}
-        noteName={data?.name}
-        editorState={editorState}
-        disabled={isLoadingOrSaving || isOfflineWithoutData}
-      />
+      <NoteNavbar save={save} isSaving={isSaving} noteName={data?.name} disabled={disabled} editorState={editorState} />
       <Flex fullHeight className="overflow-hidden">
         {isOfflineWithoutData ? (
           <Offline />
@@ -173,8 +167,8 @@ const Note: React.FC<NoteProps> = ({ id }) => {
         )}
         <NoteInspector
           editor={editor}
+          disabled={disabled}
           editorState={editorState}
-          disabled={isLoadingOrSaving || isOfflineWithoutData}
           setLinkModalOpened={setLinkModalOpened}
         />
         <EditorLinkModal opened={linkModalOpened} onOpenChange={setLinkModalOpened} editor={editor} />
