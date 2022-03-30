@@ -14,7 +14,7 @@ import { type DependencyList } from 'react'
 
 import EditorCodeBlock from 'components/editor/EditorCodeBlock'
 import { CODE_BLOCK_DEFAULT_LANGUAGE } from 'constants/editor'
-import { getLowlight } from 'libs/editor'
+import { getLowlight, ImageKit } from 'libs/editor'
 import clst from 'styles/clst'
 import styles from 'styles/Editor.module.css'
 
@@ -28,6 +28,7 @@ const defaultExtensions: Extensions = [
     defaultLanguage: CODE_BLOCK_DEFAULT_LANGUAGE,
     lowlight: getLowlight(),
   }),
+  ImageKit,
 ]
 
 export function useEditor(options: UseEditorOptions, deps?: DependencyList): Editor | null {
