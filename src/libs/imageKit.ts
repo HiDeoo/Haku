@@ -7,6 +7,8 @@ const tiptapNodeName = 'imagekit-image'
 
 const supportedImageTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp']
 
+const maxImageSizeInMegabytes = 5
+
 export function ImageKitTiptapNode(options: ImageKitTiptapNodeOptions) {
   return Node.create({
     name: tiptapNodeName,
@@ -89,6 +91,14 @@ function imageKitProseMirrorPlugin(editor: Editor, options: ImageKitTiptapNodeOp
           const image = items[index]?.getAsFile()
 
           if (!image) {
+            continue
+          }
+
+          if (image.size > maxImageSizeInMegabytes * 1024 * 1024) {
+            options.onUploadError?.(
+              new ImageKitError('Image file too big.', `The maximum file size is ${maxImageSizeInMegabytes}MB.`)
+            )
+
             continue
           }
 
