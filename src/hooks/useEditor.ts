@@ -33,6 +33,14 @@ const defaultExtensions: Extensions = [
   }),
 ]
 
+const starterKitDefaultOptions: Partial<StarterKitOptions> = {
+  codeBlock: false,
+  strike: false,
+  dropcursor: {
+    color: 'var(--editor-caret-color)',
+  },
+}
+
 export function useEditor(options: UseEditorOptions, deps?: DependencyList): Editor | null {
   const { addToast } = useToast()
 
@@ -66,7 +74,7 @@ export function useEditor(options: UseEditorOptions, deps?: DependencyList): Edi
 }
 
 function getExtensions(
-  starterKitOptions: Partial<StarterKitOptions> = { codeBlock: false, strike: false },
+  starterKitOptions = starterKitDefaultOptions,
   imageKitOptions: ImageKitTiptapNodeOptions = {},
   extensions: Extensions = [],
   setLinkModalOpened?: React.Dispatch<React.SetStateAction<boolean>>
