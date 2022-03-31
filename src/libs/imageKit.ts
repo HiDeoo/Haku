@@ -1,7 +1,9 @@
 import { type Editor } from '@tiptap/core'
 import { Node } from '@tiptap/react'
 import cuid from 'cuid'
+import { type Node as Doc, Fragment, type Schema, Slice } from 'prosemirror-model'
 import { Plugin } from 'prosemirror-state'
+import { Step, type Mappable, StepResult } from 'prosemirror-transform'
 
 const tiptapNodeName = 'imagekit-image'
 
@@ -26,6 +28,14 @@ export function ImageKitTiptapNode(options: ImageKitTiptapNodeOptions) {
         src: {
           default: null,
         },
+      }
+    },
+    addCommands() {
+      return {
+        uploadImages:
+          (files: (File | DataTransferItem)[]) =>
+          ({ editor }) =>
+            uploadImagesToEditor(editor, files, options),
       }
     },
     addProseMirrorPlugins() {
@@ -67,15 +77,15 @@ function imageKitProseMirrorPlugin(editor: Editor, options: ImageKitTiptapNodeOp
           return false
         }
 
-        const position = editor.view.posAtCoords({ left: event.clientX, top: event.clientY })
+        const pos = editor.view.posAtCoords({ left: event.clientX, top: event.clientY })?.pos
 
-        if (!position) {
+        if (!pos) {
           return false
         }
 
         event.preventDefault()
 
-        return uploadImagesToEditor(editor, Array.from(event.dataTransfer.files), options, position)
+        return uploadImagesToEditor(editor, Array.from(event.dataTransfer.files), options, pos)
       },
       handlePaste(_view, event) {
         if (!event.clipboardData || event.clipboardData.files.length === 0) {
@@ -94,7 +104,7 @@ function uploadImagesToEditor(
   editor: Editor,
   files: (File | DataTransferItem)[],
   options: ImageKitTiptapNodeOptions,
-  position?: Position
+  pos?: number
 ): boolean {
   // We do not care about events that contains HTML, e.g. pasting from Word or the editor itself.
   if (files.some((item) => item.type === 'text/html')) {
@@ -149,9 +159,7 @@ function uploadImagesToEditor(
     const node = editor.view.state.schema.nodes[tiptapNodeName].create({ id, pending: true, pendingName: image.name })
 
     editor.view.dispatch(
-      position
-        ? editor.view.state.tr.replaceWith(position.pos, position.pos, node)
-        : editor.view.state.tr.replaceSelectionWith(node)
+      pos ? editor.view.state.tr.replaceWith(pos, pos, node) : editor.view.state.tr.replaceSelectionWith(node)
     )
 
     uploadQueue.add(id)
@@ -175,9 +183,9 @@ async function uploadImageToEditor(
     const position = getImageKitNodePositionWithId(editor, id)
 
     if (position) {
-      const transaction = editor.view.state.tr.setMeta('addToHistory', false)
-
-      editor.view.dispatch(transaction.setNodeMarkup(position, undefined, { pending: false, src }))
+      editor.view.dispatch(
+        editor.view.state.tr.step(new SetAttrsStep(position, { pending: false, src })).setMeta('addToHistory', false)
+      )
     }
 
     uploadQueue.delete(id)
@@ -238,10 +246,65 @@ export class ImageKitError extends Error {
   }
 }
 
+// https://discuss.prosemirror.net/t/preventing-image-placeholder-replacement-from-being-undone/1394/2
+export class SetAttrsStep extends Step {
+  constructor(private pos: number, private attrs: NodeAttributes) {
+    super()
+  }
+
+  apply(doc: Doc) {
+    const node = doc.nodeAt(this.pos)
+
+    if (!node) {
+      return StepResult.fail('No node at given position.')
+    }
+
+    const attrs = {
+      ...(node.attrs ?? {}),
+      ...(this.attrs ?? {}),
+    }
+
+    const newNode = node.type.create(attrs, Fragment.empty, node.marks)
+    const slice = new Slice(Fragment.from(newNode), 0, node.isLeaf ? 0 : 1)
+
+    return StepResult.fromReplace(doc, this.pos, this.pos + 1, slice)
+  }
+
+  invert(doc: Doc) {
+    return new SetAttrsStep(this.pos, doc.nodeAt(this.pos)?.attrs ?? {})
+  }
+
+  map(mapping: Mappable) {
+    const result = mapping.mapResult(this.pos, 1)
+
+    return result.deleted ? null : new SetAttrsStep(result.pos, this.attrs)
+  }
+
+  toJSON(): SerializedSetAttrsStep {
+    return { stepType: 'setAttrs', pos: this.pos, attrs: this.attrs }
+  }
+
+  static fromJSON(_schema: Schema, json: SerializedSetAttrsStep) {
+    if (typeof json.pos !== 'number' || typeof json.attrs !== 'object') {
+      throw new RangeError('Invalid input for SetAttrsStep.fromJSON().')
+    }
+
+    return new SetAttrsStep(json.pos, json.attrs)
+  }
+}
+
+Step.jsonID('setAttrs', SetAttrsStep)
+
 export interface ImageKitTiptapNodeOptions {
   onUploadError?: (error: ImageKitError) => void
 }
 
 type UploadQueue = Set<string>
 
-type Position = NonNullable<ReturnType<Editor['view']['posAtCoords']>>
+type NodeAttributes = Parameters<NonNullable<Editor['view']['state']['tr']['setNodeMarkup']>>[2]
+
+interface SerializedSetAttrsStep {
+  attrs: NodeAttributes
+  pos?: number
+  stepType: 'setAttrs'
+}
