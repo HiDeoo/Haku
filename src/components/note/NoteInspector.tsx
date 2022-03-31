@@ -37,6 +37,7 @@ import Flex from 'components/ui/Flex'
 import FloatingButton from 'components/ui/FloatingButton'
 import Icon from 'components/ui/Icon'
 import Inspector from 'components/ui/Inspector'
+import { IMAGE_SUPPORTED_TYPES } from 'constants/image'
 import clst from 'styles/clst'
 
 const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorState, setLinkModalOpened }) => {
@@ -246,7 +247,9 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
             toggled={editor?.isActive('codeBlock')}
           />
           <FileButton
+            multiple
             onChange={onChangeImageInput}
+            accept={IMAGE_SUPPORTED_TYPES}
             trigger={<Inspector.IconButton tooltip="Upload Images" icon={RiImageAddLine} />}
           />
           <Inspector.IconButton

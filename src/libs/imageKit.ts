@@ -5,11 +5,9 @@ import { type Node as Doc, Fragment, type Schema, Slice } from 'prosemirror-mode
 import { Plugin } from 'prosemirror-state'
 import { Step, type Mappable, StepResult } from 'prosemirror-transform'
 
+import { IMAGE_MAX_SIZE_IN_MEGABYTES, IMAGE_SUPPORTED_TYPES } from 'constants/image'
+
 const tiptapNodeName = 'imagekit-image'
-
-const supportedImageTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp']
-
-const maxImageSizeInMegabytes = 5
 
 export function ImageKitTiptapNode(options: ImageKitTiptapNodeOptions) {
   return Node.create({
@@ -111,14 +109,14 @@ function uploadImagesToEditor(
     return false
   }
 
-  if (!files.every((item) => supportedImageTypes.includes(item.type))) {
+  if (!files.every((item) => IMAGE_SUPPORTED_TYPES.includes(item.type))) {
     const formatter = new Intl.ListFormat('en', { style: 'short', type: 'conjunction' })
 
     options.onUploadError?.(
       new ImageKitError(
         'Invalid image file type.',
         `The supported formats are ${formatter.format(
-          supportedImageTypes.map((format) => format.replace('image/', ''))
+          IMAGE_SUPPORTED_TYPES.map((format) => format.replace('image/', ''))
         )}.`
       )
     )
@@ -141,9 +139,9 @@ function uploadImagesToEditor(
       continue
     }
 
-    if (image.size > maxImageSizeInMegabytes * 1024 * 1024) {
+    if (image.size > IMAGE_MAX_SIZE_IN_MEGABYTES * 1024 * 1024) {
       options.onUploadError?.(
-        new ImageKitError('Image file too big.', `The maximum file size is ${maxImageSizeInMegabytes}MB.`)
+        new ImageKitError('Image file too big.', `The maximum file size is ${IMAGE_MAX_SIZE_IN_MEGABYTES}MB.`)
       )
 
       continue

@@ -1,6 +1,6 @@
 import { cloneElement, isValidElement, useRef } from 'react'
 
-const FileButton: React.FC<FileButtonProps> = ({ onChange, trigger }) => {
+const FileButton: React.FC<FileButtonProps> = ({ accept, multiple, onChange, trigger }) => {
   const input = useRef<HTMLInputElement>(null)
 
   if (!isValidElement(trigger)) {
@@ -14,7 +14,14 @@ const FileButton: React.FC<FileButtonProps> = ({ onChange, trigger }) => {
   return (
     <>
       {cloneElement(trigger, { onPress })}
-      <input type="file" className="hidden" ref={input} onChange={onChange} />
+      <input
+        ref={input}
+        type="file"
+        className="hidden"
+        multiple={multiple}
+        onChange={onChange}
+        accept={accept?.join(',')}
+      />
     </>
   )
 }
@@ -22,6 +29,8 @@ const FileButton: React.FC<FileButtonProps> = ({ onChange, trigger }) => {
 export default FileButton
 
 interface FileButtonProps {
+  accept?: string[]
+  multiple?: boolean
   onChange: React.ChangeEventHandler<HTMLInputElement>
   trigger: React.StrictReactNode
 }
