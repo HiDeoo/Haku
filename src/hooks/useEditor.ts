@@ -52,7 +52,6 @@ export function useEditor(options: UseEditorOptions, deps?: DependencyList): Edi
     (error: ImageKitError) => {
       addToast({
         details: error.details,
-        duration: 10_000, // 10 seconds.
         icon: RiErrorWarningLine,
         text: error.message,
         type: 'foreground',
