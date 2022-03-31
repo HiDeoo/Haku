@@ -131,6 +131,8 @@ function uploadImagesToEditor(
   let uploadStarted = false
   const uploadQueue: UploadQueue = new Set()
 
+  const isEmptyTextNode = typeof editor.state.doc.nodeAt(editor.state.selection.from - 1)?.text?.length === 'undefined'
+
   for (let index = files.length; index >= 0; index--) {
     const item = files[index]
     const image = item instanceof DataTransferItem ? item.getAsFile() : item
@@ -157,7 +159,11 @@ function uploadImagesToEditor(
     const node = editor.view.state.schema.nodes[tiptapNodeName].create({ id, pending: true, pendingName: image.name })
 
     editor.view.dispatch(
-      pos ? editor.view.state.tr.replaceWith(pos, pos, node) : editor.view.state.tr.replaceSelectionWith(node)
+      pos
+        ? editor.view.state.tr.replaceWith(pos, pos, node)
+        : isEmptyTextNode // If the cursor is on an empty text node, we insert the image at the cursor position.
+        ? editor.view.state.tr.replaceWith(editor.state.selection.from - 1, editor.state.selection.from - 1, node)
+        : editor.view.state.tr.replaceSelectionWith(node)
     )
 
     uploadQueue.add(id)
