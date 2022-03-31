@@ -62,71 +62,104 @@ export function ImageKitTiptapNode(options: ImageKitTiptapNodeOptions) {
 function imageKitProseMirrorPlugin(editor: Editor, options: ImageKitTiptapNodeOptions) {
   return new Plugin({
     props: {
-      handlePaste(view, event) {
-        const items = Array.from(event.clipboardData?.items || [])
-
-        // We do not care about paste events that contains HTML, e.g. pasting from Word or the editor itself.
-        if (items.some((item) => item.type === 'text/html')) {
+      handleDrop(_view, event) {
+        if (!(event instanceof DragEvent) || !event.dataTransfer || event.dataTransfer.files.length === 0) {
           return false
         }
 
-        if (!items.every((item) => supportedImageTypes.includes(item.type))) {
-          const formatter = new Intl.ListFormat('en', { style: 'short', type: 'conjunction' })
+        const position = editor.view.posAtCoords({ left: event.clientX, top: event.clientY })
 
-          options.onUploadError?.(
-            new ImageKitError(
-              'Invalid image file type.',
-              `The supported formats are ${formatter.format(
-                supportedImageTypes.map((format) => format.replace('image/', ''))
-              )}.`
-            )
-          )
-
+        if (!position) {
           return false
         }
 
-        if (!view.state.tr.selection.empty) {
-          view.dispatch(view.state.tr.deleteSelection())
+        event.preventDefault()
+
+        return uploadImagesToEditor(editor, Array.from(event.dataTransfer.files), options, position)
+      },
+      handlePaste(_view, event) {
+        if (!event.clipboardData || event.clipboardData.files.length === 0) {
+          return false
         }
 
-        let uploadStarted = false
-        const uploadQueue: UploadQueue = new Set()
+        event.preventDefault()
 
-        for (let index = items.length; index >= 0; index--) {
-          const image = items[index]?.getAsFile()
-
-          if (!image) {
-            continue
-          }
-
-          if (image.size > maxImageSizeInMegabytes * 1024 * 1024) {
-            options.onUploadError?.(
-              new ImageKitError('Image file too big.', `The maximum file size is ${maxImageSizeInMegabytes}MB.`)
-            )
-
-            continue
-          }
-
-          if (!uploadStarted) {
-            uploadStarted = true
-
-            editor.setEditable(false)
-          }
-
-          const id = cuid()
-          const node = view.state.schema.nodes[tiptapNodeName].create({ id, pending: true, pendingName: image.name })
-
-          view.dispatch(view.state.tr.replaceSelectionWith(node))
-
-          uploadQueue.add(id)
-
-          uploadImageToEditor(editor, options, uploadQueue, image, id)
-        }
-
-        return true
+        return uploadImagesToEditor(editor, Array.from(event.clipboardData.items), options)
       },
     },
   })
+}
+
+function uploadImagesToEditor(
+  editor: Editor,
+  files: (File | DataTransferItem)[],
+  options: ImageKitTiptapNodeOptions,
+  position?: Position
+): boolean {
+  // We do not care about events that contains HTML, e.g. pasting from Word or the editor itself.
+  if (files.some((item) => item.type === 'text/html')) {
+    return false
+  }
+
+  if (!files.every((item) => supportedImageTypes.includes(item.type))) {
+    const formatter = new Intl.ListFormat('en', { style: 'short', type: 'conjunction' })
+
+    options.onUploadError?.(
+      new ImageKitError(
+        'Invalid image file type.',
+        `The supported formats are ${formatter.format(
+          supportedImageTypes.map((format) => format.replace('image/', ''))
+        )}.`
+      )
+    )
+
+    return false
+  }
+
+  if (!editor.view.state.tr.selection.empty) {
+    editor.view.dispatch(editor.view.state.tr.deleteSelection())
+  }
+
+  let uploadStarted = false
+  const uploadQueue: UploadQueue = new Set()
+
+  for (let index = files.length; index >= 0; index--) {
+    const item = files[index]
+    const image = item instanceof DataTransferItem ? item.getAsFile() : item
+
+    if (!image) {
+      continue
+    }
+
+    if (image.size > maxImageSizeInMegabytes * 1024 * 1024) {
+      options.onUploadError?.(
+        new ImageKitError('Image file too big.', `The maximum file size is ${maxImageSizeInMegabytes}MB.`)
+      )
+
+      continue
+    }
+
+    if (!uploadStarted) {
+      uploadStarted = true
+
+      editor.setEditable(false)
+    }
+
+    const id = cuid()
+    const node = editor.view.state.schema.nodes[tiptapNodeName].create({ id, pending: true, pendingName: image.name })
+
+    editor.view.dispatch(
+      position
+        ? editor.view.state.tr.replaceWith(position.pos, position.pos, node)
+        : editor.view.state.tr.replaceSelectionWith(node)
+    )
+
+    uploadQueue.add(id)
+
+    uploadImageToEditor(editor, options, uploadQueue, image, id)
+  }
+
+  return true
 }
 
 async function uploadImageToEditor(
@@ -191,8 +224,8 @@ async function upload(_image: File) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      // resolve('/images/icons/512.png')
-      reject(new Error('plop'))
+      resolve('/images/icons/512.png')
+      // reject(new Error('plop'))
     }, 2000)
   })
 }
@@ -210,3 +243,5 @@ export interface ImageKitTiptapNodeOptions {
 }
 
 type UploadQueue = Set<string>
+
+type Position = NonNullable<ReturnType<Editor['view']['posAtCoords']>>
