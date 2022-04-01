@@ -27,6 +27,12 @@ module.exports = {
         'swipe-in': 'swipeIn 250ms ease-out',
         'swipe-out': 'swipeOut 200ms ease-in',
       },
+      backgroundImage: {
+        checkboard: "repeating-conic-gradient(theme('colors.zinc.600') 0% 25%, theme('colors.zinc.400') 0% 50%)",
+      },
+      backgroundSize: {
+        checkboard: "theme('spacing.6') theme('spacing.6')",
+      },
       keyframes: {
         bounceIn: {
           '0%': {

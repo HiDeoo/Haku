@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import Title from 'components/app/Title'
 import EditorLinkModal from 'components/editor/EditorLinkModal'
+import ImageModal from 'components/editor/ImageModal'
 import NoteInspector from 'components/note/NoteInspector'
 import NoteNavbar from 'components/note/NoteNavbar'
 import Flex from 'components/ui/Flex'
@@ -172,6 +173,7 @@ const Note: React.FC<NoteProps> = ({ id }) => {
           setLinkModalOpened={setLinkModalOpened}
         />
         <EditorLinkModal opened={linkModalOpened} onOpenChange={setLinkModalOpened} editor={editor} />
+        <ImageModal />
       </Flex>
     </>
   )

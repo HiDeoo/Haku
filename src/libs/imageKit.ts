@@ -70,6 +70,21 @@ export function ImageKitTiptapNode(options: ImageKitTiptapNodeOptions) {
 function imageKitProseMirrorPlugin(editor: Editor, options: ImageKitTiptapNodeOptions) {
   return new Plugin({
     props: {
+      handleDoubleClick(_view, _pos, event) {
+        if (!(event.target instanceof HTMLImageElement)) {
+          return false
+        }
+
+        const src = event.target.getAttribute('src')
+
+        if (!src) {
+          return false
+        }
+
+        options.onImageDoubleClick?.(src)
+
+        return true
+      },
       handleDrop(_view, event) {
         if (!(event instanceof DragEvent) || !event.dataTransfer || event.dataTransfer.files.length === 0) {
           return false
@@ -300,6 +315,7 @@ export class SetAttrsStep extends Step {
 Step.jsonID('setAttrs', SetAttrsStep)
 
 export interface ImageKitTiptapNodeOptions {
+  onImageDoubleClick?: (url: string) => void
   onUploadError?: (error: ImageKitError) => void
 }
 

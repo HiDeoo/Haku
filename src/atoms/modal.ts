@@ -11,6 +11,8 @@ export const [contentModalAtom, setContentModalOpenedAtom] = createMutationModal
 
 export const [shortcutModalAtom, setShortcutModalOpenedAtom] = createModalAtom()
 
+export const imageModalAtom = atom<ImageModal>({ opened: false, url: undefined })
+
 function createMutationModalAtom<TData>(): [
   WritableAtom<MutationModal<TData>, MutationModal<TData>>,
   WritableAtom<null, boolean>
@@ -44,4 +46,10 @@ interface MutationModal<TData> {
   action: MutationAction
   data: TData | undefined
   opened: boolean
+}
+
+interface ImageModal {
+  opened: boolean
+  name?: string
+  url?: string
 }

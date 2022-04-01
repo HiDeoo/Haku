@@ -10,9 +10,11 @@ import {
   ReactNodeViewRenderer,
 } from '@tiptap/react'
 import StarterKit, { type StarterKitOptions } from '@tiptap/starter-kit'
+import { useUpdateAtom } from 'jotai/utils'
 import { useCallback, type DependencyList } from 'react'
 import { RiErrorWarningLine } from 'react-icons/ri'
 
+import { imageModalAtom } from 'atoms/modal'
 import EditorCodeBlock from 'components/editor/EditorCodeBlock'
 import { CODE_BLOCK_DEFAULT_LANGUAGE } from 'constants/editor'
 import useToast from 'hooks/useToast'
@@ -43,10 +45,18 @@ const starterKitDefaultOptions: Partial<StarterKitOptions> = {
 
 export function useEditor(options: UseEditorOptions, deps?: DependencyList): Editor | null {
   const { addToast } = useToast()
+  const setImageModal = useUpdateAtom(imageModalAtom)
 
   const { className, extensions, setLinkModalOpened, spellcheck, starterKitOptions, ...editorOptions } = options
 
   const editorClasses = clst(styles.editor, className)
+
+  const onImageDoubleClick = useCallback(
+    (url: string) => {
+      setImageModal({ name: url.substring(url.lastIndexOf('/') + 1), opened: true, url })
+    },
+    [setImageModal]
+  )
 
   const onUploadError = useCallback(
     (error: ImageKitError) => {
@@ -64,7 +74,12 @@ export function useEditor(options: UseEditorOptions, deps?: DependencyList): Edi
     {
       ...editorOptions,
       editorProps: { attributes: { class: editorClasses, spellcheck: spellcheck ?? 'false' } },
-      extensions: getExtensions(starterKitOptions, { onUploadError }, extensions, setLinkModalOpened),
+      extensions: getExtensions(
+        starterKitOptions,
+        { onImageDoubleClick, onUploadError },
+        extensions,
+        setLinkModalOpened
+      ),
     },
     deps
   )
