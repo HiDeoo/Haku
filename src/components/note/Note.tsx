@@ -140,7 +140,7 @@ const Note: React.FC<NoteProps> = ({ id }) => {
 
   useEffect(() => {
     if (idle && !editorState.pristine) {
-      save()
+      // save()
     }
   }, [editorState.pristine, idle, save])
 

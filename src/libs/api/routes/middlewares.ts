@@ -1,8 +1,11 @@
+import multer from 'multer'
 import { type NextApiHandler, type NextApiRequest, type NextApiResponse } from 'next'
 import { getSession } from 'next-auth/react'
 import StatusCode from 'status-code-enum'
 
 import { z } from 'libs/validation'
+
+const fileMemoryStorage = multer.memoryStorage()
 
 export function withAdmin(handler: NextApiHandler) {
   return (req: NextApiRequest, res: NextApiResponse) => {
@@ -51,6 +54,33 @@ export function withValidation<
   }
 }
 
+export function withFile<TResponseType>(handler: ApiHandlerWithFile<TResponseType>, maxFileSizeInBytes: number) {
+  return async (req: NextApiRequest | FileApiRequest, res: NextApiResponse<TResponseType>) => {
+    try {
+      await new Promise<void>((resolve, reject) => {
+        multer({
+          limits: {
+            fields: 0,
+            files: 1,
+            fileSize: maxFileSizeInBytes,
+          },
+          storage: fileMemoryStorage,
+        }).single('file')(req, res, (err) => {
+          err ? reject(err) : resolve()
+        })
+      })
+
+      if (!('file' in req)) {
+        throw new Error('Missing request file.')
+      }
+    } catch (error) {
+      return res.status(StatusCode.ClientErrorBadRequest).end()
+    }
+
+    return handler(req, res)
+  }
+}
+
 function parseJson(json: unknown) {
   return typeof json === 'string' ? JSON.parse(json) : json
 }
@@ -64,7 +94,18 @@ export type ValidatedApiRequest<TSchema extends ApiRequestValidationData> = Omit
   query: TSchema['query']
 }
 
+export type ParsedFile = NonNullable<Express.Request['file']>
+
+export type FileApiRequest = NextApiRequest & {
+  file: ParsedFile
+}
+
 type ApiHandlerWithValidation<TSchema extends ApiRequestValidationData, TResponseType> = (
   req: ValidatedApiRequest<TSchema>,
+  res: NextApiResponse<TResponseType>
+) => void | Promise<void>
+
+type ApiHandlerWithFile<TResponseType> = (
+  req: FileApiRequest,
   res: NextApiResponse<TResponseType>
 ) => void | Promise<void>
