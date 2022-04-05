@@ -8,6 +8,7 @@ import StatusCode from 'status-code-enum'
 
 import { HttpMethod } from 'constants/http'
 import { IMAGE_MAX_SIZE_IN_MEGABYTES } from 'constants/image'
+import { getBytesFromMegaBytes } from 'libs/math'
 import * as index from 'pages/api/images'
 import { testApiRoute, type TestApiRouterHandler } from 'tests/api'
 
@@ -37,7 +38,7 @@ describe('images', () => {
   describe('POST', () => {
     test('should not upload an image larger than the limit', async () =>
       testApiRoute(indexHandler, async ({ fetch }) => {
-        const { body } = getFakeImageFormData({ sizeInBytes: IMAGE_MAX_SIZE_IN_MEGABYTES * 1024 * 1024 + 1 })
+        const { body } = getFakeImageFormData({ sizeInBytes: getBytesFromMegaBytes(IMAGE_MAX_SIZE_IN_MEGABYTES) + 1 })
 
         const res = await fetch({
           method: HttpMethod.POST,

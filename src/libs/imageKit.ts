@@ -6,6 +6,7 @@ import { Plugin } from 'prosemirror-state'
 import { Step, type Mappable, StepResult } from 'prosemirror-transform'
 
 import { IMAGE_MAX_SIZE_IN_MEGABYTES, IMAGE_SUPPORTED_TYPES } from 'constants/image'
+import { getBytesFromMegaBytes } from 'libs/math'
 
 const tiptapNodeName = 'imagekit-image'
 
@@ -156,7 +157,7 @@ function uploadImagesToEditor(
       continue
     }
 
-    if (image.size > IMAGE_MAX_SIZE_IN_MEGABYTES * 1024 * 1024) {
+    if (image.size > getBytesFromMegaBytes(IMAGE_MAX_SIZE_IN_MEGABYTES)) {
       options.onUploadError?.(
         new ImageKitError('Image file too big.', `The maximum file size is ${IMAGE_MAX_SIZE_IN_MEGABYTES}MB.`)
       )
