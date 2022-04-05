@@ -7,7 +7,7 @@ import FormData from 'form-data'
 import StatusCode from 'status-code-enum'
 
 import { HttpMethod } from 'constants/http'
-import { IMAGE_MAX_SIZE_IN_MEGABYTES } from 'constants/image'
+import { IMAGE_MAX_SIZE_IN_MEGABYTES, IMAGE_SUPPORTED_TYPES } from 'constants/image'
 import { getBytesFromMegaBytes } from 'libs/math'
 import * as index from 'pages/api/images'
 import { testApiRoute, type TestApiRouterHandler } from 'tests/api'
@@ -47,17 +47,77 @@ describe('images', () => {
 
         expect(res.status).toBe(StatusCode.ClientErrorBadRequest)
       }))
+
+    test('should not upload more than one image', async () =>
+      testApiRoute(indexHandler, async ({ fetch }) => {
+        const { body } = getFakeImageFormData()
+        addFakeImageToFormData(body)
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: body,
+        })
+
+        expect(res.status).toBe(StatusCode.ClientErrorBadRequest)
+      }))
+
+    test('should not upload an image contained in a FormData structure with non-file fields', async () =>
+      testApiRoute(indexHandler, async ({ fetch }) => {
+        const { body } = getFakeImageFormData()
+        body.append('a', 'b')
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: body,
+        })
+
+        expect(res.status).toBe(StatusCode.ClientErrorBadRequest)
+      }))
+
+    test('should not upload a file with an unsupported type', async () =>
+      testApiRoute(indexHandler, async ({ fetch }) => {
+        const { body } = getFakeImageFormData({ extension: 'txt' })
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: body,
+        })
+
+        expect(res.status).toBe(StatusCode.ClientErrorBadRequest)
+      }))
+
+    test.each(IMAGE_SUPPORTED_TYPES)('should upload an %s file', async (type) =>
+      testApiRoute(indexHandler, async ({ fetch }) => {
+        const { body } = getFakeImageFormData({ extension: type.split('/')[1] })
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: body,
+        })
+
+        expect(res.status).toBe(StatusCode.SuccessOK)
+      })
+    )
   })
 })
 
-function getFakeImageFormData({ extension = 'png', sizeInBytes = 10 }: FakeImageFormDataOptions = {}) {
+function getFakeImageFormData(options?: FakeImageFormDataOptions) {
   const formData = new FormData()
-  const filename = faker.system.commonFileName(extension)
 
-  const babel = Buffer.alloc(sizeInBytes, '.')
-  formData.append('file', babel, filename)
+  const filename = addFakeImageToFormData(formData, options)
 
   return { body: formData, filename }
+}
+
+function addFakeImageToFormData(
+  formData: FormData,
+  { extension = 'png', sizeInBytes = 10 }: FakeImageFormDataOptions = {}
+) {
+  const filename = faker.system.commonFileName(extension)
+
+  formData.append('file', Buffer.alloc(sizeInBytes, '.'), filename)
+
+  return filename
 }
 
 interface FakeImageFormDataOptions {

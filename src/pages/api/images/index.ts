@@ -2,12 +2,12 @@ import { type NextApiResponse } from 'next'
 
 import { IMAGE_MAX_SIZE_IN_MEGABYTES } from 'constants/image'
 import { createApiRoute, getApiRequestUser } from 'libs/api/routes'
-import { type FileApiRequest, withAuth, withFile } from 'libs/api/routes/middlewares'
+import { type FileApiRequest, withAuth, withFile, imageFileFilter } from 'libs/api/routes/middlewares'
 import { getBytesFromMegaBytes } from 'libs/math'
 
 const route = createApiRoute(
   {
-    post: withFile(postHandler, getBytesFromMegaBytes(IMAGE_MAX_SIZE_IN_MEGABYTES)),
+    post: withFile(postHandler, getBytesFromMegaBytes(IMAGE_MAX_SIZE_IN_MEGABYTES), imageFileFilter),
   },
   [withAuth]
 )

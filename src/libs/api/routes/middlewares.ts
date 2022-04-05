@@ -1,8 +1,9 @@
-import multer from 'multer'
+import multer, { type Options as MulterOptions } from 'multer'
 import { type NextApiHandler, type NextApiRequest, type NextApiResponse } from 'next'
 import { getSession } from 'next-auth/react'
 import StatusCode from 'status-code-enum'
 
+import { IMAGE_SUPPORTED_TYPES } from 'constants/image'
 import { z } from 'libs/validation'
 
 const fileMemoryStorage = multer.memoryStorage()
@@ -54,11 +55,16 @@ export function withValidation<
   }
 }
 
-export function withFile<TResponseType>(handler: ApiHandlerWithFile<TResponseType>, maxFileSizeInBytes: number) {
+export function withFile<TResponseType>(
+  handler: ApiHandlerWithFile<TResponseType>,
+  maxFileSizeInBytes: number,
+  fileFilter?: FileFilter
+) {
   return async (req: NextApiRequest | FileApiRequest, res: NextApiResponse<TResponseType>) => {
     try {
       await new Promise<void>((resolve, reject) => {
         multer({
+          fileFilter,
           limits: {
             fields: 0,
             files: 1,
@@ -81,6 +87,10 @@ export function withFile<TResponseType>(handler: ApiHandlerWithFile<TResponseTyp
   }
 }
 
+export const imageFileFilter: FileFilter = (_req, file, cb) => {
+  cb(null, typeof file.mimetype === 'string' && IMAGE_SUPPORTED_TYPES.includes(file.mimetype))
+}
+
 function parseJson(json: unknown) {
   return typeof json === 'string' ? JSON.parse(json) : json
 }
@@ -99,6 +109,8 @@ export type ParsedFile = NonNullable<Express.Request['file']>
 export type FileApiRequest = NextApiRequest & {
   file: ParsedFile
 }
+
+export type FileFilter = MulterOptions['fileFilter']
 
 type ApiHandlerWithValidation<TSchema extends ApiRequestValidationData, TResponseType> = (
   req: ValidatedApiRequest<TSchema>,
