@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import assert from 'assert'
 
 import faker from '@faker-js/faker'
@@ -16,22 +12,6 @@ import { getBytesFromMegaBytes } from 'libs/math'
 import * as index from 'pages/api/images'
 import { testApiRoute, type TestApiRouterHandler } from 'tests/api'
 import { rest, server } from 'tests/api/mocks/http'
-
-// https://github.com/nextauthjs/next-auth/issues/2238
-jest.mock('next-auth/client/_utils', () => {
-  const { fetchData, ...actualUtils } = jest.requireActual('next-auth/client/_utils')
-
-  return {
-    __esModule: true,
-    ...actualUtils,
-    fetchData: jest.fn().mockImplementation((...args) => {
-      const __NEXTAUTH = args[1]
-      __NEXTAUTH.basePath = `${__NEXTAUTH.baseUrlServer}${__NEXTAUTH.basePathServer}`
-
-      return fetchData(args[0], args[1], args[2], args[3])
-    }),
-  }
-})
 
 // We need to explicitely attach the route configuration to the route handler as `next-test-api-route-handler` does not
 // attach it automatically and we need the body parser to be disabled for `multer` to work properly.
@@ -122,27 +102,18 @@ describe('images', () => {
 
     test('should upload an image to ImageKit', async () =>
       testApiRoute(indexHandler, async ({ fetch }) => {
-        const { body, filename } = getFakeImageFormData()
+        const { body } = getFakeImageFormData()
 
-        const mockSpy = jest.spyOn(global, 'fetch')
-
-        server.use(
-          rest.post(IMAGE_KIT_UPLOAD_URL, (req) => {
-            assert(typeof req.body === 'object')
-
-            expect(req.body['file'] instanceof File).toBe(true)
-            expect(req.body['fileName']).toBe(filename)
-          })
-        )
+        const fetchSpy = jest.spyOn(global, 'fetch')
 
         const res = await fetch({
           method: HttpMethod.POST,
           body: body,
         })
 
-        expect(mockSpy).toHaveBeenCalledTimes(2)
+        expect(fetchSpy).toHaveBeenCalledTimes(2)
 
-        const imageKitApiCall = mockSpy.mock.calls[1]
+        const imageKitApiCall = fetchSpy.mock.calls[1]
         assert(imageKitApiCall)
 
         const [imageKitApiCallUrl, imageKitApiCallOptions] = imageKitApiCall
@@ -150,15 +121,16 @@ describe('images', () => {
         expect(imageKitApiCallUrl).toBe(IMAGE_KIT_UPLOAD_URL)
         expect(imageKitApiCallOptions?.method).toBe(HttpMethod.POST)
 
-        const headers = new Headers(imageKitApiCallOptions?.headers)
+        assert(typeof imageKitApiCallOptions?.headers === 'object')
+        const headers = imageKitApiCallOptions.headers as Record<string, string>
 
-        expect(headers.get('Authorization')).toBe(
+        expect(headers.Authorization).toBe(
           `Basic ${Buffer.from(`${process.env.IMAGEKIT_PRIVATE_API_KEY}:`).toString('base64')}`
         )
 
         expect(res.status).toBe(StatusCode.SuccessOK)
 
-        mockSpy.mockRestore()
+        fetchSpy.mockRestore()
       }))
   })
 })

@@ -7,14 +7,6 @@ import { ParsedFile } from 'libs/api/routes/middlewares'
 
 export const IMAGE_KIT_UPLOAD_URL = 'https://upload.imagekit.io/api/v1/files/upload'
 
-// WILO
-// TODO(HiDeoo) Try to use a recent version of node-fetch by installing it
-// TODO(HiDeoo)   Try in test
-// TODO(HiDeoo)   Try in dev
-// TODO(HiDeoo) Try to remove form-data
-// TODO(HiDeoo) Try to remove the jsdom in the image test
-// TODO(HiDeoo)   If removing jsdom, we should be able to remove the next-auth utils mock
-
 export async function uploadToImageKit(image: ParsedFile) {
   const formData = new FormData()
 
