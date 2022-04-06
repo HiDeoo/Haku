@@ -19,7 +19,7 @@ import yaml from 'highlight.js/lib/languages/yaml'
 import { lowlight } from 'lowlight/lib/core'
 import slug from 'url-slug'
 
-export { ImageKitTiptapNode as ImageKit } from 'libs/imageKit'
+export { ImageKitTiptapNode as ImageKit } from 'libs/imageKitTiptapNode'
 
 const languages: Languages = {
   bash: { fn: bash, name: 'Bash' },

@@ -2,15 +2,20 @@
  * @jest-environment jsdom
  */
 
+import assert from 'assert'
+
 import faker from '@faker-js/faker'
 import FormData from 'form-data'
 import StatusCode from 'status-code-enum'
 
 import { HttpMethod } from 'constants/http'
 import { IMAGE_MAX_SIZE_IN_MEGABYTES, IMAGE_SUPPORTED_TYPES } from 'constants/image'
+import { API_ERROR_IMAGE_UPLOAD_UNKNOWN, type ApiErrorResponse } from 'libs/api/routes/errors'
+import { IMAGE_KIT_UPLOAD_URL } from 'libs/imageKit'
 import { getBytesFromMegaBytes } from 'libs/math'
 import * as index from 'pages/api/images'
 import { testApiRoute, type TestApiRouterHandler } from 'tests/api'
+import { rest, server } from 'tests/api/mocks/http'
 
 // https://github.com/nextauthjs/next-auth/issues/2238
 jest.mock('next-auth/client/_utils', () => {
@@ -98,6 +103,63 @@ describe('images', () => {
         expect(res.status).toBe(StatusCode.SuccessOK)
       })
     )
+
+    test('should return a proper error if the upload fails for unknown reasons', async () =>
+      testApiRoute(indexHandler, async ({ fetch }) => {
+        const { body } = getFakeImageFormData()
+
+        server.use(rest.post(IMAGE_KIT_UPLOAD_URL, (_req, res, ctx) => res.once(ctx.status(500))))
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: body,
+        })
+        const json = await res.json<ApiErrorResponse>()
+
+        expect(res.status).toBe(StatusCode.ServerErrorServiceUnavailable)
+        expect(json.error).toBe(API_ERROR_IMAGE_UPLOAD_UNKNOWN)
+      }))
+
+    test('should upload an image to ImageKit', async () =>
+      testApiRoute(indexHandler, async ({ fetch }) => {
+        const { body, filename } = getFakeImageFormData()
+
+        const mockSpy = jest.spyOn(global, 'fetch')
+
+        server.use(
+          rest.post(IMAGE_KIT_UPLOAD_URL, (req) => {
+            assert(typeof req.body === 'object')
+
+            expect(req.body['file'] instanceof File).toBe(true)
+            expect(req.body['fileName']).toBe(filename)
+          })
+        )
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: body,
+        })
+
+        expect(mockSpy).toHaveBeenCalledTimes(2)
+
+        const imageKitApiCall = mockSpy.mock.calls[1]
+        assert(imageKitApiCall)
+
+        const [imageKitApiCallUrl, imageKitApiCallOptions] = imageKitApiCall
+
+        expect(imageKitApiCallUrl).toBe(IMAGE_KIT_UPLOAD_URL)
+        expect(imageKitApiCallOptions?.method).toBe(HttpMethod.POST)
+
+        const headers = new Headers(imageKitApiCallOptions?.headers)
+
+        expect(headers.get('Authorization')).toBe(
+          `Basic ${Buffer.from(`${process.env.IMAGEKIT_PRIVATE_API_KEY}:`).toString('base64')}`
+        )
+
+        expect(res.status).toBe(StatusCode.SuccessOK)
+
+        mockSpy.mockRestore()
+      }))
   })
 })
 

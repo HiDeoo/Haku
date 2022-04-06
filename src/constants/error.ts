@@ -33,3 +33,5 @@ export const API_ERROR_TODO_NODE_UPDATE_CHILD_DELETE_CONFLICT = 'An updated todo
 export const API_ERROR_TODO_NODE_NOTE_HTML_OR_TEXT_MISSING = 'A todo node note html or text content is missing.'
 
 export const API_ERROR_SEARCH_QUERY_TOO_SHORT = 'The search query should be at least 3 characters long.'
+
+export const API_ERROR_IMAGE_UPLOAD_UNKNOWN = 'The image could not be uploaded. Please try again later.'
