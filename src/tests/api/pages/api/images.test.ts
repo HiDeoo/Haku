@@ -2,6 +2,7 @@ import assert from 'assert'
 
 import faker from '@faker-js/faker'
 import FormData from 'form-data'
+import multipartParser from 'lambda-multipart-parser'
 import StatusCode from 'status-code-enum'
 
 import { HttpMethod } from 'constants/http'
@@ -10,7 +11,7 @@ import { API_ERROR_IMAGE_UPLOAD_UNKNOWN, type ApiErrorResponse } from 'libs/api/
 import { IMAGE_KIT_UPLOAD_URL } from 'libs/imageKit'
 import { getBytesFromMegaBytes } from 'libs/math'
 import * as index from 'pages/api/images'
-import { testApiRoute, type TestApiRouterHandler } from 'tests/api'
+import { getTestUser, testApiRoute, type TestApiRouterHandler } from 'tests/api'
 import { rest, server } from 'tests/api/mocks/http'
 
 // We need to explicitely attach the route configuration to the route handler as `next-test-api-route-handler` does not
@@ -84,11 +85,13 @@ describe('images', () => {
       })
     )
 
-    test('should return a proper error if the upload fails for unknown reasons', async () =>
+    test('should return and log a proper error if the upload fails for unknown reasons', async () =>
       testApiRoute(indexHandler, async ({ fetch }) => {
         const { body } = getFakeImageFormData()
 
         server.use(rest.post(IMAGE_KIT_UPLOAD_URL, (_req, res, ctx) => res.once(ctx.status(500))))
+
+        const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => undefined)
 
         const res = await fetch({
           method: HttpMethod.POST,
@@ -98,25 +101,49 @@ describe('images', () => {
 
         expect(res.status).toBe(StatusCode.ServerErrorServiceUnavailable)
         expect(json.error).toBe(API_ERROR_IMAGE_UPLOAD_UNKNOWN)
+
+        expect(consoleSpy).toHaveBeenCalled()
+
+        consoleSpy.mockRestore()
       }))
 
     test('should upload an image to ImageKit', async () =>
       testApiRoute(indexHandler, async ({ fetch }) => {
-        const { body } = getFakeImageFormData()
+        const { body, extension, filename } = getFakeImageFormData()
 
         const fetchSpy = jest.spyOn(global, 'fetch')
+
+        server.use(
+          rest.post(IMAGE_KIT_UPLOAD_URL, async (req) => {
+            const formData = await multipartParser.parse({
+              body: req.body,
+              headers: { 'Content-Type': req.headers.get('Content-Type') },
+            })
+
+            expect(formData.files.length).toBe(1)
+            expect(formData.files[0]?.content).toBeInstanceOf(Buffer)
+            expect(formData.files[0]?.contentType).toBe(`image/${extension}`)
+            expect(formData.files[0]?.fieldname).toBe('file')
+
+            expect(formData.fileName).toBe(filename)
+            expect(formData.folder).toBe(getTestUser().userId)
+            expect(formData.isPrivateFile).toBe('true')
+            expect(formData.overwriteFile).toBe('false')
+            expect(formData.useUniqueFileName).toBe('true')
+          })
+        )
 
         const res = await fetch({
           method: HttpMethod.POST,
           body: body,
         })
 
-        expect(fetchSpy).toHaveBeenCalledTimes(2)
+        const imageKitApiReqIndex = fetchSpy.mock.calls.findIndex(([callUrl]) => callUrl === IMAGE_KIT_UPLOAD_URL)
 
-        const imageKitApiCall = fetchSpy.mock.calls[1]
-        assert(imageKitApiCall)
+        const imageKitApiReq = fetchSpy.mock.calls[imageKitApiReqIndex]
+        assert(imageKitApiReq)
 
-        const [imageKitApiCallUrl, imageKitApiCallOptions] = imageKitApiCall
+        const [imageKitApiCallUrl, imageKitApiCallOptions] = imageKitApiReq
 
         expect(imageKitApiCallUrl).toBe(IMAGE_KIT_UPLOAD_URL)
         expect(imageKitApiCallOptions?.method).toBe(HttpMethod.POST)
@@ -130,6 +157,8 @@ describe('images', () => {
 
         expect(res.status).toBe(StatusCode.SuccessOK)
 
+        // TODO(HiDeoo) Test haku API response
+
         fetchSpy.mockRestore()
       }))
   })
@@ -138,9 +167,9 @@ describe('images', () => {
 function getFakeImageFormData(options?: FakeImageFormDataOptions) {
   const formData = new FormData()
 
-  const filename = addFakeImageToFormData(formData, options)
+  const { extension, filename } = addFakeImageToFormData(formData, options)
 
-  return { body: formData, filename }
+  return { body: formData, extension, filename }
 }
 
 function addFakeImageToFormData(
@@ -151,7 +180,7 @@ function addFakeImageToFormData(
 
   formData.append('file', Buffer.alloc(sizeInBytes, '.'), filename)
 
-  return filename
+  return { extension, filename }
 }
 
 interface FakeImageFormDataOptions {

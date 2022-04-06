@@ -89,6 +89,7 @@
     "execa": "5.1.1",
     "husky": "7.0.4",
     "jest": "27.4.5",
+    "lambda-multipart-parser": "1.0.1",
     "lint-staged": "12.1.2",
     "msw": "0.36.3",
     "next-test-api-route-handler": "2.3.4",
