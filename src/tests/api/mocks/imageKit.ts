@@ -20,6 +20,8 @@ const handlers = [
     const name = `${filename}_${cuid().substring(0, 5)}.${extension}`
     const filePath = `/${formData.folder}/${name}`
 
+    const width = parseInt(filename?.split('_')[1] ?? '800', 10)
+
     return res(
       ctx.status(200),
       ctx.json({
@@ -32,7 +34,7 @@ const handlers = [
         size: 23957,
         thumbnailUrl: `${process.env.IMAGEKIT_URL_ENDPOINT}/tr:n-media_library_thumbnail${filePath}`,
         url: `${process.env.IMAGEKIT_URL_ENDPOINT}${filePath}`,
-        width: 300,
+        width,
       })
     )
   }),

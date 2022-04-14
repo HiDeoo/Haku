@@ -4,18 +4,15 @@ import FormData from 'form-data'
 import { StatusCode } from 'status-code-enum'
 
 import { HttpMethod } from 'constants/http'
+import { IMAGE_RESPONSIVE_BREAKPOINTS_IN_PIXELS } from 'constants/image'
 import { ApiError, API_ERROR_IMAGE_UPLOAD_UNKNOWN } from 'libs/api/routes/errors'
 import { ParsedFile } from 'libs/api/routes/middlewares'
-import { allEntries } from 'libs/object'
 
 export const IMAGE_KIT_UPLOAD_URL = 'https://upload.imagekit.io/api/v1/files/upload'
 
 export interface ImageData {
   original: string
-}
-
-const imageKitTransforms: ImageKitSignedUrlsTransforms = {
-  original: ['orig-true'],
+  responsive: Record<number, string>
 }
 
 const imageExpiryTimestamp = 9999999999
@@ -49,7 +46,7 @@ export async function uploadToImageKit(userId: UserId, image: ParsedFile): Promi
       throw new Error('Unable to upload image to ImageKit.')
     }
 
-    return getImageKitSignedUrls(json.filePath, imageKitTransforms)
+    return getImageKitSignedUrls(json)
   } catch (error) {
     console.error('Unable to upload image to ImageKit:', isImageKitError(json) ? json.message : error)
 
@@ -57,20 +54,32 @@ export async function uploadToImageKit(userId: UserId, image: ParsedFile): Promi
   }
 }
 
-function getImageKitSignedUrls(filePath: string, transforms: ImageKitSignedUrlsTransforms): ImageData {
-  return allEntries(transforms).reduce<ImageData>((acc, [imageName, imageTransforms]) => {
-    const imagePath = `tr:${imageTransforms.join(':')}${filePath}`
-    const imageUrl = `${process.env.IMAGEKIT_URL_ENDPOINT}/${imagePath}`
+function getImageKitSignedUrls(file: ImageKitFile): ImageData {
+  const original = getImageKitSignedUrl(file.filePath, ['orig-true'])
 
-    const imageSignature = crypto
-      .createHmac('sha1', process.env.IMAGEKIT_PRIVATE_API_KEY)
-      .update(imagePath + imageExpiryTimestamp)
-      .digest('hex')
+  const responsive: ImageData['responsive'] = {
+    [file.width]: getImageKitSignedUrl(file.filePath, [`w-${file.width}`]),
+  }
 
-    acc[imageName] = `${imageUrl}?ik-s=${imageSignature}`
+  for (const breakpoint of IMAGE_RESPONSIVE_BREAKPOINTS_IN_PIXELS) {
+    if (breakpoint < file.width) {
+      responsive[breakpoint] = getImageKitSignedUrl(file.filePath, [`w-${breakpoint}`])
+    }
+  }
 
-    return acc
-  }, Object.create(null))
+  return { original, responsive }
+}
+
+function getImageKitSignedUrl(filePath: string, transforms: string[]): string {
+  const imagePath = `tr:${transforms.join(',')}${filePath}`
+  const imageUrl = `${process.env.IMAGEKIT_URL_ENDPOINT}/${imagePath}`
+
+  const imageSignature = crypto
+    .createHmac('sha1', process.env.IMAGEKIT_PRIVATE_API_KEY)
+    .update(imagePath + imageExpiryTimestamp)
+    .digest('hex')
+
+  return `${imageUrl}?ik-s=${imageSignature}`
 }
 
 function isImageKitError(data: ImageKitFile | ImageKitError | undefined): data is ImageKitError {
@@ -94,5 +103,3 @@ interface ImageKitError {
   help: string
   message: string
 }
-
-type ImageKitSignedUrlsTransforms = Record<keyof ImageData, [string]>

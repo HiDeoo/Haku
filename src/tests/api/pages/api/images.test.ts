@@ -6,7 +6,11 @@ import multipartParser from 'lambda-multipart-parser'
 import StatusCode from 'status-code-enum'
 
 import { HttpMethod } from 'constants/http'
-import { IMAGE_MAX_SIZE_IN_MEGABYTES, IMAGE_SUPPORTED_TYPES } from 'constants/image'
+import {
+  IMAGE_MAX_SIZE_IN_MEGABYTES,
+  IMAGE_RESPONSIVE_BREAKPOINTS_IN_PIXELS,
+  IMAGE_SUPPORTED_TYPES,
+} from 'constants/image'
 import { API_ERROR_IMAGE_UPLOAD_UNKNOWN, type ApiErrorResponse } from 'libs/api/routes/errors'
 import { IMAGE_KIT_UPLOAD_URL } from 'libs/imageKit'
 import { type ImageData } from 'libs/imageKit'
@@ -160,15 +164,111 @@ describe('images', () => {
 
         const json = await res.json<ImageData>()
 
-        expect(isSignedImageUrl(json.original)).toBe(true)
+        expect(isSignedImageUrlWithTransforms(json.original, ['orig-true'])).toBe(true)
+
+        expect(typeof json.responsive).toBe('object')
+        expect(Object.keys(json.responsive).length).toBeGreaterThan(0)
 
         fetchSpy.mockRestore()
+      }))
+
+    test('should return the responsive URL for an image with a width smaller than the responsive breakpoints', async () =>
+      testApiRoute(indexHandler, async ({ fetch }) => {
+        const width = 200
+
+        const { body } = getFakeImageFormData({ width })
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: body,
+        })
+        const json = await res.json<ImageData>()
+
+        expect(Object.keys(json.responsive).length).toBe(1)
+
+        expect(isSignedImageUrlWithTransforms(json.responsive[width], [`w-${width}`])).toBe(true)
+      }))
+
+    test('should return the responsive URLs for an image with a width in the responsive breakpoints', async () =>
+      testApiRoute(indexHandler, async ({ fetch }) => {
+        const width = 999
+
+        const { body } = getFakeImageFormData({ width })
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: body,
+        })
+        const json = await res.json<ImageData>()
+
+        const expectedWidths = getResponsiveWidths(width)
+
+        expect(Object.keys(json.responsive).length).toBe(expectedWidths.length + 1)
+
+        for (const expectedWidth of expectedWidths) {
+          expect(isSignedImageUrlWithTransforms(json.responsive[expectedWidth], [`w-${expectedWidth}`])).toBe(true)
+        }
+
+        expect(isSignedImageUrlWithTransforms(json.responsive[width], [`w-${width}`])).toBe(true)
+      }))
+
+    test('should return the responsive URLs for an image with a width of a responsive breakpoint', async () =>
+      testApiRoute(indexHandler, async ({ fetch }) => {
+        const width = IMAGE_RESPONSIVE_BREAKPOINTS_IN_PIXELS[3]
+
+        const { body } = getFakeImageFormData({ width })
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: body,
+        })
+        const json = await res.json<ImageData>()
+
+        const expectedWidths = getResponsiveWidths(width)
+
+        expect(Object.keys(json.responsive).length).toBe(expectedWidths.length)
+
+        for (const expectedWidth of expectedWidths) {
+          expect(isSignedImageUrlWithTransforms(json.responsive[expectedWidth], [`w-${expectedWidth}`])).toBe(true)
+        }
+
+        expect(isSignedImageUrlWithTransforms(json.responsive[width], [`w-${width}`])).toBe(true)
+      }))
+
+    test('should return the responsive URLs for an image with a width larger than the responsive breakpoints', async () =>
+      testApiRoute(indexHandler, async ({ fetch }) => {
+        const width = 3000
+
+        const { body } = getFakeImageFormData({ width })
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: body,
+        })
+        const json = await res.json<ImageData>()
+
+        const expectedWidths = getResponsiveWidths(width)
+
+        expect(Object.keys(json.responsive).length).toBe(expectedWidths.length + 1)
+
+        for (const expectedWidth of expectedWidths) {
+          expect(isSignedImageUrlWithTransforms(json.responsive[expectedWidth], [`w-${expectedWidth}`])).toBe(true)
+        }
+
+        expect(isSignedImageUrlWithTransforms(json.responsive[width], [`w-${width}`])).toBe(true)
       }))
   })
 })
 
-function isSignedImageUrl(url?: string): boolean {
-  return typeof url === 'string' && url.startsWith(`${process.env.IMAGEKIT_URL_ENDPOINT}/tr:`) && url.includes('?ik-s=')
+function isSignedImageUrlWithTransforms(url: string | undefined, transforms: string[]): boolean {
+  if (
+    typeof url !== 'string' ||
+    (!url.startsWith(`${process.env.IMAGEKIT_URL_ENDPOINT}/tr:`) && url.includes('?ik-s='))
+  ) {
+    return false
+  }
+
+  return transforms.every((transform) => url.match(new RegExp(`${transform}[/,]`)))
 }
 
 function getFakeImageFormData(options?: FakeImageFormDataOptions) {
@@ -181,16 +281,21 @@ function getFakeImageFormData(options?: FakeImageFormDataOptions) {
 
 function addFakeImageToFormData(
   formData: FormData,
-  { extension = 'png', sizeInBytes = 10 }: FakeImageFormDataOptions = {}
+  { extension = 'png', sizeInBytes = 10, width }: FakeImageFormDataOptions = {}
 ) {
-  const filename = faker.system.commonFileName(extension)
+  const filename = `${faker.random.words().toLowerCase().replace(/\W/g, '-')}${width ? `_${width}` : ''}.${extension}`
 
   formData.append('file', Buffer.alloc(sizeInBytes, '.'), filename)
 
   return { extension, filename }
 }
 
+function getResponsiveWidths(width: number): number[] {
+  return IMAGE_RESPONSIVE_BREAKPOINTS_IN_PIXELS.filter((responsiveWidth) => responsiveWidth <= width)
+}
+
 interface FakeImageFormDataOptions {
   extension?: string
+  width?: number
   sizeInBytes?: number
 }
