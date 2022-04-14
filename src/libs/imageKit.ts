@@ -1,13 +1,26 @@
+import crypto from 'crypto'
+
 import FormData from 'form-data'
 import { StatusCode } from 'status-code-enum'
 
 import { HttpMethod } from 'constants/http'
 import { ApiError, API_ERROR_IMAGE_UPLOAD_UNKNOWN } from 'libs/api/routes/errors'
 import { ParsedFile } from 'libs/api/routes/middlewares'
+import { allEntries } from 'libs/object'
 
 export const IMAGE_KIT_UPLOAD_URL = 'https://upload.imagekit.io/api/v1/files/upload'
 
-export async function uploadToImageKit(userId: UserId, image: ParsedFile) {
+export interface ImageData {
+  original: string
+}
+
+const imageKitTransforms: ImageKitSignedUrlsTransforms = {
+  original: ['orig-true'],
+}
+
+const imageExpiryTimestamp = 9999999999
+
+export async function uploadToImageKit(userId: UserId, image: ParsedFile): Promise<ImageData> {
   const formData = new FormData()
 
   formData.append('file', image.buffer, image.originalname)
@@ -36,12 +49,28 @@ export async function uploadToImageKit(userId: UserId, image: ParsedFile) {
       throw new Error('Unable to upload image to ImageKit.')
     }
 
-    console.log('🚨 [imageKit.ts:14] json', json)
+    return getImageKitSignedUrls(json.filePath, imageKitTransforms)
   } catch (error) {
     console.error('Unable to upload image to ImageKit:', isImageKitError(json) ? json.message : error)
 
     throw new ApiError(API_ERROR_IMAGE_UPLOAD_UNKNOWN, StatusCode.ServerErrorServiceUnavailable)
   }
+}
+
+function getImageKitSignedUrls(filePath: string, transforms: ImageKitSignedUrlsTransforms): ImageData {
+  return allEntries(transforms).reduce<ImageData>((acc, [imageName, imageTransforms]) => {
+    const imagePath = `tr:${imageTransforms.join(':')}${filePath}`
+    const imageUrl = `${process.env.IMAGEKIT_URL_ENDPOINT}/${imagePath}`
+
+    const imageSignature = crypto
+      .createHmac('sha1', process.env.IMAGEKIT_PRIVATE_API_KEY)
+      .update(imagePath + imageExpiryTimestamp)
+      .digest('hex')
+
+    acc[imageName] = `${imageUrl}?ik-s=${imageSignature}`
+
+    return acc
+  }, Object.create(null))
 }
 
 function isImageKitError(data: ImageKitFile | ImageKitError | undefined): data is ImageKitError {
@@ -65,3 +94,5 @@ interface ImageKitError {
   help: string
   message: string
 }
+
+type ImageKitSignedUrlsTransforms = Record<keyof ImageData, [string]>

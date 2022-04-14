@@ -3,7 +3,7 @@ import { type NextApiResponse } from 'next'
 import { IMAGE_MAX_SIZE_IN_MEGABYTES } from 'constants/image'
 import { createApiRoute, getApiRequestUser } from 'libs/api/routes'
 import { type FileApiRequest, withAuth, withFile, imageFileFilter } from 'libs/api/routes/middlewares'
-import { uploadToImageKit } from 'libs/imageKit'
+import { type ImageData, uploadToImageKit } from 'libs/imageKit'
 import { getBytesFromMegaBytes } from 'libs/math'
 
 const route = createApiRoute(
@@ -15,12 +15,12 @@ const route = createApiRoute(
 
 export default route
 
-async function postHandler(req: FileApiRequest, res: NextApiResponse<object>) {
+async function postHandler(req: FileApiRequest, res: NextApiResponse<ImageData>) {
   const { userId } = getApiRequestUser(req)
 
-  await uploadToImageKit(userId, req.file)
+  const image = await uploadToImageKit(userId, req.file)
 
-  return res.status(200).json({})
+  return res.status(200).json(image)
 }
 
 export const config = {

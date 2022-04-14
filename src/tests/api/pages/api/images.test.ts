@@ -9,6 +9,7 @@ import { HttpMethod } from 'constants/http'
 import { IMAGE_MAX_SIZE_IN_MEGABYTES, IMAGE_SUPPORTED_TYPES } from 'constants/image'
 import { API_ERROR_IMAGE_UPLOAD_UNKNOWN, type ApiErrorResponse } from 'libs/api/routes/errors'
 import { IMAGE_KIT_UPLOAD_URL } from 'libs/imageKit'
+import { type ImageData } from 'libs/imageKit'
 import { getBytesFromMegaBytes } from 'libs/math'
 import * as index from 'pages/api/images'
 import { getTestUser, testApiRoute, type TestApiRouterHandler } from 'tests/api'
@@ -157,12 +158,18 @@ describe('images', () => {
 
         expect(res.status).toBe(StatusCode.SuccessOK)
 
-        // TODO(HiDeoo) Test haku API response
+        const json = await res.json<ImageData>()
+
+        expect(isSignedImageUrl(json.original)).toBe(true)
 
         fetchSpy.mockRestore()
       }))
   })
 })
+
+function isSignedImageUrl(url?: string): boolean {
+  return typeof url === 'string' && url.startsWith(`${process.env.IMAGEKIT_URL_ENDPOINT}/tr:`) && url.includes('?ik-s=')
+}
 
 function getFakeImageFormData(options?: FakeImageFormDataOptions) {
   const formData = new FormData()
