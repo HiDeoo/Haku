@@ -170,6 +170,9 @@ describe('images', () => {
         expect(typeof json.responsive).toBe('object')
         expect(Object.keys(json.responsive).length).toBeGreaterThan(0)
 
+        expect(typeof json.height).toBe('number')
+        expect(typeof json.width).toBe('number')
+
         fetchSpy.mockRestore()
       }))
 

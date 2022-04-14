@@ -11,8 +11,10 @@ import { ParsedFile } from 'libs/api/routes/middlewares'
 export const IMAGE_KIT_UPLOAD_URL = 'https://upload.imagekit.io/api/v1/files/upload'
 
 export interface ImageData {
+  height: number
   original: string
   responsive: Record<number, string>
+  width: number
 }
 
 const imageExpiryTimestamp = 9999999999
@@ -73,7 +75,7 @@ function getImageKitSignedUrls(file: ImageKitFile, isJpeg: boolean): ImageData {
     }
   }
 
-  return { original, responsive }
+  return { height: file.height, original, responsive, width: file.width }
 }
 
 function getImageKitSignedUrl(filePath: string, transforms: string[]): string {
