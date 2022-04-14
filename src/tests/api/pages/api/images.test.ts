@@ -7,6 +7,7 @@ import StatusCode from 'status-code-enum'
 
 import { HttpMethod } from 'constants/http'
 import {
+  IMAGE_DEFAULT_FORMAT,
   IMAGE_MAX_SIZE_IN_MEGABYTES,
   IMAGE_RESPONSIVE_BREAKPOINTS_IN_PIXELS,
   IMAGE_SUPPORTED_TYPES,
@@ -266,6 +267,10 @@ function isSignedImageUrlWithTransforms(url: string | undefined, transforms: str
     (!url.startsWith(`${process.env.IMAGEKIT_URL_ENDPOINT}/tr:`) && url.includes('?ik-s='))
   ) {
     return false
+  }
+
+  if (!transforms.includes('orig-true')) {
+    transforms.push(`f-${IMAGE_DEFAULT_FORMAT}`)
   }
 
   return transforms.every((transform) => url.match(new RegExp(`${transform}[/,]`)))

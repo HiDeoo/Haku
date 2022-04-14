@@ -4,7 +4,7 @@ import FormData from 'form-data'
 import { StatusCode } from 'status-code-enum'
 
 import { HttpMethod } from 'constants/http'
-import { IMAGE_RESPONSIVE_BREAKPOINTS_IN_PIXELS } from 'constants/image'
+import { IMAGE_DEFAULT_FORMAT, IMAGE_RESPONSIVE_BREAKPOINTS_IN_PIXELS } from 'constants/image'
 import { ApiError, API_ERROR_IMAGE_UPLOAD_UNKNOWN } from 'libs/api/routes/errors'
 import { ParsedFile } from 'libs/api/routes/middlewares'
 
@@ -58,12 +58,12 @@ function getImageKitSignedUrls(file: ImageKitFile): ImageData {
   const original = getImageKitSignedUrl(file.filePath, ['orig-true'])
 
   const responsive: ImageData['responsive'] = {
-    [file.width]: getImageKitSignedUrl(file.filePath, [`w-${file.width}`]),
+    [file.width]: getImageKitSignedUrl(file.filePath, [`f-${IMAGE_DEFAULT_FORMAT}`, `w-${file.width}`]),
   }
 
   for (const breakpoint of IMAGE_RESPONSIVE_BREAKPOINTS_IN_PIXELS) {
     if (breakpoint < file.width) {
-      responsive[breakpoint] = getImageKitSignedUrl(file.filePath, [`w-${breakpoint}`])
+      responsive[breakpoint] = getImageKitSignedUrl(file.filePath, [`f-${IMAGE_DEFAULT_FORMAT}`, `w-${breakpoint}`])
     }
   }
 
