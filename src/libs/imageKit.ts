@@ -46,7 +46,7 @@ export async function uploadToImageKit(userId: UserId, image: ParsedFile): Promi
       throw new Error('Unable to upload image to ImageKit.')
     }
 
-    return getImageKitSignedUrls(json)
+    return getImageKitSignedUrls(json, image.mimetype === 'image/jpeg' || image.mimetype === 'image/jpg')
   } catch (error) {
     console.error('Unable to upload image to ImageKit:', isImageKitError(json) ? json.message : error)
 
@@ -54,8 +54,14 @@ export async function uploadToImageKit(userId: UserId, image: ParsedFile): Promi
   }
 }
 
-function getImageKitSignedUrls(file: ImageKitFile): ImageData {
-  const original = getImageKitSignedUrl(file.filePath, ['orig-true'])
+function getImageKitSignedUrls(file: ImageKitFile, isJpeg: boolean): ImageData {
+  const originalTransforms = ['orig-true']
+
+  if (isJpeg) {
+    originalTransforms.push('pr-true')
+  }
+
+  const original = getImageKitSignedUrl(file.filePath, originalTransforms)
 
   const responsive: ImageData['responsive'] = {
     [file.width]: getImageKitSignedUrl(file.filePath, [`f-${IMAGE_DEFAULT_FORMAT}`, `w-${file.width}`]),

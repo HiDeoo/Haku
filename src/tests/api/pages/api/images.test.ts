@@ -258,6 +258,33 @@ describe('images', () => {
 
         expect(isSignedImageUrlWithTransforms(json.responsive[width], [`w-${width}`])).toBe(true)
       }))
+
+    test('should return a progressive JPEG for the original image when using JPEG image', async () =>
+      testApiRoute(indexHandler, async ({ fetch }) => {
+        const { body } = getFakeImageFormData({ extension: 'jpg' })
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: body,
+        })
+        const json = await res.json<ImageData>()
+
+        expect(isSignedImageUrlWithTransforms(json.original, ['orig-true', 'pr-true'])).toBe(true)
+      }))
+
+    test('should not return a progressive JPEG for the original image when not using a JPEG image', async () =>
+      testApiRoute(indexHandler, async ({ fetch }) => {
+        const { body } = getFakeImageFormData({ extension: 'png' })
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: body,
+        })
+        const json = await res.json<ImageData>()
+
+        expect(isSignedImageUrlWithTransforms(json.original, ['orig-true'])).toBe(true)
+        expect(isSignedImageUrlWithTransforms(json.original, ['pr-true'])).toBe(false)
+      }))
   })
 })
 
