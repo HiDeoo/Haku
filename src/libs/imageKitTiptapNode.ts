@@ -6,6 +6,8 @@ import { Plugin } from 'prosemirror-state'
 import { Step, type Mappable, StepResult } from 'prosemirror-transform'
 
 import { IMAGE_MAX_SIZE_IN_MEGABYTES, IMAGE_SUPPORTED_TYPES } from 'constants/image'
+import client from 'libs/api/client'
+import { type ImageData } from 'libs/imageKit'
 import { getBytesFromMegaBytes } from 'libs/math'
 
 const tiptapNodeName = 'imagekit-image'
@@ -15,6 +17,9 @@ export function ImageKitTiptapNode(options: ImageKitTiptapNodeOptions) {
     name: tiptapNodeName,
     addAttributes() {
       return {
+        data: {
+          default: null,
+        },
         id: {
           default: null,
         },
@@ -22,9 +27,6 @@ export function ImageKitTiptapNode(options: ImageKitTiptapNodeOptions) {
           default: false,
         },
         pendingName: {
-          default: null,
-        },
-        src: {
           default: null,
         },
       }
@@ -52,9 +54,20 @@ export function ImageKitTiptapNode(options: ImageKitTiptapNodeOptions) {
             return false
           }
 
-          return {
-            src: element.getAttribute('src'),
+          const original = element.getAttribute('src')
+          const responsive: ImageData['responsive'] = {}
+
+          for (const srcSetElement of element.getAttribute('srcset')?.split(', ') ?? []) {
+            const [src, width] = srcSetElement.split(' ')
+
+            if (!src || !width) {
+              continue
+            }
+
+            responsive[parseInt(width.substring(-1), 10)] = src
           }
+
+          return { data: { original, responsive } }
         },
       },
     ],
@@ -63,7 +76,19 @@ export function ImageKitTiptapNode(options: ImageKitTiptapNodeOptions) {
         return ['div', { class: 'italic text-blue-200' }, `Uploading ${HTMLAttributes.pendingName}…`]
       }
 
-      return ['img', { src: HTMLAttributes.src }]
+      const srcSetElements = Object.entries(HTMLAttributes.data.responsive ?? {}).map(
+        ([width, url]) => `${url} ${width}w`
+      )
+
+      return [
+        'img',
+        {
+          crossorigin: 'anonymous',
+          sizes: '100vw',
+          src: HTMLAttributes.data.original,
+          srcset: srcSetElements.join(', '),
+        },
+      ]
     },
   })
 }
@@ -198,13 +223,13 @@ async function uploadImageToEditor(
   id: string
 ) {
   try {
-    const src = await upload(image)
+    const data = await upload(image)
 
     const position = getImageKitNodePositionWithId(editor, id)
 
     if (position) {
       editor.view.dispatch(
-        editor.view.state.tr.step(new SetAttrsStep(position, { pending: false, src })).setMeta('addToHistory', false)
+        editor.view.state.tr.step(new SetAttrsStep(position, { data, pending: false })).setMeta('addToHistory', false)
       )
     }
 
@@ -245,17 +270,11 @@ function getImageKitNodePositionWithId(editor: Editor, id: string): number | und
   return position
 }
 
-// FIXME(HiDeoo)
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function upload(_image: File) {
-  // FIXME(HiDeoo)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve('/images/icons/512.png')
-      // reject(new Error('plop'))
-    }, 2000)
-  })
+async function upload(image: File): Promise<ImageData> {
+  const body = new FormData()
+  body.append('file', image)
+
+  return client.post('images', { body }).json<ImageData>()
 }
 
 export class ImageKitError extends Error {
