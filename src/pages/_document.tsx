@@ -168,7 +168,7 @@ function getContentSecurityPolicy(nonce: string): string {
     `script-src '${isProd ? 'self' : 'unsafe-eval'}' 'nonce-${nonce}'`,
     // https://github.com/vercel/next.js/issues/35389
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data:",
+    `img-src 'self' ${process.env.IMAGEKIT_URL_BASE} data:`,
     "manifest-src 'self'",
     "worker-src 'self'",
     "prefetch-src 'self'",
