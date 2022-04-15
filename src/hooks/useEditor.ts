@@ -19,6 +19,7 @@ import EditorCodeBlock from 'components/editor/EditorCodeBlock'
 import { CODE_BLOCK_DEFAULT_LANGUAGE } from 'constants/editor'
 import useToast from 'hooks/useToast'
 import { getLowlight, ImageKit } from 'libs/editor'
+import { type A11yImageParams } from 'libs/image'
 import { ImageKitError, type ImageKitTiptapNodeOptions } from 'libs/imageKitTiptapNode'
 import clst from 'styles/clst'
 import styles from 'styles/Editor.module.css'
@@ -52,8 +53,8 @@ export function useEditor(options: UseEditorOptions, deps?: DependencyList): Edi
   const editorClasses = clst(styles.editor, className)
 
   const onImageDoubleClick = useCallback(
-    (url: string) => {
-      setImageModal({ name: url.substring(url.lastIndexOf('/') + 1), opened: true, url })
+    (params: A11yImageParams) => {
+      setImageModal({ ...params, opened: true })
     },
     [setImageModal]
   )

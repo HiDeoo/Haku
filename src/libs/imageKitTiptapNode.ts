@@ -7,6 +7,7 @@ import { Step, type Mappable, StepResult } from 'prosemirror-transform'
 
 import { IMAGE_MAX_SIZE_IN_MEGABYTES, IMAGE_SUPPORTED_TYPES } from 'constants/image'
 import client from 'libs/api/client'
+import { getA11yImageAttributes, getA11yImageParams, type A11yImageParams } from 'libs/image'
 import { type ImageData } from 'libs/imageKit'
 import { getBytesFromMegaBytes } from 'libs/math'
 
@@ -54,13 +55,10 @@ export function ImageKitTiptapNode(options: ImageKitTiptapNodeOptions) {
             return false
           }
 
-          const height = element.getAttribute('height')
-          const width = element.getAttribute('width')
-          const name = element.getAttribute('alt')
-          const original = element.getAttribute('src')
+          const { alt, height, src, srcSet, width } = getA11yImageParams(element)
           const responsive: ImageData['responsive'] = {}
 
-          for (const srcSetElement of element.getAttribute('srcset')?.split(', ') ?? []) {
+          for (const srcSetElement of srcSet?.split(', ') ?? []) {
             const [src, width] = srcSetElement.split(' ')
 
             if (!src || !width) {
@@ -70,7 +68,7 @@ export function ImageKitTiptapNode(options: ImageKitTiptapNodeOptions) {
             responsive[parseInt(width.substring(-1), 10)] = src
           }
 
-          return { data: { height, name, original, responsive, width } }
+          return { data: { height, name: alt, original: src, responsive, width } }
         },
       },
     ],
@@ -85,17 +83,13 @@ export function ImageKitTiptapNode(options: ImageKitTiptapNodeOptions) {
 
       return [
         'img',
-        {
+        getA11yImageAttributes({
           alt: HTMLAttributes.data.name,
-          crossorigin: 'anonymous',
-          decoding: 'async',
           height: HTMLAttributes.data.height,
-          loading: 'lazy',
-          sizes: '100vw',
           src: HTMLAttributes.data.original,
-          srcset: srcSetElements.join(', '),
+          srcSet: srcSetElements.join(', '),
           width: HTMLAttributes.data.width,
-        },
+        }),
       ]
     },
   })
@@ -115,7 +109,7 @@ function imageKitProseMirrorPlugin(editor: Editor, options: ImageKitTiptapNodeOp
           return false
         }
 
-        options.onImageDoubleClick?.(src)
+        options.onImageDoubleClick?.(getA11yImageParams(event.target))
 
         return true
       },
@@ -343,7 +337,7 @@ export class SetAttrsStep extends Step {
 Step.jsonID('setAttrs', SetAttrsStep)
 
 export interface ImageKitTiptapNodeOptions {
-  onImageDoubleClick?: (url: string) => void
+  onImageDoubleClick?: (params: A11yImageParams) => void
   onUploadError?: (error: ImageKitError) => void
 }
 

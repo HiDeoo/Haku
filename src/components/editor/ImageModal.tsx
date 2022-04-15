@@ -3,25 +3,26 @@ import { useCallback } from 'react'
 
 import { imageModalAtom } from 'atoms/modal'
 import Modal from 'components/ui/Modal'
+import { getA11yImageAttributes } from 'libs/image'
 
 const ImageModal: React.FC = () => {
-  const [modal, setModal] = useAtom(imageModalAtom)
+  const [{ opened, srcSet, ...image }, setModal] = useAtom(imageModalAtom)
 
   const onOpenChange = useCallback(() => {
-    setModal({ name: undefined, opened: false, url: undefined })
+    setModal({ opened: false })
   }, [setModal])
+
+  const { alt, ...props } = getA11yImageAttributes({ ...image, lazy: false })
 
   return (
     <Modal
-      opened={modal.opened}
+      opened={opened}
       onOpenChange={onOpenChange}
-      title={modal.name ?? 'Image'}
+      title={image.alt ?? 'Image'}
       className="m-auto w-full overflow-scroll p-0"
       contentClassName="xs:min-w-[unset] xs:max-w-[unset] xs:w-[80vw] h-[100vh] xs:h-[80vh] bg-checkboard flex flex-col"
     >
-      {/* // FIXME(HiDeoo) */}
-      {/* eslint-disable-next-line jsx-a11y/alt-text,@next/next/no-img-element  */}
-      <img className="m-auto block max-h-[unset] max-w-[unset] object-none" src={modal.url} />
+      <img className="m-auto block max-h-[unset] max-w-[unset] object-none" alt={alt} {...props} />
     </Modal>
   )
 }
