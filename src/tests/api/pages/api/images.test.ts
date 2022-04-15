@@ -175,6 +175,8 @@ describe('images', () => {
 
         expect(json.name).toBe(filename)
 
+        expect(json.placeholder).toMatch(new RegExp(`^data:image/${IMAGE_DEFAULT_FORMAT};base64,`))
+
         fetchSpy.mockRestore()
       }))
 

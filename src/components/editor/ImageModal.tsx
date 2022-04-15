@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 
 import { imageModalAtom } from 'atoms/modal'
 import Modal from 'components/ui/Modal'
-import { getA11yImageAttributes } from 'libs/image'
+import { getA11yImageReactAttributes } from 'libs/image'
 
 const ImageModal: React.FC = () => {
   const [{ opened, srcSet, ...image }, setModal] = useAtom(imageModalAtom)
@@ -12,7 +12,7 @@ const ImageModal: React.FC = () => {
     setModal({ opened: false })
   }, [setModal])
 
-  const { alt, ...props } = getA11yImageAttributes({ ...image, lazy: false })
+  const { alt, ...props } = getA11yImageReactAttributes({ ...image, lazy: false })
 
   return (
     <Modal

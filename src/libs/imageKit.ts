@@ -14,6 +14,7 @@ export interface ImageData {
   height: number
   name: string
   original: string
+  placeholder: string
   responsive: Record<number, string>
   width: number
 }
@@ -61,7 +62,15 @@ export async function uploadToImageKit(userId: UserId, image: ParsedFile): Promi
   }
 }
 
-function getImageKitSignedUrls(file: ImageKitFile, name: string, isJpeg: boolean): ImageData {
+async function getImageKitSignedUrls(file: ImageKitFile, name: string, isJpeg: boolean): Promise<ImageData> {
+  const format = `f-${IMAGE_DEFAULT_FORMAT}`
+
+  const res = await fetch(
+    getImageKitSignedUrl(file.filePath, [format, 'q-10', 'bl-2', file.width < 100 ? `w-${file.width}` : 'w-100'])
+  )
+  const buffer = Buffer.from(await res.arrayBuffer())
+  const placeholder = 'data:' + res.headers.get('Content-Type') + ';base64,' + buffer.toString('base64')
+
   const originalTransforms = ['orig-true']
 
   if (isJpeg) {
@@ -71,16 +80,16 @@ function getImageKitSignedUrls(file: ImageKitFile, name: string, isJpeg: boolean
   const original = getImageKitSignedUrl(file.filePath, originalTransforms)
 
   const responsive: ImageData['responsive'] = {
-    [file.width]: getImageKitSignedUrl(file.filePath, [`f-${IMAGE_DEFAULT_FORMAT}`, `w-${file.width}`]),
+    [file.width]: getImageKitSignedUrl(file.filePath, [format, `w-${file.width}`]),
   }
 
   for (const breakpoint of IMAGE_RESPONSIVE_BREAKPOINTS_IN_PIXELS) {
     if (breakpoint < file.width) {
-      responsive[breakpoint] = getImageKitSignedUrl(file.filePath, [`f-${IMAGE_DEFAULT_FORMAT}`, `w-${breakpoint}`])
+      responsive[breakpoint] = getImageKitSignedUrl(file.filePath, [format, `w-${breakpoint}`])
     }
   }
 
-  return { height: file.height, name, original, responsive, width: file.width }
+  return { height: file.height, name, original, placeholder, responsive, width: file.width }
 }
 
 function getImageKitSignedUrl(filePath: string, transforms: string[]): string {

@@ -55,7 +55,7 @@ export function ImageKitTiptapNode(options: ImageKitTiptapNodeOptions) {
             return false
           }
 
-          const { alt, height, src, srcSet, width } = getA11yImageParams(element)
+          const { alt, base64Placeholder, height, src, srcSet, width } = getA11yImageParams(element)
           const responsive: ImageData['responsive'] = {}
 
           for (const srcSetElement of srcSet?.split(', ') ?? []) {
@@ -68,7 +68,7 @@ export function ImageKitTiptapNode(options: ImageKitTiptapNodeOptions) {
             responsive[parseInt(width.substring(-1), 10)] = src
           }
 
-          return { data: { height, name: alt, original: src, responsive, width } }
+          return { data: { height, name: alt, original: src, placeholder: base64Placeholder, responsive, width } }
         },
       },
     ],
@@ -85,6 +85,7 @@ export function ImageKitTiptapNode(options: ImageKitTiptapNodeOptions) {
         'img',
         getA11yImageAttributes({
           alt: HTMLAttributes.data.name,
+          base64Placeholder: HTMLAttributes.data.placeholder,
           height: HTMLAttributes.data.height,
           src: HTMLAttributes.data.original,
           srcSet: srcSetElements.join(', '),

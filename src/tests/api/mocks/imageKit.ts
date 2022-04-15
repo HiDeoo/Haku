@@ -4,6 +4,7 @@ import cuid from 'cuid'
 import multipartParser from 'lambda-multipart-parser'
 import { rest } from 'msw'
 
+import { IMAGE_DEFAULT_FORMAT } from 'constants/image'
 import { IMAGE_KIT_UPLOAD_URL } from 'libs/imageKit'
 
 const handlers = [
@@ -36,6 +37,15 @@ const handlers = [
         url: `${process.env.IMAGEKIT_URL_ENDPOINT}${filePath}`,
         width,
       })
+    )
+  }),
+  rest.get(`${process.env.IMAGEKIT_URL_ENDPOINT}/*`, (_req, res, ctx) => {
+    const image = Buffer.alloc(10, '.')
+
+    return res(
+      ctx.set('Content-Length', image.byteLength.toString()),
+      ctx.set('Content-Type', `image/${IMAGE_DEFAULT_FORMAT}`),
+      ctx.body(image)
     )
   }),
 ]
