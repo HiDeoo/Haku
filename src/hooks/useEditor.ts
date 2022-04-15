@@ -19,7 +19,7 @@ import EditorCodeBlock from 'components/editor/EditorCodeBlock'
 import { CODE_BLOCK_DEFAULT_LANGUAGE } from 'constants/editor'
 import useToast from 'hooks/useToast'
 import { getLowlight, ImageKit } from 'libs/editor'
-import { type ImageKitError, type ImageKitTiptapNodeOptions } from 'libs/imageKit'
+import { ImageKitError, type ImageKitTiptapNodeOptions } from 'libs/imageKitTiptapNode'
 import clst from 'styles/clst'
 import styles from 'styles/Editor.module.css'
 
