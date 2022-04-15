@@ -173,6 +173,8 @@ describe('images', () => {
         expect(typeof json.height).toBe('number')
         expect(typeof json.width).toBe('number')
 
+        expect(json.name).toBe(filename)
+
         fetchSpy.mockRestore()
       }))
 

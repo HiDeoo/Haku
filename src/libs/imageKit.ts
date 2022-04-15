@@ -12,6 +12,7 @@ export const IMAGE_KIT_UPLOAD_URL = 'https://upload.imagekit.io/api/v1/files/upl
 
 export interface ImageData {
   height: number
+  name: string
   original: string
   responsive: Record<number, string>
   width: number
@@ -48,7 +49,11 @@ export async function uploadToImageKit(userId: UserId, image: ParsedFile): Promi
       throw new Error('Unable to upload image to ImageKit.')
     }
 
-    return getImageKitSignedUrls(json, image.mimetype === 'image/jpeg' || image.mimetype === 'image/jpg')
+    return getImageKitSignedUrls(
+      json,
+      image.originalname,
+      image.mimetype === 'image/jpeg' || image.mimetype === 'image/jpg'
+    )
   } catch (error) {
     console.error('Unable to upload image to ImageKit:', isImageKitError(json) ? json.message : error)
 
@@ -56,7 +61,7 @@ export async function uploadToImageKit(userId: UserId, image: ParsedFile): Promi
   }
 }
 
-function getImageKitSignedUrls(file: ImageKitFile, isJpeg: boolean): ImageData {
+function getImageKitSignedUrls(file: ImageKitFile, name: string, isJpeg: boolean): ImageData {
   const originalTransforms = ['orig-true']
 
   if (isJpeg) {
@@ -75,7 +80,7 @@ function getImageKitSignedUrls(file: ImageKitFile, isJpeg: boolean): ImageData {
     }
   }
 
-  return { height: file.height, original, responsive, width: file.width }
+  return { height: file.height, name, original, responsive, width: file.width }
 }
 
 function getImageKitSignedUrl(filePath: string, transforms: string[]): string {

@@ -56,6 +56,7 @@ export function ImageKitTiptapNode(options: ImageKitTiptapNodeOptions) {
 
           const height = element.getAttribute('height')
           const width = element.getAttribute('width')
+          const name = element.getAttribute('alt')
           const original = element.getAttribute('src')
           const responsive: ImageData['responsive'] = {}
 
@@ -69,7 +70,7 @@ export function ImageKitTiptapNode(options: ImageKitTiptapNodeOptions) {
             responsive[parseInt(width.substring(-1), 10)] = src
           }
 
-          return { data: { height, original, responsive, width } }
+          return { data: { height, name, original, responsive, width } }
         },
       },
     ],
@@ -85,8 +86,11 @@ export function ImageKitTiptapNode(options: ImageKitTiptapNodeOptions) {
       return [
         'img',
         {
+          alt: HTMLAttributes.data.name,
           crossorigin: 'anonymous',
+          decoding: 'async',
           height: HTMLAttributes.data.height,
+          loading: 'lazy',
           sizes: '100vw',
           src: HTMLAttributes.data.original,
           srcset: srcSetElements.join(', '),
