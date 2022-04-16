@@ -7,6 +7,7 @@ import { HttpMethod } from 'constants/http'
 import { IMAGE_DEFAULT_FORMAT, IMAGE_RESPONSIVE_BREAKPOINTS_IN_PIXELS } from 'constants/image'
 import { ApiError, API_ERROR_IMAGE_UPLOAD_UNKNOWN } from 'libs/api/routes/errors'
 import { ParsedFile } from 'libs/api/routes/middlewares'
+import { isJpegMimeType } from 'libs/media'
 
 export const IMAGE_KIT_UPLOAD_URL = 'https://upload.imagekit.io/api/v1/files/upload'
 
@@ -50,11 +51,7 @@ export async function uploadToImageKit(userId: UserId, image: ParsedFile): Promi
       throw new Error('Unable to upload image to ImageKit.')
     }
 
-    return getImageKitSignedUrls(
-      json,
-      image.originalname,
-      image.mimetype === 'image/jpeg' || image.mimetype === 'image/jpg'
-    )
+    return getImageKitSignedUrls(json, image.originalname, isJpegMimeType(image.mimetype))
   } catch (error) {
     console.error('Unable to upload image to ImageKit:', isImageKitError(json) ? json.message : error)
 

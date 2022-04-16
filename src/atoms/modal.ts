@@ -5,7 +5,7 @@ import { type MutationAction } from 'libs/api/client'
 import { type FolderData } from 'libs/db/folder'
 import { type NoteMetadata } from 'libs/db/note'
 import { type TodoMetadata } from 'libs/db/todo'
-import { type A11yImageParams } from 'libs/image'
+import { type A11yImageParams } from 'libs/media'
 
 export const [folderModalAtom, setFolderModalOpenedAtom] = createMutationModalAtom<FolderData>()
 export const [contentModalAtom, setContentModalOpenedAtom] = createMutationModalAtom<NoteMetadata | TodoMetadata>()

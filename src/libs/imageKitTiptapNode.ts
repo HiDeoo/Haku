@@ -7,9 +7,9 @@ import { Step, type Mappable, StepResult } from 'prosemirror-transform'
 
 import { IMAGE_MAX_SIZE_IN_MEGABYTES, IMAGE_SUPPORTED_TYPES } from 'constants/image'
 import client from 'libs/api/client'
-import { getA11yImageAttributes, getA11yImageParams, type A11yImageParams } from 'libs/image'
 import { type ImageData } from 'libs/imageKit'
 import { getBytesFromMegaBytes } from 'libs/math'
+import { getA11yImageAttributes, getA11yImageParams, type A11yImageParams } from 'libs/media'
 
 const tiptapNodeName = 'imagekit-image'
 
