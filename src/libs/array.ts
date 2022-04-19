@@ -21,3 +21,7 @@ export function groupByKey<
     return acc
   }, {} as Record<TRecord[TKey], TRecord[]>)
 }
+
+export function sortTupleArrayAlphabetically<TItem extends [string, string]>(array: TItem[]): TItem[] {
+  return array.sort((a, b) => a[0].localeCompare(b[0]))
+}

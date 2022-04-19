@@ -7,13 +7,13 @@ import { Step, type Mappable, StepResult } from 'prosemirror-transform'
 
 import { IMAGE_MAX_SIZE_IN_MEGABYTES, IMAGE_SUPPORTED_TYPES } from 'constants/image'
 import client from 'libs/api/client'
-import { type ImageData } from 'libs/imageKit'
+import { type ImageData } from 'libs/cloudinary'
+import { getA11yImageAttributes, getA11yImageParams, type A11yImageParams } from 'libs/image'
 import { getBytesFromMegaBytes } from 'libs/math'
-import { getA11yImageAttributes, getA11yImageParams, type A11yImageParams } from 'libs/media'
 
-const tiptapNodeName = 'imagekit-image'
+const tiptapNodeName = 'cloudinary-image'
 
-export function ImageKitTiptapNode(options: ImageKitTiptapNodeOptions) {
+export function CloudinaryTiptapNode(options: CloudinaryTiptapNodeOptions) {
   return Node.create({
     name: tiptapNodeName,
     addAttributes() {
@@ -41,7 +41,7 @@ export function ImageKitTiptapNode(options: ImageKitTiptapNodeOptions) {
       }
     },
     addProseMirrorPlugins() {
-      return [imageKitProseMirrorPlugin(this.editor, options)]
+      return [cloudinaryProseMirrorPlugin(this.editor, options)]
     },
     draggable: true,
     group() {
@@ -96,7 +96,7 @@ export function ImageKitTiptapNode(options: ImageKitTiptapNodeOptions) {
   })
 }
 
-function imageKitProseMirrorPlugin(editor: Editor, options: ImageKitTiptapNodeOptions) {
+function cloudinaryProseMirrorPlugin(editor: Editor, options: CloudinaryTiptapNodeOptions) {
   return new Plugin({
     props: {
       handleDoubleClick(_view, _pos, event) {
@@ -145,7 +145,7 @@ function imageKitProseMirrorPlugin(editor: Editor, options: ImageKitTiptapNodeOp
 function uploadImagesToEditor(
   editor: Editor,
   files: (File | DataTransferItem)[],
-  options: ImageKitTiptapNodeOptions,
+  options: CloudinaryTiptapNodeOptions,
   pos?: number
 ): boolean {
   // We do not care about events that contains HTML, e.g. pasting from Word or the editor itself.
@@ -157,7 +157,7 @@ function uploadImagesToEditor(
     const formatter = new Intl.ListFormat('en', { style: 'short', type: 'conjunction' })
 
     options.onUploadError?.(
-      new ImageKitError(
+      new CloudinaryError(
         'Invalid image file type.',
         `The supported formats are ${formatter.format(
           IMAGE_SUPPORTED_TYPES.map((format) => format.replace('image/', ''))
@@ -187,7 +187,7 @@ function uploadImagesToEditor(
 
     if (image.size > getBytesFromMegaBytes(IMAGE_MAX_SIZE_IN_MEGABYTES)) {
       options.onUploadError?.(
-        new ImageKitError('Image file too big.', `The maximum file size is ${IMAGE_MAX_SIZE_IN_MEGABYTES}MB.`)
+        new CloudinaryError('Image file too big.', `The maximum file size is ${IMAGE_MAX_SIZE_IN_MEGABYTES}MB.`)
       )
 
       continue
@@ -220,7 +220,7 @@ function uploadImagesToEditor(
 
 async function uploadImageToEditor(
   editor: Editor,
-  options: ImageKitTiptapNodeOptions,
+  options: CloudinaryTiptapNodeOptions,
   uploadQueue: UploadQueue,
   image: File,
   id: string
@@ -228,7 +228,7 @@ async function uploadImageToEditor(
   try {
     const data = await upload(image)
 
-    const position = getImageKitNodePositionWithId(editor, id)
+    const position = getCloudinaryNodePositionWithId(editor, id)
 
     if (position) {
       editor.view.dispatch(
@@ -238,7 +238,7 @@ async function uploadImageToEditor(
 
     uploadQueue.delete(id)
   } catch (error) {
-    const position = getImageKitNodePositionWithId(editor, id)
+    const position = getCloudinaryNodePositionWithId(editor, id)
 
     if (position) {
       const transaction = editor.view.state.tr.setMeta('addToHistory', false)
@@ -257,7 +257,7 @@ async function uploadImageToEditor(
   }
 }
 
-function getImageKitNodePositionWithId(editor: Editor, id: string): number | undefined {
+function getCloudinaryNodePositionWithId(editor: Editor, id: string): number | undefined {
   let position: number | undefined
 
   editor.view.state.doc.descendants((node, pos) => {
@@ -280,7 +280,7 @@ async function upload(image: File): Promise<ImageData> {
   return client.post('images', { body }).json<ImageData>()
 }
 
-export class ImageKitError extends Error {
+export class CloudinaryError extends Error {
   constructor(public message: string, public details?: string) {
     super(message)
 
@@ -337,9 +337,9 @@ export class SetAttrsStep extends Step {
 
 Step.jsonID('setAttrs', SetAttrsStep)
 
-export interface ImageKitTiptapNodeOptions {
+export interface CloudinaryTiptapNodeOptions {
   onImageDoubleClick?: (params: A11yImageParams) => void
-  onUploadError?: (error: ImageKitError) => void
+  onUploadError?: (error: CloudinaryError) => void
 }
 
 type UploadQueue = Set<string>

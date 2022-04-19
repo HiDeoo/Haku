@@ -13,8 +13,7 @@ import {
   IMAGE_SUPPORTED_TYPES,
 } from 'constants/image'
 import { API_ERROR_IMAGE_UPLOAD_UNKNOWN, type ApiErrorResponse } from 'libs/api/routes/errors'
-import { IMAGE_KIT_UPLOAD_URL } from 'libs/imageKit'
-import { type ImageData } from 'libs/imageKit'
+import { CLOUDINARY_BASE_DELIVERY_URL, getCloudinaryApiUrl, type ImageData } from 'libs/cloudinary'
 import { getBytesFromMegaBytes } from 'libs/math'
 import * as index from 'pages/api/images'
 import { getTestUser, testApiRoute, type TestApiRouterHandler } from 'tests/api'
@@ -95,7 +94,7 @@ describe('images', () => {
       testApiRoute(indexHandler, async ({ fetch }) => {
         const { body } = getFakeImageFormData()
 
-        server.use(rest.post(IMAGE_KIT_UPLOAD_URL, (_req, res, ctx) => res.once(ctx.status(500))))
+        server.use(rest.post(getCloudinaryApiUrl('/image/upload'), (_req, res, ctx) => res.once(ctx.status(500))))
 
         const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => undefined)
 
@@ -113,14 +112,16 @@ describe('images', () => {
         consoleSpy.mockRestore()
       }))
 
-    test('should upload an image to ImageKit', async () =>
+    test('should upload an image to Cloudinary', async () =>
       testApiRoute(indexHandler, async ({ fetch }) => {
+        const uploadUrl = getCloudinaryApiUrl('/image/upload')
+
         const { body, extension, filename } = getFakeImageFormData()
 
         const fetchSpy = jest.spyOn(global, 'fetch')
 
         server.use(
-          rest.post(IMAGE_KIT_UPLOAD_URL, async (req) => {
+          rest.post(uploadUrl, async (req) => {
             const formData = await multipartParser.parse({
               body: req.body,
               headers: { 'Content-Type': req.headers.get('Content-Type') },
@@ -131,11 +132,10 @@ describe('images', () => {
             expect(formData.files[0]?.contentType).toBe(`image/${extension}`)
             expect(formData.files[0]?.fieldname).toBe('file')
 
-            expect(formData.fileName).toBe(filename)
+            expect(formData.api_key).toBe(process.env.CLOUDINARY_API_KEY)
             expect(formData.folder).toBe(getTestUser().userId)
-            expect(formData.isPrivateFile).toBe('true')
-            expect(formData.overwriteFile).toBe('false')
-            expect(formData.useUniqueFileName).toBe('true')
+            expect(formData.type).toBe('private')
+            expect(typeof formData.timestamp).toBe('string')
           })
         )
 
@@ -144,28 +144,21 @@ describe('images', () => {
           body: body,
         })
 
-        const imageKitApiReqIndex = fetchSpy.mock.calls.findIndex(([callUrl]) => callUrl === IMAGE_KIT_UPLOAD_URL)
+        const cloudinaryApiReqIndex = fetchSpy.mock.calls.findIndex(([callUrl]) => callUrl === uploadUrl)
 
-        const imageKitApiReq = fetchSpy.mock.calls[imageKitApiReqIndex]
-        assert(imageKitApiReq)
+        const cloudinaryApiReq = fetchSpy.mock.calls[cloudinaryApiReqIndex]
+        assert(cloudinaryApiReq)
 
-        const [imageKitApiCallUrl, imageKitApiCallOptions] = imageKitApiReq
+        const [cloudinaryApiCallUrl, cloudinaryApiCallOptions] = cloudinaryApiReq
 
-        expect(imageKitApiCallUrl).toBe(IMAGE_KIT_UPLOAD_URL)
-        expect(imageKitApiCallOptions?.method).toBe(HttpMethod.POST)
-
-        assert(typeof imageKitApiCallOptions?.headers === 'object')
-        const headers = imageKitApiCallOptions.headers as Record<string, string>
-
-        expect(headers.Authorization).toBe(
-          `Basic ${Buffer.from(`${process.env.IMAGEKIT_PRIVATE_API_KEY}:`).toString('base64')}`
-        )
+        expect(cloudinaryApiCallUrl).toBe(uploadUrl)
+        expect(cloudinaryApiCallOptions?.method).toBe(HttpMethod.POST)
 
         expect(res.status).toBe(StatusCode.SuccessOK)
 
         const json = await res.json<ImageData>()
 
-        expect(isSignedImageUrlWithTransforms(json.original, ['orig-true'])).toBe(true)
+        expect(isSignedImageUrlWithTransforms(json.original, [])).toBe(true)
 
         expect(typeof json.responsive).toBe('object')
         expect(Object.keys(json.responsive).length).toBeGreaterThan(0)
@@ -173,7 +166,7 @@ describe('images', () => {
         expect(typeof json.height).toBe('number')
         expect(typeof json.width).toBe('number')
 
-        expect(json.name).toBe(filename)
+        expect(json.name).toBe(filename.split('.')[0])
 
         expect(json.placeholder).toMatch(new RegExp(`^data:image/${IMAGE_DEFAULT_FORMAT};base64,`))
 
@@ -194,7 +187,7 @@ describe('images', () => {
 
         expect(Object.keys(json.responsive).length).toBe(1)
 
-        expect(isSignedImageUrlWithTransforms(json.responsive[width], [`w-${width}`])).toBe(true)
+        expect(isSignedImageUrlWithTransforms(json.responsive[width], [`w_${width}`])).toBe(true)
       }))
 
     test('should return the responsive URLs for an image with a width in the responsive breakpoints', async () =>
@@ -214,10 +207,10 @@ describe('images', () => {
         expect(Object.keys(json.responsive).length).toBe(expectedWidths.length + 1)
 
         for (const expectedWidth of expectedWidths) {
-          expect(isSignedImageUrlWithTransforms(json.responsive[expectedWidth], [`w-${expectedWidth}`])).toBe(true)
+          expect(isSignedImageUrlWithTransforms(json.responsive[expectedWidth], [`w_${expectedWidth}`])).toBe(true)
         }
 
-        expect(isSignedImageUrlWithTransforms(json.responsive[width], [`w-${width}`])).toBe(true)
+        expect(isSignedImageUrlWithTransforms(json.responsive[width], [`w_${width}`])).toBe(true)
       }))
 
     test('should return the responsive URLs for an image with a width of a responsive breakpoint', async () =>
@@ -237,10 +230,10 @@ describe('images', () => {
         expect(Object.keys(json.responsive).length).toBe(expectedWidths.length)
 
         for (const expectedWidth of expectedWidths) {
-          expect(isSignedImageUrlWithTransforms(json.responsive[expectedWidth], [`w-${expectedWidth}`])).toBe(true)
+          expect(isSignedImageUrlWithTransforms(json.responsive[expectedWidth], [`w_${expectedWidth}`])).toBe(true)
         }
 
-        expect(isSignedImageUrlWithTransforms(json.responsive[width], [`w-${width}`])).toBe(true)
+        expect(isSignedImageUrlWithTransforms(json.responsive[width], [`w_${width}`])).toBe(true)
       }))
 
     test('should return the responsive URLs for an image with a width larger than the responsive breakpoints', async () =>
@@ -260,10 +253,10 @@ describe('images', () => {
         expect(Object.keys(json.responsive).length).toBe(expectedWidths.length + 1)
 
         for (const expectedWidth of expectedWidths) {
-          expect(isSignedImageUrlWithTransforms(json.responsive[expectedWidth], [`w-${expectedWidth}`])).toBe(true)
+          expect(isSignedImageUrlWithTransforms(json.responsive[expectedWidth], [`w_${expectedWidth}`])).toBe(true)
         }
 
-        expect(isSignedImageUrlWithTransforms(json.responsive[width], [`w-${width}`])).toBe(true)
+        expect(isSignedImageUrlWithTransforms(json.responsive[width], [`w_${width}`])).toBe(true)
       }))
 
     test('should return a progressive JPEG for the original image when using JPEG image', async () =>
@@ -276,7 +269,7 @@ describe('images', () => {
         })
         const json = await res.json<ImageData>()
 
-        expect(isSignedImageUrlWithTransforms(json.original, ['orig-true', 'pr-true'])).toBe(true)
+        expect(isSignedImageUrlWithTransforms(json.original, ['fl_progressive'], true)).toBe(true)
       }))
 
     test('should not return a progressive JPEG for the original image when not using a JPEG image', async () =>
@@ -289,22 +282,22 @@ describe('images', () => {
         })
         const json = await res.json<ImageData>()
 
-        expect(isSignedImageUrlWithTransforms(json.original, ['orig-true'])).toBe(true)
+        expect(isSignedImageUrlWithTransforms(json.original, [])).toBe(true)
         expect(isSignedImageUrlWithTransforms(json.original, ['pr-true'])).toBe(false)
       }))
   })
 })
 
-function isSignedImageUrlWithTransforms(url: string | undefined, transforms: string[]): boolean {
+function isSignedImageUrlWithTransforms(url: string | undefined, transforms: string[], isOriginal = false): boolean {
   if (
     typeof url !== 'string' ||
-    (!url.startsWith(`${process.env.IMAGEKIT_URL_ENDPOINT}/tr:`) && url.includes('?ik-s='))
+    !url.startsWith(`${CLOUDINARY_BASE_DELIVERY_URL}/${process.env.CLOUDINARY_CLOUD_NAME}/image/private/s--`)
   ) {
     return false
   }
 
-  if (!transforms.includes('orig-true')) {
-    transforms.push(`f-${IMAGE_DEFAULT_FORMAT}`)
+  if (transforms.length > 0 && !isOriginal) {
+    transforms.push(`f_${IMAGE_DEFAULT_FORMAT}`)
   }
 
   return transforms.every((transform) => url.match(new RegExp(`${transform}[/,]`)))

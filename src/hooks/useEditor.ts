@@ -18,9 +18,9 @@ import { imageModalAtom } from 'atoms/modal'
 import EditorCodeBlock from 'components/editor/EditorCodeBlock'
 import { CODE_BLOCK_DEFAULT_LANGUAGE } from 'constants/editor'
 import useToast from 'hooks/useToast'
-import { getLowlight, ImageKit } from 'libs/editor'
-import { ImageKitError, type ImageKitTiptapNodeOptions } from 'libs/imageKitTiptapNode'
-import { type A11yImageParams } from 'libs/media'
+import { CloudinaryError, type CloudinaryTiptapNodeOptions } from 'libs/cloudinaryTiptapNode'
+import { getLowlight, Cloudinary } from 'libs/editor'
+import { type A11yImageParams } from 'libs/image'
 import clst from 'styles/clst'
 import styles from 'styles/Editor.module.css'
 
@@ -60,7 +60,7 @@ export function useEditor(options: UseEditorOptions, deps?: DependencyList): Edi
   )
 
   const onUploadError = useCallback(
-    (error: ImageKitError) => {
+    (error: CloudinaryError) => {
       addToast({
         details: error.details,
         icon: RiErrorWarningLine,
@@ -90,7 +90,7 @@ export function useEditor(options: UseEditorOptions, deps?: DependencyList): Edi
 
 function getExtensions(
   starterKitOptions = starterKitDefaultOptions,
-  imageKitOptions: ImageKitTiptapNodeOptions = {},
+  cloudinaryOptions: CloudinaryTiptapNodeOptions = {},
   extensions: Extensions = [],
   setLinkModalOpened?: React.Dispatch<React.SetStateAction<boolean>>
 ): Extensions {
@@ -113,7 +113,7 @@ function getExtensions(
 
       return extension
     }),
-    ImageKit(imageKitOptions),
+    Cloudinary(cloudinaryOptions),
     ...extensions,
   ]
 }

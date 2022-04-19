@@ -43,8 +43,8 @@ export function getA11yImageParams(element: HTMLImageElement): A11yImageParams {
   }
 }
 
-export function isJpegMimeType(mimeType: string) {
-  return mimeType === 'image/jpeg' || mimeType === 'image/jpg'
+export function isJpegExtension(ext: string) {
+  return ext === 'jpg' || ext === 'jpeg'
 }
 
 export interface A11yImageParams {

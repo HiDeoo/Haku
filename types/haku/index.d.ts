@@ -19,9 +19,9 @@ declare global {
       EMAIL_JS_SERVICE_ID: string
       EMAIL_JS_TEMPLATE_ID_LOGIN: string
 
-      IMAGEKIT_URL_BASE: string
-      IMAGEKIT_URL_ENDPOINT: string
-      IMAGEKIT_PRIVATE_API_KEY: string
+      CLOUDINARY_CLOUD_NAME: string
+      CLOUDINARY_API_KEY: string
+      CLOUDINARY_API_SECRET: string
 
       ADMIN_API_KEY: string
 
