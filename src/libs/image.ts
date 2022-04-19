@@ -47,6 +47,10 @@ export function isJpegExtension(ext: string) {
   return ext === 'jpg' || ext === 'jpeg'
 }
 
+export function isGifExtension(ext: string) {
+  return ext === 'gif'
+}
+
 export interface A11yImageParams {
   alt?: string | null
   base64Placeholder?: string | null

@@ -8,7 +8,7 @@ import { IMAGE_DEFAULT_FORMAT, IMAGE_RESPONSIVE_BREAKPOINTS_IN_PIXELS } from 'co
 import { ApiError, API_ERROR_IMAGE_UPLOAD_UNKNOWN } from 'libs/api/routes/errors'
 import { ParsedFile } from 'libs/api/routes/middlewares'
 import { sortTupleArrayAlphabetically } from 'libs/array'
-import { isJpegExtension } from 'libs/image'
+import { isGifExtension, isJpegExtension } from 'libs/image'
 
 export interface ImageData {
   height: number
@@ -78,9 +78,13 @@ export function getCloudinaryApiUrl(action: `/${string}`) {
 async function getImageData(file: CloudinaryFile): Promise<ImageData> {
   const format = `f_${IMAGE_DEFAULT_FORMAT}`
 
-  const res = await fetch(
-    getCloudinarySignedUrl(file, [format, 'q_20', 'e_blur:1000', file.width < 100 ? `w_${file.width}` : 'w_100'])
-  )
+  const placeholderTransforms = [format, 'q_20', 'e_blur:1000', file.width < 100 ? `w_${file.width}` : 'w_100']
+
+  if (isGifExtension(file.format)) {
+    placeholderTransforms.push('pg_1')
+  }
+
+  const res = await fetch(getCloudinarySignedUrl(file, placeholderTransforms))
   const buffer = Buffer.from(await res.arrayBuffer())
   const placeholder = 'data:' + res.headers.get('Content-Type') + ';base64,' + buffer.toString('base64')
 
