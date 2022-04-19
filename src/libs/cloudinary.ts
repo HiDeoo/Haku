@@ -79,7 +79,7 @@ async function getImageData(file: CloudinaryFile): Promise<ImageData> {
   const format = `f_${IMAGE_DEFAULT_FORMAT}`
 
   const res = await fetch(
-    getCloudinarySignedUrl(file, [format, 'q_20', 'e_blur:1500', file.width < 100 ? `w_${file.width}` : 'w_100'])
+    getCloudinarySignedUrl(file, [format, 'q_20', 'e_blur:1000', file.width < 100 ? `w_${file.width}` : 'w_100'])
   )
   const buffer = Buffer.from(await res.arrayBuffer())
   const placeholder = 'data:' + res.headers.get('Content-Type') + ';base64,' + buffer.toString('base64')
