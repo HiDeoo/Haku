@@ -1,3 +1,4 @@
+import type FormData from 'form-data'
 import { type NextApiHandler } from 'next'
 import { type Session } from 'next-auth'
 import { testApiHandler, type TestParameters } from 'next-test-api-route-handler'
@@ -8,7 +9,7 @@ import { getTestApiUrl, rest, server } from 'tests/api/mocks/http'
 export const TEST_USER_COUNT = 2
 
 export function testApiRoute<TResponseType>(
-  handler: NextApiHandler<TResponseType>,
+  handler: TestApiRouterHandler<TResponseType>,
   test: (obj: { fetch: FetchFn }) => Promise<void>,
   options?: TestApiRouteOptions
 ) {
@@ -51,12 +52,15 @@ function mapDynamicRouteParams(params: TestApiRouteOptions['dynamicRouteParams']
   )
 }
 
+export type TestApiRouterHandler<TResponseType = unknown> = NextApiHandler<TResponseType> & { config?: object }
+
 interface TestApiRouteOptions {
   dynamicRouteParams?: Record<string, string | string[] | number>
   userId?: UserId
 }
 
-type FetchFn = (init?: RequestInit) => FetchReturnType
+type FetchRequestInit = Omit<RequestInit, 'body'> & { body?: RequestInit['body'] | FormData }
+type FetchFn = (init?: FetchRequestInit) => FetchReturnType
 type FetchReturnValue = Awaited<ReturnType<typeof fetch>>
 type FetchReturnType = Promise<
   Omit<FetchReturnValue, 'json' | 'headers'> & {

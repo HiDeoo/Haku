@@ -19,6 +19,10 @@ declare global {
       EMAIL_JS_SERVICE_ID: string
       EMAIL_JS_TEMPLATE_ID_LOGIN: string
 
+      CLOUDINARY_CLOUD_NAME: string
+      CLOUDINARY_API_KEY: string
+      CLOUDINARY_API_SECRET: string
+
       ADMIN_API_KEY: string
 
       NEXTAUTH_SECRET: string
@@ -71,6 +75,36 @@ declare global {
   interface FetchEvent {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     readonly preloadResponse?: Promise<any>
+  }
+
+  // https://github.com/microsoft/TypeScript/pull/47254
+  declare namespace Intl {
+    type ListFormatLocaleMatcher = 'lookup' | 'best fit'
+    type ListFormatType = 'conjunction' | 'disjunction' | 'unit'
+    type ListFormatStyle = 'long' | 'short' | 'narrow'
+
+    interface ListFormatOptions {
+      localeMatcher?: ListFormatLocaleMatcher
+      type?: ListFormatType
+      style?: ListFormatStyle
+    }
+
+    interface ListFormat {
+      format(list: Iterable<string>): string
+
+      formatToParts(list: Iterable<string>): { type: 'element' | 'literal'; value: string }[]
+    }
+
+    const ListFormat: {
+      prototype: ListFormat
+
+      new (locales?: BCP47LanguageTag | BCP47LanguageTag[], options?: ListFormatOptions): ListFormat
+
+      supportedLocalesOf(
+        locales: BCP47LanguageTag | BCP47LanguageTag[],
+        options?: Pick<ListFormatOptions, 'localeMatcher'>
+      ): BCP47LanguageTag[]
+    }
   }
 
   type UserId = Session['user']['id']

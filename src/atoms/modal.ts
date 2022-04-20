@@ -5,11 +5,14 @@ import { type MutationAction } from 'libs/api/client'
 import { type FolderData } from 'libs/db/folder'
 import { type NoteMetadata } from 'libs/db/note'
 import { type TodoMetadata } from 'libs/db/todo'
+import { type A11yImageParams } from 'libs/image'
 
 export const [folderModalAtom, setFolderModalOpenedAtom] = createMutationModalAtom<FolderData>()
 export const [contentModalAtom, setContentModalOpenedAtom] = createMutationModalAtom<NoteMetadata | TodoMetadata>()
 
 export const [shortcutModalAtom, setShortcutModalOpenedAtom] = createModalAtom()
+
+export const imageModalAtom = atom<ImageModal>({ opened: false })
 
 function createMutationModalAtom<TData>(): [
   WritableAtom<MutationModal<TData>, MutationModal<TData>>,
@@ -43,5 +46,9 @@ function createModalAtom(): [PrimitiveAtom<boolean>, WritableAtom<null, boolean>
 interface MutationModal<TData> {
   action: MutationAction
   data: TData | undefined
+  opened: boolean
+}
+
+interface ImageModal extends Partial<A11yImageParams> {
   opened: boolean
 }

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import Title from 'components/app/Title'
 import EditorLinkModal from 'components/editor/EditorLinkModal'
+import ImageModal from 'components/editor/ImageModal'
 import NoteInspector from 'components/note/NoteInspector'
 import NoteNavbar from 'components/note/NoteNavbar'
 import Flex from 'components/ui/Flex'
@@ -45,6 +46,7 @@ const Note: React.FC<NoteProps> = ({ id }) => {
   const editor = useEditor({
     autofocus: 'start',
     className: 'h-full p-3 min-w-0',
+    contentId: id,
     extensions: [ReplaceContent, HeadingWithId],
     onUpdate: updateToc,
     setLinkModalOpened,
@@ -144,18 +146,12 @@ const Note: React.FC<NoteProps> = ({ id }) => {
   }, [editorState.pristine, idle, save])
 
   const isOfflineWithoutData = offline && isLoading && !data
-  const isLoadingOrSaving = isLoading || isSaving
+  const disabled = isLoading || isSaving || !editor?.isEditable || isOfflineWithoutData
 
   return (
     <>
       <Title pageTitle={data?.name} />
-      <NoteNavbar
-        save={save}
-        isSaving={isSaving}
-        noteName={data?.name}
-        editorState={editorState}
-        disabled={isLoadingOrSaving || isOfflineWithoutData}
-      />
+      <NoteNavbar save={save} isSaving={isSaving} noteName={data?.name} disabled={disabled} editorState={editorState} />
       <Flex fullHeight className="overflow-hidden">
         {isOfflineWithoutData ? (
           <Offline />
@@ -173,11 +169,12 @@ const Note: React.FC<NoteProps> = ({ id }) => {
         )}
         <NoteInspector
           editor={editor}
+          disabled={disabled}
           editorState={editorState}
-          disabled={isLoadingOrSaving || isOfflineWithoutData}
           setLinkModalOpened={setLinkModalOpened}
         />
         <EditorLinkModal opened={linkModalOpened} onOpenChange={setLinkModalOpened} editor={editor} />
+        <ImageModal />
       </Flex>
     </>
   )

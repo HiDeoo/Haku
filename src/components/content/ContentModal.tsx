@@ -1,7 +1,7 @@
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { useEffect } from 'react'
 import { type NestedValue, useForm } from 'react-hook-form'
-import { RiFileAddLine } from 'react-icons/ri'
+import { RiErrorWarningLine, RiFileAddLine } from 'react-icons/ri'
 
 import { contentModalAtom, setContentModalOpenedAtom } from 'atoms/modal'
 import FolderPicker from 'components/folder/FolderPicker'
@@ -15,12 +15,15 @@ import { ROOT_FOLDER_ID } from 'constants/folder'
 import useContentType from 'hooks/useContentType'
 import useMetadataMutation, { type MetadataMutation } from 'hooks/useMetadataMutation'
 import { useNetworkStatus } from 'hooks/useNetworkStatus'
+import useToast from 'hooks/useToast'
 import { type FolderData } from 'libs/db/folder'
 
 const ContentModal: React.FC = () => {
   const { offline } = useNetworkStatus()
 
   const { cType, lcType } = useContentType()
+
+  const { addToast } = useToast()
 
   const {
     control,
@@ -53,13 +56,24 @@ const ContentModal: React.FC = () => {
 
   function onConfirmDelete() {
     if (isRemoving) {
-      mutate({ action: 'delete', id: content.id }, { onSuccess: onSuccessfulMutation })
+      mutate({ action: 'delete', id: content.id }, { onSuccess: onSuccessfulMutation, onError: onErrorMutation })
     }
   }
 
   function onSuccessfulMutation() {
     setOpened(false)
     reset()
+  }
+
+  function onErrorMutation() {
+    const action = isRemoving ? 'delete' : isUpdating ? 'update' : 'create'
+
+    addToast({
+      details: 'Please try again.',
+      icon: RiErrorWarningLine,
+      text: `Failed to ${action} ${lcType}.`,
+      type: 'foreground',
+    })
   }
 
   const title = `${isUpdating ? 'Edit' : 'New'} ${cType}`

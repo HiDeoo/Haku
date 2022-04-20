@@ -4,6 +4,7 @@ import { useCallback, useContext, useEffect, useRef } from 'react'
 import { resetTodoAtomsAtom, type TodoEditorState, todoEditorStateAtom, todoFocusMapAtom } from 'atoms/todo'
 import { todoNodeChildrenAtom, todoNodeNodesAtom } from 'atoms/todoNode'
 import Title from 'components/app/Title'
+import ImageModal from 'components/editor/ImageModal'
 import TodoNavbar from 'components/todo/TodoNavbar'
 import TodoNodeChildren from 'components/todo/TodoNodeChildren'
 import { type TodoNodeItemHandle } from 'components/todo/TodoNodeItem'
@@ -109,17 +110,13 @@ const Todo: React.FC<TodoProps> = ({ id }) => {
   )
 
   const isOfflineWithoutData = offline && isLoading && !data
+  const disabled = isLoading || isOfflineWithoutData
 
   return (
     <>
       <Title pageTitle={data?.name} />
       <Flex direction="col" fullHeight className="overflow-hidden">
-        <TodoNavbar
-          todoId={id}
-          todoName={data?.name}
-          focusTodoNode={focusTodoNode}
-          disabled={isLoading || isOfflineWithoutData}
-        />
+        <TodoNavbar todoId={id} disabled={disabled} todoName={data?.name} focusTodoNode={focusTodoNode} />
         {isOfflineWithoutData ? (
           <Offline />
         ) : isLoading ? (
@@ -133,16 +130,19 @@ const Todo: React.FC<TodoProps> = ({ id }) => {
             ))}
           </Shimmer>
         ) : (
-          <TodoContext.Provider value={todoNodeContentRefs}>
-            <Flex
-              fullHeight
-              fullWidth
-              direction="col"
-              className="overflow-y-auto supports-max:pb-[max(0px,env(safe-area-inset-bottom))]"
-            >
-              <TodoNodeChildren onFocusTodoNode={setTodoFocus} setTodoNodeItemRef={setTodoNodeItemRef} />
-            </Flex>
-          </TodoContext.Provider>
+          <>
+            <TodoContext.Provider value={todoNodeContentRefs}>
+              <Flex
+                fullHeight
+                fullWidth
+                direction="col"
+                className="overflow-y-auto supports-max:pb-[max(0px,env(safe-area-inset-bottom))]"
+              >
+                <TodoNodeChildren onFocusTodoNode={setTodoFocus} setTodoNodeItemRef={setTodoNodeItemRef} />
+              </Flex>
+            </TodoContext.Provider>
+            <ImageModal />
+          </>
         )}
       </Flex>
     </>

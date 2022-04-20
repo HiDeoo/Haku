@@ -19,6 +19,8 @@ import yaml from 'highlight.js/lib/languages/yaml'
 import { lowlight } from 'lowlight/lib/core'
 import slug from 'url-slug'
 
+export { CloudinaryTiptapNode as Cloudinary } from 'libs/cloudinaryTiptapNode'
+
 const languages: Languages = {
   bash: { fn: bash, name: 'Bash' },
   css: { fn: css, name: 'CSS' },

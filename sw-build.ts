@@ -6,6 +6,7 @@ import { type BuildManifest } from 'next/dist/server/get-page-files'
 import pkg from './package.json'
 
 import { SW_CACHES } from 'constants/sw'
+import { CLOUDINARY_BASE_DELIVERY_URL } from 'libs/cloudinary'
 
 const buildManifestPath = '.next/build-manifest.json'
 const pageToIgnore = ['/_app', '/_error']
@@ -66,6 +67,8 @@ async function buildServiceWorkerConfig() {
     `const VERSION = '${pkg.version}';
 
 const IS_PROD = ${isProd};
+
+const IMAGE_DELIVERY_URL = '${CLOUDINARY_BASE_DELIVERY_URL}';
 
 const ASSETS = ${JSON.stringify(Array.from(assets))};
 

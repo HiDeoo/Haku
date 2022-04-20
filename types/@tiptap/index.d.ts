@@ -3,6 +3,9 @@ declare module '@tiptap/core' {
     replaceContent: {
       replaceContent: (content: string) => ReturnType
     }
+    uploadImages: {
+      uploadImages: (files: (File | DataTransferItem)[]) => ReturnType
+    }
   }
 }
 

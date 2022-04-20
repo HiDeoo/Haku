@@ -63,11 +63,13 @@ function handleMessageEvent(event: ExtendableMessageEvent) {
     }
     case 'LOAD': {
       clearCache(CACHES.Api, 50)
+      clearCache(CACHES.Images, 25)
 
       break
     }
     case 'LOGOUT': {
       event.waitUntil(caches.delete(CACHES.Api))
+      event.waitUntil(caches.delete(CACHES.Images))
 
       break
     }
@@ -84,11 +86,13 @@ function handleFetchEvent(event: FetchEvent) {
 
   const requestUrl = new URL(event.request.url)
 
-  if (IS_PROD && requestUrl.origin === location.origin) {
+  if (IS_PROD && (requestUrl.origin === location.origin || requestUrl.origin === IMAGE_DELIVERY_URL)) {
     if (/^\/(?:_next\/static|images)\/.*\.(?:js|css|png|jpg)$/i.test(requestUrl.pathname)) {
       return respondWithCacheThenNetwork(event, CACHES.Assets)
     } else if (/^\/api\/(?!.*csrf$)[/\w-]+$/i.test(requestUrl.pathname)) {
       return respondWithNetworkThenCache(event, CACHES.Api)
+    } else if (/^\/[a-z]+\/image\/private\//.test(requestUrl.pathname)) {
+      return respondWithCacheThenNetwork(event, CACHES.Images)
     } else if (
       event.request.mode === 'navigate' ||
       event.request.headers.get('accept')?.startsWith('text/html') ||
@@ -254,5 +258,6 @@ async function clearCache(cacheName: string, maxEntries: number) {
 }
 
 declare const ASSETS: string[]
-declare const CACHES: { Api: string; Assets: string }
+declare const CACHES: { Api: string; Assets: string; Images: string }
+declare const IMAGE_DELIVERY_URL: string
 declare const IS_PROD: boolean

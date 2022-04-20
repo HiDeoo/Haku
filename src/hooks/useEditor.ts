@@ -10,11 +10,17 @@ import {
   ReactNodeViewRenderer,
 } from '@tiptap/react'
 import StarterKit, { type StarterKitOptions } from '@tiptap/starter-kit'
-import { type DependencyList } from 'react'
+import { useUpdateAtom } from 'jotai/utils'
+import { useCallback, type DependencyList } from 'react'
+import { RiErrorWarningLine } from 'react-icons/ri'
 
+import { imageModalAtom } from 'atoms/modal'
 import EditorCodeBlock from 'components/editor/EditorCodeBlock'
 import { CODE_BLOCK_DEFAULT_LANGUAGE } from 'constants/editor'
-import { getLowlight } from 'libs/editor'
+import useToast from 'hooks/useToast'
+import { CloudinaryError, type CloudinaryTiptapNodeOptions } from 'libs/cloudinaryTiptapNode'
+import { getLowlight, Cloudinary } from 'libs/editor'
+import { type A11yImageParams } from 'libs/image'
 import clst from 'styles/clst'
 import styles from 'styles/Editor.module.css'
 
@@ -30,16 +36,52 @@ const defaultExtensions: Extensions = [
   }),
 ]
 
+const starterKitDefaultOptions: Partial<StarterKitOptions> = {
+  codeBlock: false,
+  strike: false,
+  dropcursor: {
+    color: 'var(--editor-caret-color)',
+  },
+}
+
 export function useEditor(options: UseEditorOptions, deps?: DependencyList): Editor | null {
-  const { className, extensions, setLinkModalOpened, spellcheck, starterKitOptions, ...editorOptions } = options
+  const { addToast } = useToast()
+  const setImageModal = useUpdateAtom(imageModalAtom)
+
+  const { className, contentId, extensions, setLinkModalOpened, spellcheck, starterKitOptions, ...editorOptions } =
+    options
 
   const editorClasses = clst(styles.editor, className)
+
+  const onImageDoubleClick = useCallback(
+    (params: A11yImageParams) => {
+      setImageModal({ ...params, opened: true })
+    },
+    [setImageModal]
+  )
+
+  const onUploadError = useCallback(
+    (error: CloudinaryError) => {
+      addToast({
+        details: error.details,
+        icon: RiErrorWarningLine,
+        text: error.message,
+        type: 'foreground',
+      })
+    },
+    [addToast]
+  )
 
   const editor = useTipTap(
     {
       ...editorOptions,
       editorProps: { attributes: { class: editorClasses, spellcheck: spellcheck ?? 'false' } },
-      extensions: getExtensions(starterKitOptions, extensions, setLinkModalOpened),
+      extensions: getExtensions(
+        starterKitOptions,
+        { onImageDoubleClick, onUploadError, referenceId: contentId },
+        extensions,
+        setLinkModalOpened
+      ),
     },
     deps
   )
@@ -48,7 +90,8 @@ export function useEditor(options: UseEditorOptions, deps?: DependencyList): Edi
 }
 
 function getExtensions(
-  starterKitOptions: Partial<StarterKitOptions> = { codeBlock: false, strike: false },
+  starterKitOptions = starterKitDefaultOptions,
+  cloudinaryOptions: CloudinaryTiptapNodeOptions = {},
   extensions: Extensions = [],
   setLinkModalOpened?: React.Dispatch<React.SetStateAction<boolean>>
 ): Extensions {
@@ -71,6 +114,7 @@ function getExtensions(
 
       return extension
     }),
+    Cloudinary(cloudinaryOptions),
     ...extensions,
   ]
 }
@@ -81,6 +125,7 @@ function addCodeBlockLowlightNodeView() {
 
 interface UseEditorOptions extends Partial<Omit<EditorOptions, 'editorProps'>> {
   className?: string
+  contentId?: string
   setLinkModalOpened?: React.Dispatch<React.SetStateAction<boolean>>
   spellcheck?: string
   starterKitOptions?: StarterKitOptions

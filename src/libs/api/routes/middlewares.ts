@@ -1,8 +1,12 @@
+import multer, { type Options as MulterOptions } from 'multer'
 import { type NextApiHandler, type NextApiRequest, type NextApiResponse } from 'next'
 import { getSession } from 'next-auth/react'
 import StatusCode from 'status-code-enum'
 
+import { IMAGE_SUPPORTED_TYPES } from 'constants/image'
 import { z } from 'libs/validation'
+
+const fileMemoryStorage = multer.memoryStorage()
 
 export function withAdmin(handler: NextApiHandler) {
   return (req: NextApiRequest, res: NextApiResponse) => {
@@ -51,6 +55,49 @@ export function withValidation<
   }
 }
 
+export function withValidationAndFile<
+  TData extends ApiRequestValidationData,
+  TSchema extends ApiRequestValidationSchema,
+  TResponseType
+>(
+  handler: ApiHandlerWithValidationAndFile<TData, TResponseType>,
+  maxFileSizeInBytes: number,
+  fileFilter?: FileFilter,
+  bodySchema?: TSchema['body']
+) {
+  return async (req: NextApiRequest, res: NextApiResponse<TResponseType>) => {
+    try {
+      await new Promise<void>((resolve, reject) => {
+        multer({
+          fileFilter,
+          limits: {
+            fields: bodySchema ? Infinity : 0,
+            files: 1,
+            fileSize: maxFileSizeInBytes,
+          },
+          storage: fileMemoryStorage,
+        }).single('file')(req, res, (err) => {
+          err ? reject(err) : resolve()
+        })
+      })
+
+      if (!('file' in req)) {
+        throw new Error('Missing request file.')
+      }
+
+      req.body = bodySchema?.parse(parseJson(req.body))
+
+      return handler(req as ValidatedApiRequestWithFile<TData>, res)
+    } catch (error) {
+      return res.status(StatusCode.ClientErrorBadRequest).end()
+    }
+  }
+}
+
+export const imageFileFilter: FileFilter = (_req, file, cb) => {
+  cb(null, typeof file.mimetype === 'string' && IMAGE_SUPPORTED_TYPES.includes(file.mimetype))
+}
+
 function parseJson(json: unknown) {
   return typeof json === 'string' ? JSON.parse(json) : json
 }
@@ -64,7 +111,20 @@ export type ValidatedApiRequest<TSchema extends ApiRequestValidationData> = Omit
   query: TSchema['query']
 }
 
+export type ParsedFile = NonNullable<Express.Request['file']>
+
+export type ValidatedApiRequestWithFile<TSchema extends ApiRequestValidationData> = ValidatedApiRequest<TSchema> & {
+  file: ParsedFile
+}
+
+export type FileFilter = MulterOptions['fileFilter']
+
 type ApiHandlerWithValidation<TSchema extends ApiRequestValidationData, TResponseType> = (
   req: ValidatedApiRequest<TSchema>,
+  res: NextApiResponse<TResponseType>
+) => void | Promise<void>
+
+type ApiHandlerWithValidationAndFile<TSchema extends ApiRequestValidationData, TResponseType> = (
+  req: ValidatedApiRequestWithFile<TSchema>,
   res: NextApiResponse<TResponseType>
 ) => void | Promise<void>

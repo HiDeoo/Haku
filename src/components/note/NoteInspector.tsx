@@ -17,6 +17,7 @@ import {
   RiH5,
   RiH6,
   RiHeading,
+  RiImageAddLine,
   RiItalic,
   RiLink,
   RiListOrdered,
@@ -29,12 +30,14 @@ import {
 } from 'react-icons/ri'
 
 import { noteInspectorCollapsedAtom, sidebarCollapsedAtom, toggleNoteInspectorCollapsedAtom } from 'atoms/collapsible'
+import FileButton from 'components/form/FileButton'
 import IconButton from 'components/form/IconButton'
 import { type NoteEditorState } from 'components/note/Note'
 import Flex from 'components/ui/Flex'
 import FloatingButton from 'components/ui/FloatingButton'
 import Icon from 'components/ui/Icon'
 import Inspector from 'components/ui/Inspector'
+import { IMAGE_SUPPORTED_TYPES } from 'constants/image'
 import clst from 'styles/clst'
 
 const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorState, setLinkModalOpened }) => {
@@ -113,6 +116,18 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
 
   function undo() {
     editor?.chain().focus().undo().run()
+  }
+
+  function onChangeImageInput(event: React.ChangeEvent<HTMLInputElement>) {
+    if (!event.target.files || event.target.files.length === 0) {
+      return
+    }
+
+    try {
+      editor?.chain().focus().uploadImages(Array.from(event.target.files)).run()
+    } catch (error) {
+      // Ignore potential errors that will be handled by the editor plugin.
+    }
   }
 
   return (
@@ -225,17 +240,23 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
           />
         </Inspector.Section>
         <Inspector.Section title="Content">
-          <Inspector.IconButton
-            icon={RiSeparator}
-            disabled={isCodeBlock}
-            tooltip="Insert Separator"
-            onPress={addHorizontalRule}
-          />
           <Inspector.Toggle
             icon={RiCodeBoxLine}
             onToggle={toggleCodeBlock}
             tooltip="Toggle Code Block"
             toggled={editor?.isActive('codeBlock')}
+          />
+          <FileButton
+            multiple
+            onChange={onChangeImageInput}
+            accept={IMAGE_SUPPORTED_TYPES}
+            trigger={<Inspector.IconButton tooltip="Upload Images" icon={RiImageAddLine} />}
+          />
+          <Inspector.IconButton
+            icon={RiSeparator}
+            disabled={isCodeBlock}
+            tooltip="Insert Separator"
+            onPress={addHorizontalRule}
           />
         </Inspector.Section>
         {!collapsed && editorState.toc && editorState.toc.length > 0 ? (

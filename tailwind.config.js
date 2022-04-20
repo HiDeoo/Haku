@@ -2,7 +2,7 @@ const defaultTheme = require('tailwindcss/defaultTheme')
 const plugin = require('tailwindcss/plugin')
 
 module.exports = {
-  content: ['./src/{components,constants,pages}/**/*.{ts,tsx}', './src/styles/**/*.css'],
+  content: ['./src/{components,constants,libs,pages}/**/*.{ts,tsx}', './src/styles/**/*.css'],
   theme: {
     // We cannot extend the default theme to add a smaller breakpoint as they need to be sorted from smallest to largest
     // in order to work as expected with a min-width breakpoint system
@@ -26,6 +26,12 @@ module.exports = {
         'slide-out': 'slideOut 200ms ease-in',
         'swipe-in': 'swipeIn 250ms ease-out',
         'swipe-out': 'swipeOut 200ms ease-in',
+      },
+      backgroundImage: {
+        checkboard: "repeating-conic-gradient(theme('colors.zinc.600') 0% 25%, theme('colors.zinc.400') 0% 50%)",
+      },
+      backgroundSize: {
+        checkboard: "theme('spacing.6') theme('spacing.6')",
       },
       keyframes: {
         bounceIn: {

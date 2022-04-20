@@ -16,6 +16,7 @@ export const MODAL_OVERLAY_CLASSES =
 
 const Modal: ModalComponent = ({
   children,
+  className,
   contentClassName,
   disabled,
   onOpenChange,
@@ -31,6 +32,7 @@ const Modal: ModalComponent = ({
   }
 
   const contentClasses = clst(MODAL_CONTENT_CLASSES, 'animate-modal-content', contentClassName)
+  const childrenClasses = clst('p-4 pt-3', className)
 
   return (
     <Root open={opened} onOpenChange={onOpenChange}>
@@ -61,7 +63,7 @@ const Modal: ModalComponent = ({
                 />
               </Close>
             </Flex>
-            <div className="p-4 pt-3">{children}</div>
+            <div className={childrenClasses}>{children}</div>
           </Content>
         </Overlay>
       </Portal>
@@ -89,6 +91,7 @@ type ModalComponent = React.FC<ModalProps> & {
 }
 
 export interface ModalProps {
+  className?: string
   contentClassName?: string
   disabled?: boolean
   onOpenChange: (opened: boolean) => void

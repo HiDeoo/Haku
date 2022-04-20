@@ -3,6 +3,10 @@
     overflow-wrap: anywhere;
   }
 
+  :global(.ProseMirror-gapcursor) {
+    @apply after:top-2 after:border-blue-400;
+  }
+
   @apply outline-none;
 
   h1,
@@ -201,6 +205,17 @@
       .hljs-deletion {
         @apply bg-red-900 text-red-200;
       }
+    }
+  }
+
+  img {
+    & + img,
+    & + :global(.ProseMirror-gapcursor) + img {
+      @apply mt-4;
+    }
+
+    &:global(.ProseMirror-selectednode) {
+      @apply outline outline-dashed outline-2 outline-blue-400;
     }
   }
 }

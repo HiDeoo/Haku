@@ -27,6 +27,7 @@ export const removeToastAtom = atom(null, (_, set, toastId: WarmToast['id']) => 
 export interface WarmToast {
   action?: () => void
   actionLabel?: string
+  details?: string
   duration?: number
   icon: IconProps['icon']
   id: number
@@ -34,7 +35,7 @@ export interface WarmToast {
   type: ToastImplProps['type']
 }
 
-type AtomParamsNewToast = Pick<WarmToast, 'action' | 'actionLabel' | 'text'> & {
+type AtomParamsNewToast = Pick<WarmToast, 'action' | 'actionLabel' | 'text' | 'details'> & {
   duration?: ToastImplProps['duration'] // In milliseconds
   icon?: IconProps['icon']
   type?: ToastImplProps['type']
