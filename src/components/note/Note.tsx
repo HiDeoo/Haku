@@ -141,8 +141,7 @@ const Note: React.FC<NoteProps> = ({ id }) => {
 
   useEffect(() => {
     if (idle && !editorState.pristine) {
-      // FIXME(HiDeoo)
-      // save()
+      save()
     }
   }, [editorState.pristine, idle, save])
 

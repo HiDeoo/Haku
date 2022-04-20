@@ -8,6 +8,7 @@ import {
   API_ERROR_NOTE_DOES_NOT_EXIST,
   API_ERROR_NOTE_HTML_OR_TEXT_MISSING,
 } from 'libs/api/routes/errors'
+import { deleteFromCloudinaryByTag } from 'libs/cloudinary'
 import { handleDbError, prisma } from 'libs/db'
 import { validateFolder } from 'libs/db/folder'
 
@@ -121,6 +122,8 @@ export function removeNote(id: NoteMetadata['id'], userId: UserId) {
     if (!note) {
       throw new ApiError(API_ERROR_NOTE_DOES_NOT_EXIST)
     }
+
+    await deleteFromCloudinaryByTag(id)
 
     return prisma.note.delete({ where: { id } })
   })

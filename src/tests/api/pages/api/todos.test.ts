@@ -12,6 +12,7 @@ import {
   API_ERROR_TODO_DOES_NOT_EXIST,
   type ApiErrorResponse,
 } from 'libs/api/routes/errors'
+import { getCloudinaryApiUrl } from 'libs/cloudinary'
 import { type TodoMetadata } from 'libs/db/todo'
 import { type TodoTreeData } from 'libs/db/tree'
 import { hasKey } from 'libs/object'
@@ -862,17 +863,32 @@ describe('todos', () => {
   })
 
   describe('DELETE', () => {
-    test('should remove a todo', async () => {
+    test('should remove a todo and its associated images', async () => {
       const { id } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
         async ({ fetch }) => {
+          const fetchSpy = jest.spyOn(global, 'fetch')
+
           await fetch({ method: HttpMethod.DELETE })
 
           const testTodo = await getTestTodo(id)
 
           expect(testTodo).toBeNull()
+
+          const deleteUrl = getCloudinaryApiUrl(`/resources/image/tags/${id}`)
+          const cloudinaryApiReqIndex = fetchSpy.mock.calls.findIndex(([callUrl]) => callUrl === deleteUrl)
+
+          const cloudinaryApiReq = fetchSpy.mock.calls[cloudinaryApiReqIndex]
+          assert(cloudinaryApiReq)
+
+          const [cloudinaryApiCallUrl, cloudinaryApiCallOptions] = cloudinaryApiReq
+
+          expect(cloudinaryApiCallUrl).toBe(deleteUrl)
+          expect(cloudinaryApiCallOptions?.method).toBe(HttpMethod.DELETE)
+
+          fetchSpy.mockRestore()
         },
         { dynamicRouteParams: { id } }
       )

@@ -35,4 +35,5 @@ export const API_ERROR_TODO_NODE_NOTE_HTML_OR_TEXT_MISSING = 'A todo node note h
 export const API_ERROR_SEARCH_QUERY_TOO_SHORT = 'The search query should be at least 3 characters long.'
 
 export const API_ERROR_IMAGE_UPLOAD_UNKNOWN = 'The image could not be uploaded. Please try again later.'
+export const API_ERROR_IMAGE_DELETE_UNKNOWN = 'The image(s) could not be deleted. Please try again later.'
 export const API_ERROR_IMAGE_REFERENCE_DOES_NOT_EXIST = 'The reference specified does not exist.'

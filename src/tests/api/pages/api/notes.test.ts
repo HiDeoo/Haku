@@ -1,3 +1,5 @@
+import assert from 'assert'
+
 import cuid from 'cuid'
 import StatusCode from 'status-code-enum'
 import slug from 'url-slug'
@@ -11,6 +13,7 @@ import {
   API_ERROR_NOTE_DOES_NOT_EXIST,
   API_ERROR_NOTE_HTML_OR_TEXT_MISSING,
 } from 'libs/api/routes/errors'
+import { getCloudinaryApiUrl } from 'libs/cloudinary'
 import { type NoteData, type NoteMetadata } from 'libs/db/note'
 import { type NoteTreeData } from 'libs/db/tree'
 import { hasKey } from 'libs/object'
@@ -993,17 +996,32 @@ describe('notes', () => {
   })
 
   describe('DELETE', () => {
-    test('should remove a note', async () => {
+    test('should remove a note and its associated images', async () => {
       const { id } = await createTestNote()
 
       return testApiRoute(
         idHandler,
         async ({ fetch }) => {
+          const fetchSpy = jest.spyOn(global, 'fetch')
+
           await fetch({ method: HttpMethod.DELETE })
 
           const testNote = await getTestNote(id)
 
           expect(testNote).toBeNull()
+
+          const deleteUrl = getCloudinaryApiUrl(`/resources/image/tags/${id}`)
+          const cloudinaryApiReqIndex = fetchSpy.mock.calls.findIndex(([callUrl]) => callUrl === deleteUrl)
+
+          const cloudinaryApiReq = fetchSpy.mock.calls[cloudinaryApiReqIndex]
+          assert(cloudinaryApiReq)
+
+          const [cloudinaryApiCallUrl, cloudinaryApiCallOptions] = cloudinaryApiReq
+
+          expect(cloudinaryApiCallUrl).toBe(deleteUrl)
+          expect(cloudinaryApiCallOptions?.method).toBe(HttpMethod.DELETE)
+
+          fetchSpy.mockRestore()
         },
         { dynamicRouteParams: { id } }
       )

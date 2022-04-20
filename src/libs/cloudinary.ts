@@ -7,6 +7,7 @@ import { HttpMethod } from 'constants/http'
 import { IMAGE_DEFAULT_FORMAT, IMAGE_RESPONSIVE_BREAKPOINTS_IN_PIXELS } from 'constants/image'
 import {
   ApiError,
+  API_ERROR_IMAGE_DELETE_UNKNOWN,
   API_ERROR_IMAGE_REFERENCE_DOES_NOT_EXIST,
   API_ERROR_IMAGE_UPLOAD_UNKNOWN,
 } from 'libs/api/routes/errors'
@@ -94,6 +95,35 @@ SELECT EXISTS(
   }
 }
 
+export async function deleteFromCloudinaryByTag(tag: string): Promise<void> {
+  let json: CloudinaryTagDeletion | CloudinaryError | undefined
+
+  try {
+    const res = await fetch(getCloudinaryApiUrl(`/resources/image/tags/${tag}`), {
+      headers: {
+        Authorization: `Basic ${Buffer.from(
+          `${process.env.CLOUDINARY_API_KEY}:${process.env.CLOUDINARY_API_SECRET}`,
+          'binary'
+        ).toString('base64')}`,
+      },
+      method: HttpMethod.DELETE,
+    })
+
+    json = await res.json()
+
+    if (!res.ok || !json || isCloudinaryError(json)) {
+      throw new Error('Unable to delete images by tag from Cloudinary.')
+    }
+  } catch (error) {
+    console.error(
+      'Unable to delete images by tag from Cloudinary:',
+      isCloudinaryError(json) ? json.error.message : error
+    )
+
+    throw new ApiError(API_ERROR_IMAGE_DELETE_UNKNOWN, StatusCode.ServerErrorServiceUnavailable)
+  }
+}
+
 export function getCloudinaryApiUrl(action: `/${string}`) {
   return `${CLOUDINARY_BASE_API_URL}/${process.env.CLOUDINARY_CLOUD_NAME}${action}`
 }
@@ -145,7 +175,7 @@ function getCloudinarySignedUrl(file: CloudinaryFile, transforms: string[]): str
   return `${CLOUDINARY_BASE_DELIVERY_URL}/${process.env.CLOUDINARY_CLOUD_NAME}/image/private/s--${signature}--/${parameters}`
 }
 
-function isCloudinaryError(data: CloudinaryFile | CloudinaryError | undefined): data is CloudinaryError {
+function isCloudinaryError(data: unknown): data is CloudinaryError {
   return (
     typeof data === 'object' &&
     typeof (data as CloudinaryError).error === 'object' &&
@@ -173,6 +203,11 @@ interface CloudinaryFile {
   version_id: string
   version: number
   width: number
+}
+
+interface CloudinaryTagDeletion {
+  deleted: Record<string, 'deleted'>
+  partial: boolean
 }
 
 interface CloudinaryError {

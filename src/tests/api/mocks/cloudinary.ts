@@ -51,6 +51,15 @@ const handlers = [
       })
     )
   }),
+  rest.delete(`${CLOUDINARY_BASE_API_URL}/${process.env.CLOUDINARY_CLOUD_NAME}/*`, async (_req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        deleted: {},
+        partial: false,
+      })
+    )
+  }),
   rest.get(`${CLOUDINARY_BASE_DELIVERY_URL}/${process.env.CLOUDINARY_CLOUD_NAME}/*`, (_req, res, ctx) => {
     const image = Buffer.alloc(10, '.')
 

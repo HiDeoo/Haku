@@ -2,6 +2,7 @@ import { FolderType, Prisma, Todo } from '@prisma/client'
 import slug from 'url-slug'
 
 import { ApiError, API_ERROR_TODO_ALREADY_EXISTS, API_ERROR_TODO_DOES_NOT_EXIST } from 'libs/api/routes/errors'
+import { deleteFromCloudinaryByTag } from 'libs/cloudinary'
 import { handleDbError, prisma } from 'libs/db'
 import { validateFolder } from 'libs/db/folder'
 
@@ -105,6 +106,8 @@ export function removeTodo(id: TodoMetadata['id'], userId: UserId) {
     if (!todo) {
       throw new ApiError(API_ERROR_TODO_DOES_NOT_EXIST)
     }
+
+    await deleteFromCloudinaryByTag(id)
 
     return prisma.todo.delete({ where: { id } })
   })
