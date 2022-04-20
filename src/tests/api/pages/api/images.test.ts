@@ -12,11 +12,16 @@ import {
   IMAGE_RESPONSIVE_BREAKPOINTS_IN_PIXELS,
   IMAGE_SUPPORTED_TYPES,
 } from 'constants/image'
-import { API_ERROR_IMAGE_UPLOAD_UNKNOWN, type ApiErrorResponse } from 'libs/api/routes/errors'
+import {
+  API_ERROR_IMAGE_REFERENCE_DOES_NOT_EXIST,
+  API_ERROR_IMAGE_UPLOAD_UNKNOWN,
+  type ApiErrorResponse,
+} from 'libs/api/routes/errors'
 import { CLOUDINARY_BASE_DELIVERY_URL, getCloudinaryApiUrl, type ImageData } from 'libs/cloudinary'
 import { getBytesFromMegaBytes } from 'libs/math'
 import * as index from 'pages/api/images'
 import { getTestUser, testApiRoute, type TestApiRouterHandler } from 'tests/api'
+import { createTestNote, createTestTodo } from 'tests/api/db'
 import { rest, server } from 'tests/api/mocks/http'
 
 // We need to explicitely attach the route configuration to the route handler as `next-test-api-route-handler` does not
@@ -29,7 +34,9 @@ describe('images', () => {
   describe('POST', () => {
     test('should not upload an image larger than the limit', async () =>
       testApiRoute(indexHandler, async ({ fetch }) => {
-        const { body } = getFakeImageFormData({ sizeInBytes: getBytesFromMegaBytes(IMAGE_MAX_SIZE_IN_MEGABYTES) + 1 })
+        const { body } = await getFakeImageFormData({
+          sizeInBytes: getBytesFromMegaBytes(IMAGE_MAX_SIZE_IN_MEGABYTES) + 1,
+        })
 
         const res = await fetch({
           method: HttpMethod.POST,
@@ -41,7 +48,7 @@ describe('images', () => {
 
     test('should not upload more than one image', async () =>
       testApiRoute(indexHandler, async ({ fetch }) => {
-        const { body } = getFakeImageFormData()
+        const { body } = await getFakeImageFormData()
         addFakeImageToFormData(body)
 
         const res = await fetch({
@@ -52,10 +59,10 @@ describe('images', () => {
         expect(res.status).toBe(StatusCode.ClientErrorBadRequest)
       }))
 
-    test('should not upload an image contained in a FormData structure with non-file fields', async () =>
+    test('should not upload an image without a reference ID', async () =>
       testApiRoute(indexHandler, async ({ fetch }) => {
-        const { body } = getFakeImageFormData()
-        body.append('a', 'b')
+        const body = new FormData()
+        addFakeImageToFormData(body)
 
         const res = await fetch({
           method: HttpMethod.POST,
@@ -63,11 +70,53 @@ describe('images', () => {
         })
 
         expect(res.status).toBe(StatusCode.ClientErrorBadRequest)
+      }))
+
+    test('should not upload an image with an invalid reference ID', async () =>
+      testApiRoute(indexHandler, async ({ fetch }) => {
+        const { body } = await getFakeImageFormData({ referenceId: 'invalidReferenceId' })
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: body,
+        })
+
+        expect(res.status).toBe(StatusCode.ClientErrorBadRequest)
+      }))
+
+    test('should not upload an image with a note reference ID not owned by the current user', async () =>
+      testApiRoute(indexHandler, async ({ fetch }) => {
+        const { id } = await createTestNote({ userId: getTestUser('1').userId })
+        const { body } = await getFakeImageFormData({ referenceId: id })
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: body,
+        })
+        const json = await res.json<ApiErrorResponse>()
+
+        expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+        expect(json.error).toBe(API_ERROR_IMAGE_REFERENCE_DOES_NOT_EXIST)
+      }))
+
+    test('should not upload an image with a todo reference ID not owned by the current user', async () =>
+      testApiRoute(indexHandler, async ({ fetch }) => {
+        const { id } = await createTestTodo({ userId: getTestUser('1').userId })
+        const { body } = await getFakeImageFormData({ referenceId: id })
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: body,
+        })
+        const json = await res.json<ApiErrorResponse>()
+
+        expect(res.status).toBe(StatusCode.ClientErrorForbidden)
+        expect(json.error).toBe(API_ERROR_IMAGE_REFERENCE_DOES_NOT_EXIST)
       }))
 
     test('should not upload a file with an unsupported type', async () =>
       testApiRoute(indexHandler, async ({ fetch }) => {
-        const { body } = getFakeImageFormData({ extension: 'txt' })
+        const { body } = await getFakeImageFormData({ extension: 'txt' })
 
         const res = await fetch({
           method: HttpMethod.POST,
@@ -77,22 +126,9 @@ describe('images', () => {
         expect(res.status).toBe(StatusCode.ClientErrorBadRequest)
       }))
 
-    test.each(IMAGE_SUPPORTED_TYPES)('should upload an %s file', async (type) =>
-      testApiRoute(indexHandler, async ({ fetch }) => {
-        const { body } = getFakeImageFormData({ extension: type.split('/')[1] })
-
-        const res = await fetch({
-          method: HttpMethod.POST,
-          body: body,
-        })
-
-        expect(res.status).toBe(StatusCode.SuccessOK)
-      })
-    )
-
     test('should return and log a proper error if the upload fails for unknown reasons', async () =>
       testApiRoute(indexHandler, async ({ fetch }) => {
-        const { body } = getFakeImageFormData()
+        const { body } = await getFakeImageFormData()
 
         server.use(rest.post(getCloudinaryApiUrl('/image/upload'), (_req, res, ctx) => res.once(ctx.status(500))))
 
@@ -112,11 +148,51 @@ describe('images', () => {
         consoleSpy.mockRestore()
       }))
 
+    test.each(IMAGE_SUPPORTED_TYPES)('should upload an %s file', async (type) =>
+      testApiRoute(indexHandler, async ({ fetch }) => {
+        const { body } = await getFakeImageFormData({ extension: type.split('/')[1] })
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: body,
+        })
+
+        expect(res.status).toBe(StatusCode.SuccessOK)
+      })
+    )
+
+    test('should upload an image with a todo reference ID owned by the current user', async () =>
+      testApiRoute(indexHandler, async ({ fetch }) => {
+        const { id } = await createTestTodo()
+        const { body } = await getFakeImageFormData({ referenceId: id })
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: body,
+        })
+
+        expect(res.status).toBe(StatusCode.SuccessOK)
+      }))
+
+    test('should upload an image with a note reference ID owned by the current user', async () =>
+      testApiRoute(indexHandler, async ({ fetch }) => {
+        const { id } = await createTestNote()
+        const { body } = await getFakeImageFormData({ referenceId: id })
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: body,
+        })
+
+        expect(res.status).toBe(StatusCode.SuccessOK)
+      }))
+
     test('should upload an image to Cloudinary', async () =>
       testApiRoute(indexHandler, async ({ fetch }) => {
         const uploadUrl = getCloudinaryApiUrl('/image/upload')
 
-        const { body, extension, filename } = getFakeImageFormData()
+        const { id } = await createTestNote()
+        const { body, extension, filename } = await getFakeImageFormData({ referenceId: id })
 
         const fetchSpy = jest.spyOn(global, 'fetch')
 
@@ -135,6 +211,7 @@ describe('images', () => {
             expect(formData.api_key).toBe(process.env.CLOUDINARY_API_KEY)
             expect(formData.folder).toBe(getTestUser().userId)
             expect(formData.type).toBe('private')
+            expect(formData.tags).toBe(id)
             expect(typeof formData.timestamp).toBe('string')
           })
         )
@@ -177,7 +254,7 @@ describe('images', () => {
       testApiRoute(indexHandler, async ({ fetch }) => {
         const width = 200
 
-        const { body } = getFakeImageFormData({ width })
+        const { body } = await getFakeImageFormData({ width })
 
         const res = await fetch({
           method: HttpMethod.POST,
@@ -194,7 +271,7 @@ describe('images', () => {
       testApiRoute(indexHandler, async ({ fetch }) => {
         const width = 999
 
-        const { body } = getFakeImageFormData({ width })
+        const { body } = await getFakeImageFormData({ width })
 
         const res = await fetch({
           method: HttpMethod.POST,
@@ -217,7 +294,7 @@ describe('images', () => {
       testApiRoute(indexHandler, async ({ fetch }) => {
         const width = IMAGE_RESPONSIVE_BREAKPOINTS_IN_PIXELS[3]
 
-        const { body } = getFakeImageFormData({ width })
+        const { body } = await getFakeImageFormData({ width })
 
         const res = await fetch({
           method: HttpMethod.POST,
@@ -240,7 +317,7 @@ describe('images', () => {
       testApiRoute(indexHandler, async ({ fetch }) => {
         const width = 3000
 
-        const { body } = getFakeImageFormData({ width })
+        const { body } = await getFakeImageFormData({ width })
 
         const res = await fetch({
           method: HttpMethod.POST,
@@ -261,7 +338,7 @@ describe('images', () => {
 
     test('should return a progressive JPEG for the original image when using JPEG image', async () =>
       testApiRoute(indexHandler, async ({ fetch }) => {
-        const { body } = getFakeImageFormData({ extension: 'jpg' })
+        const { body } = await getFakeImageFormData({ extension: 'jpg' })
 
         const res = await fetch({
           method: HttpMethod.POST,
@@ -274,7 +351,7 @@ describe('images', () => {
 
     test('should not return a progressive JPEG for the original image when not using a JPEG image', async () =>
       testApiRoute(indexHandler, async ({ fetch }) => {
-        const { body } = getFakeImageFormData({ extension: 'png' })
+        const { body } = await getFakeImageFormData({ extension: 'png' })
 
         const res = await fetch({
           method: HttpMethod.POST,
@@ -303,8 +380,10 @@ function isSignedImageUrlWithTransforms(url: string | undefined, transforms: str
   return transforms.every((transform) => url.match(new RegExp(`${transform}[/,]`)))
 }
 
-function getFakeImageFormData(options?: FakeImageFormDataOptions) {
+async function getFakeImageFormData(options?: FakeImageFormDataOptions) {
   const formData = new FormData()
+
+  formData.append('referenceId', options?.referenceId ?? (await createTestNote({ name: 'note_0' })).id)
 
   const { extension, filename } = addFakeImageToFormData(formData, options)
 
@@ -328,6 +407,7 @@ function getResponsiveWidths(width: number): number[] {
 
 interface FakeImageFormDataOptions {
   extension?: string
+  referenceId?: string
   width?: number
   sizeInBytes?: number
 }

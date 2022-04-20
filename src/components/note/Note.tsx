@@ -46,6 +46,7 @@ const Note: React.FC<NoteProps> = ({ id }) => {
   const editor = useEditor({
     autofocus: 'start',
     className: 'h-full p-3 min-w-0',
+    contentId: id,
     extensions: [ReplaceContent, HeadingWithId],
     onUpdate: updateToc,
     setLinkModalOpened,
@@ -140,6 +141,7 @@ const Note: React.FC<NoteProps> = ({ id }) => {
 
   useEffect(() => {
     if (idle && !editorState.pristine) {
+      // FIXME(HiDeoo)
       // save()
     }
   }, [editorState.pristine, idle, save])

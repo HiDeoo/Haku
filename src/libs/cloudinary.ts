@@ -5,9 +5,16 @@ import { StatusCode } from 'status-code-enum'
 
 import { HttpMethod } from 'constants/http'
 import { IMAGE_DEFAULT_FORMAT, IMAGE_RESPONSIVE_BREAKPOINTS_IN_PIXELS } from 'constants/image'
-import { ApiError, API_ERROR_IMAGE_UPLOAD_UNKNOWN } from 'libs/api/routes/errors'
+import {
+  ApiError,
+  API_ERROR_IMAGE_REFERENCE_DOES_NOT_EXIST,
+  API_ERROR_IMAGE_UPLOAD_UNKNOWN,
+} from 'libs/api/routes/errors'
 import { ParsedFile } from 'libs/api/routes/middlewares'
 import { sortTupleArrayAlphabetically } from 'libs/array'
+import { prisma } from 'libs/db'
+import { type NoteMetadata } from 'libs/db/note'
+import { type TodoMetadata } from 'libs/db/todo'
 import { isGifExtension, isJpegExtension } from 'libs/image'
 
 export interface ImageData {
@@ -22,7 +29,22 @@ export interface ImageData {
 export const CLOUDINARY_BASE_API_URL = 'https://api.cloudinary.com/v1_1'
 export const CLOUDINARY_BASE_DELIVERY_URL = 'https://res.cloudinary.com'
 
-export async function uploadToCloudinary(userId: UserId, image: ParsedFile): Promise<ImageData> {
+export async function uploadToCloudinary(
+  userId: UserId,
+  image: ParsedFile,
+  referenceId: NoteMetadata['id'] | TodoMetadata['id']
+): Promise<ImageData> {
+  const [{ exists: referenceExists }] = await prisma.$queryRaw<[{ exists: boolean }]>`
+SELECT EXISTS(
+  SELECT 1 FROM "Note" WHERE "id" = ${referenceId} AND "userId" = ${userId}
+  UNION
+  SELECT 1 FROM "Todo" WHERE "id" = ${referenceId} AND "userId" = ${userId}
+)`
+
+  if (!referenceExists) {
+    throw new ApiError(API_ERROR_IMAGE_REFERENCE_DOES_NOT_EXIST)
+  }
+
   const formData = new FormData()
 
   formData.append('file', image.buffer, image.originalname)
@@ -31,6 +53,7 @@ export async function uploadToCloudinary(userId: UserId, image: ParsedFile): Pro
   const parameters: [string, string][] = [
     ['folder', userId],
     ['type', 'private'],
+    ['tags', referenceId],
     ['timestamp', ((Date.now() / 1000) | 0).toString()],
   ]
 

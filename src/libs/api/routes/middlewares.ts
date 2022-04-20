@@ -55,18 +55,23 @@ export function withValidation<
   }
 }
 
-export function withFile<TResponseType>(
-  handler: ApiHandlerWithFile<TResponseType>,
+export function withValidationAndFile<
+  TData extends ApiRequestValidationData,
+  TSchema extends ApiRequestValidationSchema,
+  TResponseType
+>(
+  handler: ApiHandlerWithValidationAndFile<TData, TResponseType>,
   maxFileSizeInBytes: number,
-  fileFilter?: FileFilter
+  fileFilter?: FileFilter,
+  bodySchema?: TSchema['body']
 ) {
-  return async (req: NextApiRequest | FileApiRequest, res: NextApiResponse<TResponseType>) => {
+  return async (req: NextApiRequest, res: NextApiResponse<TResponseType>) => {
     try {
       await new Promise<void>((resolve, reject) => {
         multer({
           fileFilter,
           limits: {
-            fields: 0,
+            fields: bodySchema ? Infinity : 0,
             files: 1,
             fileSize: maxFileSizeInBytes,
           },
@@ -79,11 +84,13 @@ export function withFile<TResponseType>(
       if (!('file' in req)) {
         throw new Error('Missing request file.')
       }
+
+      req.body = bodySchema?.parse(parseJson(req.body))
+
+      return handler(req as ValidatedApiRequestWithFile<TData>, res)
     } catch (error) {
       return res.status(StatusCode.ClientErrorBadRequest).end()
     }
-
-    return handler(req, res)
   }
 }
 
@@ -106,7 +113,7 @@ export type ValidatedApiRequest<TSchema extends ApiRequestValidationData> = Omit
 
 export type ParsedFile = NonNullable<Express.Request['file']>
 
-export type FileApiRequest = NextApiRequest & {
+export type ValidatedApiRequestWithFile<TSchema extends ApiRequestValidationData> = ValidatedApiRequest<TSchema> & {
   file: ParsedFile
 }
 
@@ -117,7 +124,7 @@ type ApiHandlerWithValidation<TSchema extends ApiRequestValidationData, TRespons
   res: NextApiResponse<TResponseType>
 ) => void | Promise<void>
 
-type ApiHandlerWithFile<TResponseType> = (
-  req: FileApiRequest,
+type ApiHandlerWithValidationAndFile<TSchema extends ApiRequestValidationData, TResponseType> = (
+  req: ValidatedApiRequestWithFile<TSchema>,
   res: NextApiResponse<TResponseType>
 ) => void | Promise<void>

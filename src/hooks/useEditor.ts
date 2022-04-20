@@ -48,7 +48,8 @@ export function useEditor(options: UseEditorOptions, deps?: DependencyList): Edi
   const { addToast } = useToast()
   const setImageModal = useUpdateAtom(imageModalAtom)
 
-  const { className, extensions, setLinkModalOpened, spellcheck, starterKitOptions, ...editorOptions } = options
+  const { className, contentId, extensions, setLinkModalOpened, spellcheck, starterKitOptions, ...editorOptions } =
+    options
 
   const editorClasses = clst(styles.editor, className)
 
@@ -77,7 +78,7 @@ export function useEditor(options: UseEditorOptions, deps?: DependencyList): Edi
       editorProps: { attributes: { class: editorClasses, spellcheck: spellcheck ?? 'false' } },
       extensions: getExtensions(
         starterKitOptions,
-        { onImageDoubleClick, onUploadError },
+        { onImageDoubleClick, onUploadError, referenceId: contentId },
         extensions,
         setLinkModalOpened
       ),
@@ -124,6 +125,7 @@ function addCodeBlockLowlightNodeView() {
 
 interface UseEditorOptions extends Partial<Omit<EditorOptions, 'editorProps'>> {
   className?: string
+  contentId?: string
   setLinkModalOpened?: React.Dispatch<React.SetStateAction<boolean>>
   spellcheck?: string
   starterKitOptions?: StarterKitOptions

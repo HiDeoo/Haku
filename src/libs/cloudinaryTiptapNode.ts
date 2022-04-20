@@ -226,7 +226,11 @@ async function uploadImageToEditor(
   id: string
 ) {
   try {
-    const data = await upload(image)
+    if (!options.referenceId) {
+      return
+    }
+
+    const data = await upload(image, options.referenceId)
 
     const position = getCloudinaryNodePositionWithId(editor, id)
 
@@ -273,9 +277,13 @@ function getCloudinaryNodePositionWithId(editor: Editor, id: string): number | u
   return position
 }
 
-async function upload(image: File): Promise<ImageData> {
+async function upload(
+  image: File,
+  referenceId: NonNullable<CloudinaryTiptapNodeOptions['referenceId']>
+): Promise<ImageData> {
   const body = new FormData()
   body.append('file', image)
+  body.append('referenceId', referenceId)
 
   return client.post('images', { body }).json<ImageData>()
 }
@@ -338,6 +346,7 @@ export class SetAttrsStep extends Step {
 Step.jsonID('setAttrs', SetAttrsStep)
 
 export interface CloudinaryTiptapNodeOptions {
+  referenceId?: string
   onImageDoubleClick?: (params: A11yImageParams) => void
   onUploadError?: (error: CloudinaryError) => void
 }

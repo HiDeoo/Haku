@@ -323,8 +323,8 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
             </div>
             {isNoteVisible ? (
               <TodoNodeNote
-                ref={todoNodeNote}
                 node={node}
+                ref={todoNodeNote}
                 onBlur={onBlurNote}
                 onChange={updateNote}
                 onShiftEnter={onShiftEnterNote}

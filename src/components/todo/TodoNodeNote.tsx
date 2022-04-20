@@ -1,6 +1,7 @@
 import { forwardRef, useCallback, useImperativeHandle } from 'react'
 
 import { type AtomParamsNoteUpdate } from 'atoms/todoNode'
+import useContentId from 'hooks/useContentId'
 import { EditorContent, EditorEvents, useEditor } from 'hooks/useEditor'
 import { type TodoNodeDataWithParentId } from 'libs/db/todoNodes'
 import { ShiftEnter } from 'libs/editor'
@@ -14,6 +15,8 @@ const TodoNodeNote: React.ForwardRefRenderFunction<TodoNodeNoteHandle, TodoNodeN
 ) => {
   useImperativeHandle(forwardedRef, () => ({ focusNote }))
 
+  const todoId = useContentId()
+
   const onEditorUpdate = useCallback(
     ({ editor }: EditorEvents['update']) => {
       onChange({ id: node.id, noteHtml: editor.getHTML(), noteText: editor.getText() })
@@ -24,6 +27,7 @@ const TodoNodeNote: React.ForwardRefRenderFunction<TodoNodeNoteHandle, TodoNodeN
   const editor = useEditor(
     {
       content: node.noteHtml,
+      contentId: todoId,
       extensions: [ShiftEnter.configure({ callback: onShiftEnter })],
       onBlur,
       onUpdate: onEditorUpdate,
