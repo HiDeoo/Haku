@@ -76,6 +76,7 @@ div#__next {
 
 body {
   @apply touch-pan-x touch-pan-y bg-zinc-800 text-sm text-blue-50 caret-blue-400;
+  @apply selection:bg-blue-600 selection:text-blue-50;
 }
 
 div#__next {
@@ -86,11 +87,6 @@ div#__next {
   :focus-visible {
     transition: box-shadow 150ms ease;
   }
-}
-
-::selection {
-  color: theme('colors.blue.50');
-  background-color: theme('colors.blue.600');
 }
 
 :root {
