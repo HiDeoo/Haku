@@ -18,6 +18,7 @@ import {
   API_ERROR_TODO_NODE_UPDATE_CHILD_DOES_NOT_EXIST,
   API_ERROR_TODO_NODE_UPDATE_DOES_NOT_EXIST,
 } from 'libs/api/routes/errors'
+import { isNonEmptyArray } from 'libs/array'
 import { handleDbError, prisma } from 'libs/db'
 import { getTodoById, type TodoMetadata } from 'libs/db/todo'
 import { hasKey } from 'libs/object'
@@ -110,7 +111,7 @@ function getTodoNodesByTodoId(todoId: TodoMetadata['id']) {
 }
 
 async function validateMutations(todoId: TodoMetadata['id'], update: UpdateTodoNodesData): Promise<DeletedTodoNodeIds> {
-  if (update.children.root.length === 0) {
+  if (!isNonEmptyArray(update.children.root)) {
     throw new ApiError(API_ERROR_TODO_NODE_ROOT_NODE_EMPTY)
   }
 

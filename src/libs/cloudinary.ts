@@ -12,7 +12,7 @@ import {
   API_ERROR_IMAGE_UPLOAD_UNKNOWN,
 } from 'libs/api/routes/errors'
 import { ParsedFile } from 'libs/api/routes/middlewares'
-import { sortTupleArrayAlphabetically } from 'libs/array'
+import { isNonEmptyArray, sortTupleArrayAlphabetically } from 'libs/array'
 import { prisma } from 'libs/db'
 import { type NoteMetadata } from 'libs/db/note'
 import { type TodoMetadata } from 'libs/db/todo'
@@ -159,7 +159,7 @@ async function getImageData(file: CloudinaryFile): Promise<ImageData> {
 function getCloudinarySignedUrl(file: CloudinaryFile, transforms: string[]): string {
   let parameters = `v${file.version}/${file.public_id}`
 
-  if (transforms.length > 0) {
+  if (isNonEmptyArray(transforms)) {
     parameters = `${transforms.join(',')}/${parameters}`
   }
 

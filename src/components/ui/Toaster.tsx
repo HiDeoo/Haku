@@ -3,6 +3,7 @@ import { useAtomValue } from 'jotai/utils'
 import dynamic from 'next/dynamic'
 
 import { toastsAtom } from 'atoms/toast'
+import { isNonEmptyArray } from 'libs/array'
 import clst from 'styles/clst'
 
 const Toast = dynamic(import('components/ui/Toast'))
@@ -17,7 +18,7 @@ const Toaster: React.FC = () => {
     'overflow-y-auto overflow-x-hidden',
     'focus:outline-none',
     {
-      'focus-visible:ring-2 focus-visible:ring-blue-600': toasts.length > 0,
+      'focus-visible:ring-2 focus-visible:ring-blue-600': isNonEmptyArray(toasts),
     }
   )
 
