@@ -8,5 +8,3 @@ declare module 'lowlight/lib/core' {
 
   export { lowlight }
 }
-
-export {}
