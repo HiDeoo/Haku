@@ -163,6 +163,7 @@ const CommandPalette: React.FC = () => {
       onPick={onPick}
       items={commands}
       enterKeyHint="done"
+      title="Command Palette"
       itemToIcon={itemToIcon}
       onOpenChange={setOpened}
       itemToString={itemToString}

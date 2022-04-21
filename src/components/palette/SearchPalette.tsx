@@ -108,13 +108,14 @@ const SearchPalette: React.FC = () => {
         enterKeyHint="go"
         initialQuery={query}
         isLoading={isLoading}
+        title="Search Palette"
         itemToIcon={itemToIcon}
         onQueryChange={setQuery}
         loadMore={fetchNextPage}
         onOpenChange={onOpenChange}
         itemToString={itemToString}
-        items={data?.pages.flat() ?? []}
         forwardedRef={paletteTextInput}
+        items={data?.pages.flat() ?? []}
         isLoadingMore={isFetchingNextPage}
         minQueryLength={SEARCH_QUERY_MIN_LENGTH}
         itemDetailsToString={itemDetailsToString}

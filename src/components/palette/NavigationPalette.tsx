@@ -69,6 +69,7 @@ const NavigationPalette: React.FC = () => {
       isLoading={isLoading}
       itemToIcon={itemToIcon}
       onOpenChange={setOpened}
+      title="Navigation Palette"
       itemToString={itemToString}
       placeholder="Search notes & todos by name"
     />

@@ -37,7 +37,7 @@ const PalettePicker = <TItem extends PaletteItem>(
     onPick,
     onQueryChange,
     placeholder,
-  }: PaletteProps<TItem>,
+  }: PalettePickerProps<TItem>,
   forwardedRef: React.ForwardedRef<HTMLInputElement>
 ) => {
   const currentInputValue = useRef('')
@@ -231,5 +231,7 @@ const PalettePicker = <TItem extends PaletteItem>(
 PalettePicker.displayName = 'PalettePicker'
 
 export default forwardRef(PalettePicker) as <TItem>(
-  props: PaletteProps<TItem> & { ref?: React.ForwardedRef<HTMLInputElement> }
+  props: PalettePickerProps<TItem> & { ref?: React.ForwardedRef<HTMLInputElement> }
 ) => ReturnType<typeof PalettePicker>
+
+type PalettePickerProps<TItem> = Omit<PaletteProps<TItem>, 'title'>
