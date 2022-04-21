@@ -2,6 +2,9 @@ import { prisma } from 'libs/db'
 import { TEST_USER_COUNT } from 'tests/api'
 import { server } from 'tests/api/mocks/http'
 
+// https://github.com/vercel/next.js/discussions/13678#discussioncomment-22383
+import 'next'
+
 let tableNames: { tableName: string }[]
 
 beforeAll(async () => {
