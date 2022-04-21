@@ -45,5 +45,6 @@ const Layout: React.FC<LayoutProps> = ({ children, sidebar }) => {
 export default Layout
 
 interface LayoutProps {
+  children: React.ReactNode
   sidebar: boolean
 }

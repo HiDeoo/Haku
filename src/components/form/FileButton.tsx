@@ -34,5 +34,5 @@ interface FileButtonProps {
   disabled?: boolean
   multiple?: boolean
   onChange: React.ChangeEventHandler<HTMLInputElement>
-  trigger: React.StrictReactNode
+  trigger: React.ReactNode
 }

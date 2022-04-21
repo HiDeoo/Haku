@@ -105,7 +105,7 @@ const sidebarMenuItemClasses = clst(
   'focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:bg-blue-600'
 )
 
-const SidebarMenuItem = forwardRef<HTMLButtonElement, React.PropsWithChildren<SidebarMenuItemProps>>(
+const SidebarMenuItem = forwardRef<HTMLButtonElement, SidebarMenuItemProps>(
   ({ icon, label, ...props }, forwaredRef) => {
     return (
       <Button

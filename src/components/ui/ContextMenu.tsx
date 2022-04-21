@@ -22,23 +22,20 @@ const ContextMenu: ContextMenuComponent = ({ children, trigger }) => {
   )
 }
 
-const Item = forwardRef<HTMLButtonElement, React.PropsWithChildren<ItemProps>>(
-  ({ disabled, intent, onClick, text }, forwardedRef) => {
-    const buttonClasses = clst(itemClasses, 'font-medium disabled:cursor-not-allowed disabled:opacity-50', {
-      'focus:bg-blue-600': !intent,
-      'text-red-400 focus:bg-red-500 focus:text-red-50 disabled:opacity-100 disabled:text-red-400/75':
-        intent === 'error',
-    })
+const Item = forwardRef<HTMLButtonElement, ItemProps>(({ disabled, intent, onClick, text }, forwardedRef) => {
+  const buttonClasses = clst(itemClasses, 'font-medium disabled:cursor-not-allowed disabled:opacity-50', {
+    'focus:bg-blue-600': !intent,
+    'text-red-400 focus:bg-red-500 focus:text-red-50 disabled:opacity-100 disabled:text-red-400/75': intent === 'error',
+  })
 
-    return (
-      <MenuItem asChild disabled={disabled}>
-        <button ref={forwardedRef} onClick={onClick} className={buttonClasses} disabled={disabled}>
-          {text}
-        </button>
-      </MenuItem>
-    )
-  }
-)
+  return (
+    <MenuItem asChild disabled={disabled}>
+      <button ref={forwardedRef} onClick={onClick} className={buttonClasses} disabled={disabled}>
+        {text}
+      </button>
+    </MenuItem>
+  )
+})
 
 Item.displayName = 'Item'
 ContextMenu.Item = Item
@@ -64,7 +61,8 @@ type ContextMenuComponent = React.FC<ContextMenuProps> & {
 }
 
 interface ContextMenuProps {
-  trigger: React.StrictReactNode
+  children: React.ReactNode
+  trigger: React.ReactNode
 }
 
 interface ItemProps {

@@ -125,7 +125,7 @@ const InspectorToggle: React.FC<InspectorToggleProps> = ({ onToggle, toggled, ..
 
 Inspector.Toggle = InspectorToggle
 
-const InspectorIconButton = forwardRef<HTMLButtonElement, React.PropsWithChildren<InspectorIconButtonProps>>(
+const InspectorIconButton = forwardRef<HTMLButtonElement, InspectorIconButtonProps>(
   ({ className, pressedClassName, tooltip, ...props }, forwardedRef) => {
     const buttonClasses = clst(
       'mx-0 bg-zinc-700 hover:bg-zinc-600 hover:text-blue-50 shadow-none disabled:bg-zinc-700',
@@ -218,12 +218,14 @@ type InspectorComponent = React.FC<InspectorProps> & {
 }
 
 interface InspectorProps {
+  children: React.ReactNode
   collapsed?: boolean
-  controls?: React.StrictReactNode
+  controls?: React.ReactNode
   disabled?: boolean
 }
 
 interface InspectorSectionProps {
+  children: React.ReactNode
   className?: string
   collapsed?: boolean
   disabled?: boolean
@@ -249,6 +251,7 @@ interface InspectorToggleProps extends Omit<InspectorIconButtonProps, 'onPress'>
 }
 
 interface InspectorIconButtonMenuProps {
+  children: React.ReactNode
   collapsed?: boolean
   disabled?: boolean
   icon: IconProps['icon']
@@ -256,6 +259,6 @@ interface InspectorIconButtonMenuProps {
   tooltip: string
 }
 
-interface InspectorIconMenuItemProps extends Omit<InspectorIconButtonMenuProps, 'tooltip'> {
+interface InspectorIconMenuItemProps extends Omit<InspectorIconButtonMenuProps, 'children' | 'tooltip'> {
   onClick: IconButtonProps['onClick']
 }

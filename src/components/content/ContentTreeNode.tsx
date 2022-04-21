@@ -11,7 +11,7 @@ const nodeClasses = clst(
   'focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-inset'
 )
 
-const ContentTreeNode = forwardRef<HTMLDivElement | HTMLAnchorElement, React.PropsWithChildren<ContentTreeNodeProps>>(
+const ContentTreeNode = forwardRef<HTMLDivElement | HTMLAnchorElement, ContentTreeNodeProps>(
   ({ children, href, icon, iconLabel, selected, style, text, ...props }, forwardedRef) => {
     const anchorClasses = href
       ? clst(
@@ -70,6 +70,7 @@ ContentTreeNode.displayName = 'ContentTreeNode'
 export default ContentTreeNode
 
 interface ContentTreeNodeProps {
+  children: React.ReactNode
   href?: string
   icon: IconProps['icon']
   iconLabel: IconProps['label']

@@ -69,6 +69,7 @@ export default Alert
 
 interface AlertProps {
   cancelText?: string
+  children: React.ReactNode
   confirmText?: string
   disabled?: ModalProps['disabled']
   loading?: boolean

@@ -1,6 +1,6 @@
 import { ErrorBoundary as Boundary, type FallbackProps } from 'react-error-boundary'
 
-const ErrorBoundary: React.FC = ({ children }) => {
+const ErrorBoundary: React.FC<ErrorBoundaryProps> = ({ children }) => {
   return <Boundary FallbackComponent={Fallback}>{children}</Boundary>
 }
 
@@ -16,4 +16,8 @@ const Fallback: React.FC<FallbackProps> = ({ resetErrorBoundary }) => {
       </div>
     </div>
   )
+}
+
+interface ErrorBoundaryProps {
+  children: React.ReactNode
 }

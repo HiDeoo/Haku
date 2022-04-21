@@ -6,7 +6,7 @@ import Flex from 'components/ui/Flex'
 import Spinner from 'components/ui/Spinner'
 import clst from 'styles/clst'
 
-const Button = forwardRef<HTMLButtonElement, React.PropsWithChildren<ButtonProps>>(
+const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       children,
@@ -88,6 +88,7 @@ function isButtonPropsWithOnClickHandler(props: ButtonProps): props is ButtonPro
 
 export interface ButtonProps {
   'aria-label'?: React.HTMLAttributes<HTMLButtonElement>['aria-label']
+  children?: React.ReactNode
   className?: string
   disabled?: UseButtonProps['isDisabled']
   loading?: boolean

@@ -79,6 +79,7 @@ type NavbarComponent = React.FC<NavbarProps> & {
 }
 
 interface NavbarProps {
+  children: React.ReactNode
   disabled?: boolean
   title?: string
 }

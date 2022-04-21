@@ -22,7 +22,7 @@ import { isTreeFolder, type TreeFolder } from 'libs/tree'
 
 const depthOffset = '1.25rem'
 
-const supportsMaxCss = window.CSS.supports('padding', 'max(0px)')
+const supportsMaxCss = typeof window === 'object' && window.CSS.supports('padding', 'max(0px)')
 
 const nisClasses = 'gap-6 p-3 text-center supports-max:pl-[calc(theme(spacing.3)+max(0px,env(safe-area-inset-left)))]'
 

@@ -91,6 +91,7 @@ type ModalComponent = React.FC<ModalProps> & {
 }
 
 export interface ModalProps {
+  children: React.ReactNode
   className?: string
   contentClassName?: string
   disabled?: boolean
@@ -98,9 +99,10 @@ export interface ModalProps {
   opened: boolean
   role?: React.HtmlHTMLAttributes<HTMLElement>['role']
   title: string
-  trigger?: React.StrictReactNode
+  trigger?: React.ReactNode
 }
 
 interface FooterProps extends Pick<ModalProps, 'disabled'> {
+  children: React.ReactNode
   closeText?: string
 }
