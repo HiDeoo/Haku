@@ -4,3 +4,7 @@
 
 # pnpm
 pnpm-lock.yaml
+
+# Service Worker
+public/sw.js
+public/sw-config.js

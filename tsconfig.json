@@ -25,7 +25,8 @@
     "compilerOptions": {
       "module": "CommonJS"
     },
-    "require": ["tsconfig-paths/register"]
+    "require": ["tsconfig-paths/register"],
+    "swc": true
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules", "src/sw"]
