@@ -20,9 +20,9 @@ const Login: Page = () => {
     register,
     handleSubmit,
     formState: { errors },
+    setFocus,
   } = useForm<FormFields>()
 
-  const emailInput = useRef<HTMLInputElement | null>(null)
   const magicCodeInput = useRef<MagicCodeInputHandle | null>(null)
 
   const [state, dispatch] = useReducer(stateReducer, initialState)
@@ -30,13 +30,6 @@ const Login: Page = () => {
   const isError = typeof state.errorType === 'string'
   const isValidating = state.status === 'validatingEmail' || state.status === 'validatingCode'
   const shouldShowCodeInput = state.status === 'waitingCode' || state.status === 'validatingCode'
-
-  const { ref: emailInputRef, ...emailInputProps } = register('email', { required: 'required' })
-
-  function setEmailInputRef(ref: HTMLInputElement | null) {
-    emailInputRef(ref)
-    emailInput.current = ref
-  }
 
   async function onSubmit({ code, email }: FormFields) {
     if (state.status === 'idle') {
@@ -47,14 +40,16 @@ const Login: Page = () => {
       if (!signInResponse || signInResponse.error) {
         dispatch({ type: 'error', errorType: signInResponse?.error ?? 'Unknown' })
 
-        emailInput.current?.focus()
+        setFocus('email', { shouldSelect: true })
 
         return
       }
 
       dispatch({ type: 'waitingCode' })
 
-      magicCodeInput.current?.focus()
+      requestAnimationFrame(() => {
+        magicCodeInput.current?.focus()
+      })
     } else {
       dispatch({ type: 'validatingCode' })
 
@@ -94,11 +89,10 @@ const Login: Page = () => {
           label="Email"
           enterKeyHint="done"
           autoComplete="email"
-          {...emailInputProps}
-          ref={setEmailInputRef}
           placeholder="user@address.com"
           errorMessage={errors.email?.message}
           readOnly={isValidating || shouldShowCodeInput}
+          {...register('email', { required: 'required' })}
         />
         {shouldShowCodeInput ? (
           <MagicCodeInput
