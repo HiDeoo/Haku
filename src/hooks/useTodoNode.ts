@@ -1,4 +1,5 @@
-import { selectAtom, useAtomCallback, useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useAtomValue, useSetAtom } from 'jotai'
+import { selectAtom, useAtomCallback } from 'jotai/utils'
 import { createContext, useCallback } from 'react'
 
 import { type TodoSyncStatus, todoSyncStatusAtom } from 'atoms/todo'
@@ -46,15 +47,15 @@ export default function useTodoNode(id: TodoNodeData['id']) {
 
   const node = useAtomValue(selectAtom(todoNodeNodesAtom, getNodeById))
 
-  const updateContent = useUpdateAtom(updateContentAtom)
-  const toggleCollapsed = useUpdateAtom(toggleCollapsedAtom)
-  const toggleCompleted = useUpdateAtom(toggleCompletedAtom)
-  const updateNote = useUpdateAtom(updateNoteAtom)
-  const addNode = useUpdateAtom(addNodeAtom)
-  const deleteNode = useUpdateAtom(deleteNodeAtom)
-  const nestNode = useUpdateAtom(nestNodeAtom)
-  const unnestNode = useUpdateAtom(unnestNodeAtom)
-  const moveNode = useUpdateAtom(moveNodeAtom)
+  const updateContent = useSetAtom(updateContentAtom)
+  const toggleCollapsed = useSetAtom(toggleCollapsedAtom)
+  const toggleCompleted = useSetAtom(toggleCompletedAtom)
+  const updateNote = useSetAtom(updateNoteAtom)
+  const addNode = useSetAtom(addNodeAtom)
+  const deleteNode = useSetAtom(deleteNodeAtom)
+  const nestNode = useSetAtom(nestNodeAtom)
+  const unnestNode = useSetAtom(unnestNodeAtom)
+  const moveNode = useSetAtom(moveNodeAtom)
 
   return {
     addNode,

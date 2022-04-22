@@ -1,4 +1,4 @@
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 import { useQuery, type UseQueryOptions } from 'react-query'
 
 import { contentAvailableOfflineAtom } from 'atoms/network'
@@ -9,7 +9,7 @@ import { type TodoNodesData } from 'libs/db/todoNodes'
 import { isResourceCached } from 'libs/sw'
 
 export default function useTodoQuery(id: TodoMetadata['id'], options?: UseTodoQueryOptions) {
-  const setContentAvailableOffline = useUpdateAtom(contentAvailableOfflineAtom)
+  const setContentAvailableOffline = useSetAtom(contentAvailableOfflineAtom)
 
   return useQuery<TodoNodesData>(
     ['todo', id],

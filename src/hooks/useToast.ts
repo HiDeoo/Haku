@@ -1,9 +1,9 @@
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 
 import { addToastAtom } from 'atoms/toast'
 
 export default function useToast() {
-  const addToast = useUpdateAtom(addToastAtom)
+  const addToast = useSetAtom(addToastAtom)
 
   return { addToast }
 }

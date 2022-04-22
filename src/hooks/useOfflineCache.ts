@@ -1,4 +1,5 @@
-import { useAtomValue, useResetAtom } from 'jotai/utils'
+import { useAtomValue } from 'jotai'
+import { useResetAtom } from 'jotai/utils'
 import { useEffect } from 'react'
 
 import { contentAvailableOfflineAtom } from 'atoms/network'

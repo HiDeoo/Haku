@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai/utils'
+import { useAtomValue } from 'jotai'
 
 import { sidebarCollapsedAtom } from 'atoms/collapsible'
 import Flex from 'components/ui/Flex'

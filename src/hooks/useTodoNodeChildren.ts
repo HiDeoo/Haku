@@ -1,4 +1,5 @@
-import { selectAtom, useAtomValue } from 'jotai/utils'
+import { useAtomValue } from 'jotai'
+import { selectAtom } from 'jotai/utils'
 import { useCallback } from 'react'
 
 import { todoNodeChildrenAtom } from 'atoms/todoNode'

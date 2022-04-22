@@ -1,4 +1,4 @@
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 import { RiRefreshLine } from 'react-icons/ri'
 
@@ -8,7 +8,7 @@ import { registerServiceWorker, sendServiceWorkerMessage } from 'libs/sw'
 
 export default function usePwa() {
   const { addToast } = useToast()
-  const setDeferrefPromptEventAtom = useUpdateAtom(deferrefPromptEventAtom)
+  const setDeferrefPromptEventAtom = useSetAtom(deferrefPromptEventAtom)
 
   useEffect(() => {
     function onLoad() {

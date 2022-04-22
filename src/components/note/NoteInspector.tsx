@@ -1,5 +1,5 @@
 import { type Editor } from '@tiptap/react'
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useAtomValue, useSetAtom } from 'jotai'
 import {
   RiArrowDropRightFill,
   RiArrowGoBackLine,
@@ -43,7 +43,7 @@ import clst from 'styles/clst'
 
 const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorState, setLinkModalOpened }) => {
   const collapsed = useAtomValue(noteInspectorCollapsedAtom)
-  const toggleCollapsed = useUpdateAtom(toggleNoteInspectorCollapsedAtom)
+  const toggleCollapsed = useSetAtom(toggleNoteInspectorCollapsedAtom)
 
   const sidebarCollapsed = useAtomValue(sidebarCollapsedAtom)
 

@@ -1,5 +1,5 @@
 import { Link as Roving, Root } from '@radix-ui/react-toolbar'
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { RiFileTextLine, RiFolderLine } from 'react-icons/ri'
 
 import { sidebarCollapsedAtom } from 'atoms/collapsible'
@@ -39,7 +39,7 @@ const ContentTree: React.FC = () => {
 
   const contentId = useContentId()
   const { data, isLoading } = useContentTreeQuery()
-  const setContentModalOpened = useUpdateAtom(setContentModalOpenedAtom)
+  const setContentModalOpened = useSetAtom(setContentModalOpenedAtom)
 
   function openNewContentModal() {
     setContentModalOpened(true)
@@ -107,7 +107,7 @@ const ShimmerNode: React.FC<ShimmerNodeProps> = ({ depth, ...props }) => {
 }
 
 const Folder: React.FC<FolderProps> = ({ contentType, depth = 1, folder, offline, selectedId, style }) => {
-  const setFolderModal = useUpdateAtom(folderModalAtom)
+  const setFolderModal = useSetAtom(folderModalAtom)
 
   function openEditModal() {
     setFolderModal({ opened: true, action: 'update', data: folder })
@@ -153,7 +153,7 @@ const Folder: React.FC<FolderProps> = ({ contentType, depth = 1, folder, offline
 }
 
 const Content: React.FC<ContentProps> = ({ content, contentType, depth = 0, offline, selectedId }) => {
-  const setContentModal = useUpdateAtom(contentModalAtom)
+  const setContentModal = useSetAtom(contentModalAtom)
 
   function openEditModal() {
     setContentModal({ opened: true, action: 'update', data: content })

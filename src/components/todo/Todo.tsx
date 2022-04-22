@@ -1,4 +1,5 @@
-import { selectAtom, useAtomCallback, useAtomValue, useResetAtom, useUpdateAtom } from 'jotai/utils'
+import { useAtomValue, useSetAtom } from 'jotai'
+import { selectAtom, useAtomCallback, useResetAtom } from 'jotai/utils'
 import { useCallback, useContext, useEffect, useRef } from 'react'
 
 import { resetTodoAtomsAtom, type TodoEditorState, todoEditorStateAtom, todoFocusMapAtom } from 'atoms/todo'
@@ -38,10 +39,10 @@ const Todo: React.FC<TodoProps> = ({ id }) => {
   const resetTodoAtoms = useResetAtom(resetTodoAtomsAtom)
 
   const getFocusedTodoNode = useAtomCallback(useCallback((get) => get(todoFocusMapAtom)[id], [id]))
-  const setFocusedTodoNodes = useUpdateAtom(todoFocusMapAtom)
+  const setFocusedTodoNodes = useSetAtom(todoFocusMapAtom)
 
-  const setTodoChildren = useUpdateAtom(todoNodeChildrenAtom)
-  const setTodoNodes = useUpdateAtom(todoNodeNodesAtom)
+  const setTodoChildren = useSetAtom(todoNodeChildrenAtom)
+  const setTodoNodes = useSetAtom(todoNodeNodesAtom)
 
   useNavigationPrompt(!pristine)
 

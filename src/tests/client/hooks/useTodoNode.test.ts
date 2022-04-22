@@ -4,7 +4,7 @@ import faker from '@faker-js/faker'
 import { act, renderHook } from '@testing-library/react-hooks/native'
 import cuid from 'cuid'
 import { useAtom } from 'jotai'
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useAtomValue, useSetAtom } from 'jotai'
 
 import { todoNodeChildrenAtom, todoNodeMutations, todoNodeNodesAtom } from 'atoms/todoNode'
 import useTodoNode from 'hooks/useTodoNode'
@@ -1577,8 +1577,8 @@ function setFakeTodoNodes(nodeDeclarations: FakeTodoNodeDeclaration[]) {
 
   children.root = parseFakeTodoNodes(nodeDeclarations, undefined, children, nodes)
 
-  const { result: setTodoChildren } = renderHook(() => useUpdateAtom(todoNodeChildrenAtom))
-  const { result: setTodoNodes } = renderHook(() => useUpdateAtom(todoNodeNodesAtom))
+  const { result: setTodoChildren } = renderHook(() => useSetAtom(todoNodeChildrenAtom))
+  const { result: setTodoNodes } = renderHook(() => useSetAtom(todoNodeNodesAtom))
 
   act(() => {
     setTodoChildren.current(children)

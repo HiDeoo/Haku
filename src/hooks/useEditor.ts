@@ -10,7 +10,7 @@ import {
   ReactNodeViewRenderer,
 } from '@tiptap/react'
 import StarterKit, { type StarterKitOptions } from '@tiptap/starter-kit'
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 import { useCallback, type DependencyList } from 'react'
 import { RiErrorWarningLine } from 'react-icons/ri'
 
@@ -46,7 +46,7 @@ const starterKitDefaultOptions: Partial<StarterKitOptions> = {
 
 export function useEditor(options: UseEditorOptions, deps?: DependencyList): Editor | null {
   const { addToast } = useToast()
-  const setImageModal = useUpdateAtom(imageModalAtom)
+  const setImageModal = useSetAtom(imageModalAtom)
 
   const { className, contentId, extensions, setLinkModalOpened, spellcheck, starterKitOptions, ...editorOptions } =
     options

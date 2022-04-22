@@ -1,4 +1,4 @@
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useAtomValue, useSetAtom } from 'jotai'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
@@ -25,7 +25,7 @@ const Sidebar: React.FC = () => {
   const isOnNotePage = router.pathname.startsWith('/notes/')
 
   const collapsed = useAtomValue(sidebarCollapsedAtom)
-  const toggleCollapsed = useUpdateAtom(toggleSidebarCollapsedAtom)
+  const toggleCollapsed = useSetAtom(toggleSidebarCollapsedAtom)
 
   const noteInspectorCollapsed = useAtomValue(noteInspectorCollapsedAtom)
 

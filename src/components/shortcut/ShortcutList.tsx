@@ -1,5 +1,5 @@
 import { Root as VisuallyHidden } from '@radix-ui/react-visually-hidden'
-import { useAtomValue } from 'jotai/utils'
+import { useAtomValue } from 'jotai'
 import { Fragment, useMemo } from 'react'
 
 import { globalShortcutsAtom, localShortcutsAtom } from 'atoms/shortcuts'

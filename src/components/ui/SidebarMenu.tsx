@@ -1,5 +1,6 @@
 import { Arrow, Content, Item, Root, Trigger } from '@radix-ui/react-dropdown-menu'
-import { useAtomValue, useResetAtom, useUpdateAtom } from 'jotai/utils'
+import { useAtomValue, useSetAtom } from 'jotai'
+import { useResetAtom } from 'jotai/utils'
 import { forwardRef } from 'react'
 import {
   RiInstallLine,
@@ -27,12 +28,12 @@ import clst from 'styles/clst'
 
 const SidebarMenu: React.FC = () => {
   const sidebarCollapsed = useAtomValue(sidebarCollapsedAtom)
-  const toggleSidebarCollapsed = useUpdateAtom(toggleSidebarCollapsedAtom)
+  const toggleSidebarCollapsed = useSetAtom(toggleSidebarCollapsedAtom)
 
   const deferrefPromptEvent = useAtomValue(deferrefPromptEventAtom)
   const resetDeferrefPromptEvent = useResetAtom(deferrefPromptEventAtom)
 
-  const setShortcutModalOpened = useUpdateAtom(setShortcutModalOpenedAtom)
+  const setShortcutModalOpened = useSetAtom(setShortcutModalOpenedAtom)
 
   function onClickKeyboardShortcuts() {
     setShortcutModalOpened(true)

@@ -1,5 +1,4 @@
-import { useAtom } from 'jotai'
-import { useUpdateAtom } from 'jotai/utils'
+import { useAtom, useSetAtom } from 'jotai'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
@@ -34,19 +33,19 @@ const CommandPalette: React.FC = () => {
 
   const [opened, setOpened] = useAtom(commandPaletteOpenedAtom)
 
-  const setNavigationPaletteOpened = useUpdateAtom(navigationPaletteOpenedAtom)
-  const setSearchPaletteOpened = useUpdateAtom(searchPaletteOpenedAtom)
+  const setNavigationPaletteOpened = useSetAtom(navigationPaletteOpenedAtom)
+  const setSearchPaletteOpened = useSetAtom(searchPaletteOpenedAtom)
 
   const { cType, type } = useContentType()
   const isBrowsingNotes = type === ContentType.NOTE
   const altContentType = getContentType(isBrowsingNotes ? ContentType.TODO : ContentType.NOTE)
   const altIcon = isBrowsingNotes ? RiTodoLine : RiBookletLine
 
-  const setContentModalOpened = useUpdateAtom(setContentModalOpenedAtom)
-  const setFolderModalOpened = useUpdateAtom(setFolderModalOpenedAtom)
-  const setShortcutModalOpened = useUpdateAtom(setShortcutModalOpenedAtom)
+  const setContentModalOpened = useSetAtom(setContentModalOpenedAtom)
+  const setFolderModalOpened = useSetAtom(setFolderModalOpenedAtom)
+  const setShortcutModalOpened = useSetAtom(setShortcutModalOpenedAtom)
 
-  const toggleSidebarCollapsed = useUpdateAtom(toggleSidebarCollapsedAtom)
+  const toggleSidebarCollapsed = useSetAtom(toggleSidebarCollapsedAtom)
 
   useGlobalShortcuts(
     useMemo(
