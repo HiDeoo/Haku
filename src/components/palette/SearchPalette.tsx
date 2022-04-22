@@ -29,7 +29,7 @@ const SearchPalette: React.FC = () => {
   const [query, setQuery] = useState<string | undefined>('')
   const debouncedQuery = useDebouncedValue(query, 300)
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useSearchQuery(opened, debouncedQuery)
+  const { data, fetchNextPage, fetchStatus, hasNextPage, isFetchingNextPage } = useSearchQuery(opened, debouncedQuery)
 
   useGlobalShortcuts(
     useMemo(
@@ -107,7 +107,6 @@ const SearchPalette: React.FC = () => {
         onPick={onPick}
         enterKeyHint="go"
         initialQuery={query}
-        isLoading={isLoading}
         title="Search Palette"
         itemToIcon={itemToIcon}
         onQueryChange={setQuery}
@@ -117,6 +116,7 @@ const SearchPalette: React.FC = () => {
         forwardedRef={paletteTextInput}
         items={data?.pages.flat() ?? []}
         isLoadingMore={isFetchingNextPage}
+        isLoading={fetchStatus === 'fetching'}
         minQueryLength={SEARCH_QUERY_MIN_LENGTH}
         itemDetailsToString={itemDetailsToString}
         infinite={hasNextPage && !isFetchingNextPage}

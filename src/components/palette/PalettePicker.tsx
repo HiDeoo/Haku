@@ -5,7 +5,7 @@ import {
   type UseComboboxStateChange,
 } from 'downshift'
 import fuzzaldrin from 'fuzzaldrin-plus'
-import { forwardRef, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { forwardRef, useCallback, useEffect, useMemo, useRef, useState, useTransition } from 'react'
 
 import TextInput from 'components/form/TextInput'
 import { type PaletteItem, type PaletteProps } from 'components/palette/Palette'
@@ -42,6 +42,8 @@ const PalettePicker = <TItem extends PaletteItem>(
 ) => {
   const currentInputValue = useRef('')
   const infiniteDetectorElement = useRef<HTMLLIElement>(null)
+
+  const [isPending, startTransition] = useTransition()
 
   const [filteredItems, setFilteredItems] = useState(items)
 
@@ -119,7 +121,9 @@ const PalettePicker = <TItem extends PaletteItem>(
 
   function onInputValueChange(changes: UseComboboxStateChange<TItem>) {
     if (onQueryChange) {
-      onQueryChange(changes.inputValue)
+      startTransition(() => {
+        onQueryChange(changes.inputValue)
+      })
     }
   }
 
@@ -151,7 +155,7 @@ const PalettePicker = <TItem extends PaletteItem>(
   }
 
   const baseMenuItemClasses = 'px-3 py-1.5 cursor-pointer text-ellipsis overflow-hidden'
-  const showLoadingSpinner = isLoading || isLoadingMore
+  const showLoadingSpinner = isPending || isLoading || isLoadingMore
 
   return (
     <>
