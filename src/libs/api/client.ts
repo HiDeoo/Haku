@@ -8,6 +8,7 @@ export default client
 export function getQueryClientDefaultOptions(): DefaultOptions {
   return {
     queries: {
+      networkMode: 'offlineFirst',
       retry(failureCount: number, error: unknown) {
         if (isClientNotFoundError(error)) {
           return false

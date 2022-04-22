@@ -71,7 +71,7 @@ specifiers:
   react-error-boundary: 3.1.4
   react-hook-form: 7.30.0
   react-icons: 4.3.1
-  react-query: 3.38.0
+  react-query: 4.0.0-beta.5
   react-test-renderer: 18.0.0
   status-code-enum: 1.0.0
   tailwind-merge: 1.2.1
@@ -113,7 +113,7 @@ dependencies:
   form-data: 4.0.0
   fuzzaldrin-plus: 0.6.0
   highlight.js: 11.5.1
-  jotai: 1.6.4_react-query@3.38.0+react@18.0.0
+  jotai: 1.6.4_1f0da4eb83cb4a739e2b931963a9c067
   ky: 0.30.0
   lowlight: 2.6.1
   multer: 1.4.4
@@ -124,7 +124,7 @@ dependencies:
   react-error-boundary: 3.1.4_react@18.0.0
   react-hook-form: 7.30.0_react@18.0.0
   react-icons: 4.3.1_react@18.0.0
-  react-query: 3.38.0_react-dom@18.0.0+react@18.0.0
+  react-query: 4.0.0-beta.5_react-dom@18.0.0+react@18.0.0
   status-code-enum: 1.0.0
   tailwind-merge: 1.2.1
   throttle-debounce: 4.0.1
@@ -2401,6 +2401,10 @@ packages:
     resolution: {integrity: sha512-PBjIUxZHOuj0R15/xuwJYjFi+KZdNFrehocChv4g5hu6aFroHue8m0lBP0POdK2nKzbw0cgV1mws8+V/JAcEkQ==}
     dev: false
 
+  /@types/use-sync-external-store/0.0.3:
+    resolution: {integrity: sha512-EwmlvuaxPNej9+T4v5AuBPJa2x2UOJVdjCtDHgcDqitUeOtjnJKJ+apYjVcAoBEMjKW1VVFGZLUb5+qqa09XFA==}
+    dev: false
+
   /@types/yargs-parser/20.2.1:
     resolution: {integrity: sha512-7tFImggNeNBVMsn0vLrpn1H1uPrUBdnARPTpZoitY37ZrdJREzf7I16tMrlK3hen349gr1NYh8CmZQa7CTG6Aw==}
     dev: true
@@ -4144,7 +4148,7 @@ packages:
       fs.realpath: 1.0.0
       inflight: 1.0.6
       inherits: 2.0.4
-      minimatch: 3.0.4
+      minimatch: 3.1.2
       once: 1.4.0
       path-is-absolute: 1.0.1
     dev: true
@@ -4155,7 +4159,7 @@ packages:
       fs.realpath: 1.0.0
       inflight: 1.0.6
       inherits: 2.0.4
-      minimatch: 3.0.4
+      minimatch: 3.1.2
       once: 1.4.0
       path-is-absolute: 1.0.1
 
@@ -5060,7 +5064,7 @@ packages:
     resolution: {integrity: sha512-S7Xfsy8nN9Iw/AZxk+ZxEbd5ImIwJPM0TfAo8zI8FF+3lidQ2yiK4dqzsaPKSbZD0woNVSY0KCql6rlKc5V7ug==}
     dev: false
 
-  /jotai/1.6.4_react-query@3.38.0+react@18.0.0:
+  /jotai/1.6.4_1f0da4eb83cb4a739e2b931963a9c067:
     resolution: {integrity: sha512-XC0ExLhdE6FEBdIjKTe6kMlHaAUV/QiwN7vZond76gNr/WdcdonJOEW79+5t8u38sR41bJXi26B1dRi7cCRz9A==}
     engines: {node: '>=12.7.0'}
     peerDependencies:
@@ -5095,7 +5099,7 @@ packages:
         optional: true
     dependencies:
       react: 18.0.0
-      react-query: 3.38.0_react-dom@18.0.0+react@18.0.0
+      react-query: 4.0.0-beta.5_react-dom@18.0.0+react@18.0.0
     dev: false
 
   /js-levenshtein/1.1.6:
@@ -5452,12 +5456,12 @@ packages:
     resolution: {integrity: sha512-yJHVQEhyqPLUTgt9B83PXu6W3rx4MvvHvSUvToogpwoGDOUQ+yDrR0HRot+yOCdCO7u4hX3pWft6kWBBcqh0UA==}
     dependencies:
       brace-expansion: 1.1.11
+    dev: true
 
   /minimatch/3.1.2:
     resolution: {integrity: sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw==}
     dependencies:
       brace-expansion: 1.1.11
-    dev: true
 
   /minimist/1.2.6:
     resolution: {integrity: sha512-Jsjnk4bw3YJqYzbdyBiNsPWHPfO++UGG749Cxs6peCu5Xg4nrena6OVxOYxrQTqww0Jmwt+Ref8rggumkTLz9Q==}
@@ -6368,8 +6372,8 @@ packages:
     resolution: {integrity: sha512-yUcBYdBBbo3QiPsgYDcfQcIkGZHfxOaoE6HLSnr1sPzMhdyxusbfKOSUbSd/ocGi32dxcj366PsTj+5oggeKKw==}
     dev: true
 
-  /react-query/3.38.0_react-dom@18.0.0+react@18.0.0:
-    resolution: {integrity: sha512-VRbCTRrDfC5FsB70+JfZuxFRv9SAvkZ1h36MsN8+QaDN+NWB6s1vJndqpoLQnJqN0COTG2zsInMq0KFdYze6TA==}
+  /react-query/4.0.0-beta.5_react-dom@18.0.0+react@18.0.0:
+    resolution: {integrity: sha512-Po18vTTK3mYnhwi8Uz4iTGxh7/CbNssH0enl/BSHUFaK5QCMMwYxkVInbRFS3Y4bcI62dxaro3GhOU9FtneEyA==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
       react-dom: '*'
@@ -6381,10 +6385,12 @@ packages:
         optional: true
     dependencies:
       '@babel/runtime': 7.16.3
+      '@types/use-sync-external-store': 0.0.3
       broadcast-channel: 3.7.0
       match-sorter: 6.3.1
       react: 18.0.0
       react-dom: 18.0.0_react@18.0.0
+      use-sync-external-store: 1.0.0_react@18.0.0
     dev: false
 
   /react-remove-scroll-bar/2.2.0_@types+react@18.0.6+react@18.0.0:
@@ -7004,7 +7010,7 @@ packages:
     dependencies:
       '@istanbuljs/schema': 0.1.3
       glob: 7.2.0
-      minimatch: 3.0.4
+      minimatch: 3.1.2
     dev: true
 
   /text-table/0.2.0:
@@ -7255,6 +7261,14 @@ packages:
       detect-node-es: 1.1.0
       react: 18.0.0
       tslib: 1.14.1
+    dev: false
+
+  /use-sync-external-store/1.0.0_react@18.0.0:
+    resolution: {integrity: sha512-AFVsxg5GkFg8GDcxnl+Z0lMAz9rE8DGJCc28qnBuQF7lac57B5smLcT37aXpXIIPz75rW4g3eXHPjhHwdGskOw==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0-rc
+    dependencies:
+      react: 18.0.0
     dev: false
 
   /util-deprecate/1.0.2:
