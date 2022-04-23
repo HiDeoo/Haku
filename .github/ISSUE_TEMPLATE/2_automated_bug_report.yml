@@ -1,0 +1,81 @@
+name: Automated bug report
+description: Report a bug with Haku. Please provide as much details as possible, including screenshots if necessary.
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for filing an issue 😄 !
+  - type: textarea
+    attributes:
+      label: Describe the error
+      description: A clear and concise description of what the error is.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: To Reproduce
+      description: Steps to reproduce the behavior.
+      placeholder: |
+        1. Go to '…'
+        2. Click on '…'
+        3. Scroll down to '…'
+        4. See error
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what you expected to happen.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Screenshots
+      description: If applicable, add screenshots to help explain your problem.
+  - type: dropdown
+    attributes:
+      label: How often does this error happen?
+      description: How easily can you reproduce this error?
+      options:
+        - Every time
+        - Often
+        - Sometimes
+        - Only once
+    validations:
+      required: true
+  - type: textarea
+    id: error
+    attributes:
+      label: Error (automated)
+      description: Please do not edit this field.
+      render: text
+    validations:
+      required: true
+  - type: input
+    id: haku_version
+    attributes:
+      label: Haku version (automated)
+      description: Please do not edit this field.
+    validations:
+      required: true
+  - type: dropdown
+    id: haku_environment
+    attributes:
+      label: Haku environment (automated)
+      description: Please do not edit this field.
+      options:
+        - Browser
+        - PWA
+  - type: input
+    id: browser_version
+    attributes:
+      label: Browser version (automated)
+      description: Please do not edit this field.
+    validations:
+      required: true
+  - type: input
+    id: os_version
+    attributes:
+      label: Operating System version (automated)
+      description: Please do not edit this field.
+    validations:
+      required: true
