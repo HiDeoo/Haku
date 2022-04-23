@@ -1,6 +1,9 @@
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
+      NEXT_PUBLIC_VERSION: string
+      NEXT_PUBLIC_BUGS_URL: string
+
       DB_HOST: string
       DB_NAME: string
       DB_USER: string

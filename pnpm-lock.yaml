@@ -35,6 +35,7 @@ specifiers:
   '@types/react': 18.0.6
   '@types/react-dom': 18.0.2
   '@types/throttle-debounce': 4.0.0
+  '@types/ua-parser-js': 0.7.36
   '@typescript-eslint/eslint-plugin': 5.20.0
   '@typescript-eslint/parser': 5.20.0
   autoprefixer: 10.4.4
@@ -80,6 +81,7 @@ specifiers:
   ts-node: 10.7.0
   tsconfig-paths: 3.14.1
   typescript: 4.6.3
+  ua-parser-js: 1.0.2
   url-slug: 3.0.3
   use-editable: 2.3.3
   zod: 3.14.4
@@ -128,6 +130,7 @@ dependencies:
   status-code-enum: 1.0.0
   tailwind-merge: 1.2.1
   throttle-debounce: 4.0.1
+  ua-parser-js: 1.0.2
   url-slug: 3.0.3
   use-editable: 2.3.3_react@18.0.0
   zod: 3.14.4
@@ -145,6 +148,7 @@ devDependencies:
   '@types/react': 18.0.6
   '@types/react-dom': 18.0.2
   '@types/throttle-debounce': 4.0.0
+  '@types/ua-parser-js': 0.7.36
   '@typescript-eslint/eslint-plugin': 5.20.0_b9ac9b5656ce5dffade639fcf5e491bf
   '@typescript-eslint/parser': 5.20.0_eslint@8.13.0+typescript@4.6.3
   autoprefixer: 10.4.4_postcss@8.4.12
@@ -2395,6 +2399,10 @@ packages:
 
   /@types/throttle-debounce/4.0.0:
     resolution: {integrity: sha512-BZ1Y2nf1U3qj9MNWrlTG3+FWfFS8xfG2DA0ypiZ1pBUiO8WEvEjNTmQuecnYDtQvegRojeKh+iwNK2NjJ8a3YQ==}
+    dev: true
+
+  /@types/ua-parser-js/0.7.36:
+    resolution: {integrity: sha512-N1rW+njavs70y2cApeIw1vLMYXRwfBy+7trgavGuuTfOd7j1Yh7QTRc/yqsPl6ncokt72ZXuxEU0PiCp9bSwNQ==}
     dev: true
 
   /@types/unist/2.0.6:
@@ -7198,6 +7206,10 @@ packages:
     engines: {node: '>=4.2.0'}
     hasBin: true
     dev: true
+
+  /ua-parser-js/1.0.2:
+    resolution: {integrity: sha512-00y/AXhx0/SsnI51fTc0rLRmafiGOM4/O+ny10Ps7f+j/b8p/ZY11ytMgznXkOVo4GQ+KwQG5UQLkLGirsACRg==}
+    dev: false
 
   /unbox-primitive/1.0.1:
     resolution: {integrity: sha512-tZU/3NqK3dA5gpE1KtyiJUrEB0lxnGkMFHptJ7q6ewdZ8s12QrODwNbhIJStmJkd1QDXa1NRA8aF2A1zk/Ypyw==}

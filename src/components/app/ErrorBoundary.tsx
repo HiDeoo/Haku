@@ -4,6 +4,7 @@ import Button from 'components/form/Button'
 import Callout from 'components/form/Callout'
 import Puzzle from 'components/Puzzle'
 import Flex from 'components/ui/Flex'
+import { openGitHubErrorReport } from 'libs/github'
 
 const ErrorBoundary: React.FC<ErrorBoundaryProps> = ({ children }) => {
   return <Boundary FallbackComponent={Fallback}>{children}</Boundary>
@@ -11,9 +12,9 @@ const ErrorBoundary: React.FC<ErrorBoundaryProps> = ({ children }) => {
 
 export default ErrorBoundary
 
-const Fallback: React.FC<FallbackProps> = ({ resetErrorBoundary }) => {
+const Fallback: React.FC<FallbackProps> = ({ error, resetErrorBoundary }) => {
   function reportAndTryAgain() {
-    // TODO(HiDeoo)
+    openGitHubErrorReport(error)
 
     resetErrorBoundary()
   }
