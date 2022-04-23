@@ -90,7 +90,7 @@ const InspectorSection: React.FC<InspectorSectionProps> = ({
 
 Inspector.Section = InspectorSection
 
-const InspectorButton: React.FC<ButtonProps> = (props) => {
+const InspectorButton: React.FC<ButtonProps & Collapsible> = ({ collapsed, ...props }) => {
   const buttonClasses = clst('mx-0 py-1 bg-zinc-700 hover:bg-zinc-600 shadow-none', {
     'bg-blue-600 hover:bg-blue-500': props.primary,
   })
@@ -103,7 +103,7 @@ const InspectorButton: React.FC<ButtonProps> = (props) => {
 
 Inspector.Button = InspectorButton
 
-const InspectorToggle: React.FC<InspectorToggleProps> = ({ onToggle, toggled, ...props }) => {
+const InspectorToggle: React.FC<InspectorToggleProps> = ({ collapsed, onToggle, toggled, ...props }) => {
   const buttonClasses = clst({
     'bg-blue-500 hover:bg-blue-400 border-blue-400': toggled,
   })
@@ -126,7 +126,7 @@ const InspectorToggle: React.FC<InspectorToggleProps> = ({ onToggle, toggled, ..
 Inspector.Toggle = InspectorToggle
 
 const InspectorIconButton = forwardRef<HTMLButtonElement, InspectorIconButtonProps>(
-  ({ className, pressedClassName, tooltip, ...props }, forwardedRef) => {
+  ({ className, collapsed, pressedClassName, tooltip, ...props }, forwardedRef) => {
     const buttonClasses = clst(
       'mx-0 bg-zinc-700 hover:bg-zinc-600 hover:text-blue-50 shadow-none disabled:bg-zinc-700',
       className
@@ -217,17 +217,15 @@ type InspectorComponent = React.FC<InspectorProps> & {
   Toggle: typeof InspectorToggle
 }
 
-interface InspectorProps {
+interface InspectorProps extends Collapsible {
   children: React.ReactNode
-  collapsed?: boolean
   controls?: React.ReactNode
   disabled?: boolean
 }
 
-interface InspectorSectionProps {
+interface InspectorSectionProps extends Collapsible {
   children: React.ReactNode
   className?: string
-  collapsed?: boolean
   disabled?: boolean
   role?: React.HtmlHTMLAttributes<HTMLElement>['role']
   sectionClassName?: string
@@ -235,7 +233,7 @@ interface InspectorSectionProps {
   titleClassName?: string
 }
 
-interface InspectorIconButtonProps {
+interface InspectorIconButtonProps extends Collapsible {
   className?: string
   disabled?: IconButtonProps['disabled']
   icon: IconProps['icon']
@@ -245,12 +243,12 @@ interface InspectorIconButtonProps {
   tooltip?: string
 }
 
-interface InspectorToggleProps extends Omit<InspectorIconButtonProps, 'onPress'> {
+interface InspectorToggleProps extends Collapsible, Omit<InspectorIconButtonProps, 'onPress'> {
   toggled?: boolean
   onToggle: (toggled: boolean) => void
 }
 
-interface InspectorIconButtonMenuProps {
+interface InspectorIconButtonMenuProps extends Collapsible {
   children: React.ReactNode
   collapsed?: boolean
   disabled?: boolean
@@ -261,4 +259,8 @@ interface InspectorIconButtonMenuProps {
 
 interface InspectorIconMenuItemProps extends Omit<InspectorIconButtonMenuProps, 'children' | 'tooltip'> {
   onClick: IconButtonProps['onClick']
+}
+
+interface Collapsible {
+  collapsed?: boolean
 }

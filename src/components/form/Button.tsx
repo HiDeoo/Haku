@@ -1,5 +1,5 @@
 import { useButton } from '@react-aria/button'
-import { useObjectRef } from '@react-aria/utils'
+import { mergeProps, useObjectRef } from '@react-aria/utils'
 import { forwardRef } from 'react'
 
 import Flex from 'components/ui/Flex'
@@ -7,25 +7,19 @@ import Spinner from 'components/ui/Spinner'
 import clst from 'styles/clst'
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  (
-    {
-      children,
-      className,
-      disabled,
-      loading,
-      onKeyDown,
-      onMouseEnter,
-      onMouseLeave,
-      pressedClassName,
-      primary,
-      tabIndex,
-      ...props
-    },
-    forwardedRef
-  ) => {
-    const useButtonProps: UseButtonProps = isButtonPropsWithOnClickHandler(props)
-      ? { onPress: props.onPress ?? onDeprecatedOnClick, type: props.type }
-      : props
+  ({ children, className, disabled, loading, onPress, pressedClassName, primary, ...props }, forwardedRef) => {
+    let sanitizedProps = props
+
+    if (isButtonPropsWithOnClickHandler(props)) {
+      const { onClick, ...propsWithoutOnClickHandler } = props
+
+      sanitizedProps = propsWithoutOnClickHandler
+    }
+
+    const useButtonProps: UseButtonProps = {
+      ...sanitizedProps,
+      onPress: isButtonPropsWithOnClickHandler(props) ? onDeprecatedOnClick : onPress,
+    }
 
     const ref = useObjectRef(forwardedRef)
     const { buttonProps, isPressed } = useButton(
@@ -36,6 +30,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     function onDeprecatedOnClick(event: PressEvent) {
       if (isButtonPropsWithOnClickHandler(props)) {
         props.onClick(event)
+
+        if (onPress) {
+          onPress(event)
+        }
       }
     }
 
@@ -56,16 +54,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     )
 
     return (
-      <button
-        {...buttonProps}
-        ref={ref}
-        tabIndex={tabIndex}
-        onKeyDown={onKeyDown}
-        className={buttonClasses}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
-        aria-label={props['aria-label']}
-      >
+      <button {...mergeProps(sanitizedProps, buttonProps)} ref={ref} className={buttonClasses}>
         {loading ? (
           <Flex justifyContent="center">
             <Spinner className="my-0.5 h-4 w-4" color="text-blue-50/80" />
@@ -92,14 +81,11 @@ export interface ButtonProps {
   className?: string
   disabled?: UseButtonProps['isDisabled']
   loading?: boolean
-  onKeyDown?: React.HTMLAttributes<HTMLButtonElement>['onKeyDown']
-  onMouseEnter?: React.HTMLAttributes<HTMLButtonElement>['onMouseEnter']
-  onMouseLeave?: React.HTMLAttributes<HTMLButtonElement>['onMouseLeave']
   onPress?: UseButtonProps['onPress']
   pressedClassName?: string
   primary?: boolean
   tabIndex?: React.HTMLAttributes<HTMLButtonElement>['tabIndex']
-  type?: 'submit'
+  type?: React.ButtonHTMLAttributes<HTMLButtonElement>['type']
 }
 
 export interface ButtonPropsWithOnClickHandler extends ButtonProps {
