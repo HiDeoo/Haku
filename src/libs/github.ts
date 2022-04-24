@@ -1,5 +1,9 @@
 import { isPwa } from 'libs/html'
 
+export function openGitHubIssuePage() {
+  window.open(process.env.NEXT_PUBLIC_BUGS_URL)
+}
+
 export async function openGitHubErrorReport(error: Error) {
   const parser = new (await import('ua-parser-js')).default.UAParser()
   const browser = parser.getBrowser()

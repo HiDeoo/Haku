@@ -3,6 +3,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useResetAtom } from 'jotai/utils'
 import { forwardRef } from 'react'
 import {
+  RiBugLine,
   RiInstallLine,
   RiKeyboardFill,
   RiLogoutCircleRLine,
@@ -24,6 +25,7 @@ import ShortcutModal from 'components/shortcut/ShortcutModal'
 import Flex from 'components/ui/Flex'
 import Icon, { type IconProps } from 'components/ui/Icon'
 import { logout } from 'libs/auth'
+import { openGitHubIssuePage } from 'libs/github'
 import clst from 'styles/clst'
 
 const SidebarMenu: React.FC = () => {
@@ -82,6 +84,9 @@ const SidebarMenu: React.FC = () => {
           <Flex direction="col" className="rounded-md bg-zinc-700 p-1.5 shadow shadow-black/75">
             <Item asChild>
               <SidebarMenuItem label="Logout" icon={RiLogoutCircleRLine} onClick={logout} />
+            </Item>
+            <Item asChild>
+              <SidebarMenuItem label="Report Bug" icon={RiBugLine} onClick={openGitHubIssuePage} />
             </Item>
             <Item asChild>
               <SidebarMenuItem label="Keyboard Shortcuts" icon={RiKeyboardFill} onClick={onClickKeyboardShortcuts} />
