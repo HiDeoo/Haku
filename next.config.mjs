@@ -11,7 +11,6 @@ const commonHeaders = [
   { key: 'X-DNS-Prefetch-Control', value: 'on' },
   { key: 'X-Frame-Options', value: 'DENY' },
   { key: 'X-Robots-Tag', value: 'noindex, nofollow, nosnippet, noarchive, noimageindex' },
-  { key: 'X-XSS-Protection', value: '1; mode=block' },
 ]
 
 /**
@@ -25,7 +24,13 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   headers() {
-    return [{ source: '/:path*', headers: commonHeaders }]
+    return [
+      { source: '/:path*', headers: commonHeaders },
+      {
+        source: '/manifest.webmanifest',
+        headers: [{ key: 'Content-Type', value: 'application/manifest+json; charset=utf-8' }],
+      },
+    ]
   },
   reactStrictMode: true,
   rewrites() {
