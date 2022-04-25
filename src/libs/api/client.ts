@@ -1,9 +1,18 @@
-import ky, { HTTPError, TimeoutError } from 'ky'
+import { HTTPError, TimeoutError } from 'ky'
+import { type KyInstance } from 'ky/distribution/types/ky'
 import { type DefaultOptions } from 'react-query'
 
-const client = ky.create({ prefixUrl: '/api', retry: 0 })
+let client: KyInstance
 
-export default client
+export async function getClient() {
+  if (!client) {
+    const ky = (await import('ky')).default
+
+    client = ky.create({ prefixUrl: '/api', retry: 0 })
+  }
+
+  return client
+}
 
 export function getQueryClientDefaultOptions(): DefaultOptions {
   return {

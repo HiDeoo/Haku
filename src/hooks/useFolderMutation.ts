@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from 'react-query'
 
 import { getContentTreeQueryKey } from 'hooks/useContentTreeQuery'
 import useContentType, { type ContentType } from 'hooks/useContentType'
-import client, { type Mutation } from 'libs/api/client'
+import { getClient, type Mutation } from 'libs/api/client'
 import { type FolderData } from 'libs/db/folder'
 import { type AddFolderBody } from 'pages/api/folders'
 import { type UpdateFolderQuery, type UpdateFolderBody, type RemoveFolderQuery } from 'pages/api/folders/[id]'
@@ -46,16 +46,16 @@ export default function useFolderMutation() {
   )
 }
 
-function addFolder(data: AddFolderData, type: ContentType) {
-  return client.post('folders', { json: { ...data, type } }).json<FolderData>()
+async function addFolder(data: AddFolderData, type: ContentType) {
+  return (await getClient()).post('folders', { json: { ...data, type } }).json<FolderData>()
 }
 
-function updateFolder({ id, ...data }: UpdateFolderData, type: ContentType) {
-  return client.patch(`folders/${id}`, { json: { ...data, type } }).json<FolderData>()
+async function updateFolder({ id, ...data }: UpdateFolderData, type: ContentType) {
+  return (await getClient()).patch(`folders/${id}`, { json: { ...data, type } }).json<FolderData>()
 }
 
 async function removeFolder({ id }: RemoveFolderData) {
-  await client.delete(`folders/${id}`)
+  await (await getClient()).delete(`folders/${id}`)
 }
 
 type AddFolderData = Omit<AddFolderBody, 'type'>

@@ -1,6 +1,6 @@
 import { useQuery } from 'react-query'
 
-import client from 'libs/api/client'
+import { getClient } from 'libs/api/client'
 import { type FilesData } from 'libs/db/file'
 
 export default function useFilesQuery(enabled: boolean) {
@@ -11,6 +11,6 @@ export function getFilesQueryKey() {
   return ['files']
 }
 
-function getFiles() {
-  return client.get('files').json<FilesData>()
+async function getFiles() {
+  return (await getClient()).get('files').json<FilesData>()
 }

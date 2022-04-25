@@ -1,7 +1,7 @@
 import { useQuery } from 'react-query'
 
 import useContentType, { ContentType } from 'hooks/useContentType'
-import client, { isNetworkError } from 'libs/api/client'
+import { getClient, isNetworkError } from 'libs/api/client'
 import { type NoteTreeData, type TodoTreeData } from 'libs/db/tree'
 
 export default function useContentTreeQuery() {
@@ -24,10 +24,10 @@ export function getContentTreeQueryKey(type?: ContentType) {
   return ['content-tree', type]
 }
 
-function getNoteTree() {
-  return client.get('notes').json<NoteTreeData>()
+async function getNoteTree() {
+  return (await getClient()).get('notes').json<NoteTreeData>()
 }
 
-function getTodoTree() {
-  return client.get('todos').json<TodoTreeData>()
+async function getTodoTree() {
+  return (await getClient()).get('todos').json<TodoTreeData>()
 }

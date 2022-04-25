@@ -5,7 +5,7 @@ import useContentId from 'hooks/useContentId'
 import { getContentTreeQueryKey } from 'hooks/useContentTreeQuery'
 import useContentType, { ContentType } from 'hooks/useContentType'
 import { getFilesQueryKey } from 'hooks/useFilesQuery'
-import client, { type Mutation } from 'libs/api/client'
+import { getClient, type Mutation } from 'libs/api/client'
 import { type NoteMetadata } from 'libs/db/note'
 import { type TodoMetadata } from 'libs/db/todo'
 import { type AddNoteBody } from 'pages/api/notes'
@@ -62,28 +62,28 @@ export default function useMetadataMutation() {
   )
 }
 
-function addNote(data: AddNoteBody) {
-  return client.post('notes', { json: data }).json<NoteMetadata>()
+async function addNote(data: AddNoteBody) {
+  return (await getClient()).post('notes', { json: data }).json<NoteMetadata>()
 }
 
-function addTodo(data: AddTodoBody) {
-  return client.post('todos', { json: data }).json<TodoMetadata>()
+async function addTodo(data: AddTodoBody) {
+  return (await getClient()).post('todos', { json: data }).json<TodoMetadata>()
 }
 
-function updateNote({ id, ...data }: UpdateMetadata) {
-  return client.patch(`notes/${id}`, { json: data }).json<NoteMetadata>()
+async function updateNote({ id, ...data }: UpdateMetadata) {
+  return (await getClient()).patch(`notes/${id}`, { json: data }).json<NoteMetadata>()
 }
 
-function updateTodo({ id, ...data }: UpdateMetadata) {
-  return client.patch(`todos/${id}`, { json: data }).json<TodoMetadata>()
+async function updateTodo({ id, ...data }: UpdateMetadata) {
+  return (await getClient()).patch(`todos/${id}`, { json: data }).json<TodoMetadata>()
 }
 
 async function removeNote({ id }: RemoveNoteQuery) {
-  await client.delete(`notes/${id}`)
+  await (await getClient()).delete(`notes/${id}`)
 }
 
 async function removeTodo({ id }: RemoveTodoQuery) {
-  await client.delete(`todos/${id}`)
+  await (await getClient()).delete(`todos/${id}`)
 }
 
 type AddMetadata = AddNoteBody | AddTodoBody
