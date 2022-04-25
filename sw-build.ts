@@ -9,7 +9,7 @@ import { SW_CACHES } from 'constants/sw'
 import { CLOUDINARY_BASE_DELIVERY_URL } from 'libs/cloudinary'
 
 const buildManifestPath = '.next/build-manifest.json'
-const pageToIgnore = ['/_app', '/_error']
+const pageToIgnore = ['/_app', '/_error', '/404']
 const pathPrefix = '/_next/'
 
 const [, , ...args] = process.argv
