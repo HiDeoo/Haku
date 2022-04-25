@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  html {
+    text-size-adjust: 100%;
+  }
+}
+
 @layer components {
   .animate-control-menu {
     @media (prefers-reduced-motion: no-preference) {
