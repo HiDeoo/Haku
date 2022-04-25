@@ -2,8 +2,8 @@ import { ErrorBoundary as Boundary, type FallbackProps } from 'react-error-bound
 
 import Button from 'components/form/Button'
 import Callout from 'components/form/Callout'
-import Puzzle from 'components/Puzzle'
 import Flex from 'components/ui/Flex'
+import Puzzle from 'components/ui/Puzzle'
 import { openGitHubErrorReport } from 'libs/github'
 
 const ErrorBoundary: React.FC<ErrorBoundaryProps> = ({ children }) => {
