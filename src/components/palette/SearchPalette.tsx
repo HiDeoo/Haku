@@ -1,12 +1,11 @@
 import { useAtom } from 'jotai'
-import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { useMemo, useRef, useState } from 'react'
 import { RiBookletLine, RiSearchLine, RiTodoLine } from 'react-icons/ri'
 
 import { searchPaletteOpenedAtom } from 'atoms/palette'
 import IconButton from 'components/form/IconButton'
-import { type PaletteItem, type PaletteProps } from 'components/palette/Palette'
+import Palette, { type PaletteItem } from 'components/palette/Palette'
 import { ContentType } from 'constants/contentType'
 import { SEARCH_QUERY_MIN_LENGTH } from 'constants/search'
 import { getContentType } from 'hooks/useContentType'
@@ -14,8 +13,6 @@ import useDebouncedValue from 'hooks/useDebouncedValue'
 import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
 import useSearchQuery from 'hooks/useSearchQuery'
 import { type SearchResultData } from 'libs/db/file'
-
-const Palette = dynamic<PaletteProps<SearchResult>>(import('components/palette/Palette'))
 
 const SearchPalette: React.FC = () => {
   const { push } = useRouter()
@@ -100,7 +97,7 @@ const SearchPalette: React.FC = () => {
   return (
     <>
       <IconButton icon={RiSearchLine} tooltip="Search" onPress={onPressTrigger} ref={trigger} />
-      <Palette
+      <Palette<SearchResult>
         role="search"
         fuzzy={false}
         opened={opened}

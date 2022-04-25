@@ -1,5 +1,4 @@
 import { useAtom, useSetAtom } from 'jotai'
-import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 import {
@@ -17,14 +16,12 @@ import {
 import { toggleSidebarCollapsedAtom } from 'atoms/collapsible'
 import { setContentModalOpenedAtom, setFolderModalOpenedAtom, setShortcutModalOpenedAtom } from 'atoms/modal'
 import { commandPaletteOpenedAtom, navigationPaletteOpenedAtom, searchPaletteOpenedAtom } from 'atoms/palette'
-import { type PaletteItem, type PaletteProps } from 'components/palette/Palette'
+import Palette, { type PaletteItem } from 'components/palette/Palette'
 import { type IconProps } from 'components/ui/Icon'
 import useContentType, { ContentType, getContentType } from 'hooks/useContentType'
 import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
 import { useNetworkStatus } from 'hooks/useNetworkStatus'
 import { logout } from 'libs/auth'
-
-const Palette = dynamic<PaletteProps<Command>>(import('components/palette/Palette'))
 
 const CommandPalette: React.FC = () => {
   const { offline } = useNetworkStatus()

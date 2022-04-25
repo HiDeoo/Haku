@@ -1,12 +1,10 @@
 import { Provider, Viewport } from '@radix-ui/react-toast'
 import { useAtomValue } from 'jotai'
-import dynamic from 'next/dynamic'
 
 import { toastsAtom } from 'atoms/toast'
+import Toast from 'components/ui/Toast'
 import { isNonEmptyArray } from 'libs/array'
 import clst from 'styles/clst'
-
-const Toast = dynamic(import('components/ui/Toast'))
 
 const Toaster: React.FC = () => {
   const toasts = useAtomValue(toastsAtom)
