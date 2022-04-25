@@ -1,10 +1,13 @@
+import dynamic from 'next/dynamic'
 import { ErrorBoundary as Boundary, type FallbackProps } from 'react-error-boundary'
 
 import Button from 'components/form/Button'
 import Callout from 'components/form/Callout'
 import Flex from 'components/ui/Flex'
-import Puzzle from 'components/ui/Puzzle'
+import { type PuzzleProps } from 'components/ui/Puzzle'
 import { openGitHubErrorReport } from 'libs/github'
+
+const Puzzle = dynamic<PuzzleProps>(import('components/ui/Puzzle'))
 
 const ErrorBoundary: React.FC<ErrorBoundaryProps> = ({ children }) => {
   return <Boundary FallbackComponent={Fallback}>{children}</Boundary>

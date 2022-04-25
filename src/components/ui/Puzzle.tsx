@@ -31,6 +31,6 @@ const Puzzle: React.FC<PuzzleProps> = ({ layout }) => {
 
 export default Puzzle
 
-interface PuzzleProps {
+export interface PuzzleProps {
   layout: 'broken' | 'incomplete'
 }
