@@ -21,7 +21,7 @@ const Fallback: React.FC<FallbackProps> = ({ error, resetErrorBoundary }) => {
 
   return (
     <Flex direction="col" alignItems="center">
-      <Puzzle />
+      <Puzzle layout="broken" />
       <Callout intent="error" message="Oops, something went wrong!" />
       <div className="mt-3">
         <Button primary onPress={reportAndTryAgain}>
