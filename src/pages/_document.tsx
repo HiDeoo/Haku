@@ -175,5 +175,6 @@ function getContentSecurityPolicy(nonce: string): string {
     "worker-src 'self'",
     "prefetch-src 'self'",
     "connect-src 'self'",
+    "base-uri 'none'",
   ].join('; ')
 }
