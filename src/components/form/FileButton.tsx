@@ -1,6 +1,9 @@
-import { cloneElement, isValidElement, useRef } from 'react'
+import { cloneElement, isValidElement, useId, useRef } from 'react'
 
 const FileButton: React.FC<FileButtonProps> = ({ accept, disabled, multiple, onChange, trigger }) => {
+  const idPrefix = useId()
+  const triggerId = `${idPrefix}-file-button`
+
   const input = useRef<HTMLInputElement>(null)
 
   if (!isValidElement(trigger)) {
@@ -13,7 +16,7 @@ const FileButton: React.FC<FileButtonProps> = ({ accept, disabled, multiple, onC
 
   return (
     <>
-      {cloneElement(trigger, { disabled, onPress })}
+      {cloneElement(trigger, { id: triggerId, disabled, onPress })}
       <input
         ref={input}
         type="file"
@@ -22,6 +25,7 @@ const FileButton: React.FC<FileButtonProps> = ({ accept, disabled, multiple, onC
         multiple={multiple}
         onChange={onChange}
         accept={accept?.join(',')}
+        aria-labelledby={triggerId}
       />
     </>
   )
