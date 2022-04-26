@@ -93,6 +93,7 @@ export function updateTodoNodes(todoId: TodoMetadata['id'], userId: UserId, data
             },
             deleteMany: deletedNodeIds,
           },
+          modifiedAt: new Date(),
         },
       })
     } catch (error) {
