@@ -384,6 +384,7 @@ describe('notes', () => {
 
           assertIsTreeItem(json[0])
           expect(hasKey(json[0], 'html')).toBe(false)
+          expect(hasKey(json[0], 'modifiedAt')).toBe(false)
         }))
     })
 
@@ -402,6 +403,7 @@ describe('notes', () => {
             expect(json.folderId).toBe(folderId)
             expect(json.html).toBe(html)
             expect(hasKey(json, 'text')).toBe(false)
+            expect(hasKey(json, 'modifiedAt')).toBe(false)
           },
           { dynamicRouteParams: { id } }
         )
@@ -511,6 +513,7 @@ describe('notes', () => {
         expect(testNote).toBeDefined()
         expect(testNote?.html).toBe(`<h1>${name}</h1><p></p>`)
         expect(testNote?.text).toBe(`${name}\n\n`)
+        expect(testNote?.modifiedAt).toBeDefined()
       }))
 
     test('should not add a new note inside a nonexisting folder', () =>
@@ -613,7 +616,7 @@ describe('notes', () => {
   describe('PATCH', () => {
     test('should rename a note and update its slug', async () => {
       const { id: folderId } = await createTestNoteFolder()
-      const { html, id, text } = await createTestNote({ folderId })
+      const { html, id, modifiedAt, text } = await createTestNote({ folderId })
 
       const newName = 'newName'
 
@@ -636,13 +639,14 @@ describe('notes', () => {
           expect(testNote?.folderId).toBe(folderId)
           expect(testNote?.html).toBe(html)
           expect(testNote?.text).toBe(text)
+          expect(testNote?.modifiedAt.getTime()).toBe(modifiedAt.getTime())
         },
         { dynamicRouteParams: { id } }
       )
     })
 
     test('should not rename a note if becoming duplicated', async () => {
-      const { id, name } = await createTestNote()
+      const { id, modifiedAt, name } = await createTestNote()
       const { name: newName } = await createTestNote()
 
       return testApiRoute(
@@ -660,6 +664,7 @@ describe('notes', () => {
           const testNote = await getTestNote(id)
 
           expect(testNote?.name).toBe(name)
+          expect(testNote?.modifiedAt.getTime()).toBe(modifiedAt.getTime())
         },
         { dynamicRouteParams: { id } }
       )
@@ -669,7 +674,7 @@ describe('notes', () => {
       const { id: folderId } = await createTestNoteFolder()
       const { id: newFolderId } = await createTestNoteFolder()
 
-      const { html, id, slug, text } = await createTestNote({ folderId })
+      const { html, id, modifiedAt, slug, text } = await createTestNote({ folderId })
 
       return testApiRoute(
         idHandler,
@@ -690,6 +695,7 @@ describe('notes', () => {
           expect(testNote?.slug).toBe(slug)
           expect(testNote?.html).toBe(html)
           expect(testNote?.text).toBe(text)
+          expect(testNote?.modifiedAt.getTime()).toBe(modifiedAt.getTime())
         },
         { dynamicRouteParams: { id } }
       )
@@ -698,7 +704,7 @@ describe('notes', () => {
     test('should move a note to the root', async () => {
       const { id: folderId } = await createTestNoteFolder()
 
-      const { html, id, slug, text } = await createTestNote({ folderId })
+      const { html, id, modifiedAt, slug, text } = await createTestNote({ folderId })
 
       return testApiRoute(
         idHandler,
@@ -719,6 +725,7 @@ describe('notes', () => {
           expect(testNote?.slug).toBe(slug)
           expect(testNote?.html).toBe(html)
           expect(testNote?.text).toBe(text)
+          expect(testNote?.modifiedAt.getTime()).toBe(modifiedAt.getTime())
         },
         { dynamicRouteParams: { id } }
       )
@@ -728,7 +735,7 @@ describe('notes', () => {
       const { id: folderId } = await createTestNoteFolder()
       const { id: newFolderId } = await createTestNoteFolder()
 
-      const { id } = await createTestNote({ folderId, name: 'note' })
+      const { id, modifiedAt } = await createTestNote({ folderId, name: 'note' })
       await createTestNote({ folderId: newFolderId, name: 'note' })
 
       return testApiRoute(
@@ -747,13 +754,14 @@ describe('notes', () => {
 
           expect(testNote).toBeDefined()
           expect(testNote?.folderId).toBe(folderId)
+          expect(testNote?.modifiedAt.getTime()).toBe(modifiedAt.getTime())
         },
         { dynamicRouteParams: { id } }
       )
     })
 
     test('should not move a note inside a nonexisting folder', async () => {
-      const { id, folderId } = await createTestNote()
+      const { id, folderId, modifiedAt } = await createTestNote()
 
       return testApiRoute(
         idHandler,
@@ -771,6 +779,7 @@ describe('notes', () => {
 
           expect(testNote).toBeDefined()
           expect(testNote?.folderId).toBe(folderId)
+          expect(testNote?.modifiedAt.getTime()).toBe(modifiedAt.getTime())
         },
         { dynamicRouteParams: { id } }
       )
@@ -779,7 +788,7 @@ describe('notes', () => {
     test('should not move a note inside an existing folder not owned by the current user', async () => {
       const { id: newFolderId } = await createTestNoteFolder({ userId: getTestUser('1').userId })
 
-      const { id, folderId } = await createTestNote()
+      const { id, folderId, modifiedAt } = await createTestNote()
 
       return testApiRoute(
         idHandler,
@@ -797,6 +806,7 @@ describe('notes', () => {
 
           expect(testNote).toBeDefined()
           expect(testNote?.folderId).toBe(folderId)
+          expect(testNote?.modifiedAt.getTime()).toBe(modifiedAt.getTime())
         },
         { dynamicRouteParams: { id } }
       )
@@ -805,7 +815,7 @@ describe('notes', () => {
     test('should not move a note inside an existing folder of a different type', async () => {
       const { id: newFolderId } = await createTestTodoFolder()
 
-      const { id, folderId } = await createTestNote()
+      const { id, folderId, modifiedAt } = await createTestNote()
 
       return testApiRoute(
         idHandler,
@@ -823,6 +833,7 @@ describe('notes', () => {
 
           expect(testNote).toBeDefined()
           expect(testNote?.folderId).toBe(folderId)
+          expect(testNote?.modifiedAt.getTime()).toBe(modifiedAt.getTime())
         },
         { dynamicRouteParams: { id } }
       )
@@ -831,7 +842,7 @@ describe('notes', () => {
     test('should move, rename & update a note at the same time', async () => {
       const { id: newFolderId } = await createTestNoteFolder()
 
-      const { id } = await createTestNote()
+      const { id, modifiedAt } = await createTestNote()
 
       const newName = 'newName'
       const newHtml = '<p>test</p>'
@@ -859,13 +870,14 @@ describe('notes', () => {
           expect(testNote?.slug).toBe(slug(newName))
           expect(testNote?.html).toBe(newHtml)
           expect(testNote?.text).toBe(newText)
+          expect(testNote?.modifiedAt.getTime()).toBeGreaterThan(modifiedAt.getTime())
         },
         { dynamicRouteParams: { id } }
       )
     })
 
     test('should not update a note not owned by the current user', async () => {
-      const { id, name } = await createTestNote({ userId: getTestUser('1').userId })
+      const { id, modifiedAt, name } = await createTestNote({ userId: getTestUser('1').userId })
 
       return testApiRoute(
         idHandler,
@@ -883,6 +895,7 @@ describe('notes', () => {
 
           expect(testNote).toBeDefined()
           expect(testNote?.name).toBe(name)
+          expect(testNote?.modifiedAt.getTime()).toBe(modifiedAt.getTime())
         },
         { dynamicRouteParams: { id } }
       )
@@ -912,7 +925,7 @@ describe('notes', () => {
     })
 
     test('should update a note content', async () => {
-      const { id, name, folderId } = await createTestNote()
+      const { id, modifiedAt, name, folderId } = await createTestNote()
 
       const newHtml = '<p>test</p>'
       const newText = 'test\n\n'
@@ -937,13 +950,14 @@ describe('notes', () => {
           expect(testNote?.folderId).toBe(folderId)
           expect(testNote?.html).toBe(newHtml)
           expect(testNote?.text).toBe(newText)
+          expect(testNote?.modifiedAt.getTime()).toBeGreaterThan(modifiedAt.getTime())
         },
         { dynamicRouteParams: { id } }
       )
     })
 
     test('should not update a note content if the content html is missing', async () => {
-      const { html, id, text } = await createTestNote()
+      const { html, id, modifiedAt, text } = await createTestNote()
 
       const newHtml = '<p>test</p>'
 
@@ -963,13 +977,14 @@ describe('notes', () => {
 
           expect(testNote?.html).toBe(html)
           expect(testNote?.text).toBe(text)
+          expect(testNote?.modifiedAt.getTime()).toBe(modifiedAt.getTime())
         },
         { dynamicRouteParams: { id } }
       )
     })
 
     test('should not update a note content if the content text is missing', async () => {
-      const { html, id, text } = await createTestNote()
+      const { html, id, modifiedAt, text } = await createTestNote()
 
       const newText = 'test\n\n'
 
@@ -989,6 +1004,7 @@ describe('notes', () => {
 
           expect(testNote?.html).toBe(html)
           expect(testNote?.text).toBe(text)
+          expect(testNote?.modifiedAt.getTime()).toBe(modifiedAt.getTime())
         },
         { dynamicRouteParams: { id } }
       )
