@@ -12,7 +12,8 @@
     "no-unused-vars": "off",
     "no-var": "off",
     "@typescript-eslint/no-unused-vars": ["warn", { "ignoreRestSiblings": true }],
-    "@next/next/no-img-element": "off"
+    "@next/next/no-img-element": "off",
+    "no-constant-binary-expression": "error"
   },
   "overrides": [
     {
