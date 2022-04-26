@@ -14,6 +14,7 @@ import {
   API_ERROR_NOTE_HTML_OR_TEXT_MISSING,
 } from 'libs/api/routes/errors'
 import { getCloudinaryApiUrl } from 'libs/cloudinary'
+import { isDateAfter, isDateEqual } from 'libs/date'
 import { type NoteData, type NoteMetadata } from 'libs/db/note'
 import { type NoteTreeData } from 'libs/db/tree'
 import { hasKey } from 'libs/object'
@@ -639,7 +640,7 @@ describe('notes', () => {
           expect(testNote?.folderId).toBe(folderId)
           expect(testNote?.html).toBe(html)
           expect(testNote?.text).toBe(text)
-          expect(testNote?.modifiedAt.getTime()).toBe(modifiedAt.getTime())
+          expect(isDateEqual(testNote?.modifiedAt, modifiedAt)).toBe(true)
         },
         { dynamicRouteParams: { id } }
       )
@@ -664,7 +665,7 @@ describe('notes', () => {
           const testNote = await getTestNote(id)
 
           expect(testNote?.name).toBe(name)
-          expect(testNote?.modifiedAt.getTime()).toBe(modifiedAt.getTime())
+          expect(isDateEqual(testNote?.modifiedAt, modifiedAt)).toBe(true)
         },
         { dynamicRouteParams: { id } }
       )
@@ -695,7 +696,7 @@ describe('notes', () => {
           expect(testNote?.slug).toBe(slug)
           expect(testNote?.html).toBe(html)
           expect(testNote?.text).toBe(text)
-          expect(testNote?.modifiedAt.getTime()).toBe(modifiedAt.getTime())
+          expect(isDateEqual(testNote?.modifiedAt, modifiedAt)).toBe(true)
         },
         { dynamicRouteParams: { id } }
       )
@@ -725,7 +726,7 @@ describe('notes', () => {
           expect(testNote?.slug).toBe(slug)
           expect(testNote?.html).toBe(html)
           expect(testNote?.text).toBe(text)
-          expect(testNote?.modifiedAt.getTime()).toBe(modifiedAt.getTime())
+          expect(isDateEqual(testNote?.modifiedAt, modifiedAt)).toBe(true)
         },
         { dynamicRouteParams: { id } }
       )
@@ -754,7 +755,7 @@ describe('notes', () => {
 
           expect(testNote).toBeDefined()
           expect(testNote?.folderId).toBe(folderId)
-          expect(testNote?.modifiedAt.getTime()).toBe(modifiedAt.getTime())
+          expect(isDateEqual(testNote?.modifiedAt, modifiedAt)).toBe(true)
         },
         { dynamicRouteParams: { id } }
       )
@@ -779,7 +780,7 @@ describe('notes', () => {
 
           expect(testNote).toBeDefined()
           expect(testNote?.folderId).toBe(folderId)
-          expect(testNote?.modifiedAt.getTime()).toBe(modifiedAt.getTime())
+          expect(isDateEqual(testNote?.modifiedAt, modifiedAt)).toBe(true)
         },
         { dynamicRouteParams: { id } }
       )
@@ -806,7 +807,7 @@ describe('notes', () => {
 
           expect(testNote).toBeDefined()
           expect(testNote?.folderId).toBe(folderId)
-          expect(testNote?.modifiedAt.getTime()).toBe(modifiedAt.getTime())
+          expect(isDateEqual(testNote?.modifiedAt, modifiedAt)).toBe(true)
         },
         { dynamicRouteParams: { id } }
       )
@@ -833,7 +834,7 @@ describe('notes', () => {
 
           expect(testNote).toBeDefined()
           expect(testNote?.folderId).toBe(folderId)
-          expect(testNote?.modifiedAt.getTime()).toBe(modifiedAt.getTime())
+          expect(isDateEqual(testNote?.modifiedAt, modifiedAt)).toBe(true)
         },
         { dynamicRouteParams: { id } }
       )
@@ -870,7 +871,7 @@ describe('notes', () => {
           expect(testNote?.slug).toBe(slug(newName))
           expect(testNote?.html).toBe(newHtml)
           expect(testNote?.text).toBe(newText)
-          expect(testNote?.modifiedAt.getTime()).toBeGreaterThan(modifiedAt.getTime())
+          expect(isDateAfter(testNote?.modifiedAt, modifiedAt)).toBe(true)
         },
         { dynamicRouteParams: { id } }
       )
@@ -895,7 +896,7 @@ describe('notes', () => {
 
           expect(testNote).toBeDefined()
           expect(testNote?.name).toBe(name)
-          expect(testNote?.modifiedAt.getTime()).toBe(modifiedAt.getTime())
+          expect(isDateEqual(testNote?.modifiedAt, modifiedAt)).toBe(true)
         },
         { dynamicRouteParams: { id } }
       )
@@ -950,7 +951,7 @@ describe('notes', () => {
           expect(testNote?.folderId).toBe(folderId)
           expect(testNote?.html).toBe(newHtml)
           expect(testNote?.text).toBe(newText)
-          expect(testNote?.modifiedAt.getTime()).toBeGreaterThan(modifiedAt.getTime())
+          expect(isDateAfter(testNote?.modifiedAt, modifiedAt)).toBe(true)
         },
         { dynamicRouteParams: { id } }
       )
@@ -977,7 +978,7 @@ describe('notes', () => {
 
           expect(testNote?.html).toBe(html)
           expect(testNote?.text).toBe(text)
-          expect(testNote?.modifiedAt.getTime()).toBe(modifiedAt.getTime())
+          expect(isDateEqual(testNote?.modifiedAt, modifiedAt)).toBe(true)
         },
         { dynamicRouteParams: { id } }
       )
@@ -1004,7 +1005,7 @@ describe('notes', () => {
 
           expect(testNote?.html).toBe(html)
           expect(testNote?.text).toBe(text)
-          expect(testNote?.modifiedAt.getTime()).toBe(modifiedAt.getTime())
+          expect(isDateEqual(testNote?.modifiedAt, modifiedAt)).toBe(true)
         },
         { dynamicRouteParams: { id } }
       )

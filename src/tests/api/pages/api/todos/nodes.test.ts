@@ -23,6 +23,7 @@ import {
   API_ERROR_TODO_NODE_UPDATE_DOES_NOT_EXIST,
   type ApiErrorResponse,
 } from 'libs/api/routes/errors'
+import { isDateAfter } from 'libs/date'
 import { type TodoNodesData, type TodoNodeData } from 'libs/db/todoNodes'
 import idHandler, { type UpdateTodoNodesBody } from 'pages/api/todos/[id]/nodes'
 import { getTestUser, testApiRoute } from 'tests/api'
@@ -281,7 +282,7 @@ describe('todo nodes', () => {
 
           const testTodo = await getTestTodo(id)
 
-          expect(testTodo?.modifiedAt.getTime()).toBeGreaterThan(modifiedAt.getTime())
+          expect(isDateAfter(testTodo?.modifiedAt, modifiedAt)).toBe(true)
 
           expect(testTodo?.root.length).toBe(2)
 
@@ -308,7 +309,7 @@ describe('todo nodes', () => {
 
           const testTodo = await getTestTodo(id)
 
-          expect(testTodo?.modifiedAt.getTime()).toBeGreaterThan(modifiedAt.getTime())
+          expect(isDateAfter(testTodo?.modifiedAt, modifiedAt)).toBe(true)
 
           expect(testTodo?.root.length).toBe(2)
 
@@ -335,7 +336,7 @@ describe('todo nodes', () => {
 
           const testTodo = await getTestTodo(id)
 
-          expect(testTodo?.modifiedAt.getTime()).toBeGreaterThan(modifiedAt.getTime())
+          expect(isDateAfter(testTodo?.modifiedAt, modifiedAt)).toBe(true)
 
           expect(testTodo?.root.length).toBe(1)
 
@@ -363,7 +364,7 @@ describe('todo nodes', () => {
 
           const testTodo = await getTestTodo(id)
 
-          expect(testTodo?.modifiedAt.getTime()).toBeGreaterThan(modifiedAt.getTime())
+          expect(isDateAfter(testTodo?.modifiedAt, modifiedAt)).toBe(true)
 
           expect(testTodo?.root.length).toBe(1)
 
@@ -466,7 +467,7 @@ describe('todo nodes', () => {
 
           const testTodo = await getTestTodo(id)
 
-          expect(testTodo?.modifiedAt.getTime()).toBeGreaterThan(modifiedAt.getTime())
+          expect(isDateAfter(testTodo?.modifiedAt, modifiedAt)).toBe(true)
 
           expect(testTodo?.nodes.length).toBe(2)
 
@@ -506,7 +507,7 @@ describe('todo nodes', () => {
 
           const testTodo = await getTestTodo(id)
 
-          expect(testTodo?.modifiedAt.getTime()).toBeGreaterThan(modifiedAt.getTime())
+          expect(isDateAfter(testTodo?.modifiedAt, modifiedAt)).toBe(true)
 
           const testTodoNode = await getTestTodoNode(newTodoNode.id)
 
@@ -540,7 +541,7 @@ describe('todo nodes', () => {
 
           const testTodo = await getTestTodo(id)
 
-          expect(testTodo?.modifiedAt.getTime()).toBeGreaterThan(modifiedAt.getTime())
+          expect(isDateAfter(testTodo?.modifiedAt, modifiedAt)).toBe(true)
 
           const testTodoNode = await getTestTodoNode(newTodoNode.id)
 
@@ -582,7 +583,7 @@ describe('todo nodes', () => {
 
           const testTodo = await getTestTodo(id)
 
-          expect(testTodo?.modifiedAt.getTime()).toBeGreaterThan(modifiedAt.getTime())
+          expect(isDateAfter(testTodo?.modifiedAt, modifiedAt)).toBe(true)
 
           expect(testTodo?.nodes.length).toBe(3)
 
@@ -642,7 +643,7 @@ describe('todo nodes', () => {
 
           const testTodo = await getTestTodo(id)
 
-          expect(testTodo?.modifiedAt.getTime()).toBeGreaterThan(modifiedAt.getTime())
+          expect(isDateAfter(testTodo?.modifiedAt, modifiedAt)).toBe(true)
 
           expect(testTodo?.nodes.length).toBe(2)
 
@@ -776,7 +777,7 @@ describe('todo nodes', () => {
 
           const testTodo = await getTestTodo(id)
 
-          expect(testTodo?.modifiedAt.getTime()).toBeGreaterThan(modifiedAt.getTime())
+          expect(isDateAfter(testTodo?.modifiedAt, modifiedAt)).toBe(true)
 
           expect(testTodo?.nodes.length).toBe(1)
 
@@ -817,7 +818,7 @@ describe('todo nodes', () => {
 
           const testTodo = await getTestTodo(id)
 
-          expect(testTodo?.modifiedAt.getTime()).toBeGreaterThan(modifiedAt.getTime())
+          expect(isDateAfter(testTodo?.modifiedAt, modifiedAt)).toBe(true)
 
           const testTodoNode = await getTestTodoNode(updatedTodoNodeId)
 
@@ -857,7 +858,7 @@ describe('todo nodes', () => {
 
           const testTodo = await getTestTodo(id)
 
-          expect(testTodo?.modifiedAt.getTime()).toBeGreaterThan(modifiedAt.getTime())
+          expect(isDateAfter(testTodo?.modifiedAt, modifiedAt)).toBe(true)
 
           const testTodoNode = await getTestTodoNode(updatedTodoNodeId)
 
@@ -895,7 +896,7 @@ describe('todo nodes', () => {
 
           const testTodo = await getTestTodo(id)
 
-          expect(testTodo?.modifiedAt.getTime()).toBeGreaterThan(modifiedAt.getTime())
+          expect(isDateAfter(testTodo?.modifiedAt, modifiedAt)).toBe(true)
 
           const testTodoNode = await getTestTodoNode(updatedTodoNode.id)
 
@@ -1011,7 +1012,7 @@ describe('todo nodes', () => {
 
           const testTodo = await getTestTodo(id)
 
-          expect(testTodo?.modifiedAt.getTime()).toBeGreaterThan(modifiedAt.getTime())
+          expect(isDateAfter(testTodo?.modifiedAt, modifiedAt)).toBe(true)
 
           const testTodoNode = await getTestTodoNode(deletedTodoNode.id)
 
@@ -1048,7 +1049,7 @@ describe('todo nodes', () => {
 
           const testTodo = await getTestTodo(id)
 
-          expect(testTodo?.modifiedAt.getTime()).toBeGreaterThan(modifiedAt.getTime())
+          expect(isDateAfter(testTodo?.modifiedAt, modifiedAt)).toBe(true)
 
           const testTodoNode = await getTestTodoNode(deletedTodoNode.id)
 
@@ -1092,7 +1093,7 @@ describe('todo nodes', () => {
 
           const testTodo = await getTestTodo(id)
 
-          expect(testTodo?.modifiedAt.getTime()).toBeGreaterThan(modifiedAt.getTime())
+          expect(isDateAfter(testTodo?.modifiedAt, modifiedAt)).toBe(true)
 
           expect(testTodo?.nodes.length).toBe(1)
 
@@ -1447,7 +1448,7 @@ describe('todo nodes', () => {
 
           const testTodo = await getTestTodo(id)
 
-          expect(testTodo?.modifiedAt.getTime()).toBeGreaterThan(modifiedAt.getTime())
+          expect(isDateAfter(testTodo?.modifiedAt, modifiedAt)).toBe(true)
 
           expect(testTodo?.nodes.length).toBe(10)
 

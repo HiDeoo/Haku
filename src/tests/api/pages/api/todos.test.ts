@@ -13,6 +13,7 @@ import {
   type ApiErrorResponse,
 } from 'libs/api/routes/errors'
 import { getCloudinaryApiUrl } from 'libs/cloudinary'
+import { isDateEqual } from 'libs/date'
 import { type TodoMetadata } from 'libs/db/todo'
 import { type TodoTreeData } from 'libs/db/tree'
 import { hasKey } from 'libs/object'
@@ -600,7 +601,7 @@ describe('todos', () => {
           expect(testTodo?.name).toBe(newName)
           expect(testTodo?.slug).toBe(slug(newName))
           expect(testTodo?.folderId).toBe(folderId)
-          expect(testTodo?.modifiedAt.getTime()).toBe(modifiedAt.getTime())
+          expect(isDateEqual(testTodo?.modifiedAt, modifiedAt)).toBe(true)
         },
         { dynamicRouteParams: { id } }
       )
@@ -625,7 +626,7 @@ describe('todos', () => {
           const testTodo = await getTestTodo(id)
 
           expect(testTodo?.name).toBe(name)
-          expect(testTodo?.modifiedAt.getTime()).toBe(modifiedAt.getTime())
+          expect(isDateEqual(testTodo?.modifiedAt, modifiedAt)).toBe(true)
         },
         { dynamicRouteParams: { id } }
       )
@@ -653,7 +654,7 @@ describe('todos', () => {
           expect(testTodo).toBeDefined()
           expect(testTodo?.folderId).toBe(newFolderId)
           expect(testTodo?.slug).toBe(slug)
-          expect(testTodo?.modifiedAt.getTime()).toBe(modifiedAt.getTime())
+          expect(isDateEqual(testTodo?.modifiedAt, modifiedAt)).toBe(true)
         },
         { dynamicRouteParams: { id } }
       )
@@ -680,7 +681,7 @@ describe('todos', () => {
           expect(testTodo).toBeDefined()
           expect(testTodo?.folderId).toBeNull()
           expect(testTodo?.slug).toBe(slug)
-          expect(testTodo?.modifiedAt.getTime()).toBe(modifiedAt.getTime())
+          expect(isDateEqual(testTodo?.modifiedAt, modifiedAt)).toBe(true)
         },
         { dynamicRouteParams: { id } }
       )
@@ -709,7 +710,7 @@ describe('todos', () => {
 
           expect(testTodo).toBeDefined()
           expect(testTodo?.folderId).toBe(folderId)
-          expect(testTodo?.modifiedAt.getTime()).toBe(modifiedAt.getTime())
+          expect(isDateEqual(testTodo?.modifiedAt, modifiedAt)).toBe(true)
         },
         { dynamicRouteParams: { id } }
       )
@@ -734,7 +735,7 @@ describe('todos', () => {
 
           expect(testTodo).toBeDefined()
           expect(testTodo?.folderId).toBe(folderId)
-          expect(testTodo?.modifiedAt.getTime()).toBe(modifiedAt.getTime())
+          expect(isDateEqual(testTodo?.modifiedAt, modifiedAt)).toBe(true)
         },
         { dynamicRouteParams: { id } }
       )
@@ -761,7 +762,7 @@ describe('todos', () => {
 
           expect(testTodo).toBeDefined()
           expect(testTodo?.folderId).toBe(folderId)
-          expect(testTodo?.modifiedAt.getTime()).toBe(modifiedAt.getTime())
+          expect(isDateEqual(testTodo?.modifiedAt, modifiedAt)).toBe(true)
         },
         { dynamicRouteParams: { id } }
       )
@@ -788,7 +789,7 @@ describe('todos', () => {
 
           expect(testTodo).toBeDefined()
           expect(testTodo?.folderId).toBe(folderId)
-          expect(testTodo?.modifiedAt.getTime()).toBe(modifiedAt.getTime())
+          expect(isDateEqual(testTodo?.modifiedAt, modifiedAt)).toBe(true)
         },
         { dynamicRouteParams: { id } }
       )
@@ -819,7 +820,7 @@ describe('todos', () => {
           expect(testTodo?.name).toBe(newName)
           expect(testTodo?.folderId).toBe(newFolderId)
           expect(testTodo?.slug).toBe(slug(newName))
-          expect(testTodo?.modifiedAt.getTime()).toBe(modifiedAt.getTime())
+          expect(isDateEqual(testTodo?.modifiedAt, modifiedAt)).toBe(true)
         },
         { dynamicRouteParams: { id } }
       )
@@ -844,7 +845,7 @@ describe('todos', () => {
 
           expect(testTodo).toBeDefined()
           expect(testTodo?.name).toBe(name)
-          expect(testTodo?.modifiedAt.getTime()).toBe(modifiedAt.getTime())
+          expect(isDateEqual(testTodo?.modifiedAt, modifiedAt)).toBe(true)
         },
         { dynamicRouteParams: { id } }
       )
