@@ -10,6 +10,8 @@ export default function useIdle(durationInSeconds = 10) {
   const timeout = useRef<ReturnType<typeof setTimeout>>()
 
   useEffect(() => {
+    enabled.current = true
+
     function startIdleTimer() {
       timeout.current = setTimeout(() => {
         if (enabled.current) {

@@ -1,10 +1,10 @@
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { onlineAtom } from 'atoms/network'
 
 const NetworkAgent: React.FC = () => {
-  const setOnline = useUpdateAtom(onlineAtom)
+  const setOnline = useSetAtom(onlineAtom)
 
   useEffect(() => {
     function onNetworkStatusChange() {

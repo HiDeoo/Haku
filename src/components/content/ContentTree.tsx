@@ -1,5 +1,5 @@
 import { Link as Roving, Root } from '@radix-ui/react-toolbar'
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { RiFileTextLine, RiFolderLine } from 'react-icons/ri'
 
 import { sidebarCollapsedAtom } from 'atoms/collapsible'
@@ -14,6 +14,7 @@ import useContentId from 'hooks/useContentId'
 import useContentTreeQuery from 'hooks/useContentTreeQuery'
 import useContentType, { type UseContentTypeReturnValue } from 'hooks/useContentType'
 import { useNetworkStatus } from 'hooks/useNetworkStatus'
+import { isNonEmptyArray } from 'libs/array'
 import { type FolderData } from 'libs/db/folder'
 import { type NoteMetadata } from 'libs/db/note'
 import { type TodoMetadata } from 'libs/db/todo'
@@ -21,7 +22,7 @@ import { isTreeFolder, type TreeFolder } from 'libs/tree'
 
 const depthOffset = '1.25rem'
 
-const supportsMaxCss = window.CSS.supports('padding', 'max(0px)')
+const supportsMaxCss = typeof window === 'object' && window.CSS.supports('padding', 'max(0px)')
 
 const nisClasses = 'gap-6 p-3 text-center supports-max:pl-[calc(theme(spacing.3)+max(0px,env(safe-area-inset-left)))]'
 
@@ -38,7 +39,7 @@ const ContentTree: React.FC = () => {
 
   const contentId = useContentId()
   const { data, isLoading } = useContentTreeQuery()
-  const setContentModalOpened = useUpdateAtom(setContentModalOpenedAtom)
+  const setContentModalOpened = useSetAtom(setContentModalOpenedAtom)
 
   function openNewContentModal() {
     setContentModalOpened(true)
@@ -62,7 +63,7 @@ const ContentTree: React.FC = () => {
     <Root orientation="vertical" asChild role="navigation">
       <Flex as="nav" direction="col" flex className="relative overflow-y-auto" role="tree">
         <div className="pointer-events-none absolute inset-0 shadow-[inset_-1px_0_1px_0_rgba(0_0_0/0.4)]" />
-        {data?.length === 0 ? (
+        {!isNonEmptyArray(data) ? (
           <Flex fullWidth fullHeight direction="col" alignItems="center" justifyContent="center" className={nisClasses}>
             <span>Start by creating a new {contentType.lcType}.</span>
             <Button onPress={openNewContentModal} primary disabled={offline}>
@@ -70,7 +71,7 @@ const ContentTree: React.FC = () => {
             </Button>
           </Flex>
         ) : (
-          data?.map((item) => {
+          data.map((item) => {
             const key = getNodeKey(item)
 
             return isTreeFolder(item) ? (
@@ -106,7 +107,7 @@ const ShimmerNode: React.FC<ShimmerNodeProps> = ({ depth, ...props }) => {
 }
 
 const Folder: React.FC<FolderProps> = ({ contentType, depth = 1, folder, offline, selectedId, style }) => {
-  const setFolderModal = useUpdateAtom(folderModalAtom)
+  const setFolderModal = useSetAtom(folderModalAtom)
 
   function openEditModal() {
     setFolderModal({ opened: true, action: 'update', data: folder })
@@ -152,7 +153,7 @@ const Folder: React.FC<FolderProps> = ({ contentType, depth = 1, folder, offline
 }
 
 const Content: React.FC<ContentProps> = ({ content, contentType, depth = 0, offline, selectedId }) => {
-  const setContentModal = useUpdateAtom(contentModalAtom)
+  const setContentModal = useSetAtom(contentModalAtom)
 
   function openEditModal() {
     setContentModal({ opened: true, action: 'update', data: content })

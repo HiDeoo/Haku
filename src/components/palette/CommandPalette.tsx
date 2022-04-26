@@ -1,6 +1,4 @@
-import { useAtom } from 'jotai'
-import { useUpdateAtom } from 'jotai/utils'
-import dynamic from 'next/dynamic'
+import { useAtom, useSetAtom } from 'jotai'
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 import {
@@ -18,14 +16,12 @@ import {
 import { toggleSidebarCollapsedAtom } from 'atoms/collapsible'
 import { setContentModalOpenedAtom, setFolderModalOpenedAtom, setShortcutModalOpenedAtom } from 'atoms/modal'
 import { commandPaletteOpenedAtom, navigationPaletteOpenedAtom, searchPaletteOpenedAtom } from 'atoms/palette'
-import { type PaletteItem, type PaletteProps } from 'components/palette/Palette'
+import Palette, { type PaletteItem } from 'components/palette/Palette'
 import { type IconProps } from 'components/ui/Icon'
 import useContentType, { ContentType, getContentType } from 'hooks/useContentType'
 import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
 import { useNetworkStatus } from 'hooks/useNetworkStatus'
 import { logout } from 'libs/auth'
-
-const Palette = dynamic<PaletteProps<Command>>(import('components/palette/Palette'))
 
 const CommandPalette: React.FC = () => {
   const { offline } = useNetworkStatus()
@@ -34,19 +30,19 @@ const CommandPalette: React.FC = () => {
 
   const [opened, setOpened] = useAtom(commandPaletteOpenedAtom)
 
-  const setNavigationPaletteOpened = useUpdateAtom(navigationPaletteOpenedAtom)
-  const setSearchPaletteOpened = useUpdateAtom(searchPaletteOpenedAtom)
+  const setNavigationPaletteOpened = useSetAtom(navigationPaletteOpenedAtom)
+  const setSearchPaletteOpened = useSetAtom(searchPaletteOpenedAtom)
 
   const { cType, type } = useContentType()
   const isBrowsingNotes = type === ContentType.NOTE
   const altContentType = getContentType(isBrowsingNotes ? ContentType.TODO : ContentType.NOTE)
   const altIcon = isBrowsingNotes ? RiTodoLine : RiBookletLine
 
-  const setContentModalOpened = useUpdateAtom(setContentModalOpenedAtom)
-  const setFolderModalOpened = useUpdateAtom(setFolderModalOpenedAtom)
-  const setShortcutModalOpened = useUpdateAtom(setShortcutModalOpenedAtom)
+  const setContentModalOpened = useSetAtom(setContentModalOpenedAtom)
+  const setFolderModalOpened = useSetAtom(setFolderModalOpenedAtom)
+  const setShortcutModalOpened = useSetAtom(setShortcutModalOpenedAtom)
 
-  const toggleSidebarCollapsed = useUpdateAtom(toggleSidebarCollapsedAtom)
+  const toggleSidebarCollapsed = useSetAtom(toggleSidebarCollapsedAtom)
 
   useGlobalShortcuts(
     useMemo(
@@ -163,6 +159,7 @@ const CommandPalette: React.FC = () => {
       onPick={onPick}
       items={commands}
       enterKeyHint="done"
+      title="Command Palette"
       itemToIcon={itemToIcon}
       onOpenChange={setOpened}
       itemToString={itemToString}

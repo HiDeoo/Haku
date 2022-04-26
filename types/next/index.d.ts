@@ -5,5 +5,3 @@ declare module 'next' {
     user?: Session['user']
   }
 }
-
-export {}

@@ -1,5 +1,4 @@
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
-import dynamic from 'next/dynamic'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 import { RiMenu2Line } from 'react-icons/ri'
@@ -10,10 +9,9 @@ import CommandPalette from 'components/palette/CommandPalette'
 import NavigationPalette from 'components/palette/NavigationPalette'
 import Flex from 'components/ui/Flex'
 import FloatingButton from 'components/ui/FloatingButton'
+import SidebarMenu from 'components/ui/SidebarMenu'
 import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
 import clst from 'styles/clst'
-
-const SidebarMenu = dynamic(import('components/ui/SidebarMenu'))
 
 const skipLinksClasses = clst(
   'absolute -top-full left-0 z-[70] rounded-br-lg bg-blue-600 px-3.5 py-2.5 outline-none hover:underline',
@@ -25,7 +23,7 @@ const Sidebar: React.FC = () => {
   const isOnNotePage = router.pathname.startsWith('/notes/')
 
   const collapsed = useAtomValue(sidebarCollapsedAtom)
-  const toggleCollapsed = useUpdateAtom(toggleSidebarCollapsedAtom)
+  const toggleCollapsed = useSetAtom(toggleSidebarCollapsedAtom)
 
   const noteInspectorCollapsed = useAtomValue(noteInspectorCollapsedAtom)
 

@@ -1,7 +1,7 @@
 import { useMutation } from 'react-query'
 
 import useContentType, { ContentType } from 'hooks/useContentType'
-import client, { type Mutation } from 'libs/api/client'
+import { getClient, type Mutation } from 'libs/api/client'
 import { type NoteData } from 'libs/db/note'
 import { type TodoNodesData } from 'libs/db/todoNodes'
 import { type UpdateNoteBody, type UpdateNoteQuery } from 'pages/api/notes/[id]'
@@ -34,12 +34,12 @@ export default function useContentMutation() {
   })
 }
 
-function updateNote({ id, ...data }: UpdateNoteData) {
-  return client.patch(`notes/${id}`, { json: data }).json<NoteData>()
+async function updateNote({ id, ...data }: UpdateNoteData) {
+  return (await getClient()).patch(`notes/${id}`, { json: data }).json<NoteData>()
 }
 
 async function updateTodo({ id, ...data }: UpdateTodoData) {
-  await client.patch(`todos/${id}/nodes`, { json: data })
+  await (await getClient()).patch(`todos/${id}/nodes`, { json: data })
 }
 
 function isUpdateTodoData(data: UpdateData): data is UpdateTodoData {

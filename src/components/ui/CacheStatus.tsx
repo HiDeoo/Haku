@@ -1,4 +1,5 @@
-import { RiFileDownloadLine, RiFileWarningLine } from 'react-icons/ri'
+import { MdAirplanemodeInactive } from 'react-icons/md'
+import { RiFlightTakeoffLine } from 'react-icons/ri'
 
 import Navbar from 'components/ui/Navbar'
 import useContentType from 'hooks/useContentType'
@@ -13,7 +14,7 @@ const CacheStatus: React.FC = () => {
   }
 
   const tooltip = `${cType} ${availableOffline ? 'available' : 'unavailable'} for offline use`
-  const icon = availableOffline ? RiFileDownloadLine : RiFileWarningLine
+  const icon = availableOffline ? RiFlightTakeoffLine : MdAirplanemodeInactive
   const iconLabel = `${availableOffline ? 'Available' : 'Unavailable'} offline`
 
   return <Navbar.Icon tooltip={tooltip} iconLabel={iconLabel} icon={icon} />

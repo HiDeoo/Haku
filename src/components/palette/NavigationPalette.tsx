@@ -1,17 +1,14 @@
 import { useAtom } from 'jotai'
-import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 import { RiBookletLine, RiTodoLine } from 'react-icons/ri'
 
 import { navigationPaletteOpenedAtom } from 'atoms/palette'
-import { type PaletteItem, type PaletteProps } from 'components/palette/Palette'
+import Palette, { type PaletteItem } from 'components/palette/Palette'
 import { ContentType, getContentType } from 'hooks/useContentType'
 import useFilesQuery from 'hooks/useFilesQuery'
 import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
 import { type FileData } from 'libs/db/file'
-
-const Palette = dynamic<PaletteProps<Navigation>>(import('components/palette/Palette'))
 
 const NavigationPalette: React.FC = () => {
   const { push } = useRouter()
@@ -61,7 +58,7 @@ const NavigationPalette: React.FC = () => {
   }
 
   return (
-    <Palette
+    <Palette<Navigation>
       opened={opened}
       onPick={onPick}
       enterKeyHint="go"
@@ -69,6 +66,7 @@ const NavigationPalette: React.FC = () => {
       isLoading={isLoading}
       itemToIcon={itemToIcon}
       onOpenChange={setOpened}
+      title="Navigation Palette"
       itemToString={itemToString}
       placeholder="Search notes & todos by name"
     />

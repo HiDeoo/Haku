@@ -1,4 +1,4 @@
-import { Close, Content, Overlay, Portal, Root, Trigger } from '@radix-ui/react-dialog'
+import { Close, Content, Overlay, Portal, Root, Title, Trigger } from '@radix-ui/react-dialog'
 import { RiCloseLine } from 'react-icons/ri'
 
 import Button from 'components/form/Button'
@@ -52,7 +52,7 @@ const Modal: ModalComponent = ({
               justifyContent="between"
               className="border-b border-black/10 bg-zinc-900 p-0 py-2.5 pl-4 pr-2 font-bold"
             >
-              {title}
+              <Title>{title}</Title>
               <Close asChild>
                 <IconButton
                   tabIndex={-1}
@@ -91,6 +91,7 @@ type ModalComponent = React.FC<ModalProps> & {
 }
 
 export interface ModalProps {
+  children: React.ReactNode
   className?: string
   contentClassName?: string
   disabled?: boolean
@@ -98,9 +99,10 @@ export interface ModalProps {
   opened: boolean
   role?: React.HtmlHTMLAttributes<HTMLElement>['role']
   title: string
-  trigger?: React.StrictReactNode
+  trigger?: React.ReactNode
 }
 
 interface FooterProps extends Pick<ModalProps, 'disabled'> {
+  children: React.ReactNode
   closeText?: string
 }

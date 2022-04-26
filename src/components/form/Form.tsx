@@ -15,7 +15,7 @@ const Form: React.FC<FormProps> = ({ children, error, errorMessage, onSubmit }) 
 
 export default Form
 
-const FormError: React.FC<Omit<FormProps, 'onSubmit'>> = ({ error, errorMessage }) => {
+const FormError: React.FC<Omit<FormProps, 'onSubmit' | 'children'>> = ({ error, errorMessage }) => {
   const [message, setMessage] = useState<string | null>(null)
 
   useEffect(() => {
@@ -52,6 +52,7 @@ function isApiErrorResponse(json: unknown): json is ApiErrorResponse {
 }
 
 interface FormProps {
+  children: React.ReactNode
   error?: unknown
   errorMessage?: string
   onSubmit: NonNullable<React.DOMAttributes<HTMLFormElement>['onSubmit']>

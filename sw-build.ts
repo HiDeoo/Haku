@@ -1,6 +1,6 @@
 import fs from 'fs/promises'
 
-import esbuild from 'esbuild'
+import * as swc from '@swc/core'
 import { type BuildManifest } from 'next/dist/server/get-page-files'
 
 import pkg from './package.json'
@@ -9,11 +9,13 @@ import { SW_CACHES } from 'constants/sw'
 import { CLOUDINARY_BASE_DELIVERY_URL } from 'libs/cloudinary'
 
 const buildManifestPath = '.next/build-manifest.json'
-const pageToIgnore = ['/_app', '/_error']
+const pageToIgnore = ['/_app', '/_error', '/404']
 const pathPrefix = '/_next/'
 
 const [, , ...args] = process.argv
 const isProd = args.includes('--prod')
+
+const swcOptions: swc.Options = { minify: isProd, jsc: { target: 'es2015' } }
 
 async function build() {
   try {
@@ -26,14 +28,10 @@ async function build() {
   }
 }
 
-function buildServiceWorker() {
-  return esbuild.build({
-    bundle: true,
-    entryPoints: ['src/sw/sw.ts'],
-    minify: isProd,
-    outfile: 'public/sw.js',
-    target: 'es6',
-  })
+async function buildServiceWorker() {
+  const { code } = await swc.transformFile('src/sw/sw.ts', swcOptions)
+
+  return fs.writeFile('./public/sw.js', code)
 }
 
 async function buildServiceWorkerConfig() {
@@ -63,7 +61,7 @@ async function buildServiceWorkerConfig() {
   buildManifest.lowPriorityFiles.forEach((file) => assets.add(getAssetPath(file)))
   buildManifest.polyfillFiles.forEach((file) => assets.add(getAssetPath(file)))
 
-  const { code: config } = await esbuild.transform(
+  const { code } = await swc.transform(
     `const VERSION = '${pkg.version}';
 
 const IS_PROD = ${isProd};
@@ -73,13 +71,10 @@ const IMAGE_DELIVERY_URL = '${CLOUDINARY_BASE_DELIVERY_URL}';
 const ASSETS = ${JSON.stringify(Array.from(assets))};
 
 const CACHES = ${JSON.stringify(SW_CACHES)};`,
-    {
-      minify: isProd,
-      target: 'es6',
-    }
+    swcOptions
   )
 
-  return fs.writeFile('./public/sw-config.js', config)
+  return fs.writeFile('./public/sw-config.js', code)
 }
 
 function getAssetPath(file: string) {

@@ -1,3 +1,5 @@
+import '@tiptap/core'
+
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     replaceContent: {
@@ -8,5 +10,3 @@ declare module '@tiptap/core' {
     }
   }
 }
-
-export {}

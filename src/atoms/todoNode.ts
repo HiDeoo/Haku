@@ -1,7 +1,7 @@
 import { atom } from 'jotai'
 import { atomWithReset } from 'jotai/utils'
 
-import { addAtIndex, removeAtIndex } from 'libs/array'
+import { addAtIndex, isNonEmptyArray, removeAtIndex } from 'libs/array'
 import { type TodoNodeDataWithParentId, type TodoNodeData, type TodoNodesData } from 'libs/db/todoNodes'
 import { CaretDirection } from 'libs/html'
 
@@ -39,7 +39,7 @@ export const toggleCollapsedAtom = atom(null, (get, set, { id }: AtomParamsWithP
   const node = get(todoNodeNodesAtom)[id]
   const nodeChildrenIds = get(todoNodeChildrenAtom)[id]
 
-  if (!node || !nodeChildrenIds || nodeChildrenIds.length === 0) {
+  if (!node || !isNonEmptyArray(nodeChildrenIds)) {
     return
   }
 
@@ -65,7 +65,7 @@ export const addNodeAtom = atom(null, (get, set, { id, newId, parentId = 'root' 
   const children = get(todoNodeChildrenAtom)
   const nodeChildrenIds = children[id]
 
-  const addAsChildren = node?.collapsed === false && nodeChildrenIds && nodeChildrenIds.length > 0
+  const addAsChildren = node?.collapsed === false && isNonEmptyArray(nodeChildrenIds)
 
   set(todoNodeNodesAtom, (prevNodes) => ({
     ...prevNodes,

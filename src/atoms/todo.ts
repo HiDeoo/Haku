@@ -3,6 +3,7 @@ import { atomWithReset, atomWithStorage, RESET } from 'jotai/utils'
 
 import { todoNodeChildrenAtom, todoNodeMutations, todoNodeNodesAtom } from 'atoms/todoNode'
 import { type SyncStatus } from 'components/ui/SyncReport'
+import { isNonEmptyArray } from 'libs/array'
 import { type TodoMetadata } from 'libs/db/todo'
 import { type TodoNodeData } from 'libs/db/todoNodes'
 
@@ -15,7 +16,7 @@ export const todoEditorStateAtom = atom<TodoEditorState, TodoSyncStatus>(
 
     return {
       ...state,
-      pristine: Object.keys(mutations).length === 0,
+      pristine: !isNonEmptyArray(Object.keys(mutations)),
     }
   },
   (_get, set, syncStatus: TodoSyncStatus) => {

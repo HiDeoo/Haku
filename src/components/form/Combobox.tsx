@@ -5,7 +5,7 @@ import {
   type UseComboboxStateChange,
 } from 'downshift'
 import fuzzaldrin from 'fuzzaldrin-plus'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from 'react'
 import {
   type Control,
   useController,
@@ -41,6 +41,8 @@ const Combobox = <TItem, TFormFields extends FieldValues>({
   name,
 }: ComboboxProps<TItem, TFormFields>) => {
   const container = useRef<HTMLDivElement>(null)
+
+  const [isPending, startTransition] = useTransition()
 
   const [filteredItems, setFilteredItems] = useState(items)
   const [disableMenuAnimation, setDisableMenuAnimation] = useState(false)
@@ -125,7 +127,9 @@ const Combobox = <TItem, TFormFields extends FieldValues>({
           ? fuzzaldrin.filter(searchableItems, needle, { key: 'str' }).map((result) => result.item)
           : items
 
-        setFilteredItems(results)
+        startTransition(() => {
+          setFilteredItems(results)
+        })
 
         return changes
       }
@@ -209,13 +213,13 @@ const Combobox = <TItem, TFormFields extends FieldValues>({
         </Button>
       </Flex>
       <ControlMenu
-        isOpen={isOpen}
         className="mr-9"
         container={container}
         items={filteredItems}
         itemToString={renderItem}
         menuProps={getMenuProps()}
         getItemProps={getItemProps}
+        isOpen={!isPending && isOpen}
         highlightedIndex={highlightedIndex}
         itemToInnerHtml={renderFilteredItem}
         disableAnimation={disableMenuAnimation}

@@ -1,11 +1,12 @@
-import { Content, Overlay, Portal, Root } from '@radix-ui/react-dialog'
+import { Content, Overlay, Portal, Root, Title } from '@radix-ui/react-dialog'
+import { Root as VisuallyHidden } from '@radix-ui/react-visually-hidden'
 
 import PalettePicker from 'components/palette/PalettePicker'
 import { type IconProps } from 'components/ui/Icon'
 import { MODAL_CONTENT_CLASSES, MODAL_OVERLAY_CLASSES } from 'components/ui/Modal'
 import clst from 'styles/clst'
 
-const Palette = <TItem extends PaletteItem>({ forwardedRef, role, ...props }: PaletteProps<TItem>) => {
+const Palette = <TItem extends PaletteItem>({ forwardedRef, role, title, ...props }: PaletteProps<TItem>) => {
   const overlayClasses = clst(MODAL_OVERLAY_CLASSES, 'pt-0 md:pt-0')
 
   const contentClasses = clst(
@@ -18,6 +19,9 @@ const Palette = <TItem extends PaletteItem>({ forwardedRef, role, ...props }: Pa
       <Portal>
         <Overlay className={overlayClasses}>
           <Content className={contentClasses} role={role}>
+            <VisuallyHidden>
+              <Title>{title}</Title>
+            </VisuallyHidden>
             <PalettePicker {...props} ref={forwardedRef} />
           </Content>
         </Overlay>
@@ -48,6 +52,7 @@ export interface PaletteProps<TItem extends PaletteItem> {
   opened?: boolean
   placeholder: string
   role?: React.HtmlHTMLAttributes<HTMLElement>['role']
+  title: string
 }
 
 export interface PaletteItem {

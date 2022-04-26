@@ -5,13 +5,14 @@ import {
   type UseComboboxStateChange,
 } from 'downshift'
 import fuzzaldrin from 'fuzzaldrin-plus'
-import { forwardRef, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { forwardRef, useCallback, useEffect, useMemo, useRef, useState, useTransition } from 'react'
 
 import TextInput from 'components/form/TextInput'
 import { type PaletteItem, type PaletteProps } from 'components/palette/Palette'
 import Icon from 'components/ui/Icon'
 import Spinner from 'components/ui/Spinner'
 import useIntersectionObserver from 'hooks/useIntersectionObserver'
+import { isNonEmptyArray } from 'libs/array'
 import { getShortcutMap, isShortcutEvent } from 'libs/shortcut'
 import clst from 'styles/clst'
 import styles from 'styles/PalettePicker.module.css'
@@ -36,11 +37,13 @@ const PalettePicker = <TItem extends PaletteItem>(
     onPick,
     onQueryChange,
     placeholder,
-  }: PaletteProps<TItem>,
+  }: PalettePickerProps<TItem>,
   forwardedRef: React.ForwardedRef<HTMLInputElement>
 ) => {
   const currentInputValue = useRef('')
   const infiniteDetectorElement = useRef<HTMLLIElement>(null)
+
+  const [isPending, startTransition] = useTransition()
 
   const [filteredItems, setFilteredItems] = useState(items)
 
@@ -58,7 +61,7 @@ const PalettePicker = <TItem extends PaletteItem>(
     stateReducer,
   })
 
-  const isInfiniteEnabled = infinite && !isLoading && filteredItems.length > 0 && typeof loadMore === 'function'
+  const isInfiniteEnabled = infinite && !isLoading && isNonEmptyArray(filteredItems) && typeof loadMore === 'function'
 
   const shouldLoadMore = useIntersectionObserver(infiniteDetectorElement, { enabled: isInfiniteEnabled })
 
@@ -118,7 +121,9 @@ const PalettePicker = <TItem extends PaletteItem>(
 
   function onInputValueChange(changes: UseComboboxStateChange<TItem>) {
     if (onQueryChange) {
-      onQueryChange(changes.inputValue)
+      startTransition(() => {
+        onQueryChange(changes.inputValue)
+      })
     }
   }
 
@@ -150,7 +155,7 @@ const PalettePicker = <TItem extends PaletteItem>(
   }
 
   const baseMenuItemClasses = 'px-3 py-1.5 cursor-pointer text-ellipsis overflow-hidden'
-  const showLoadingSpinner = isLoading || isLoadingMore
+  const showLoadingSpinner = isPending || isLoading || isLoadingMore
 
   return (
     <>
@@ -171,7 +176,7 @@ const PalettePicker = <TItem extends PaletteItem>(
         ) : null}
       </div>
       <ul {...getMenuProps({ className: 'h-full overflow-y-auto' })}>
-        {(filteredItems.length === 0 && inputValue.length >= minQueryLength) || isLoading ? (
+        {(!isNonEmptyArray(filteredItems) && inputValue.length >= minQueryLength) || isLoading ? (
           <li className={clst(baseMenuItemClasses, 'mb-1.5 opacity-75')}>
             {isLoading ? 'Loading…' : 'No matching results'}
           </li>
@@ -230,5 +235,7 @@ const PalettePicker = <TItem extends PaletteItem>(
 PalettePicker.displayName = 'PalettePicker'
 
 export default forwardRef(PalettePicker) as <TItem>(
-  props: PaletteProps<TItem> & { ref?: React.ForwardedRef<HTMLInputElement> }
+  props: PalettePickerProps<TItem> & { ref?: React.ForwardedRef<HTMLInputElement> }
 ) => ReturnType<typeof PalettePicker>
+
+type PalettePickerProps<TItem> = Omit<PaletteProps<TItem>, 'title'>

@@ -1,15 +1,15 @@
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 import { useQuery, type UseQueryOptions } from 'react-query'
 
 import { contentAvailableOfflineAtom } from 'atoms/network'
 import { SW_CACHES } from 'constants/sw'
-import client, { isNetworkError } from 'libs/api/client'
+import { getClient, isNetworkError } from 'libs/api/client'
 import { type TodoMetadata } from 'libs/db/todo'
 import { type TodoNodesData } from 'libs/db/todoNodes'
 import { isResourceCached } from 'libs/sw'
 
 export default function useTodoQuery(id: TodoMetadata['id'], options?: UseTodoQueryOptions) {
-  const setContentAvailableOffline = useUpdateAtom(contentAvailableOfflineAtom)
+  const setContentAvailableOffline = useSetAtom(contentAvailableOfflineAtom)
 
   return useQuery<TodoNodesData>(
     ['todo', id],
@@ -32,8 +32,8 @@ export default function useTodoQuery(id: TodoMetadata['id'], options?: UseTodoQu
   )
 }
 
-function getTodoNodes(id: TodoMetadata['id']) {
-  return client.get(`todos/${id}/nodes`).json<TodoNodesData>()
+async function getTodoNodes(id: TodoMetadata['id']) {
+  return (await getClient()).get(`todos/${id}/nodes`).json<TodoNodesData>()
 }
 
 type UseTodoQueryOptions = Omit<UseQueryOptions<TodoNodesData>, 'onSettled' | 'useErrorBoundary'>

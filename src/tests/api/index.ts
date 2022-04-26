@@ -1,7 +1,7 @@
 import type FormData from 'form-data'
 import { type NextApiHandler } from 'next'
 import { type Session } from 'next-auth'
-import { testApiHandler, type TestParameters } from 'next-test-api-route-handler'
+import { testApiHandler, type NtarhParameters } from 'next-test-api-route-handler'
 
 import { getTestApiUrl, rest, server } from 'tests/api/mocks/http'
 
@@ -42,7 +42,7 @@ function getTestUserSession(userId?: string): Session {
   return { expires: '', user: { email: user.email, id: user.userId } }
 }
 
-function mapDynamicRouteParams(params: TestApiRouteOptions['dynamicRouteParams']): TestParameters['params'] {
+function mapDynamicRouteParams(params: TestApiRouteOptions['dynamicRouteParams']): NtarhParameters['params'] {
   if (!params) {
     return
   }

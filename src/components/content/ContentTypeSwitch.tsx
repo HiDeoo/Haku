@@ -1,5 +1,5 @@
 import { Root, Thumb } from '@radix-ui/react-switch'
-import { useAtomValue } from 'jotai/utils'
+import { useAtomValue } from 'jotai'
 import { useRouter } from 'next/router'
 import { RiBookletLine, RiTodoLine } from 'react-icons/ri'
 

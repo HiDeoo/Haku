@@ -52,8 +52,12 @@ Shimmer.Line = Line
 
 export default Shimmer
 
-type ShimmerComponent = React.FC & {
+type ShimmerComponent = React.FC<ShimmerProps> & {
   Line: typeof Line
+}
+
+interface ShimmerProps {
+  children: React.ReactNode
 }
 
 interface LineProps {

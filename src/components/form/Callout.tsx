@@ -63,6 +63,6 @@ interface CalloutProps {
   icon?: IconProps['icon']
   iconLabel?: string
   intent: 'success' | 'error' | 'neutral'
-  message: React.StrictReactNode
+  message: React.ReactNode
   title?: string
 }

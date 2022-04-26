@@ -1,11 +1,10 @@
 import { Provider, Viewport } from '@radix-ui/react-toast'
-import { useAtomValue } from 'jotai/utils'
-import dynamic from 'next/dynamic'
+import { useAtomValue } from 'jotai'
 
 import { toastsAtom } from 'atoms/toast'
+import Toast from 'components/ui/Toast'
+import { isNonEmptyArray } from 'libs/array'
 import clst from 'styles/clst'
-
-const Toast = dynamic(import('components/ui/Toast'))
 
 const Toaster: React.FC = () => {
   const toasts = useAtomValue(toastsAtom)
@@ -17,7 +16,7 @@ const Toaster: React.FC = () => {
     'overflow-y-auto overflow-x-hidden',
     'focus:outline-none',
     {
-      'focus-visible:ring-2 focus-visible:ring-blue-600': toasts.length > 0,
+      'focus-visible:ring-2 focus-visible:ring-blue-600': isNonEmptyArray(toasts),
     }
   )
 

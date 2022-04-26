@@ -1,4 +1,4 @@
-import { ForwardedRef, forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react'
+import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { type FieldPath, useController, type Control, type FieldValues } from 'react-hook-form'
 
 import Label from 'components/form/Label'
@@ -8,7 +8,7 @@ import clst from 'styles/clst'
 
 const MagicCodeInput = <TFormFields extends FieldValues>(
   { control, disabled, errorMessage, length = AUTH_TOKEN_LENGTH, name }: MagicCodeInputProps<TFormFields>,
-  forwardedRef: ForwardedRef<MagicCodeInputHandle>
+  forwardedRef: React.ForwardedRef<MagicCodeInputHandle>
 ) => {
   useImperativeHandle(forwardedRef, () => ({ focus }))
 
@@ -136,7 +136,7 @@ const MagicCodeInput = <TFormFields extends FieldValues>(
 }
 
 export default forwardRef(MagicCodeInput) as <TFormFields extends FieldValues>(
-  props: React.PropsWithChildren<MagicCodeInputProps<TFormFields>>
+  props: MagicCodeInputProps<TFormFields>
 ) => ReturnType<typeof MagicCodeInput>
 
 const MagicCodeDigitInput: React.FC<MagicCodeDigitInputProps> = ({

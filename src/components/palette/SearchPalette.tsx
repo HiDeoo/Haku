@@ -1,12 +1,11 @@
 import { useAtom } from 'jotai'
-import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { useMemo, useRef, useState } from 'react'
 import { RiBookletLine, RiSearchLine, RiTodoLine } from 'react-icons/ri'
 
 import { searchPaletteOpenedAtom } from 'atoms/palette'
 import IconButton from 'components/form/IconButton'
-import { type PaletteItem, type PaletteProps } from 'components/palette/Palette'
+import Palette, { type PaletteItem } from 'components/palette/Palette'
 import { ContentType } from 'constants/contentType'
 import { SEARCH_QUERY_MIN_LENGTH } from 'constants/search'
 import { getContentType } from 'hooks/useContentType'
@@ -14,8 +13,6 @@ import useDebouncedValue from 'hooks/useDebouncedValue'
 import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
 import useSearchQuery from 'hooks/useSearchQuery'
 import { type SearchResultData } from 'libs/db/file'
-
-const Palette = dynamic<PaletteProps<SearchResult>>(import('components/palette/Palette'))
 
 const SearchPalette: React.FC = () => {
   const { push } = useRouter()
@@ -29,7 +26,7 @@ const SearchPalette: React.FC = () => {
   const [query, setQuery] = useState<string | undefined>('')
   const debouncedQuery = useDebouncedValue(query, 300)
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useSearchQuery(opened, debouncedQuery)
+  const { data, fetchNextPage, fetchStatus, hasNextPage, isFetchingNextPage } = useSearchQuery(opened, debouncedQuery)
 
   useGlobalShortcuts(
     useMemo(
@@ -100,22 +97,23 @@ const SearchPalette: React.FC = () => {
   return (
     <>
       <IconButton icon={RiSearchLine} tooltip="Search" onPress={onPressTrigger} ref={trigger} />
-      <Palette
+      <Palette<SearchResult>
         role="search"
         fuzzy={false}
         opened={opened}
         onPick={onPick}
         enterKeyHint="go"
         initialQuery={query}
-        isLoading={isLoading}
+        title="Search Palette"
         itemToIcon={itemToIcon}
         onQueryChange={setQuery}
         loadMore={fetchNextPage}
         onOpenChange={onOpenChange}
         itemToString={itemToString}
-        items={data?.pages.flat() ?? []}
         forwardedRef={paletteTextInput}
+        items={data?.pages.flat() ?? []}
         isLoadingMore={isFetchingNextPage}
+        isLoading={fetchStatus === 'fetching'}
         minQueryLength={SEARCH_QUERY_MIN_LENGTH}
         itemDetailsToString={itemDetailsToString}
         infinite={hasNextPage && !isFetchingNextPage}

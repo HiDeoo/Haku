@@ -1,4 +1,4 @@
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo } from 'react'
 
 import { registerGlobalShortcutsAtom, unregisterGlobalShortcutsAtom } from 'atoms/shortcuts'
@@ -6,8 +6,8 @@ import { getShortcutMap, isShortcutEvent, type Shortcut } from 'libs/shortcut'
 
 // The shortcuts must be memoized using `useMemo` to avoid infinitely re-registering them.
 export default function useGlobalShortcuts(shortcuts: Shortcut[]) {
-  const registerGlobalShortcuts = useUpdateAtom(registerGlobalShortcutsAtom)
-  const unregisterGlobalShortcuts = useUpdateAtom(unregisterGlobalShortcutsAtom)
+  const registerGlobalShortcuts = useSetAtom(registerGlobalShortcutsAtom)
+  const unregisterGlobalShortcuts = useSetAtom(unregisterGlobalShortcutsAtom)
 
   const shortcutMap = useMemo(() => getShortcutMap(shortcuts), [shortcuts])
 

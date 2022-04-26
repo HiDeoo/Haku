@@ -17,6 +17,7 @@ import {
   API_ERROR_IMAGE_UPLOAD_UNKNOWN,
   type ApiErrorResponse,
 } from 'libs/api/routes/errors'
+import { isNonEmptyArray } from 'libs/array'
 import { CLOUDINARY_BASE_DELIVERY_URL, getCloudinaryApiUrl, type ImageData } from 'libs/cloudinary'
 import { getBytesFromMegaBytes } from 'libs/math'
 import * as index from 'pages/api/images'
@@ -238,7 +239,7 @@ describe('images', () => {
         expect(isSignedImageUrlWithTransforms(json.original, [])).toBe(true)
 
         expect(typeof json.responsive).toBe('object')
-        expect(Object.keys(json.responsive).length).toBeGreaterThan(0)
+        expect(isNonEmptyArray(Object.keys(json.responsive))).toBe(true)
 
         expect(typeof json.height).toBe('number')
         expect(typeof json.width).toBe('number')

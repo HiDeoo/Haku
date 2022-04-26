@@ -17,6 +17,10 @@ const Document: React.FC = () => {
         <meta httpEquiv="Content-Security-Policy" content={getContentSecurityPolicy(nonce)} />
         <meta name="color-scheme" content="dark" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta
+          name="description"
+          content="Craft, consolidate and tackle your notebooks and to-do lists all in one place."
+        />
         <link rel="manifest" href="/manifest.webmanifest" />
         <link rel="apple-touch-icon" href="/images/icons/180.png" />
         <link
@@ -175,5 +179,6 @@ function getContentSecurityPolicy(nonce: string): string {
     "worker-src 'self'",
     "prefetch-src 'self'",
     "connect-src 'self'",
+    "base-uri 'none'",
   ].join('; ')
 }

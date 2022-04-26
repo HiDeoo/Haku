@@ -6,7 +6,7 @@ import { Plugin } from 'prosemirror-state'
 import { Step, type Mappable, StepResult } from 'prosemirror-transform'
 
 import { IMAGE_MAX_SIZE_IN_MEGABYTES, IMAGE_SUPPORTED_TYPES } from 'constants/image'
-import client from 'libs/api/client'
+import { getClient } from 'libs/api/client'
 import { type ImageData } from 'libs/cloudinary'
 import { getA11yImageAttributes, getA11yImageParams, type A11yImageParams } from 'libs/image'
 import { getBytesFromMegaBytes } from 'libs/math'
@@ -285,7 +285,7 @@ async function upload(
   body.append('file', image)
   body.append('referenceId', referenceId)
 
-  return client.post('images', { body }).json<ImageData>()
+  return (await getClient()).post('images', { body }).json<ImageData>()
 }
 
 export class CloudinaryError extends Error {

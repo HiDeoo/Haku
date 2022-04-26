@@ -2,7 +2,7 @@ import { type SearchParamsOption } from 'ky'
 import { useInfiniteQuery } from 'react-query'
 
 import { SEARCH_QUERY_MIN_LENGTH, SEARCH_RESULT_LIMIT } from 'constants/search'
-import client from 'libs/api/client'
+import { getClient } from 'libs/api/client'
 import { type SearchResulstData } from 'libs/db/file'
 
 export default function useSearchQuery(enabled: boolean, query?: string) {
@@ -18,12 +18,12 @@ export default function useSearchQuery(enabled: boolean, query?: string) {
   )
 }
 
-function getSearchResults(signal: AbortSignal | undefined, query: string, page?: number) {
+async function getSearchResults(signal: AbortSignal | undefined, query: string, page?: number) {
   const searchParams: SearchParamsOption = { q: query }
 
   if (page) {
     searchParams.page = page
   }
 
-  return client.get(`search`, { searchParams, signal }).json<SearchResulstData>()
+  return (await getClient()).get(`search`, { searchParams, signal }).json<SearchResulstData>()
 }

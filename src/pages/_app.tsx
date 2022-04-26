@@ -3,6 +3,7 @@ import 'styles/globals.css'
 import { Provider as TooltipProvider } from '@radix-ui/react-tooltip'
 import { SessionProvider } from 'next-auth/react'
 import { type AppProps } from 'next/app'
+import dynamic from 'next/dynamic'
 import { QueryClient, QueryClientProvider } from 'react-query'
 
 import ErrorBoundary from 'components/app/ErrorBoundary'
@@ -10,9 +11,10 @@ import NetworkAgent from 'components/app/NetworkAgent'
 import Route from 'components/app/Route'
 import Title from 'components/app/Title'
 import Layout from 'components/ui/Layout'
-import Toaster from 'components/ui/Toaster'
 import usePwa from 'hooks/usePwa'
 import { getQueryClientDefaultOptions } from 'libs/api/client'
+
+const Toaster = dynamic(import('components/ui/Toaster'))
 
 const queryClient = new QueryClient({ defaultOptions: getQueryClientDefaultOptions() })
 

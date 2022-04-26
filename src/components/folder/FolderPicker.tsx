@@ -4,6 +4,7 @@ import { FieldPath, type Control, type FieldValues } from 'react-hook-form'
 import Combobox from 'components/form/Combobox'
 import { ROOT_FOLDER_ID } from 'constants/folder'
 import useContentTreeQuery from 'hooks/useContentTreeQuery'
+import { isNonEmptyArray } from 'libs/array'
 import { type FolderData } from 'libs/db/folder'
 import { NoteMetadata } from 'libs/db/note'
 import { isTreeFolder, type TreeFolder } from 'libs/tree'
@@ -64,7 +65,7 @@ function getFolderList(
       defaultItem = folder
     }
 
-    if (children.length > 0) {
+    if (isNonEmptyArray(children)) {
       const [nestedFolders, nestedDefaultItem] = getFolderList(
         children,
         defaultFolderId,

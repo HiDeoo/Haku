@@ -5,7 +5,7 @@ import Icon, { type IconProps } from 'components/ui/Icon'
 import Tooltip from 'components/ui/Tooltip'
 import clst from 'styles/clst'
 
-const IconButton = forwardRef<HTMLButtonElement, React.PropsWithChildren<IconButtonProps>>(
+const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
   ({ className, icon, iconClassName, pressedClassName, tooltip, ...props }, forwardedRef) => {
     const buttonClasses = clst(
       'bg-inherit hover:bg-zinc-700/75 hover:text-blue-600 disabled:bg-inherit disabled:text-inherit shadow-none',
@@ -34,7 +34,9 @@ IconButton.displayName = 'IconButton'
 
 export default IconButton
 
-export interface IconButtonProps extends Omit<ButtonProps, 'primary'>, Partial<ButtonPropsWithOnClickHandler> {
+export interface IconButtonProps
+  extends Omit<ButtonProps, 'children' | 'primary'>,
+    Partial<ButtonPropsWithOnClickHandler> {
   className?: string
   disabled?: ButtonProps['disabled']
   icon: IconProps['icon']

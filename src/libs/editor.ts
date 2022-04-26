@@ -19,6 +19,8 @@ import yaml from 'highlight.js/lib/languages/yaml'
 import { lowlight } from 'lowlight/lib/core'
 import slug from 'url-slug'
 
+import { isNonEmptyArray } from './array'
+
 export { CloudinaryTiptapNode as Cloudinary } from 'libs/cloudinaryTiptapNode'
 
 const languages: Languages = {
@@ -43,7 +45,7 @@ const languages: Languages = {
 }
 
 export function getLowlight() {
-  if (lowlight.listLanguages().length !== 0) {
+  if (isNonEmptyArray(lowlight.listLanguages())) {
     return lowlight
   }
 

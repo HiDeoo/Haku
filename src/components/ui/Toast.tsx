@@ -1,5 +1,5 @@
 import { Action, Close, Description, Root } from '@radix-ui/react-toast'
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 import { useCallback, useRef } from 'react'
 import { RiCloseLine } from 'react-icons/ri'
 
@@ -12,7 +12,7 @@ import styles from 'styles/Toast.module.css'
 const Toast: React.FC<ToastProps> = ({ toast }) => {
   const toastRoot = useRef<HTMLLIElement>(null)
 
-  const removeToast = useUpdateAtom(removeToastAtom)
+  const removeToast = useSetAtom(removeToastAtom)
 
   const onToastOpenChange = useCallback(
     (opened: boolean) => {

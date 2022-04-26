@@ -1,7 +1,9 @@
 import { Arrow, Content, Item, Root, Trigger } from '@radix-ui/react-dropdown-menu'
-import { useAtomValue, useResetAtom, useUpdateAtom } from 'jotai/utils'
+import { useAtomValue, useSetAtom } from 'jotai'
+import { useResetAtom } from 'jotai/utils'
 import { forwardRef } from 'react'
 import {
+  RiBugLine,
   RiInstallLine,
   RiKeyboardFill,
   RiLogoutCircleRLine,
@@ -23,16 +25,17 @@ import ShortcutModal from 'components/shortcut/ShortcutModal'
 import Flex from 'components/ui/Flex'
 import Icon, { type IconProps } from 'components/ui/Icon'
 import { logout } from 'libs/auth'
+import { openGitHubIssuePage } from 'libs/github'
 import clst from 'styles/clst'
 
 const SidebarMenu: React.FC = () => {
   const sidebarCollapsed = useAtomValue(sidebarCollapsedAtom)
-  const toggleSidebarCollapsed = useUpdateAtom(toggleSidebarCollapsedAtom)
+  const toggleSidebarCollapsed = useSetAtom(toggleSidebarCollapsedAtom)
 
   const deferrefPromptEvent = useAtomValue(deferrefPromptEventAtom)
   const resetDeferrefPromptEvent = useResetAtom(deferrefPromptEventAtom)
 
-  const setShortcutModalOpened = useUpdateAtom(setShortcutModalOpenedAtom)
+  const setShortcutModalOpened = useSetAtom(setShortcutModalOpenedAtom)
 
   function onClickKeyboardShortcuts() {
     setShortcutModalOpened(true)
@@ -83,6 +86,9 @@ const SidebarMenu: React.FC = () => {
               <SidebarMenuItem label="Logout" icon={RiLogoutCircleRLine} onClick={logout} />
             </Item>
             <Item asChild>
+              <SidebarMenuItem label="Report Bug" icon={RiBugLine} onClick={openGitHubIssuePage} />
+            </Item>
+            <Item asChild>
               <SidebarMenuItem label="Keyboard Shortcuts" icon={RiKeyboardFill} onClick={onClickKeyboardShortcuts} />
             </Item>
             {deferrefPromptEvent ? (
@@ -105,7 +111,7 @@ const sidebarMenuItemClasses = clst(
   'focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:bg-blue-600'
 )
 
-const SidebarMenuItem = forwardRef<HTMLButtonElement, React.PropsWithChildren<SidebarMenuItemProps>>(
+const SidebarMenuItem = forwardRef<HTMLButtonElement, SidebarMenuItemProps>(
   ({ icon, label, ...props }, forwaredRef) => {
     return (
       <Button

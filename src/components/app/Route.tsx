@@ -9,7 +9,7 @@ import { ContentType } from 'constants/contentType'
 
 const unsecureRoutes = ['/auth/error', '/auth/login', '/auth/verify']
 
-const Route: React.FC = ({ children }) => {
+const Route: React.FC<RouteProps> = ({ children }) => {
   const { push, query, route } = useRouter()
   const { status } = useSession()
 
@@ -52,3 +52,7 @@ const Route: React.FC = ({ children }) => {
 }
 
 export default Route
+
+interface RouteProps {
+  children: React.ReactNode
+}
