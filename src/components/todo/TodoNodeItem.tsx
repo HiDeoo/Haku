@@ -1,3 +1,4 @@
+import { TodoNodeStatus } from '@prisma/client'
 import cuid from 'cuid'
 import { forwardRef, memo, useCallback, useContext, useImperativeHandle, useRef, useState } from 'react'
 import { useEditable } from 'use-editable'
@@ -48,6 +49,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     moveNode,
     nestNode,
     node,
+    toggleCancelled,
     toggleCollapsed,
     toggleCompleted,
     unnestNode,
@@ -107,12 +109,22 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
         todoNodeItems.get(newId)?.focusContent()
       })
     } else if (isShortcutEvent(event, shortcutMap['Meta+Enter'])) {
-      if (node.completed) {
+      if (node.status === TodoNodeStatus.COMPLETED) {
         preserveCaret(() => {
           toggleCompleted(update)
         })
       } else {
         toggleCompleted(update)
+
+        focusClosestNode({ ...update, direction: 'down' })
+      }
+    } else if (isShortcutEvent(event, shortcutMap['Meta+Alt+Enter'])) {
+      if (node.status === TodoNodeStatus.CANCELLED) {
+        preserveCaret(() => {
+          toggleCancelled(update)
+        })
+      } else {
+        toggleCancelled(update)
 
         focusClosestNode({ ...update, direction: 'down' })
       }
@@ -286,7 +298,11 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
 
   const isNoteVisible = shouldFocusNote || (node.noteText && node.noteText.length > 0)
 
-  const containerClasses = clst(styles.container, node.completed && styles.completed)
+  const containerClasses = clst(
+    styles.container,
+    node.status === TodoNodeStatus.COMPLETED && styles.completed,
+    node.status === TodoNodeStatus.CANCELLED && styles.cancelled
+  )
 
   const contentClasses = clst(
     styles.content,
@@ -294,7 +310,8 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     'pr-2 supports-max:pr-[calc(theme(spacing.2)+max(0px,env(safe-area-inset-right)))]',
     {
       'cursor-not-allowed': isLoading,
-      'line-through text-zinc-400': node.completed,
+      'line-through text-zinc-400': node.status === TodoNodeStatus.COMPLETED,
+      'line-through decoration-wavy text-zinc-500': node.status === TodoNodeStatus.CANCELLED,
     }
   )
 
@@ -306,8 +323,8 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
         <Flex fullWidth className="group items-baseline pl-1" style={{ marginLeft: `${levelOffset}px` }}>
           <TodoNodeHandle
             id={id}
+            status={node.status}
             collapsed={node.collapsed}
-            completed={node.completed}
             toggleCollapsed={toggleCollapsed}
             hasChildren={isNonEmptyArray(children)}
           />

@@ -3,16 +3,16 @@ import { type NextApiResponse } from 'next'
 import { createApiRoute, getApiRequestUser } from 'libs/api/routes'
 import { ValidatedApiRequest, withAuth, withValidation } from 'libs/api/routes/middlewares'
 import { getTodoNodes, type TodoNodesData, updateTodoNodes } from 'libs/db/todoNodes'
-import { z, zQuerySchemaWithId } from 'libs/validation'
+import { z, zQuerySchemaWithId, zTodoNodeStatus } from 'libs/validation'
 
 const mutationMapSchema = z.record(
   z.object({
     id: z.string().cuid(),
     collapsed: z.boolean(),
-    completed: z.boolean(),
     content: z.string(),
     noteHtml: z.string().nullable(),
     noteText: z.string().nullable(),
+    status: zTodoNodeStatus,
   })
 )
 

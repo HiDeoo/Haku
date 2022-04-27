@@ -1,5 +1,5 @@
 import faker from '@faker-js/faker'
-import { type EmailAllowList, FolderType, TodoNode } from '@prisma/client'
+import { type EmailAllowList, FolderType, TodoNode, TodoNodeStatus } from '@prisma/client'
 import slug from 'url-slug'
 
 import { prisma } from 'libs/db'
@@ -118,11 +118,13 @@ export function createTestTodoNode(options?: TestTodoNodeOptions) {
       id: options?.id,
       children: options?.children,
       collapsed: options?.collapsed ?? faker.datatype.boolean(),
-      completed: options?.completed ?? faker.datatype.boolean(),
       content: options?.content ?? faker.lorem.words(),
       noteHtml: options?.noteHtml ?? data,
       noteText: options?.noteText ?? data,
       todoId: options?.todoId,
+      status:
+        options?.status ??
+        faker.random.arrayElement([TodoNodeStatus.ACTIVE, TodoNodeStatus.COMPLETED, TodoNodeStatus.CANCELLED]),
     },
   })
 }
@@ -184,10 +186,10 @@ interface TestTodoNodeOptions {
   id?: TodoNode['id']
   children?: TodoNode['children']
   collapsed?: TodoNode['collapsed']
-  completed?: TodoNode['completed']
   content?: TodoNode['content']
   noteHtml?: TodoNode['noteHtml']
   noteText?: TodoNode['noteText']
+  status?: TodoNode['status']
   todoId?: TodoNode['todoId']
 }
 

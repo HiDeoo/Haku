@@ -1,3 +1,4 @@
+import { TodoNodeStatus } from '@prisma/client'
 import { forwardRef, useCallback, useImperativeHandle } from 'react'
 
 import { type AtomParamsNoteUpdate } from 'atoms/todoNode'
@@ -48,9 +49,12 @@ const TodoNodeNote: React.ForwardRefRenderFunction<TodoNodeNoteHandle, TodoNodeN
       editor={editor}
       className={editorContentClasses}
       style={{
-        '--editor-text-color': node.completed
-          ? 'var(--todo-node-completed-note-editor-text-color)'
-          : 'var(--todo-node-note-editor-text-color)',
+        '--editor-text-color':
+          node.status === TodoNodeStatus.COMPLETED
+            ? 'var(--todo-node-completed-note-editor-text-color)'
+            : node.status === TodoNodeStatus.CANCELLED
+            ? 'var(--todo-node-cancelled-note-editor-text-color)'
+            : 'var(--todo-node-note-editor-text-color)',
       }}
     />
   )

@@ -1,6 +1,7 @@
 import assert from 'assert'
 
 import faker from '@faker-js/faker'
+import { TodoNodeStatus } from '@prisma/client'
 import { act, renderHook } from '@testing-library/react-hooks/native'
 import cuid from 'cuid'
 import { useAtom } from 'jotai'
@@ -1217,6 +1218,45 @@ describe('useTodoNode', () => {
   })
 
   describe('toggleCompleted', () => {
+    test('should mark as completed an active todo node', () => {
+      const { children, nodes } = setFakeTodoNodes([{ status: TodoNodeStatus.ACTIVE }])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      act(() => {
+        result.current.toggleCompleted({ id: node.id })
+      })
+
+      expect(result.current.node?.status).toBe(TodoNodeStatus.COMPLETED)
+    })
+
+    test('should mark as completed a cancelled todo node', () => {
+      const { children, nodes } = setFakeTodoNodes([{ status: TodoNodeStatus.ACTIVE }])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      act(() => {
+        result.current.toggleCompleted({ id: node.id })
+      })
+
+      expect(result.current.node?.status).toBe(TodoNodeStatus.COMPLETED)
+    })
+
+    test('should mark as active a completed todo node', () => {
+      const { children, nodes } = setFakeTodoNodes([{ status: TodoNodeStatus.COMPLETED }])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      act(() => {
+        result.current.toggleCompleted({ id: node.id })
+      })
+
+      expect(result.current.node?.status).toBe(TodoNodeStatus.ACTIVE)
+    })
+
     test('should toggle completed a root todo node', () => {
       const { children, nodes } = setFakeTodoNodes([{}])
       const node = getTodoNodeFromIndexes(nodes, children, 0)
@@ -1227,7 +1267,9 @@ describe('useTodoNode', () => {
         result.current.toggleCompleted({ id: node.id })
       })
 
-      expect(result.current.node?.completed).toBe(!node.completed)
+      expect(result.current.node?.status).toBe(
+        node.status !== TodoNodeStatus.COMPLETED ? TodoNodeStatus.COMPLETED : TodoNodeStatus.ACTIVE
+      )
     })
 
     test('should toggle completed a nested todo node', () => {
@@ -1240,7 +1282,9 @@ describe('useTodoNode', () => {
         result.current.toggleCompleted({ id: node.id })
       })
 
-      expect(result.current.node?.completed).toBe(!node.completed)
+      expect(result.current.node?.status).toBe(
+        node.status !== TodoNodeStatus.COMPLETED ? TodoNodeStatus.COMPLETED : TodoNodeStatus.ACTIVE
+      )
     })
 
     test('should mark an existing todo node as updated after toggling its completion', () => {
@@ -1283,7 +1327,7 @@ describe('useTodoNode', () => {
         result.current.toggleCompleted({ id: 'nonexistingId' })
       })
 
-      expect(result.current.node?.completed).toBe(nodes[node.id]?.completed)
+      expect(result.current.node?.status).toBe(nodes[node.id]?.status)
     })
 
     test('should not toggle completed a deleted todo node', () => {
@@ -1301,6 +1345,141 @@ describe('useTodoNode', () => {
         todoMutations.current[1]((prevMutations) => ({ ...prevMutations, [node.id]: 'delete' }))
 
         result.current.toggleCompleted({ id: node.id })
+      })
+
+      expect(result.current.node).toBeUndefined()
+      expect(todoMutations.current[0][node.id]).toBe('delete')
+    })
+  })
+
+  describe('toggleCancelled', () => {
+    test('should mark as cancelled an active todo node', () => {
+      const { children, nodes } = setFakeTodoNodes([{ status: TodoNodeStatus.ACTIVE }])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      act(() => {
+        result.current.toggleCancelled({ id: node.id })
+      })
+
+      expect(result.current.node?.status).toBe(TodoNodeStatus.CANCELLED)
+    })
+
+    test('should mark as cancelled a completed todo node', () => {
+      const { children, nodes } = setFakeTodoNodes([{ status: TodoNodeStatus.COMPLETED }])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      act(() => {
+        result.current.toggleCancelled({ id: node.id })
+      })
+
+      expect(result.current.node?.status).toBe(TodoNodeStatus.CANCELLED)
+    })
+
+    test('should mark as active a cancelled todo node', () => {
+      const { children, nodes } = setFakeTodoNodes([{ status: TodoNodeStatus.CANCELLED }])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      act(() => {
+        result.current.toggleCancelled({ id: node.id })
+      })
+
+      expect(result.current.node?.status).toBe(TodoNodeStatus.ACTIVE)
+    })
+
+    test('should toggle cancelled a root todo node', () => {
+      const { children, nodes } = setFakeTodoNodes([{}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      act(() => {
+        result.current.toggleCancelled({ id: node.id })
+      })
+
+      expect(result.current.node?.status).toBe(
+        node.status !== TodoNodeStatus.CANCELLED ? TodoNodeStatus.CANCELLED : TodoNodeStatus.ACTIVE
+      )
+    })
+
+    test('should toggle cancelled a nested todo node', () => {
+      const { children, nodes } = setFakeTodoNodes([{ children: [{}] }])
+      const node = getTodoNodeFromIndexes(nodes, children, 0, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      act(() => {
+        result.current.toggleCancelled({ id: node.id })
+      })
+
+      expect(result.current.node?.status).toBe(
+        node.status !== TodoNodeStatus.CANCELLED ? TodoNodeStatus.CANCELLED : TodoNodeStatus.ACTIVE
+      )
+    })
+
+    test('should mark an existing todo node as updated after toggling its cancellation', () => {
+      const { children, nodes } = setFakeTodoNodes([{}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+
+      act(() => {
+        result.current.toggleCancelled({ id: node.id })
+      })
+
+      expect(todoMutations.current[node.id]).toBe('update')
+    })
+
+    test('should not mark a new todo node as updated after toggling its cancellation', () => {
+      const { children, nodes } = setFakeTodoNodes([{}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
+
+      act(() => {
+        todoMutations.current[1]((prevMutations) => ({ ...prevMutations, [node.id]: 'insert' }))
+
+        result.current.toggleCancelled({ id: node.id })
+      })
+
+      expect(todoMutations.current[0][node.id]).toBe('insert')
+    })
+
+    test('should not toggle cancelled a nonexisting todo node', () => {
+      const { children, nodes } = setFakeTodoNodes([{}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+
+      act(() => {
+        result.current.toggleCancelled({ id: 'nonexistingId' })
+      })
+
+      expect(result.current.node?.status).toBe(nodes[node.id]?.status)
+    })
+
+    test('should not toggle cancelled a deleted todo node', () => {
+      const { children, nodes } = setFakeTodoNodes([{}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoNodes } = renderHook(() => useAtom(todoNodeNodesAtom))
+      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
+
+      act(() => {
+        const { [node.id]: nodeToDelete, ...otherNodes } = todoNodes.current[0]
+        todoNodes.current[1](otherNodes)
+
+        todoMutations.current[1]((prevMutations) => ({ ...prevMutations, [node.id]: 'delete' }))
+
+        result.current.toggleCancelled({ id: node.id })
       })
 
       expect(result.current.node).toBeUndefined()
@@ -1597,7 +1776,7 @@ function parseFakeTodoNodes(
   const nodeIds: string[] = []
 
   for (const declaration of nodeDeclarations) {
-    const node = getFakeTodoNode(parentId, declaration.collapsed)
+    const node = getFakeTodoNode(parentId, declaration.collapsed, declaration.status)
 
     nodeIds.push(node.id)
 
@@ -1617,7 +1796,8 @@ function parseFakeTodoNodes(
 
 function getFakeTodoNode(
   parentId: TodoNodeDataWithParentId['parentId'],
-  collapsed?: boolean
+  collapsed?: boolean,
+  status?: TodoNodeStatus
 ): TodoNodeDataWithParentId {
   const data = faker.datatype.boolean() ? faker.lorem.sentences() : null
 
@@ -1625,14 +1805,16 @@ function getFakeTodoNode(
     id: cuid(),
     content: faker.lorem.words(),
     collapsed: collapsed ?? faker.datatype.boolean(),
-    completed: faker.datatype.boolean(),
     noteHtml: data,
     noteText: data,
     parentId,
+    status:
+      status ?? faker.random.arrayElement([TodoNodeStatus.ACTIVE, TodoNodeStatus.COMPLETED, TodoNodeStatus.CANCELLED]),
   }
 }
 
 interface FakeTodoNodeDeclaration {
   children?: FakeTodoNodeDeclaration[]
   collapsed?: boolean
+  status?: TodoNodeStatus
 }

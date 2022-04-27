@@ -1,3 +1,4 @@
+import { TodoNodeStatus } from '@prisma/client'
 import { atom } from 'jotai'
 import { atomWithReset } from 'jotai/utils'
 
@@ -57,7 +58,31 @@ export const toggleCompletedAtom = atom(null, (get, set, { id }: AtomParamsWithP
 
   set(todoNodeMutations, (prevMutations) => ({ ...prevMutations, [id]: prevMutations[id] ?? 'update' }))
 
-  set(todoNodeNodesAtom, (prevNodes) => ({ ...prevNodes, [id]: { ...node, completed: !node.completed } }))
+  set(todoNodeNodesAtom, (prevNodes) => ({
+    ...prevNodes,
+    [id]: {
+      ...node,
+      status: node.status !== TodoNodeStatus.COMPLETED ? TodoNodeStatus.COMPLETED : TodoNodeStatus.ACTIVE,
+    },
+  }))
+})
+
+export const toggleCancelledAtom = atom(null, (get, set, { id }: AtomParamsWithParentId) => {
+  const node = get(todoNodeNodesAtom)[id]
+
+  if (!node) {
+    return
+  }
+
+  set(todoNodeMutations, (prevMutations) => ({ ...prevMutations, [id]: prevMutations[id] ?? 'update' }))
+
+  set(todoNodeNodesAtom, (prevNodes) => ({
+    ...prevNodes,
+    [id]: {
+      ...node,
+      status: node.status !== TodoNodeStatus.CANCELLED ? TodoNodeStatus.CANCELLED : TodoNodeStatus.ACTIVE,
+    },
+  }))
 })
 
 export const addNodeAtom = atom(null, (get, set, { id, newId, parentId = 'root' }: AtomParamsNodeAddition) => {
@@ -72,11 +97,11 @@ export const addNodeAtom = atom(null, (get, set, { id, newId, parentId = 'root' 
     [newId]: {
       id: newId,
       collapsed: false,
-      completed: false,
       content: '',
       noteHtml: null,
       noteText: null,
       parentId: addAsChildren ? id : parentId === 'root' ? undefined : parentId,
+      status: TodoNodeStatus.ACTIVE,
     },
   }))
 

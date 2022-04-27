@@ -36,10 +36,10 @@ const todoNodeDataSelect = Prisma.validator<Prisma.TodoNodeSelect>()({
   id: true,
   children: true,
   collapsed: true,
-  completed: true,
   content: true,
   noteHtml: true,
   noteText: true,
+  status: true,
 })
 
 export async function getTodoNodes(todoId: TodoMetadata['id'], userId: UserId): Promise<TodoNodesData> {

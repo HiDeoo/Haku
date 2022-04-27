@@ -111,9 +111,9 @@ model Todo {
 }
 
 model TodoNode {
-  id        String  @id @default(cuid())
-  collapsed Boolean @default(false)
-  completed Boolean @default(false)
+  id        String         @id @default(cuid())
+  collapsed Boolean        @default(false)
+  status    TodoNodeStatus @default(ACTIVE)
   content   String
   noteHtml  String?
   noteText  String?
@@ -126,4 +126,10 @@ model TodoNode {
   searchVector Unsupported("TSVECTOR")?
 
   @@index([searchVector], name: "TodoNode_searchVector_index")
+}
+
+enum TodoNodeStatus {
+  ACTIVE
+  CANCELLED
+  COMPLETED
 }

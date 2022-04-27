@@ -22,6 +22,7 @@ export const EDITOR_SHORTCUTS = [
 export const TODO_NODE_ITEM_SHORTCUTS = [
   { group: 'Todo', keybinding: 'Enter', label: 'Create New Todo' },
   { group: 'Todo', keybinding: 'Meta+Enter', label: 'Toggle Todo Completion' },
+  { group: 'Todo', keybinding: 'Meta+Alt+Enter', label: 'Toggle Todo Cancellation' },
   { group: 'Todo', keybinding: 'Shift+Enter', label: 'Move between Todo & Note' },
   { group: 'Todo', keybinding: 'Meta+Backspace', label: 'Delete Todo' },
   { group: 'Todo', keybinding: 'Tab', label: 'Indent Todo' },

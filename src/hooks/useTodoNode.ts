@@ -8,6 +8,7 @@ import {
   getClosestNode,
   todoNodeNodesAtom,
   todoNodeChildrenAtom,
+  toggleCancelledAtom,
   updateContentAtom,
   toggleCompletedAtom,
   updateNoteAtom,
@@ -48,6 +49,7 @@ export default function useTodoNode(id: TodoNodeData['id']) {
   const node = useAtomValue(selectAtom(todoNodeNodesAtom, getNodeById))
 
   const updateContent = useSetAtom(updateContentAtom)
+  const toggleCancelled = useSetAtom(toggleCancelledAtom)
   const toggleCollapsed = useSetAtom(toggleCollapsedAtom)
   const toggleCompleted = useSetAtom(toggleCompletedAtom)
   const updateNote = useSetAtom(updateNoteAtom)
@@ -65,6 +67,7 @@ export default function useTodoNode(id: TodoNodeData['id']) {
     moveNode,
     nestNode,
     node,
+    toggleCancelled,
     toggleCollapsed,
     toggleCompleted,
     unnestNode,
