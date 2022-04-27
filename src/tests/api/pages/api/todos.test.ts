@@ -13,6 +13,7 @@ import {
   type ApiErrorResponse,
 } from 'libs/api/routes/errors'
 import { getCloudinaryApiUrl } from 'libs/cloudinary'
+import { isDateEqual } from 'libs/date'
 import { type TodoMetadata } from 'libs/db/todo'
 import { type TodoTreeData } from 'libs/db/tree'
 import { hasKey } from 'libs/object'
@@ -391,6 +392,7 @@ describe('todos', () => {
 
           assertIsTreeItem(json[0])
           expect(hasKey(json[0], 'root')).toBe(false)
+          expect(hasKey(json[0], 'modifiedAt')).toBe(false)
         }))
     })
   })
@@ -469,6 +471,7 @@ describe('todos', () => {
         expect(testTodo?.root.length).toBe(1)
 
         expect(testTodo?.root[0]).toBeDefined()
+        expect(testTodo?.modifiedAt).toBeDefined()
 
         assert(typeof testTodo?.root[0] === 'string')
 
@@ -578,7 +581,7 @@ describe('todos', () => {
   describe('PATCH', () => {
     test('should rename a todo and update its slug', async () => {
       const { id: folderId } = await createTestTodoFolder()
-      const { id } = await createTestTodo({ folderId })
+      const { id, modifiedAt } = await createTestTodo({ folderId })
 
       const newName = 'newName'
 
@@ -593,18 +596,19 @@ describe('todos', () => {
 
           expect(json.name).toBe(newName)
 
-          const testNote = await getTestTodo(id)
+          const testTodo = await getTestTodo(id)
 
-          expect(testNote?.name).toBe(newName)
-          expect(testNote?.slug).toBe(slug(newName))
-          expect(testNote?.folderId).toBe(folderId)
+          expect(testTodo?.name).toBe(newName)
+          expect(testTodo?.slug).toBe(slug(newName))
+          expect(testTodo?.folderId).toBe(folderId)
+          expect(isDateEqual(testTodo?.modifiedAt, modifiedAt)).toBe(true)
         },
         { dynamicRouteParams: { id } }
       )
     })
 
     test('should not rename a todo if becoming duplicated', async () => {
-      const { id, name } = await createTestTodo()
+      const { id, modifiedAt, name } = await createTestTodo()
       const { name: newName } = await createTestTodo()
 
       return testApiRoute(
@@ -622,6 +626,7 @@ describe('todos', () => {
           const testTodo = await getTestTodo(id)
 
           expect(testTodo?.name).toBe(name)
+          expect(isDateEqual(testTodo?.modifiedAt, modifiedAt)).toBe(true)
         },
         { dynamicRouteParams: { id } }
       )
@@ -631,7 +636,7 @@ describe('todos', () => {
       const { id: folderId } = await createTestTodoFolder()
       const { id: newFolderId } = await createTestTodoFolder()
 
-      const { id, slug } = await createTestTodo({ folderId })
+      const { id, modifiedAt, slug } = await createTestTodo({ folderId })
 
       return testApiRoute(
         idHandler,
@@ -649,6 +654,7 @@ describe('todos', () => {
           expect(testTodo).toBeDefined()
           expect(testTodo?.folderId).toBe(newFolderId)
           expect(testTodo?.slug).toBe(slug)
+          expect(isDateEqual(testTodo?.modifiedAt, modifiedAt)).toBe(true)
         },
         { dynamicRouteParams: { id } }
       )
@@ -657,7 +663,7 @@ describe('todos', () => {
     test('should move a todo to the root', async () => {
       const { id: folderId } = await createTestTodoFolder()
 
-      const { id, slug } = await createTestTodo({ folderId })
+      const { id, modifiedAt, slug } = await createTestTodo({ folderId })
 
       return testApiRoute(
         idHandler,
@@ -675,6 +681,7 @@ describe('todos', () => {
           expect(testTodo).toBeDefined()
           expect(testTodo?.folderId).toBeNull()
           expect(testTodo?.slug).toBe(slug)
+          expect(isDateEqual(testTodo?.modifiedAt, modifiedAt)).toBe(true)
         },
         { dynamicRouteParams: { id } }
       )
@@ -684,7 +691,7 @@ describe('todos', () => {
       const { id: folderId } = await createTestTodoFolder()
       const { id: newFolderId } = await createTestTodoFolder()
 
-      const { id } = await createTestTodo({ folderId, name: 'todo' })
+      const { id, modifiedAt } = await createTestTodo({ folderId, name: 'todo' })
       await createTestTodo({ folderId: newFolderId, name: 'todo' })
 
       return testApiRoute(
@@ -703,13 +710,14 @@ describe('todos', () => {
 
           expect(testTodo).toBeDefined()
           expect(testTodo?.folderId).toBe(folderId)
+          expect(isDateEqual(testTodo?.modifiedAt, modifiedAt)).toBe(true)
         },
         { dynamicRouteParams: { id } }
       )
     })
 
     test('should not move a todo inside a nonexisting folder', async () => {
-      const { id, folderId } = await createTestTodo()
+      const { id, folderId, modifiedAt } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -727,6 +735,7 @@ describe('todos', () => {
 
           expect(testTodo).toBeDefined()
           expect(testTodo?.folderId).toBe(folderId)
+          expect(isDateEqual(testTodo?.modifiedAt, modifiedAt)).toBe(true)
         },
         { dynamicRouteParams: { id } }
       )
@@ -735,7 +744,7 @@ describe('todos', () => {
     test('should not move a todo inside an existing folder not owned by the current user', async () => {
       const { id: newFolderId } = await createTestTodoFolder({ userId: getTestUser('1').userId })
 
-      const { id, folderId } = await createTestTodo()
+      const { id, folderId, modifiedAt } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -753,6 +762,7 @@ describe('todos', () => {
 
           expect(testTodo).toBeDefined()
           expect(testTodo?.folderId).toBe(folderId)
+          expect(isDateEqual(testTodo?.modifiedAt, modifiedAt)).toBe(true)
         },
         { dynamicRouteParams: { id } }
       )
@@ -761,7 +771,7 @@ describe('todos', () => {
     test('should not move a todo inside an existing folder of a different type', async () => {
       const { id: newFolderId } = await createTestNoteFolder()
 
-      const { id, folderId } = await createTestTodo()
+      const { id, folderId, modifiedAt } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -779,6 +789,7 @@ describe('todos', () => {
 
           expect(testTodo).toBeDefined()
           expect(testTodo?.folderId).toBe(folderId)
+          expect(isDateEqual(testTodo?.modifiedAt, modifiedAt)).toBe(true)
         },
         { dynamicRouteParams: { id } }
       )
@@ -787,7 +798,7 @@ describe('todos', () => {
     test('should move & rename a todo at the same time', async () => {
       const { id: newFolderId } = await createTestTodoFolder()
 
-      const { id } = await createTestTodo()
+      const { id, modifiedAt } = await createTestTodo()
 
       const newName = 'newName'
 
@@ -809,13 +820,14 @@ describe('todos', () => {
           expect(testTodo?.name).toBe(newName)
           expect(testTodo?.folderId).toBe(newFolderId)
           expect(testTodo?.slug).toBe(slug(newName))
+          expect(isDateEqual(testTodo?.modifiedAt, modifiedAt)).toBe(true)
         },
         { dynamicRouteParams: { id } }
       )
     })
 
     test('should not update a todo not owned by the current user', async () => {
-      const { id, name } = await createTestTodo({ userId: getTestUser('1').userId })
+      const { id, modifiedAt, name } = await createTestTodo({ userId: getTestUser('1').userId })
 
       return testApiRoute(
         idHandler,
@@ -833,6 +845,7 @@ describe('todos', () => {
 
           expect(testTodo).toBeDefined()
           expect(testTodo?.name).toBe(name)
+          expect(isDateEqual(testTodo?.modifiedAt, modifiedAt)).toBe(true)
         },
         { dynamicRouteParams: { id } }
       )

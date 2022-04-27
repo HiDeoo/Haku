@@ -101,6 +101,7 @@ export function updateNote(id: NoteMetadata['id'], userId: UserId, data: UpdateN
           slug: data.name ? slug(data.name) : undefined,
           html: data.html,
           text: data.text,
+          modifiedAt: data.html ? new Date() : undefined,
         },
         select: data.html && data.text ? noteDataSelect : noteMetadataSelect,
       })

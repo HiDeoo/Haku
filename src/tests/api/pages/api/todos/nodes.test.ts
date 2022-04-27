@@ -23,6 +23,7 @@ import {
   API_ERROR_TODO_NODE_UPDATE_DOES_NOT_EXIST,
   type ApiErrorResponse,
 } from 'libs/api/routes/errors'
+import { isDateAfter } from 'libs/date'
 import { type TodoNodesData, type TodoNodeData } from 'libs/db/todoNodes'
 import idHandler, { type UpdateTodoNodesBody } from 'pages/api/todos/[id]/nodes'
 import { getTestUser, testApiRoute } from 'tests/api'
@@ -267,7 +268,7 @@ describe('todo nodes', () => {
     })
 
     test('should add a previously known node to the root nodes after the default one', async () => {
-      const { id, root } = await createTestTodo()
+      const { id, modifiedAt, root } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -281,6 +282,8 @@ describe('todo nodes', () => {
 
           const testTodo = await getTestTodo(id)
 
+          expect(isDateAfter(testTodo?.modifiedAt, modifiedAt)).toBe(true)
+
           expect(testTodo?.root.length).toBe(2)
 
           expect(testTodo?.root[0]).toBe(root[0])
@@ -292,7 +295,7 @@ describe('todo nodes', () => {
     })
 
     test('should add a previously known node to the root nodes before the default one', async () => {
-      const { id, root } = await createTestTodo()
+      const { id, modifiedAt, root } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -306,6 +309,8 @@ describe('todo nodes', () => {
 
           const testTodo = await getTestTodo(id)
 
+          expect(isDateAfter(testTodo?.modifiedAt, modifiedAt)).toBe(true)
+
           expect(testTodo?.root.length).toBe(2)
 
           expect(testTodo?.root[0]).toBe(nodeId)
@@ -317,7 +322,7 @@ describe('todo nodes', () => {
     })
 
     test('should replace the root nodes by previously known ones', async () => {
-      const { id } = await createTestTodo()
+      const { id, modifiedAt } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -331,6 +336,8 @@ describe('todo nodes', () => {
 
           const testTodo = await getTestTodo(id)
 
+          expect(isDateAfter(testTodo?.modifiedAt, modifiedAt)).toBe(true)
+
           expect(testTodo?.root.length).toBe(1)
 
           expect(testTodo?.root[0]).toBe(nodeId)
@@ -340,7 +347,7 @@ describe('todo nodes', () => {
     })
 
     test('should replace the root nodes by new ones', async () => {
-      const { id } = await createTestTodo()
+      const { id, modifiedAt } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -356,6 +363,8 @@ describe('todo nodes', () => {
           })
 
           const testTodo = await getTestTodo(id)
+
+          expect(isDateAfter(testTodo?.modifiedAt, modifiedAt)).toBe(true)
 
           expect(testTodo?.root.length).toBe(1)
 
@@ -441,7 +450,7 @@ describe('todo nodes', () => {
     })
 
     test('should insert a new todo node', async () => {
-      const { id, root } = await createTestTodo()
+      const { id, modifiedAt, root } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -457,6 +466,8 @@ describe('todo nodes', () => {
           })
 
           const testTodo = await getTestTodo(id)
+
+          expect(isDateAfter(testTodo?.modifiedAt, modifiedAt)).toBe(true)
 
           expect(testTodo?.nodes.length).toBe(2)
 
@@ -475,7 +486,7 @@ describe('todo nodes', () => {
     })
 
     test('should insert a new todo node with a previously knwown child', async () => {
-      const { id, root } = await createTestTodo()
+      const { id, modifiedAt, root } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -494,6 +505,10 @@ describe('todo nodes', () => {
             }),
           })
 
+          const testTodo = await getTestTodo(id)
+
+          expect(isDateAfter(testTodo?.modifiedAt, modifiedAt)).toBe(true)
+
           const testTodoNode = await getTestTodoNode(newTodoNode.id)
 
           expect(testTodoNode).toBeDefined()
@@ -505,7 +520,7 @@ describe('todo nodes', () => {
     })
 
     test('should insert a new todo node with a previously unknwown child', async () => {
-      const { id, root } = await createTestTodo()
+      const { id, modifiedAt, root } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -524,6 +539,10 @@ describe('todo nodes', () => {
             }),
           })
 
+          const testTodo = await getTestTodo(id)
+
+          expect(isDateAfter(testTodo?.modifiedAt, modifiedAt)).toBe(true)
+
           const testTodoNode = await getTestTodoNode(newTodoNode.id)
 
           expect(testTodoNode).toBeDefined()
@@ -535,7 +554,7 @@ describe('todo nodes', () => {
     })
 
     test('should insert nested todo nodes', async () => {
-      const { id, root, nodes } = await createTestTodo()
+      const { id, modifiedAt, nodes, root } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -563,6 +582,8 @@ describe('todo nodes', () => {
           })
 
           const testTodo = await getTestTodo(id)
+
+          expect(isDateAfter(testTodo?.modifiedAt, modifiedAt)).toBe(true)
 
           expect(testTodo?.nodes.length).toBe(3)
 
@@ -597,7 +618,7 @@ describe('todo nodes', () => {
     })
 
     test('should insert a new todo node as children of a root node', async () => {
-      const { id, root, nodes } = await createTestTodo()
+      const { id, modifiedAt, nodes, root } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -621,6 +642,8 @@ describe('todo nodes', () => {
           })
 
           const testTodo = await getTestTodo(id)
+
+          expect(isDateAfter(testTodo?.modifiedAt, modifiedAt)).toBe(true)
 
           expect(testTodo?.nodes.length).toBe(2)
 
@@ -722,7 +745,7 @@ describe('todo nodes', () => {
     })
 
     test('should update an existing todo node', async () => {
-      const { id, nodes, root } = await createTestTodo()
+      const { id, modifiedAt, nodes, root } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -754,6 +777,8 @@ describe('todo nodes', () => {
 
           const testTodo = await getTestTodo(id)
 
+          expect(isDateAfter(testTodo?.modifiedAt, modifiedAt)).toBe(true)
+
           expect(testTodo?.nodes.length).toBe(1)
 
           const testTodoNode = await getTestTodoNode(updatedTodoNodeId)
@@ -771,7 +796,7 @@ describe('todo nodes', () => {
     })
 
     test('should update an existing todo node children with a previously knwow child', async () => {
-      const { id, nodes, root } = await createTestTodo()
+      const { id, modifiedAt, nodes, root } = await createTestTodo()
       const childTodoNode = await createTestTodoNode({ todoId: id })
 
       return testApiRoute(
@@ -791,6 +816,10 @@ describe('todo nodes', () => {
             }),
           })
 
+          const testTodo = await getTestTodo(id)
+
+          expect(isDateAfter(testTodo?.modifiedAt, modifiedAt)).toBe(true)
+
           const testTodoNode = await getTestTodoNode(updatedTodoNodeId)
 
           expect(testTodoNode).toBeDefined()
@@ -802,7 +831,7 @@ describe('todo nodes', () => {
     })
 
     test('should update an existing todo node children with a previously unknwown child', async () => {
-      const { id, nodes, root } = await createTestTodo()
+      const { id, modifiedAt, nodes, root } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -827,6 +856,10 @@ describe('todo nodes', () => {
             }),
           })
 
+          const testTodo = await getTestTodo(id)
+
+          expect(isDateAfter(testTodo?.modifiedAt, modifiedAt)).toBe(true)
+
           const testTodoNode = await getTestTodoNode(updatedTodoNodeId)
 
           expect(testTodoNode).toBeDefined()
@@ -841,7 +874,7 @@ describe('todo nodes', () => {
       const todoNode_0 = await createTestTodoNode(getFakeTodoNode())
       const todoNode_1 = await createTestTodoNode(getFakeTodoNode())
 
-      const { id, nodes, root } = await createTestTodo({}, [todoNode_0.id, todoNode_1.id])
+      const { id, modifiedAt, nodes, root } = await createTestTodo({}, [todoNode_0.id, todoNode_1.id])
 
       return testApiRoute(
         idHandler,
@@ -860,6 +893,10 @@ describe('todo nodes', () => {
               },
             }),
           })
+
+          const testTodo = await getTestTodo(id)
+
+          expect(isDateAfter(testTodo?.modifiedAt, modifiedAt)).toBe(true)
 
           const testTodoNode = await getTestTodoNode(updatedTodoNode.id)
 
@@ -961,7 +998,7 @@ describe('todo nodes', () => {
     })
 
     test('should delete a nested todo node', async () => {
-      const { id, root } = await createTestTodo()
+      const { id, modifiedAt, root } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -973,6 +1010,10 @@ describe('todo nodes', () => {
             body: JSON.stringify({ children: { root }, mutations: { ...baseMutation, delete: [deletedTodoNode.id] } }),
           })
 
+          const testTodo = await getTestTodo(id)
+
+          expect(isDateAfter(testTodo?.modifiedAt, modifiedAt)).toBe(true)
+
           const testTodoNode = await getTestTodoNode(deletedTodoNode.id)
 
           expect(testTodoNode).toBeNull()
@@ -982,7 +1023,7 @@ describe('todo nodes', () => {
     })
 
     test('should delete a root todo node', async () => {
-      const { id, nodes } = await createTestTodo()
+      const { id, modifiedAt, nodes } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -1006,6 +1047,10 @@ describe('todo nodes', () => {
             }),
           })
 
+          const testTodo = await getTestTodo(id)
+
+          expect(isDateAfter(testTodo?.modifiedAt, modifiedAt)).toBe(true)
+
           const testTodoNode = await getTestTodoNode(deletedTodoNode.id)
 
           expect(testTodoNode).toBeNull()
@@ -1015,7 +1060,7 @@ describe('todo nodes', () => {
     })
 
     test('should delete nested todo nodes', async () => {
-      const { id, root, nodes } = await createTestTodo()
+      const { id, modifiedAt, root, nodes } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -1047,6 +1092,8 @@ describe('todo nodes', () => {
           })
 
           const testTodo = await getTestTodo(id)
+
+          expect(isDateAfter(testTodo?.modifiedAt, modifiedAt)).toBe(true)
 
           expect(testTodo?.nodes.length).toBe(1)
 
@@ -1208,7 +1255,7 @@ describe('todo nodes', () => {
     })
 
     test('should properly mutate various todo nodes', async () => {
-      const { id, nodes } = await createTestTodo()
+      const { id, modifiedAt, nodes } = await createTestTodo()
 
       return testApiRoute(
         idHandler,
@@ -1400,6 +1447,8 @@ describe('todo nodes', () => {
           })
 
           const testTodo = await getTestTodo(id)
+
+          expect(isDateAfter(testTodo?.modifiedAt, modifiedAt)).toBe(true)
 
           expect(testTodo?.nodes.length).toBe(10)
 

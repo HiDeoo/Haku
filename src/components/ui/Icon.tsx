@@ -15,6 +15,7 @@ const Icon: React.FC<IconProps> = ({ className, icon, label }) => {
 export default Icon
 
 export interface IconProps {
+  'aria-hidden'?: React.HTMLAttributes<HTMLElement>['aria-hidden']
   className?: string
   icon: React.ElementType<Pick<IconProps, 'className'>>
   label?: string

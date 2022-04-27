@@ -68,9 +68,10 @@ enum FolderType {
 }
 
 model Note {
-  id   String @id @default(cuid())
-  name String @db.Citext
-  slug String
+  id         String   @id @default(cuid())
+  modifiedAt DateTime @default(now())
+  name       String   @db.Citext
+  slug       String
 
   html String
   text String
@@ -88,9 +89,10 @@ model Note {
 }
 
 model Todo {
-  id   String @id @default(cuid())
-  name String @db.Citext
-  slug String
+  id         String   @id @default(cuid())
+  modifiedAt DateTime @default(now())
+  name       String   @db.Citext
+  slug       String
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
