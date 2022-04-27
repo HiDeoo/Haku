@@ -298,7 +298,11 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
 
   const isNoteVisible = shouldFocusNote || (node.noteText && node.noteText.length > 0)
 
-  const containerClasses = clst(styles.container, node.status === TodoNodeStatus.COMPLETED && styles.completed)
+  const containerClasses = clst(
+    styles.container,
+    node.status === TodoNodeStatus.COMPLETED && styles.completed,
+    node.status === TodoNodeStatus.CANCELLED && styles.cancelled
+  )
 
   const contentClasses = clst(
     styles.content,
@@ -307,6 +311,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     {
       'cursor-not-allowed': isLoading,
       'line-through text-zinc-400': node.status === TodoNodeStatus.COMPLETED,
+      'line-through decoration-wavy text-zinc-500': node.status === TodoNodeStatus.CANCELLED,
     }
   )
 

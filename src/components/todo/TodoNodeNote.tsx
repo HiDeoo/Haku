@@ -52,6 +52,8 @@ const TodoNodeNote: React.ForwardRefRenderFunction<TodoNodeNoteHandle, TodoNodeN
         '--editor-text-color':
           node.status === TodoNodeStatus.COMPLETED
             ? 'var(--todo-node-completed-note-editor-text-color)'
+            : node.status === TodoNodeStatus.CANCELLED
+            ? 'var(--todo-node-cancelled-note-editor-text-color)'
             : 'var(--todo-node-note-editor-text-color)',
       }}
     />
