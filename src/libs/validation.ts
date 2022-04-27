@@ -1,4 +1,4 @@
-import { FolderType } from '@prisma/client'
+import { FolderType, TodoNodeStatus } from '@prisma/client'
 import { z } from 'zod'
 
 export { z } from 'zod'
@@ -6,6 +6,8 @@ export { z } from 'zod'
 export const zEmail = z.string().email()
 
 export const zFolderType = z.nativeEnum(FolderType)
+
+export const zTodoNodeStatus = z.nativeEnum(TodoNodeStatus)
 
 export const zQuerySchemaWithId = z.object({
   id: z.string().cuid(),

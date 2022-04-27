@@ -1,6 +1,7 @@
 import assert from 'assert'
 
 import faker from '@faker-js/faker'
+import { TodoNodeStatus } from '@prisma/client'
 import { act, renderHook } from '@testing-library/react-hooks/native'
 import cuid from 'cuid'
 import { useAtom } from 'jotai'
@@ -1227,7 +1228,9 @@ describe('useTodoNode', () => {
         result.current.toggleCompleted({ id: node.id })
       })
 
-      expect(result.current.node?.completed).toBe(!node.completed)
+      expect(result.current.node?.status).toBe(
+        node.status !== TodoNodeStatus.COMPLETED ? TodoNodeStatus.COMPLETED : TodoNodeStatus.ACTIVE
+      )
     })
 
     test('should toggle completed a nested todo node', () => {
@@ -1240,7 +1243,9 @@ describe('useTodoNode', () => {
         result.current.toggleCompleted({ id: node.id })
       })
 
-      expect(result.current.node?.completed).toBe(!node.completed)
+      expect(result.current.node?.status).toBe(
+        node.status !== TodoNodeStatus.COMPLETED ? TodoNodeStatus.COMPLETED : TodoNodeStatus.ACTIVE
+      )
     })
 
     test('should mark an existing todo node as updated after toggling its completion', () => {
@@ -1283,7 +1288,7 @@ describe('useTodoNode', () => {
         result.current.toggleCompleted({ id: 'nonexistingId' })
       })
 
-      expect(result.current.node?.completed).toBe(nodes[node.id]?.completed)
+      expect(result.current.node?.status).toBe(nodes[node.id]?.status)
     })
 
     test('should not toggle completed a deleted todo node', () => {
@@ -1625,10 +1630,10 @@ function getFakeTodoNode(
     id: cuid(),
     content: faker.lorem.words(),
     collapsed: collapsed ?? faker.datatype.boolean(),
-    completed: faker.datatype.boolean(),
     noteHtml: data,
     noteText: data,
     parentId,
+    status: faker.random.arrayElement([TodoNodeStatus.ACTIVE, TodoNodeStatus.COMPLETED, TodoNodeStatus.CANCELLED]),
   }
 }
 
