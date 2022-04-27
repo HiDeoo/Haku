@@ -1,8 +1,9 @@
 import assert from 'assert'
 
+import { HISTORY_RESULT_LIMIT_PER_TYPE } from 'constants/history'
 import { HttpMethod } from 'constants/http'
 import { isNonEmptyArray } from 'libs/array'
-import { HISTORY_RESULT_LIMIT_PER_TYPE, type HistoryData } from 'libs/db/history'
+import { type HistoryData } from 'libs/db/history'
 import indexHandler from 'pages/api/history'
 import { getTestUser, testApiRoute } from 'tests/api'
 import { createTestNote, createTestTodo } from 'tests/api/db'

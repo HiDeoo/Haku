@@ -1,6 +1,7 @@
 import { Prisma } from '@prisma/client'
 
 import { ContentType } from 'constants/contentType'
+import { HISTORY_RESULT_LIMIT_PER_TYPE } from 'constants/history'
 import { prisma } from 'libs/db'
 
 export interface HistoryData {
@@ -22,8 +23,6 @@ const todoHistoryDataSelect = Prisma.validator<Prisma.TodoSelect>()({
   name: true,
   slug: true,
 })
-
-export const HISTORY_RESULT_LIMIT_PER_TYPE = 10
 
 export async function getHistory(userId: UserId): Promise<HistoryData> {
   const results = await prisma.$queryRaw<

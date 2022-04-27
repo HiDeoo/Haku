@@ -17,11 +17,13 @@ const shimmerChildrenOpacityMap: Record<number, string> = {
   9: 'opacity-40',
 }
 
-const Shimmer: ShimmerComponent = ({ children }) => {
+const Shimmer: ShimmerComponent = ({ children, className }) => {
   const pastDelay = useDelay()
 
+  const shimmerClasses = clst('h-full w-full select-none gap-2.5 p-2.5', className)
+
   return (
-    <Flex direction="col" className="h-full w-full select-none gap-2.5 p-2.5">
+    <Flex direction="col" className={shimmerClasses}>
       {pastDelay
         ? Children.map(children, (child, index) => {
             if (!isValidElement(child)) {
@@ -58,6 +60,7 @@ type ShimmerComponent = React.FC<ShimmerProps> & {
 
 interface ShimmerProps {
   children: React.ReactNode
+  className?: string
 }
 
 interface LineProps {
