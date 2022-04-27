@@ -1,4 +1,7 @@
-.container.completed > div > .container:not(.completed) .content,
-.container.cancelled > div > .container:not(.cancelled) .content {
-  @apply text-red-300;
+.container.completed > div > .container:not(.completed),
+.container.cancelled > div > .container:not(.cancelled) {
+  .content,
+  .handle {
+    @apply text-red-300;
+  }
 }
