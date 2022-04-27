@@ -49,6 +49,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     moveNode,
     nestNode,
     node,
+    toggleCancelled,
     toggleCollapsed,
     toggleCompleted,
     unnestNode,
@@ -114,6 +115,16 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
         })
       } else {
         toggleCompleted(update)
+
+        focusClosestNode({ ...update, direction: 'down' })
+      }
+    } else if (isShortcutEvent(event, shortcutMap['Meta+Alt+Enter'])) {
+      if (node.status === TodoNodeStatus.CANCELLED) {
+        preserveCaret(() => {
+          toggleCancelled(update)
+        })
+      } else {
+        toggleCancelled(update)
 
         focusClosestNode({ ...update, direction: 'down' })
       }

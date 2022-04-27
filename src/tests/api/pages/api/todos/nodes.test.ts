@@ -1272,13 +1272,14 @@ describe('todo nodes', () => {
            *         |__ [X] node_0_1_1_0
            *     |__ [ ] node_0_1_2
            * |__ [ ] node_0_2
-           * |__ [ ] node_0_3                       <- moved to root node 2nd child
+           * |__ [~] node_0_3                       <- moved to root node 2nd child - marked as active
            * [ ] node_1                             <- moved to node_0 first child
            * |__ [ ] node_1_0                       <- marked as completed & collapsed
            *     |__ [ ] node_1_0_0                 <- renamed to node_1_0_0_updated - marked as completed
            * [X] node_2                             <- marked as not completed
            * [ ] node_3 (collapsed)                 <- moved before node_2 and mark as not collapsed
            *     node_3_note                        <- note deleted
+           * [X] node_4                             <- marked as cancelled
            */
 
           const node_0 = nodes[0]
@@ -1343,7 +1344,7 @@ describe('todo nodes', () => {
             collapsed: false,
             noteHtml: null,
             noteText: null,
-            status: TodoNodeStatus.ACTIVE,
+            status: TodoNodeStatus.CANCELLED,
           })
 
           await updateTestTodoNodeChildren(node_0.id, [node_0_0.id, node_0_1.id, node_0_2.id, node_0_3.id])
@@ -1387,8 +1388,15 @@ describe('todo nodes', () => {
             noteText: 'node_3_note',
             status: TodoNodeStatus.ACTIVE,
           })
+          const node_4 = await createTestTodoNode({
+            todoId: id,
+            collapsed: true,
+            noteHtml: 'node_4_note',
+            noteText: 'node_4_note',
+            status: TodoNodeStatus.COMPLETED,
+          })
 
-          await updateTestTodoRoot(id, [node_0.id, node_1.id, node_2.id, node_3.id])
+          await updateTestTodoRoot(id, [node_0.id, node_1.id, node_2.id, node_3.id, node_4.id])
 
           /**
            * After:
@@ -1404,6 +1412,7 @@ describe('todo nodes', () => {
            * [ ] node_0_3
            * [ ] node_3
            * [ ] node_2
+           * [-] node_4
            */
 
           const node_1_0_new_status = TodoNodeStatus.COMPLETED
@@ -1412,9 +1421,11 @@ describe('todo nodes', () => {
           const node_1_0_0_new_name = 'node_1_0_0_updated'
           const node_0_0_0_inserted = getFakeTodoNode()
           const node_0_0_new_note = 'node_0_0_note'
+          const node_0_3_new_status = TodoNodeStatus.ACTIVE
           const node_2_new_status = TodoNodeStatus.ACTIVE
           const node_3_new_note = ''
           const node_3_new_collapsed = false
+          const node_4_new_status = TodoNodeStatus.CANCELLED
 
           await fetch({
             method: HttpMethod.PATCH,
@@ -1433,12 +1444,14 @@ describe('todo nodes', () => {
                   [node_1_0.id]: { ...node_1_0, collapsed: node_1_0_new_collapsed, status: node_1_0_new_status },
                   [node_0.id]: { ...node_0 },
                   [node_0_0.id]: { ...node_0_0, noteHtml: node_0_0_new_note, noteText: node_0_0_new_note },
+                  [node_0_3.id]: { ...node_0_3, status: node_0_3_new_status },
                   [node_3.id]: {
                     ...node_3,
                     collapsed: node_3_new_collapsed,
                     noteHtml: node_3_new_note,
                     noteText: node_3_new_note,
                   },
+                  [node_4.id]: { ...node_4, status: node_4_new_status },
                 },
                 insert: {
                   [node_0_0_0_inserted.id]: node_0_0_0_inserted,
@@ -1451,7 +1464,7 @@ describe('todo nodes', () => {
 
           expect(isDateAfter(testTodo?.modifiedAt, modifiedAt)).toBe(true)
 
-          expect(testTodo?.nodes.length).toBe(10)
+          expect(testTodo?.nodes.length).toBe(11)
 
           expect(testTodo?.root.length).toBe(4)
           expect(testTodo?.root[0]).toBe(node_0.id)
@@ -1510,6 +1523,7 @@ describe('todo nodes', () => {
           testTodoNode = await getTestTodoNode(node_0_3.id)
 
           expect(testTodoNode).toBeDefined()
+          expect(testTodoNode?.status).toBe(node_0_3_new_status)
           expect(testTodoNode?.children.length).toBe(0)
 
           testTodoNode = await getTestTodoNode(node_3.id)
@@ -1525,6 +1539,11 @@ describe('todo nodes', () => {
           expect(testTodoNode).toBeDefined()
           expect(testTodoNode?.status).toBe(node_2_new_status)
           expect(testTodoNode?.children.length).toBe(0)
+
+          testTodoNode = await getTestTodoNode(node_4.id)
+
+          expect(testTodoNode?.children.length).toBe(0)
+          expect(testTodoNode?.status).toBe(node_4_new_status)
 
           const deletedNodeIds = [node_0_1.id, node_0_1_0.id, node_0_1_1.id, node_0_1_1_0.id, node_0_1_2.id]
 

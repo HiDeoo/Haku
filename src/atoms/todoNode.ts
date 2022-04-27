@@ -67,6 +67,24 @@ export const toggleCompletedAtom = atom(null, (get, set, { id }: AtomParamsWithP
   }))
 })
 
+export const toggleCancelledAtom = atom(null, (get, set, { id }: AtomParamsWithParentId) => {
+  const node = get(todoNodeNodesAtom)[id]
+
+  if (!node) {
+    return
+  }
+
+  set(todoNodeMutations, (prevMutations) => ({ ...prevMutations, [id]: prevMutations[id] ?? 'update' }))
+
+  set(todoNodeNodesAtom, (prevNodes) => ({
+    ...prevNodes,
+    [id]: {
+      ...node,
+      status: node.status !== TodoNodeStatus.CANCELLED ? TodoNodeStatus.CANCELLED : TodoNodeStatus.ACTIVE,
+    },
+  }))
+})
+
 export const addNodeAtom = atom(null, (get, set, { id, newId, parentId = 'root' }: AtomParamsNodeAddition) => {
   const node = get(todoNodeNodesAtom)[id]
   const children = get(todoNodeChildrenAtom)
