@@ -21,9 +21,7 @@ const buttonPingClasses = clst(
 const Navbar: NavbarComponent = ({ children, disabled, title }) => {
   return (
     <Flex alignItems="center" className={navbarClasses}>
-      {title && title.length > 0 && (
-        <div className="grow truncate font-semibold text-zinc-50">{`${title} `.repeat(4)}</div>
-      )}
+      {title && title.length > 0 && <div className="grow truncate font-semibold text-zinc-50">{title}</div>}
       {Children.map(children, (child) => {
         if (!isValidElement(child)) {
           return null
