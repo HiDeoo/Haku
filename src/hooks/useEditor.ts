@@ -14,7 +14,7 @@ import { useSetAtom } from 'jotai'
 import { useCallback, type DependencyList } from 'react'
 import { RiErrorWarningLine } from 'react-icons/ri'
 
-import { imageModalAtom } from 'atoms/modal'
+import { imageModalAtom } from 'atoms/togglable'
 import EditorCodeBlock from 'components/editor/EditorCodeBlock'
 import { CODE_BLOCK_DEFAULT_LANGUAGE } from 'constants/editor'
 import useToast from 'hooks/useToast'

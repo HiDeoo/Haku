@@ -13,13 +13,14 @@ import {
 } from 'react-icons/ri'
 
 import { sidebarCollapsedAtom, toggleSidebarCollapsedAtom } from 'atoms/collapsible'
-import { setShortcutModalOpenedAtom } from 'atoms/modal'
 import { deferrefPromptEventAtom } from 'atoms/pwa'
+import { setShortcutModalOpenedAtom } from 'atoms/togglable'
 import ContentModal from 'components/content/ContentModal'
 import ContentTypeSwitch from 'components/content/ContentTypeSwitch'
 import FolderModal from 'components/folder/FolderModal'
 import Button, { type ButtonPropsWithOnClickHandler } from 'components/form/Button'
 import IconButton from 'components/form/IconButton'
+import InboxDrawer from 'components/inbox/InboxDrawer'
 import SearchPalette from 'components/palette/SearchPalette'
 import ShortcutModal from 'components/shortcut/ShortcutModal'
 import Flex from 'components/ui/Flex'
@@ -52,7 +53,7 @@ const SidebarMenu: React.FC = () => {
     sidebarCollapsed
       ? 'px-2 supports-max:pl-[calc(theme(spacing.2)+max(0px,env(safe-area-inset-left)))] h-full gap-1'
       : [
-          'px-4 supports-max:pl-[calc(theme(spacing.4)+max(0px,env(safe-area-inset-left)))]',
+          'px-2.5 supports-max:pl-[calc(theme(spacing[2.5])+max(0px,env(safe-area-inset-left)))]',
           'border-t border-zinc-600/40 shadow-[0_-1px_1px_0_theme(colors.black)]',
         ]
   )
@@ -60,7 +61,8 @@ const SidebarMenu: React.FC = () => {
   return (
     <Flex justifyContent="center" direction={sidebarCollapsed ? 'col' : 'row'} className={menuClasses}>
       <ContentTypeSwitch />
-      <div className="grow" />
+      {sidebarCollapsed ? <div className="grow" /> : null}
+      <InboxDrawer />
       <ContentModal />
       <FolderModal />
       <ShortcutModal />

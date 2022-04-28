@@ -10,7 +10,8 @@ import { type A11yImageParams } from 'libs/image'
 export const [folderModalAtom, setFolderModalOpenedAtom] = createMutationModalAtom<FolderData>()
 export const [contentModalAtom, setContentModalOpenedAtom] = createMutationModalAtom<NoteMetadata | TodoMetadata>()
 
-export const [shortcutModalAtom, setShortcutModalOpenedAtom] = createModalAtom()
+export const [shortcutModalAtom, setShortcutModalOpenedAtom] = createTogglableAtom()
+export const [inboxDrawerAtom, setInboxDrawerOpenedAtom] = createTogglableAtom()
 
 export const imageModalAtom = atom<ImageModal>({ opened: false })
 
@@ -33,7 +34,7 @@ function createMutationModalAtom<TData>(): [
   return [modalAtom, setModalOpenedAtom]
 }
 
-function createModalAtom(): [PrimitiveAtom<boolean>, WritableAtom<null, boolean>] {
+function createTogglableAtom(): [PrimitiveAtom<boolean>, WritableAtom<null, boolean>] {
   const modalAtom = atom<boolean>(false)
 
   const setModalOpenedAtom: WritableAtom<null, boolean> = atom(null, (_get, set, opened: boolean) => {
