@@ -55,15 +55,13 @@ export function withValidation<
   }
 }
 
-export function withValidationAndFile<
+export function withFormDataValidation<
   TData extends ApiRequestValidationData,
   TSchema extends ApiRequestValidationSchema,
   TResponseType
 >(
-  handler: ApiHandlerWithValidationAndFile<TData, TResponseType>,
-  maxFileSizeInBytes: number,
-  fileFilter?: FileFilter,
-  bodySchema?: TSchema['body']
+  handler: ApiHandlerWithFormDataValidation<TData, TResponseType>,
+  { bodySchema, fileFilter, maxFileSizeInBytes }: FormDataValidationOptions<TSchema>
 ) {
   return async (req: NextApiRequest, res: NextApiResponse<TResponseType>) => {
     try {
@@ -72,7 +70,7 @@ export function withValidationAndFile<
           fileFilter,
           limits: {
             fields: bodySchema ? Infinity : 0,
-            files: 1,
+            files: maxFileSizeInBytes ? 1 : 0,
             fileSize: maxFileSizeInBytes,
           },
           storage: fileMemoryStorage,
@@ -81,19 +79,18 @@ export function withValidationAndFile<
         })
       })
 
-      if (!('file' in req)) {
+      if (typeof maxFileSizeInBytes !== 'undefined' && !('file' in req)) {
         throw new Error('Missing request file.')
       }
 
       req.body = bodySchema?.parse(parseJson(req.body))
 
-      return handler(req as ValidatedApiRequestWithFile<TData>, res)
+      return handler(req as ValidatedApiFormDataRequest<TData>, res)
     } catch (error) {
       return res.status(StatusCode.ClientErrorBadRequest).end()
     }
   }
 }
-
 export const imageFileFilter: FileFilter = (_req, file, cb) => {
   cb(null, typeof file.mimetype === 'string' && IMAGE_SUPPORTED_TYPES.includes(file.mimetype))
 }
@@ -113,9 +110,10 @@ export type ValidatedApiRequest<TSchema extends ApiRequestValidationData> = Omit
 
 export type ParsedFile = NonNullable<Express.Request['file']>
 
-export type ValidatedApiRequestWithFile<TSchema extends ApiRequestValidationData> = ValidatedApiRequest<TSchema> & {
-  file: ParsedFile
-}
+export type ValidatedApiFormDataRequest<TSchema extends ApiRequestValidationData & { file?: boolean }> =
+  ValidatedApiRequest<TSchema> & {
+    file: TSchema['file'] extends true ? ParsedFile : undefined
+  }
 
 export type FileFilter = MulterOptions['fileFilter']
 
@@ -124,7 +122,13 @@ type ApiHandlerWithValidation<TSchema extends ApiRequestValidationData, TRespons
   res: NextApiResponse<TResponseType>
 ) => void | Promise<void>
 
-type ApiHandlerWithValidationAndFile<TSchema extends ApiRequestValidationData, TResponseType> = (
-  req: ValidatedApiRequestWithFile<TSchema>,
+type ApiHandlerWithFormDataValidation<TSchema extends ApiRequestValidationData, TResponseType> = (
+  req: ValidatedApiFormDataRequest<TSchema>,
   res: NextApiResponse<TResponseType>
 ) => void | Promise<void>
+
+interface FormDataValidationOptions<TSchema extends ApiRequestValidationSchema> {
+  maxFileSizeInBytes?: number
+  fileFilter?: FileFilter
+  bodySchema?: TSchema['body']
+}
