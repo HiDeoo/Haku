@@ -57,7 +57,7 @@ const ContentHistorySection: React.FC<ContentHistorySectionProps> = ({ entries, 
   const linkClasses = clst(entryClasses, 'hover:bg-blue-600 hover:text-blue-50')
 
   return (
-    <div className="w-full xs:w-96">
+    <div className="w-full md:w-96">
       <h1 className="mb-1.5 ml-0.5 text-lg">Recent {cType}s</h1>
       <div>
         {isLoading
