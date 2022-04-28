@@ -1,4 +1,4 @@
-import { FolderType, Note, Prisma } from '@prisma/client'
+import { FolderType, type Note, Prisma } from '@prisma/client'
 import { StatusCode } from 'status-code-enum'
 import slug from 'url-slug'
 
