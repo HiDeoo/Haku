@@ -6,9 +6,10 @@ import { inboxDrawerAtom, setInboxDrawerOpenedAtom } from 'atoms/togglable'
 import IconButton from 'components/form/IconButton'
 import Drawer from 'components/ui/Drawer'
 
+const InboxForm = dynamic(import('components/inbox/InboxForm'))
 const InboxList = dynamic(import('components/inbox/InboxList'))
 
-const InboxModal: React.FC = () => {
+const InboxDrawer: React.FC = () => {
   const opened = useAtomValue(inboxDrawerAtom)
   const setOpened = useSetAtom(setInboxDrawerOpenedAtom)
 
@@ -19,9 +20,10 @@ const InboxModal: React.FC = () => {
       onOpenChange={setOpened}
       trigger={<IconButton icon={RiInboxFill} tooltip="Inbox" />}
     >
+      <InboxForm />
       <InboxList />
     </Drawer>
   )
 }
 
-export default InboxModal
+export default InboxDrawer

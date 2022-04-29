@@ -58,6 +58,7 @@ TextInput.displayName = 'TextInput'
 export default TextInput
 
 interface TextInputProps extends Partial<Omit<UseFormRegisterReturn, 'ref' | 'onBlur' | 'onChange'>> {
+  'aria-label'?: React.InputHTMLAttributes<HTMLInputElement>['aria-label']
   autoComplete?: React.InputHTMLAttributes<HTMLInputElement>['autoComplete']
   autoFocus?: React.InputHTMLAttributes<HTMLInputElement>['autoFocus']
   className?: string

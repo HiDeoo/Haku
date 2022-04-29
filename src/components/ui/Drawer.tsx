@@ -4,7 +4,7 @@ import { RiCloseLine } from 'react-icons/ri'
 import IconButton from 'components/form/IconButton'
 import Flex from 'components/ui/Flex'
 
-const drawerContentClasses = 'animate-drawer-content flex flex-col md:w-[700px] w-full bg-zinc-800 h-full'
+const drawerContentClasses = 'animate-drawer-content flex flex-col md:w-[700px] w-full bg-zinc-800 h-full outline-none'
 
 const drawerOverlayClasses = 'animate-modal-overlay fixed inset-0 z-40 bg-zinc-900/80'
 
