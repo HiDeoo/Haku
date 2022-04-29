@@ -2,7 +2,7 @@ import assert from 'assert'
 
 import { HttpMethod } from 'constants/http'
 import { isDateEqual } from 'libs/date'
-import { InboxEntryData } from 'libs/db/inbox'
+import { type InboxEntriesData } from 'libs/db/inbox'
 import indexHandler from 'pages/api/inbox'
 import { getTestUser, testApiRoute } from 'tests/api'
 import { createTestInboxEntry } from 'tests/api/db'
@@ -13,7 +13,7 @@ describe('inbox', () => {
       test('should return an empty list', () =>
         testApiRoute(indexHandler, async ({ fetch }) => {
           const res = await fetch({ method: HttpMethod.GET })
-          const json = await res.json<InboxEntryData[]>()
+          const json = await res.json<InboxEntriesData>()
 
           expect(json.length).toBe(0)
         }))
@@ -25,7 +25,7 @@ describe('inbox', () => {
           const { id: inbox_entry_2_id } = await createTestInboxEntry()
 
           const res = await fetch({ method: HttpMethod.GET })
-          const json = await res.json<InboxEntryData[]>()
+          const json = await res.json<InboxEntriesData>()
 
           expect(json.length).toBe(3)
 
@@ -41,7 +41,7 @@ describe('inbox', () => {
           })
 
           const res = await fetch({ method: HttpMethod.GET })
-          const json = await res.json<InboxEntryData[]>()
+          const json = await res.json<InboxEntriesData>()
 
           expect(json.length).toBe(1)
 
@@ -61,7 +61,7 @@ describe('inbox', () => {
           const { id: inbox_entry_1_id } = await createTestInboxEntry()
 
           const res = await fetch({ method: HttpMethod.GET })
-          const json = await res.json<InboxEntryData[]>()
+          const json = await res.json<InboxEntriesData>()
 
           expect(json.length).toBe(2)
           expect(json[0]?.id).toBe(inbox_entry_1_id)

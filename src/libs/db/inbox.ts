@@ -3,6 +3,7 @@ import { type InboxEntry, Prisma } from '@prisma/client'
 import { prisma } from 'libs/db'
 
 export type InboxEntryData = Prisma.InboxEntryGetPayload<{ select: typeof inboxEntryDataSelect }>
+export type InboxEntriesData = InboxEntryData[]
 
 const inboxEntryDataSelect = Prisma.validator<Prisma.InboxEntrySelect>()({
   id: true,
@@ -17,7 +18,7 @@ export function addInboxEntry(userId: UserId, text: InboxEntry['text']): Promise
   })
 }
 
-export function getInboxEntries(userId: UserId): Promise<InboxEntryData[]> {
+export function getInboxEntries(userId: UserId): Promise<InboxEntriesData> {
   return prisma.inboxEntry.findMany({
     where: { userId },
     select: inboxEntryDataSelect,
