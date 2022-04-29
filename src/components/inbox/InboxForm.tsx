@@ -25,10 +25,13 @@ const InboxForm: React.FC = () => {
   })
 
   function onSuccessfulMutation() {
-    reset()
-
+    // https://github.com/react-hook-form/react-hook-form/issues/6978#issuecomment-975668363
     requestAnimationFrame(() => {
-      setFocus('text')
+      reset()
+
+      requestAnimationFrame(() => {
+        setFocus('text')
+      })
     })
   }
 
