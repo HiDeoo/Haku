@@ -16,3 +16,11 @@ export function addInboxEntry(userId: UserId, text: InboxEntry['text']): Promise
     select: inboxEntryDataSelect,
   })
 }
+
+export function getInboxEntries(userId: UserId): Promise<InboxEntryData[]> {
+  return prisma.inboxEntry.findMany({
+    where: { userId },
+    select: inboxEntryDataSelect,
+    orderBy: [{ createdAt: 'desc' }],
+  })
+}
