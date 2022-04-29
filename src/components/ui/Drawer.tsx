@@ -3,8 +3,12 @@ import { RiCloseLine } from 'react-icons/ri'
 
 import IconButton from 'components/form/IconButton'
 import Flex from 'components/ui/Flex'
+import clst from 'styles/clst'
 
-const drawerContentClasses = 'animate-drawer-content flex flex-col md:w-[700px] w-full bg-zinc-800 h-full outline-none'
+const drawerContentClasses = clst(
+  'animate-drawer-content flex flex-col md:w-[700px] w-full bg-zinc-800 h-full',
+  'outline-none md:shadow-[1px_0_3px_0_rgba(0,0,0,0.75),1px_0_2px_-1px_rgba(0,0,0,0.75)]'
+)
 
 const drawerOverlayClasses = 'animate-modal-overlay fixed inset-0 z-40 bg-zinc-900/80'
 
