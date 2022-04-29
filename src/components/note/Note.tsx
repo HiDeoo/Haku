@@ -38,7 +38,7 @@ const Note: React.FC<NoteProps> = ({ id }) => {
   const { isLoading: isSaving, mutate } = useContentMutation()
 
   const updateToc = useCallback(({ editor }: EditorEvents['create'], emitUpdate = true) => {
-    const toc = getToc(editor as NonNullable<ReturnType<typeof useEditor>>)
+    const toc = getToc(editor)
 
     setEditorState((prevEditorState) => ({ ...prevEditorState, pristine: !emitUpdate, toc }))
   }, [])

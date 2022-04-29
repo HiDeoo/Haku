@@ -1,4 +1,4 @@
-import { Extension, Node, type Editor } from '@tiptap/react'
+import { Extension, Node, type Editor } from '@tiptap/core'
 import { type LanguageFn } from 'highlight.js'
 import bash from 'highlight.js/lib/languages/bash'
 import css from 'highlight.js/lib/languages/css'
