@@ -8,11 +8,12 @@ import clst from 'styles/clst'
 const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
   ({ className, icon, iconClassName, pressedClassName, tooltip, ...props }, forwardedRef) => {
     const buttonClasses = clst(
-      'bg-inherit hover:bg-zinc-700/75 hover:text-blue-600 disabled:bg-inherit disabled:text-inherit shadow-none',
+      !props.primary && 'bg-inherit hover:bg-zinc-700/75 hover:text-blue-600 disabled:bg-inherit disabled:text-inherit',
+      'shadow-none',
       'px-1.5 mx-0.5 min-w-0',
       className
     )
-    const pressedButtonClasses = clst('bg-blue-50/20 hover:bg-blue-50/20', pressedClassName)
+    const pressedButtonClasses = clst(!props.primary && 'bg-blue-50/20 hover:bg-blue-50/20', pressedClassName)
 
     const content = (
       <Button
@@ -35,8 +36,8 @@ IconButton.displayName = 'IconButton'
 export default IconButton
 
 export interface IconButtonProps
-  extends Omit<ButtonProps, 'children' | 'primary'>,
-    Partial<ButtonPropsWithOnClickHandler> {
+  extends Omit<ButtonProps, 'children'>,
+    Omit<Partial<ButtonPropsWithOnClickHandler>, 'children'> {
   className?: string
   disabled?: ButtonProps['disabled']
   icon: IconProps['icon']
