@@ -1,5 +1,5 @@
 import faker from '@faker-js/faker'
-import { type EmailAllowList, FolderType, type TodoNode, TodoNodeStatus } from '@prisma/client'
+import { type EmailAllowList, FolderType, type TodoNode, TodoNodeStatus, type InboxEntry } from '@prisma/client'
 import slug from 'url-slug'
 
 import { prisma } from 'libs/db'
@@ -160,6 +160,10 @@ export function getTestEmailAllowLists(options: TestEmailAllowListOptions) {
 
 export function getTestEmailAllowList(id: EmailAllowList['id']) {
   return prisma.emailAllowList.findUnique({ where: { id } })
+}
+
+export function getTestInboxEntry(id: InboxEntry['id']) {
+  return prisma.inboxEntry.findUnique({ where: { id } })
 }
 
 interface TestFolderOptions {

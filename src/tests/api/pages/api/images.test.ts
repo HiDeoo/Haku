@@ -21,15 +21,11 @@ import { isNonEmptyArray } from 'libs/array'
 import { CLOUDINARY_BASE_DELIVERY_URL, getCloudinaryApiUrl, type ImageData } from 'libs/cloudinary'
 import { getBytesFromMegaBytes } from 'libs/math'
 import * as index from 'pages/api/images'
-import { getTestUser, testApiRoute, type TestApiRouterHandler } from 'tests/api'
+import { getConfiguredApiHandler, getTestUser, testApiRoute } from 'tests/api'
 import { createTestNote, createTestTodo } from 'tests/api/db'
 import { rest, server } from 'tests/api/mocks/http'
 
-// We need to explicitely attach the route configuration to the route handler as `next-test-api-route-handler` does not
-// attach it automatically and we need the body parser to be disabled for `multer` to work properly.
-// https://github.com/vercel/next.js/blob/e969d226999bb0fcb52ecc203b359f3715ff69bf/packages/next/next-server/server/api-utils.ts#L39
-const indexHandler: TestApiRouterHandler = index.default
-indexHandler.config = index.config
+const indexHandler = getConfiguredApiHandler(index.default, index.config)
 
 describe('images', () => {
   describe('POST', () => {

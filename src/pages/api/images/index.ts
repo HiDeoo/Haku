@@ -1,4 +1,4 @@
-import { type NextApiResponse } from 'next'
+import { type NextApiResponse, type PageConfig } from 'next'
 
 import { IMAGE_MAX_SIZE_IN_MEGABYTES } from 'constants/image'
 import { createApiRoute, getApiRequestUser } from 'libs/api/routes'
@@ -40,7 +40,7 @@ async function postHandler(
   return res.status(200).json(image)
 }
 
-export const config = {
+export const config: PageConfig = {
   api: {
     bodyParser: false,
   },

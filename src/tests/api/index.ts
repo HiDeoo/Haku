@@ -1,5 +1,5 @@
 import type FormData from 'form-data'
-import { type NextApiHandler } from 'next'
+import { type PageConfig, type NextApiHandler } from 'next'
 import { type Session } from 'next-auth'
 import { testApiHandler, type NtarhParameters } from 'next-test-api-route-handler'
 
@@ -24,6 +24,17 @@ export function testApiRoute<TResponseType>(
       await test({ fetch: testParams.fetch as unknown as FetchFn })
     },
   })
+}
+
+// For route handlers with a custom route configuration, e.g. with a disabled body parser in order to use `multer`, we
+// need to explicitely attach the route configuration to the route handler as `next-test-api-route-handler` cannot
+// attach it automatically.
+// https://github.com/vercel/next.js/blob/e969d226999bb0fcb52ecc203b359f3715ff69bf/packages/next/next-server/server/api-utils.ts#L39
+export function getConfiguredApiHandler(handler: NextApiHandler, config: PageConfig): TestApiRouterHandler {
+  const configuredHandler: TestApiRouterHandler = handler
+  configuredHandler.config = config
+
+  return configuredHandler
 }
 
 export function getTestUser(userId = '0'): UserWithUserId {
@@ -52,7 +63,7 @@ function mapDynamicRouteParams(params: TestApiRouteOptions['dynamicRouteParams']
   )
 }
 
-export type TestApiRouterHandler<TResponseType = unknown> = NextApiHandler<TResponseType> & { config?: object }
+type TestApiRouterHandler<TResponseType = unknown> = NextApiHandler<TResponseType> & { config?: PageConfig }
 
 interface TestApiRouteOptions {
   dynamicRouteParams?: Record<string, string | string[] | number>

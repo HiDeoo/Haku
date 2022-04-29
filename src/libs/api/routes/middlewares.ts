@@ -4,6 +4,7 @@ import { getSession } from 'next-auth/react'
 import StatusCode from 'status-code-enum'
 
 import { IMAGE_SUPPORTED_TYPES } from 'constants/image'
+import { getUserByInboxToken } from 'libs/db/user'
 import { z } from 'libs/validation'
 
 const fileMemoryStorage = multer.memoryStorage()
@@ -34,6 +35,35 @@ export function withAuth(handler: NextApiHandler) {
   }
 }
 
+export function withAuthOrInboxToken<
+  TSchema extends Omit<ApiRequestValidationSchema, 'body'> & { body: { token?: string } },
+  TResponseType
+>(handler: ApiHandlerWithFormDataValidation<TSchema, TResponseType>) {
+  return async (req: ValidatedApiFormDataRequest<TSchema>, res: NextApiResponse<TResponseType>) => {
+    const session = await getSession({ req })
+
+    if (session) {
+      req.user = session.user
+    }
+
+    if (req.body.token) {
+      const user = await getUserByInboxToken(req.body.token)
+
+      if (user && user.email) {
+        req.user = { email: user.email, id: user.id }
+      } else {
+        req.user = undefined
+      }
+    }
+
+    if (!req.user) {
+      return res.status(StatusCode.ClientErrorUnauthorized).end()
+    }
+
+    return handler(req, res)
+  }
+}
+
 export function withValidation<
   TData extends ApiRequestValidationData,
   TSchema extends ApiRequestValidationSchema,
@@ -46,7 +76,7 @@ export function withValidation<
   return (req: NextApiRequest, res: NextApiResponse<TResponseType>) => {
     try {
       req.body = bodySchema?.parse(parseJson(req.body))
-      req.query = querySchema?.parse(parseJson(req.query)) as NextApiRequest['query']
+      req.query = querySchema?.parse(parseJson(req.query)) ?? {}
 
       return handler(req, res)
     } catch (error) {
@@ -65,21 +95,31 @@ export function withFormDataValidation<
 ) {
   return async (req: NextApiRequest, res: NextApiResponse<TResponseType>) => {
     try {
+      const withFile = typeof maxFileSizeInBytes !== 'undefined'
+
       await new Promise<void>((resolve, reject) => {
-        multer({
+        const instance = multer({
           fileFilter,
           limits: {
             fields: bodySchema ? Infinity : 0,
-            files: maxFileSizeInBytes ? 1 : 0,
+            files: withFile ? 1 : undefined,
             fileSize: maxFileSizeInBytes,
           },
           storage: fileMemoryStorage,
-        }).single('file')(req, res, (err) => {
-          err ? reject(err) : resolve()
         })
+
+        if (withFile) {
+          instance.single('file')(req, res, (err) => {
+            err ? reject(err) : resolve()
+          })
+        } else {
+          instance.none()(req, res, (err) => {
+            err ? reject(err) : resolve()
+          })
+        }
       })
 
-      if (typeof maxFileSizeInBytes !== 'undefined' && !('file' in req)) {
+      if (withFile && !('file' in req)) {
         throw new Error('Missing request file.')
       }
 
@@ -99,8 +139,7 @@ function parseJson(json: unknown) {
   return typeof json === 'string' ? JSON.parse(json) : json
 }
 
-type ValidationSchema = z.ZodType<unknown>
-type ApiRequestValidationSchema = { body?: ValidationSchema; query?: ValidationSchema }
+type ApiRequestValidationSchema = { body?: z.ZodType<unknown>; query?: z.ZodType<Record<string, string | string[]>> }
 export type ApiRequestValidationData = { body?: unknown; query?: unknown }
 
 export type ValidatedApiRequest<TSchema extends ApiRequestValidationData> = Omit<NextApiRequest, 'body' | 'query'> & {
@@ -108,13 +147,12 @@ export type ValidatedApiRequest<TSchema extends ApiRequestValidationData> = Omit
   query: TSchema['query']
 }
 
-export type ParsedFile = NonNullable<Express.Request['file']>
-
 export type ValidatedApiFormDataRequest<TSchema extends ApiRequestValidationData & { file?: boolean }> =
   ValidatedApiRequest<TSchema> & {
     file: TSchema['file'] extends true ? ParsedFile : undefined
   }
 
+export type ParsedFile = NonNullable<Express.Request['file']>
 export type FileFilter = MulterOptions['fileFilter']
 
 type ApiHandlerWithValidation<TSchema extends ApiRequestValidationData, TResponseType> = (
