@@ -1,3 +1,4 @@
+import IconButton, { type IconButtonProps } from 'components/form/IconButton'
 import Shimmer from 'components/ui/Shimmer'
 import clst from 'styles/clst'
 
@@ -27,8 +28,8 @@ const List: ListComponent = ({ children, className, isLoading, shimmerClassNames
 
 export default List
 
-const ListItem: React.FC<ListItemProps> = ({ children }) => {
-  const itemsProps = { className: itemClasses }
+const ListItem: React.FC<ListItemProps> = ({ children, className }) => {
+  const itemsProps = { className: clst(itemClasses, className) }
 
   if (typeof children === 'function') {
     return children(itemsProps)
@@ -39,8 +40,22 @@ const ListItem: React.FC<ListItemProps> = ({ children }) => {
 
 List.Item = ListItem
 
+const ListButton: React.FC<ListButtonProps> = (props) => {
+  return (
+    <IconButton
+      {...props}
+      iconClassName="h-5 w-5"
+      pressedClassName="bg-zinc-900/75 hover:bg-zinc-900/75"
+      className="rounded-full bg-transparent p-1 hover:bg-zinc-800"
+    />
+  )
+}
+
+List.Button = ListButton
+
 type ListComponent = React.FC<ListProps> & {
   Item: typeof ListItem
+  Button: typeof ListButton
 }
 
 interface ListProps {
@@ -54,4 +69,7 @@ interface ListProps {
 
 interface ListItemProps {
   children: React.ReactNode | ((itemProps: { className: string }) => JSX.Element)
+  className?: string
 }
+
+type ListButtonProps = Omit<IconButtonProps, 'className' | 'pressedClassName'>
