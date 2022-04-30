@@ -37,3 +37,5 @@ export const API_ERROR_SEARCH_QUERY_TOO_SHORT = 'The search query should be at l
 export const API_ERROR_IMAGE_UPLOAD_UNKNOWN = 'The image could not be uploaded. Please try again later.'
 export const API_ERROR_IMAGE_DELETE_UNKNOWN = 'The image(s) could not be deleted. Please try again later.'
 export const API_ERROR_IMAGE_REFERENCE_DOES_NOT_EXIST = 'The reference specified does not exist.'
+
+export const API_ERROR_INBOX_ENTRY_DOES_NOT_EXIST = 'The inbox entry specified does not exist.'
