@@ -36,7 +36,11 @@ const InboxForm: React.FC = () => {
   }
 
   return (
-    <Form onSubmit={onSubmit} error={error} className="flex gap-2.5 py-2">
+    <Form
+      error={error}
+      onSubmit={onSubmit}
+      className="z-10 flex gap-2.5 bg-zinc-900/10 p-3 shadow-[0px_1px_2px_0px_rgb(0,0,0,0.5)]"
+    >
       <TextInput
         autoFocus
         type="text"

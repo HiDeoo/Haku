@@ -8,20 +8,20 @@ const itemClasses = clst(
 )
 const shimmerClasses = clst(itemClasses, 'min-h-[2.8125rem] block')
 
-const List: ListComponent = ({ children, isLoading, shimmerClassnames, shimmerItemCount, title }) => {
+const List: ListComponent = ({ children, className, isLoading, shimmerClassNames, shimmerItemCount, title }) => {
   return (
-    <>
+    <div className={className}>
       {title ? <h1 className="mb-1.5 ml-0.5 text-lg">{title}</h1> : null}
       <div>
         {isLoading
           ? Array.from({ length: shimmerItemCount }).map((_, index) => (
               <Shimmer key={`shimmer-${index}`} className={shimmerClasses}>
-                <Shimmer.Line className={shimmerClassnames[index]} />
+                <Shimmer.Line className={shimmerClassNames[index]} />
               </Shimmer>
             ))
           : children}
       </div>
-    </>
+    </div>
   )
 }
 
@@ -45,8 +45,9 @@ type ListComponent = React.FC<ListProps> & {
 
 interface ListProps {
   children: React.ReactNode
+  className?: string
   isLoading?: boolean
-  shimmerClassnames: string[]
+  shimmerClassNames: string[]
   shimmerItemCount: number
   title?: string
 }

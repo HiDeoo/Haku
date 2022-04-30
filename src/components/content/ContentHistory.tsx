@@ -53,7 +53,7 @@ const ContentHistorySection: React.FC<ContentHistorySectionProps> = ({ entries, 
       <List
         isLoading={isLoading}
         title={`Recent ${cType}s`}
-        shimmerClassnames={HISTORY_SHIMMER_CLASSES}
+        shimmerClassNames={HISTORY_SHIMMER_CLASSES}
         shimmerItemCount={HISTORY_RESULT_LIMIT_PER_TYPE}
       >
         {entries.map((entry) => (

@@ -18,6 +18,7 @@ const InboxDrawer: React.FC = () => {
       title="Inbox"
       opened={opened}
       onOpenChange={setOpened}
+      className="flex flex-col overflow-hidden"
       trigger={<IconButton icon={RiInboxFill} tooltip="Inbox" />}
     >
       <InboxForm />

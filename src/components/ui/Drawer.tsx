@@ -12,7 +12,9 @@ const drawerContentClasses = clst(
 
 const drawerOverlayClasses = 'animate-modal-overlay fixed inset-0 z-40 bg-zinc-900/80'
 
-const Drawer: React.FC<DrawerProps> = ({ children, onOpenChange, opened, title, trigger }) => {
+const Drawer: React.FC<DrawerProps> = ({ children, className, onOpenChange, opened, title, trigger }) => {
+  const childrenClasses = clst('grow overflow-y-auto', className)
+
   return (
     <Root open={opened} onOpenChange={onOpenChange}>
       {trigger ? <Trigger asChild>{trigger}</Trigger> : null}
@@ -30,7 +32,7 @@ const Drawer: React.FC<DrawerProps> = ({ children, onOpenChange, opened, title, 
                 <IconButton tooltip="Close" icon={RiCloseLine} className="rounded-full p-1" />
               </Close>
             </Flex>
-            <div className="grow overflow-y-auto py-2 px-3">{children}</div>
+            <div className={childrenClasses}>{children}</div>
           </Content>
         </Overlay>
       </Portal>
@@ -42,6 +44,7 @@ export default Drawer
 
 interface DrawerProps {
   children: React.ReactNode
+  className?: string
   onOpenChange: (opened: boolean) => void
   opened: boolean
   title: string
