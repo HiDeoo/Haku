@@ -35,6 +35,8 @@ const InboxForm: React.FC = () => {
     })
   }
 
+  // TODO(HiDeoo) error UI is broken (flex)
+
   return (
     <Form
       error={error}
