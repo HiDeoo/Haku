@@ -51,9 +51,9 @@ const InboxListEntry: React.FC<InboxListEntryProps> = ({ entry }) => {
   }
 
   return (
-    <List.Item className="py-2 pr-2">
-      <div>{entry.text}</div>
-      <div>
+    <List.Item className="items-start py-2 pr-2">
+      <div className="min-w-0 break-words">{entry.text}</div>
+      <div className="flex">
         <List.Button icon={RiCloseLine} tooltip="Delete" onPress={onClickRemove} />
       </div>
     </List.Item>
