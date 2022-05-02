@@ -22,7 +22,7 @@ const InboxForm: React.FC = () => {
   const { error, isLoading, mutate } = useInboxEntryMutation()
 
   const formClasses = clst(
-    'z-10 flex gap-2.5 bg-zinc-900/10 p-3 shadow-[0px_1px_2px_0px_rgb(0,0,0,0.5)]',
+    'z-10 bg-zinc-900/10 p-3 shadow-[0px_1px_2px_0px_rgb(0,0,0,0.5)]',
     'supports-max:pl-[calc(theme(spacing.3)+max(0px,env(safe-area-inset-left)))]'
   )
 
@@ -41,28 +41,28 @@ const InboxForm: React.FC = () => {
     })
   }
 
-  // TODO(HiDeoo) error UI is broken (flex)
-
   return (
     <Form error={error} onSubmit={onSubmit} className={formClasses}>
-      <TextInput
-        autoFocus
-        type="text"
-        enterKeyHint="done"
-        disabled={isLoading}
-        aria-label="New inbox entry"
-        placeholder="Add new inbox entry"
-        errorMessage={errors.text?.message}
-        {...register('text', { required: 'required' })}
-      />
-      <IconButton
-        primary
-        type="submit"
-        className="px-2"
-        icon={RiAddLine}
-        loading={isLoading}
-        disabled={isLoading || offline}
-      />
+      <div className="flex gap-2.5">
+        <TextInput
+          autoFocus
+          type="text"
+          enterKeyHint="done"
+          disabled={isLoading}
+          aria-label="New inbox entry"
+          placeholder="Add new inbox entry"
+          errorMessage={errors.text?.message}
+          {...register('text', { required: 'required' })}
+        />
+        <IconButton
+          primary
+          type="submit"
+          className="px-2"
+          icon={RiAddLine}
+          loading={isLoading}
+          disabled={isLoading || offline}
+        />
+      </div>
     </Form>
   )
 }
