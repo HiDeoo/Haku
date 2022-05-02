@@ -5,8 +5,7 @@ import Flex from 'components/ui/Flex'
 import Icon from 'components/ui/Icon'
 import List from 'components/ui/List'
 import { ContentType } from 'constants/contentType'
-import { HISTORY_RESULT_LIMIT_PER_TYPE } from 'constants/history'
-import { HISTORY_SHIMMER_CLASSES } from 'constants/shimmer'
+import { LIST_SHIMMER_CLASSES } from 'constants/shimmer'
 import useContentHistoryQuery from 'hooks/useContentHistoryQuery'
 import { getContentType } from 'hooks/useContentType'
 import { isNonEmptyArray } from 'libs/array'
@@ -50,12 +49,7 @@ const ContentHistorySection: React.FC<ContentHistorySectionProps> = ({ entries, 
 
   return (
     <div className="w-full md:w-96">
-      <List
-        isLoading={isLoading}
-        title={`Recent ${cType}s`}
-        shimmerClassNames={HISTORY_SHIMMER_CLASSES}
-        shimmerItemCount={HISTORY_RESULT_LIMIT_PER_TYPE}
-      >
+      <List isLoading={isLoading} title={`Recent ${cType}s`} shimmerClassNames={LIST_SHIMMER_CLASSES}>
         {entries.map((entry) => (
           <List.Item key={entry.id}>
             {(itemProps) => {
