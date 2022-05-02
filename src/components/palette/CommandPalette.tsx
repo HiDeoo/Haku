@@ -5,6 +5,7 @@ import {
   RiBookletLine,
   RiFileAddLine,
   RiFolderAddLine,
+  RiInboxFill,
   RiKeyboardFill,
   RiLink,
   RiLogoutCircleRLine,
@@ -15,7 +16,12 @@ import {
 
 import { toggleSidebarCollapsedAtom } from 'atoms/collapsible'
 import { commandPaletteOpenedAtom, navigationPaletteOpenedAtom, searchPaletteOpenedAtom } from 'atoms/palette'
-import { setContentModalOpenedAtom, setFolderModalOpenedAtom, setShortcutModalOpenedAtom } from 'atoms/togglable'
+import {
+  setContentModalOpenedAtom,
+  setFolderModalOpenedAtom,
+  setInboxDrawerOpenedAtom,
+  setShortcutModalOpenedAtom,
+} from 'atoms/togglable'
 import Palette, { type PaletteItem } from 'components/palette/Palette'
 import { type IconProps } from 'components/ui/Icon'
 import useContentType, { ContentType, getContentType } from 'hooks/useContentType'
@@ -41,6 +47,8 @@ const CommandPalette: React.FC = () => {
   const setContentModalOpened = useSetAtom(setContentModalOpenedAtom)
   const setFolderModalOpened = useSetAtom(setFolderModalOpenedAtom)
   const setShortcutModalOpened = useSetAtom(setShortcutModalOpenedAtom)
+
+  const setInboxDrawerOpened = useSetAtom(setInboxDrawerOpenedAtom)
 
   const toggleSidebarCollapsed = useSetAtom(toggleSidebarCollapsedAtom)
 
@@ -102,6 +110,13 @@ const CommandPalette: React.FC = () => {
         },
       },
       {
+        name: 'Open Inbox',
+        icon: RiInboxFill,
+        action: () => {
+          setInboxDrawerOpened(true)
+        },
+      },
+      {
         name: `Collapse / Expand Menu`,
         icon: RiMenu2Line,
         action: toggleSidebarCollapsed,
@@ -130,6 +145,7 @@ const CommandPalette: React.FC = () => {
       push,
       setContentModalOpened,
       setFolderModalOpened,
+      setInboxDrawerOpened,
       setNavigationPaletteOpened,
       setSearchPaletteOpened,
       setShortcutModalOpened,
