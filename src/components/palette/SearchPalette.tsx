@@ -1,9 +1,10 @@
-import { useAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
 import { useRouter } from 'next/router'
 import { useMemo, useRef, useState } from 'react'
-import { RiBookletLine, RiSearchLine, RiTodoLine } from 'react-icons/ri'
+import { RiBookletLine, RiInboxFill, RiSearchLine, RiTodoLine } from 'react-icons/ri'
 
 import { searchPaletteOpenedAtom } from 'atoms/palette'
+import { setInboxDrawerOpenedAtom } from 'atoms/togglable'
 import IconButton from 'components/form/IconButton'
 import Palette, { type PaletteItem } from 'components/palette/Palette'
 import { ContentType } from 'constants/contentType'
@@ -27,6 +28,8 @@ const SearchPalette: React.FC = () => {
   const debouncedQuery = useDebouncedValue(query, 300)
 
   const { data, fetchNextPage, fetchStatus, hasNextPage, isFetchingNextPage } = useSearchQuery(opened, debouncedQuery)
+
+  const setInboxDrawerOpened = useSetAtom(setInboxDrawerOpenedAtom)
 
   useGlobalShortcuts(
     useMemo(
@@ -69,7 +72,7 @@ const SearchPalette: React.FC = () => {
   }
 
   function itemToString(item: SearchResultData | null) {
-    return item?.name ?? ''
+    return (item?.type === 'INBOX' ? 'Inbox' : item?.name) ?? ''
   }
 
   function itemToIcon(item: SearchResultData | null) {
@@ -77,7 +80,7 @@ const SearchPalette: React.FC = () => {
       return null
     }
 
-    return item.type === ContentType.NOTE ? RiBookletLine : RiTodoLine
+    return item.type === 'INBOX' ? RiInboxFill : item.type === ContentType.NOTE ? RiBookletLine : RiTodoLine
   }
 
   function itemDetailsToString(item: SearchResultData | null) {
@@ -89,9 +92,13 @@ const SearchPalette: React.FC = () => {
       return
     }
 
-    const { urlPath } = getContentType(item.type)
+    if (item.type === 'INBOX') {
+      setInboxDrawerOpened(true)
+    } else {
+      const { urlPath } = getContentType(item.type)
 
-    push(`${urlPath}/${item.id}/${item.slug}`)
+      push(`${urlPath}/${item.id}/${item.slug}`)
+    }
   }
 
   return (

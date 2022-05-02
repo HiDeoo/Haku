@@ -144,4 +144,8 @@ model InboxEntry {
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  searchVector Unsupported("TSVECTOR")?
+
+  @@index([searchVector], name: "InboxEntry_searchVector_index")
 }

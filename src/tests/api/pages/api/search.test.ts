@@ -4,10 +4,10 @@ import StatusCode from 'status-code-enum'
 import { HttpMethod } from 'constants/http'
 import { SEARCH_RESULT_LIMIT } from 'constants/search'
 import { ApiErrorResponse, API_ERROR_SEARCH_QUERY_TOO_SHORT } from 'libs/api/routes/errors'
-import { type SearchResulstData } from 'libs/db/file'
+import { type SearchResultsData } from 'libs/db/file'
 import indexHandler from 'pages/api/search'
 import { getTestUser, testApiRoute } from 'tests/api'
-import { createTestNote, createTestTodo, createTestTodoNode } from 'tests/api/db'
+import { createTestInboxEntry, createTestNote, createTestTodo, createTestTodoNode } from 'tests/api/db'
 
 describe('search', () => {
   describe('GET', () => {
@@ -36,9 +36,26 @@ describe('search', () => {
             await createTestTodo()
 
             const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<SearchResulstData>()
+            const json = await res.json<SearchResultsData>()
 
             expect(json.length).toBe(0)
+          },
+          { dynamicRouteParams: { q: 'amazing' } }
+        ))
+
+      test('should return an inbox entry with a text matching the query', () =>
+        testApiRoute(
+          indexHandler,
+          async ({ fetch }) => {
+            const { id } = await createTestInboxEntry({ text: 'amazing text' })
+
+            const res = await fetch({ method: HttpMethod.GET })
+            const json = await res.json<SearchResultsData>()
+
+            expect(json.length).toBe(1)
+
+            expect(json[0]?.id).toBe(id)
+            expect(json[0]?.type).toBe('INBOX')
           },
           { dynamicRouteParams: { q: 'amazing' } }
         ))
@@ -50,7 +67,7 @@ describe('search', () => {
             const { id } = await createTestNote({ name: 'amazing name' })
 
             const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<SearchResulstData>()
+            const json = await res.json<SearchResultsData>()
 
             expect(json.length).toBe(1)
 
@@ -66,7 +83,7 @@ describe('search', () => {
             const { id } = await createTestNote({ data: 'amazing text' })
 
             const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<SearchResulstData>()
+            const json = await res.json<SearchResultsData>()
 
             expect(json.length).toBe(1)
 
@@ -82,7 +99,7 @@ describe('search', () => {
             const { id } = await createTestTodo({ name: 'amazing name' })
 
             const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<SearchResulstData>()
+            const json = await res.json<SearchResultsData>()
 
             expect(json.length).toBe(1)
 
@@ -99,7 +116,7 @@ describe('search', () => {
             await createTestTodoNode({ todoId: id, content: 'amazing content' })
 
             const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<SearchResulstData>()
+            const json = await res.json<SearchResultsData>()
 
             expect(json.length).toBe(1)
 
@@ -116,7 +133,7 @@ describe('search', () => {
             await createTestTodoNode({ todoId: id, noteText: 'amazing text' })
 
             const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<SearchResulstData>()
+            const json = await res.json<SearchResultsData>()
 
             expect(json.length).toBe(1)
 
@@ -132,7 +149,7 @@ describe('search', () => {
             const { id } = await createTestNote({ name: 'amazing name', data: 'amazing content' })
 
             const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<SearchResulstData>()
+            const json = await res.json<SearchResultsData>()
 
             expect(json.length).toBe(1)
 
@@ -151,7 +168,7 @@ describe('search', () => {
             await createTestTodoNode({ todoId: id, noteText: 'amazing text' })
 
             const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<SearchResulstData>()
+            const json = await res.json<SearchResultsData>()
 
             expect(json.length).toBe(1)
 
@@ -172,13 +189,17 @@ describe('search', () => {
             const { id: note_0_id } = await createTestNote({ name: 'amazing name' })
             await createTestNote({ name: 'amazing name', userId: userId1 })
 
-            const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<SearchResulstData>()
+            const { id: inbox_entry_0_id } = await createTestInboxEntry({ text: 'amazing text' })
+            await createTestInboxEntry({ text: 'amazing name', userId: userId1 })
 
-            expect(json.length).toBe(2)
+            const res = await fetch({ method: HttpMethod.GET })
+            const json = await res.json<SearchResultsData>()
+
+            expect(json.length).toBe(3)
 
             expect(json[0]?.id).toBe(note_0_id)
             expect(json[1]?.id).toBe(todo_0_id)
+            expect(json[2]?.id).toBe(inbox_entry_0_id)
           },
           { dynamicRouteParams: { q: 'amazing' } }
         ))
@@ -201,16 +222,20 @@ describe('search', () => {
             const { id: todo_4_id } = await createTestTodo()
             await createTestTodoNode({ todoId: todo_4_id, noteText: 'amazing text' })
 
-            const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<SearchResulstData>()
+            const { id: inbox_entry_0_id } = await createTestInboxEntry({ text: 'amazing text' })
+            await createTestInboxEntry()
 
-            expect(json.length).toBe(5)
+            const res = await fetch({ method: HttpMethod.GET })
+            const json = await res.json<SearchResultsData>()
+
+            expect(json.length).toBe(6)
 
             expect(json[0]?.id).toBe(note_0_id)
             expect(json[1]?.id).toBe(todo_1_id)
-            expect(json[2]?.id).toBe(note_2_id)
-            expect(json[3]?.id).toBe(todo_2_id)
-            expect(json[4]?.id).toBe(todo_4_id)
+            expect(json[2]?.id).toBe(inbox_entry_0_id)
+            expect(json[3]?.id).toBe(note_2_id)
+            expect(json[4]?.id).toBe(todo_2_id)
+            expect(json[5]?.id).toBe(todo_4_id)
           },
           { dynamicRouteParams: { q: 'amazing' } }
         ))
@@ -227,15 +252,18 @@ describe('search', () => {
             const { id: todo_1_id } = await createTestTodo({ name: 'todo_1' })
             await createTestTodoNode({ todoId: todo_1_id, content: 'amazing content' })
 
-            const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<SearchResulstData>()
+            const { id: inbox_entry_0_id } = await createTestInboxEntry({ text: 'amazing text' })
 
-            expect(json.length).toBe(4)
+            const res = await fetch({ method: HttpMethod.GET })
+            const json = await res.json<SearchResultsData>()
+
+            expect(json.length).toBe(5)
 
             expect(json[0]?.id).toBe(note_1_id)
             expect(json[1]?.id).toBe(todo_0_id)
-            expect(json[2]?.id).toBe(note_0_id)
-            expect(json[3]?.id).toBe(todo_1_id)
+            expect(json[2]?.id).toBe(inbox_entry_0_id)
+            expect(json[3]?.id).toBe(note_0_id)
+            expect(json[4]?.id).toBe(todo_1_id)
           },
           { dynamicRouteParams: { q: 'amazing' } }
         ))
@@ -255,16 +283,19 @@ describe('search', () => {
             const { id: note_0_id } = await createTestNote({ data: 'amazing text' })
             const { id: note_1_id } = await createTestNote({ name: 'amazing name', data: 'amazing text' })
 
-            const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<SearchResulstData>()
+            const { id: inbox_entry_0_id } = await createTestInboxEntry({ text: 'amazing text' })
 
-            expect(json.length).toBe(5)
+            const res = await fetch({ method: HttpMethod.GET })
+            const json = await res.json<SearchResultsData>()
+
+            expect(json.length).toBe(6)
 
             expect(json[0]?.id).toBe(todo_2_id)
             expect(json[1]?.id).toBe(todo_1_id)
             expect(json[2]?.id).toBe(note_1_id)
             expect(json[3]?.id).toBe(todo_0_id)
-            expect(json[4]?.id).toBe(note_0_id)
+            expect(json[4]?.id).toBe(inbox_entry_0_id)
+            expect(json[5]?.id).toBe(note_0_id)
           },
           { dynamicRouteParams: { q: 'amazing' } }
         ))
@@ -281,15 +312,18 @@ describe('search', () => {
             const { id: todo_1_id } = await createTestTodo({ name: 'ITEM A' })
             await createTestTodoNode({ todoId: todo_1_id, content: 'amazing content' })
 
-            const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<SearchResulstData>()
+            const { id: inbox_entry_0_id } = await createTestInboxEntry({ text: 'amazing text' })
 
-            expect(json.length).toBe(4)
+            const res = await fetch({ method: HttpMethod.GET })
+            const json = await res.json<SearchResultsData>()
+
+            expect(json.length).toBe(5)
 
             expect(json[0]?.id).toBe(todo_0_id)
             expect(json[1]?.id).toBe(note_0_id)
-            expect(json[2]?.id).toBe(todo_1_id)
-            expect(json[3]?.id).toBe(note_1_id)
+            expect(json[2]?.id).toBe(inbox_entry_0_id)
+            expect(json[3]?.id).toBe(todo_1_id)
+            expect(json[4]?.id).toBe(note_1_id)
           },
           { dynamicRouteParams: { q: 'amazing' } }
         ))
@@ -305,14 +339,17 @@ describe('search', () => {
             const { id: todo_1_id } = await createTestTodo()
             await createTestTodoNode({ todoId: todo_1_id, content: 'amAZIng content' })
 
-            const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<SearchResulstData>()
+            const { id: inbox_entry_0_id } = await createTestInboxEntry({ text: 'AMaziNG text' })
 
-            expect(json.length).toBe(3)
+            const res = await fetch({ method: HttpMethod.GET })
+            const json = await res.json<SearchResultsData>()
+
+            expect(json.length).toBe(4)
 
             expect(json[0]?.id).toBe(note_0_id)
             expect(json[1]?.id).toBe(todo_0_id)
-            expect(json[2]?.id).toBe(todo_1_id)
+            expect(json[2]?.id).toBe(inbox_entry_0_id)
+            expect(json[3]?.id).toBe(todo_1_id)
           },
           { dynamicRouteParams: { q: 'amazing' } }
         ))
@@ -328,14 +365,17 @@ describe('search', () => {
             const { id: todo_1_id } = await createTestTodo()
             await createTestTodoNode({ todoId: todo_1_id, content: 'Amazing content' })
 
-            const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<SearchResulstData>()
+            const { id: inbox_entry_0_id } = await createTestInboxEntry({ text: 'Amazing text' })
 
-            expect(json.length).toBe(3)
+            const res = await fetch({ method: HttpMethod.GET })
+            const json = await res.json<SearchResultsData>()
+
+            expect(json.length).toBe(4)
 
             expect(json[0]?.id).toBe(note_0_id)
             expect(json[1]?.id).toBe(todo_0_id)
-            expect(json[2]?.id).toBe(todo_1_id)
+            expect(json[2]?.id).toBe(inbox_entry_0_id)
+            expect(json[3]?.id).toBe(todo_1_id)
           },
           { dynamicRouteParams: { q: 'AMAZING' } }
         ))
@@ -363,17 +403,24 @@ describe('search', () => {
             const { id: todo_7_id } = await createTestTodo()
             await createTestTodoNode({ todoId: todo_7_id, content: 'amazing name' })
 
-            const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<SearchResulstData>()
+            const { id: inbox_entry_0_id } = await createTestInboxEntry({ text: 'amazing super name' })
+            await createTestInboxEntry({ text: 'amazing' })
+            await createTestInboxEntry({ text: 'name' })
+            const { id: inbox_entry_3_id } = await createTestInboxEntry({ text: 'amazing name' })
 
-            expect(json.length).toBe(6)
+            const res = await fetch({ method: HttpMethod.GET })
+            const json = await res.json<SearchResultsData>()
+
+            expect(json.length).toBe(8)
 
             expect(json[0]?.id).toBe(note_3_id)
             expect(json[1]?.id).toBe(todo_3_id)
-            expect(json[2]?.id).toBe(note_0_id)
-            expect(json[3]?.id).toBe(todo_0_id)
-            expect(json[4]?.id).toBe(todo_7_id)
-            expect(json[5]?.id).toBe(todo_4_id)
+            expect(json[2]?.id).toBe(inbox_entry_3_id)
+            expect(json[3]?.id).toBe(note_0_id)
+            expect(json[4]?.id).toBe(todo_0_id)
+            expect(json[5]?.id).toBe(inbox_entry_0_id)
+            expect(json[6]?.id).toBe(todo_7_id)
+            expect(json[7]?.id).toBe(todo_4_id)
           },
           { dynamicRouteParams: { q: 'amazing name' } }
         ))
@@ -401,14 +448,20 @@ describe('search', () => {
             const { id: todo_7_id } = await createTestTodo()
             await createTestTodoNode({ todoId: todo_7_id, content: 'amazing name' })
 
-            const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<SearchResulstData>()
+            await createTestInboxEntry({ text: 'amazing super name' })
+            await createTestInboxEntry({ text: 'amazing' })
+            await createTestInboxEntry({ text: 'name' })
+            const { id: inbox_entry_3_id } = await createTestInboxEntry({ text: 'amazing name' })
 
-            expect(json.length).toBe(3)
+            const res = await fetch({ method: HttpMethod.GET })
+            const json = await res.json<SearchResultsData>()
+
+            expect(json.length).toBe(4)
 
             expect(json[0]?.id).toBe(note_3_id)
             expect(json[1]?.id).toBe(todo_3_id)
-            expect(json[2]?.id).toBe(todo_7_id)
+            expect(json[2]?.id).toBe(inbox_entry_3_id)
+            expect(json[3]?.id).toBe(todo_7_id)
           },
           { dynamicRouteParams: { q: '"amazing name"' } }
         ))
@@ -436,23 +489,32 @@ describe('search', () => {
             const { id: todo_7_id } = await createTestTodo({ name: 'todo_7' })
             await createTestTodoNode({ todoId: todo_7_id, content: 'amazing name' })
 
-            const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<SearchResulstData>()
+            const { id: inbox_entry_0_id } = await createTestInboxEntry({ text: 'amazing super name' })
+            const { id: inbox_entry_1_id } = await createTestInboxEntry({ text: 'amazing' })
+            const { id: inbox_entry_2_id } = await createTestInboxEntry({ text: 'name' })
+            const { id: inbox_entry_3_id } = await createTestInboxEntry({ text: 'amazing name' })
 
-            expect(json.length).toBe(12)
+            const res = await fetch({ method: HttpMethod.GET })
+            const json = await res.json<SearchResultsData>()
+
+            expect(json.length).toBe(16)
 
             expect(json[0]?.id).toBe(note_3_id)
             expect(json[1]?.id).toBe(todo_3_id)
             expect(json[2]?.id).toBe(note_0_id)
             expect(json[3]?.id).toBe(todo_0_id)
-            expect(json[4]?.id).toBe(note_1_id)
-            expect(json[5]?.id).toBe(todo_1_id)
-            expect(json[6]?.id).toBe(note_2_id)
-            expect(json[7]?.id).toBe(todo_2_id)
-            expect(json[8]?.id).toBe(todo_4_id)
-            expect(json[9]?.id).toBe(todo_7_id)
-            expect(json[10]?.id).toBe(todo_5_id)
-            expect(json[11]?.id).toBe(todo_6_id)
+            expect(json[4]?.id).toBe(inbox_entry_0_id)
+            expect(json[5]?.id).toBe(inbox_entry_3_id)
+            expect(json[6]?.id).toBe(note_1_id)
+            expect(json[7]?.id).toBe(todo_1_id)
+            expect(json[8]?.id).toBe(note_2_id)
+            expect(json[9]?.id).toBe(todo_2_id)
+            expect(json[10]?.id).toBe(inbox_entry_1_id)
+            expect(json[11]?.id).toBe(inbox_entry_2_id)
+            expect(json[12]?.id).toBe(todo_4_id)
+            expect(json[13]?.id).toBe(todo_7_id)
+            expect(json[14]?.id).toBe(todo_5_id)
+            expect(json[15]?.id).toBe(todo_6_id)
           },
           { dynamicRouteParams: { q: 'amazing OR name' } }
         ))
@@ -480,14 +542,20 @@ describe('search', () => {
             const { id: todo_7_id } = await createTestTodo({ name: 'todo_7' })
             await createTestTodoNode({ todoId: todo_7_id, content: 'amazing name' })
 
-            const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<SearchResulstData>()
+            await createTestInboxEntry({ text: 'amazing super name' })
+            const { id: inbox_entry_1_id } = await createTestInboxEntry({ text: 'amazing' })
+            await createTestInboxEntry({ text: 'name' })
+            await createTestInboxEntry({ text: 'amazing name' })
 
-            expect(json.length).toBe(3)
+            const res = await fetch({ method: HttpMethod.GET })
+            const json = await res.json<SearchResultsData>()
+
+            expect(json.length).toBe(4)
 
             expect(json[0]?.id).toBe(todo_1_id)
             expect(json[1]?.id).toBe(todo_5_id)
             expect(json[2]?.id).toBe(note_1_id)
+            expect(json[3]?.id).toBe(inbox_entry_1_id)
           },
           { dynamicRouteParams: { q: 'amazing -name' } }
         ))
@@ -507,7 +575,7 @@ describe('search', () => {
             }
 
             const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<SearchResulstData>()
+            const json = await res.json<SearchResultsData>()
 
             expect(json.length).toBe(SEARCH_RESULT_LIMIT)
 
@@ -529,7 +597,7 @@ describe('search', () => {
           indexHandler,
           async ({ fetch }) => {
             const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<SearchResulstData>()
+            const json = await res.json<SearchResultsData>()
 
             expect(json.length).toBe(SEARCH_RESULT_LIMIT)
 
@@ -543,7 +611,7 @@ describe('search', () => {
           indexHandler,
           async ({ fetch }) => {
             const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<SearchResulstData>()
+            const json = await res.json<SearchResultsData>()
 
             expect(json.length).toBe(SEARCH_RESULT_LIMIT)
 
@@ -557,7 +625,7 @@ describe('search', () => {
           indexHandler,
           async ({ fetch }) => {
             const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<SearchResulstData>()
+            const json = await res.json<SearchResultsData>()
 
             expect(json.length).toBe(2)
 
@@ -585,17 +653,19 @@ describe('search', () => {
             const { id: todo_2_id } = await createTestTodo()
             await createTestTodoNode({ todoId: todo_2_id, noteText: highlightedContent })
 
-            const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<SearchResulstData>()
+            const { id: inbox_entry_0_id } = await createTestInboxEntry({ text: highlightedContent })
 
-            expect(json.length).toBe(5)
+            const res = await fetch({ method: HttpMethod.GET })
+            const json = await res.json<SearchResultsData>()
+
+            expect(json.length).toBe(6)
 
             // The note content does not match the search query, the excerpt should not contain an highlight.
             expect(json[0]?.id).toBe(note_0_id)
             expect(getExcerptHighlightCount(json[0]?.excerpt)).toBe(0)
 
             // The note content matches the search query, the excerpt should highlight the match.
-            expect(json[2]?.id).toBe(note_1_id)
+            expect(json[3]?.id).toBe(note_1_id)
             expect(getExcerptHighlightCount(json[2]?.excerpt)).toBe(1)
 
             // The content of the todo nodes does not match the search query, the excerpt should not contain an
@@ -604,12 +674,16 @@ describe('search', () => {
             expect(getExcerptHighlightCount(json[1]?.excerpt)).toBe(0)
 
             // The content of a todo nodes matches the search query, the excerpt should highlight the match.
-            expect(json[3]?.id).toBe(todo_1_id)
+            expect(json[4]?.id).toBe(todo_1_id)
             expect(getExcerptHighlightCount(json[3]?.excerpt)).toBe(1)
 
             // The note of a todo nodes matches the search query, the excerpt should highlight the match.
-            expect(json[4]?.id).toBe(todo_2_id)
+            expect(json[5]?.id).toBe(todo_2_id)
             expect(getExcerptHighlightCount(json[4]?.excerpt)).toBe(1)
+
+            // The inbox entry content matches the search query, the excerpt should highlight the match.
+            expect(json[2]?.id).toBe(inbox_entry_0_id)
+            expect(getExcerptHighlightCount(json[2]?.excerpt)).toBe(1)
           },
           { dynamicRouteParams: { q: 'amazing' } }
         ))
@@ -621,7 +695,7 @@ describe('search', () => {
             const { id } = await createTestNote({ data: 'amazing super name' })
 
             const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<SearchResulstData>()
+            const json = await res.json<SearchResultsData>()
 
             expect(json.length).toBe(1)
 
@@ -637,11 +711,12 @@ describe('search', () => {
           async ({ fetch }) => {
             await createTestNote({ name: 'amazing name' })
             await createTestTodo({ name: 'amazing name' })
+            await createTestInboxEntry({ text: 'amazing name' })
 
             const res = await fetch({ method: HttpMethod.GET })
-            const json = await res.json<SearchResulstData>()
+            const json = await res.json<SearchResultsData>()
 
-            expect(json.length).toBe(2)
+            expect(json.length).toBe(3)
 
             for (const result of json) {
               expect(Object.keys(result).length).toBe(5)
@@ -649,10 +724,27 @@ describe('search', () => {
           },
           { dynamicRouteParams: { q: 'amazing' } }
         ))
+
+      test('should return a null name & slug for inbox entry search results', () =>
+        testApiRoute(
+          indexHandler,
+          async ({ fetch }) => {
+            await createTestInboxEntry({ text: 'amazing name' })
+
+            const res = await fetch({ method: HttpMethod.GET })
+            const json = await res.json<SearchResultsData>()
+
+            expect(json.length).toBe(1)
+
+            expect(json[0]?.name).toBeNull()
+            expect(json[0]?.slug).toBeNull()
+          },
+          { dynamicRouteParams: { q: 'amazing' } }
+        ))
     })
   })
 })
 
-function getExcerptHighlightCount(excerpt?: SearchResulstData[number]['excerpt']) {
+function getExcerptHighlightCount(excerpt?: SearchResultsData[number]['excerpt']) {
   return (excerpt?.match(/<\/?strong>/g)?.length ?? 0) / 2
 }
