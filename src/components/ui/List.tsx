@@ -44,9 +44,8 @@ const ListButton: React.FC<ListButtonProps> = (props) => {
   return (
     <IconButton
       {...props}
-      iconClassName="h-5 w-5"
       pressedClassName="bg-zinc-900/75 hover:bg-zinc-900/75"
-      className="rounded-full bg-transparent p-1 hover:bg-zinc-800"
+      className="rounded-full bg-transparent hover:bg-zinc-800"
     />
   )
 }
@@ -71,4 +70,4 @@ interface ListItemProps {
   className?: string
 }
 
-type ListButtonProps = Omit<IconButtonProps, 'className' | 'pressedClassName'>
+type ListButtonProps = Omit<IconButtonProps, 'className' | 'iconClassName' | 'pressedClassName'>

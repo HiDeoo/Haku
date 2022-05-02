@@ -1,4 +1,4 @@
-import { RiCloseLine } from 'react-icons/ri'
+import { RiClipboardLine, RiDeleteBin7Line, RiErrorWarningLine } from 'react-icons/ri'
 import { LinkItUrl } from 'react-linkify-it'
 
 import Flex from 'components/ui/Flex'
@@ -6,6 +6,7 @@ import List from 'components/ui/List'
 import { LIST_SHIMMER_CLASSES } from 'constants/shimmer'
 import useInboxEntriesQuery from 'hooks/useInboxEntriesQuery'
 import { useInboxEntryMutation } from 'hooks/useInboxEntryMutation'
+import useToast from 'hooks/useToast'
 import { isNonEmptyArray } from 'libs/array'
 import { InboxEntryData } from 'libs/db/inbox'
 import clst from 'styles/clst'
@@ -46,7 +47,28 @@ const InboxList: React.FC = () => {
 export default InboxList
 
 const InboxListEntry: React.FC<InboxListEntryProps> = ({ entry }) => {
+  const { addToast } = useToast()
+
   const { mutate } = useInboxEntryMutation()
+
+  async function onClickCopy() {
+    let didError = false
+
+    try {
+      await navigator.clipboard.writeText(entry.text)
+    } catch (error) {
+      didError = true
+
+      console.error('Failed to copy inbox entry to the clipboard:', error)
+    } finally {
+      addToast({
+        details: didError ? 'Please try again.' : undefined,
+        icon: didError ? RiErrorWarningLine : RiClipboardLine,
+        text: didError ? 'Failed to copy to the clipboard.' : 'Text copied to the clipboard.',
+        type: didError ? 'foreground' : 'background',
+      })
+    }
+  }
 
   function onClickRemove() {
     mutate({ action: 'delete', id: entry.id })
@@ -60,7 +82,8 @@ const InboxListEntry: React.FC<InboxListEntryProps> = ({ entry }) => {
         <div className={textClasses}>{entry.text}</div>
       </LinkItUrl>
       <div className="flex">
-        <List.Button icon={RiCloseLine} tooltip="Delete" onPress={onClickRemove} />
+        <List.Button icon={RiClipboardLine} tooltip="Copy" onPress={onClickCopy} />
+        <List.Button icon={RiDeleteBin7Line} tooltip="Delete" onPress={onClickRemove} />
       </div>
     </List.Item>
   )
