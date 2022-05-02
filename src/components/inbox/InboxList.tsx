@@ -1,15 +1,30 @@
 import { RiCloseLine } from 'react-icons/ri'
 
+import Flex from 'components/ui/Flex'
 import List from 'components/ui/List'
 import { LIST_SHIMMER_CLASSES } from 'constants/shimmer'
 import useInboxEntriesQuery from 'hooks/useInboxEntriesQuery'
 import { useInboxEntryMutation } from 'hooks/useInboxEntryMutation'
+import { isNonEmptyArray } from 'libs/array'
 import { InboxEntryData } from 'libs/db/inbox'
 
 const InboxList: React.FC = () => {
   const { data, isLoading } = useInboxEntriesQuery()
 
-  // TODO(HiDeoo) NIS
+  // FIXME(HiDeoo) invert second condition
+  if (!isLoading && isNonEmptyArray(data)) {
+    return (
+      <Flex
+        fullWidth
+        fullHeight
+        direction="col"
+        alignItems="center"
+        className="mt-6 p-3 supports-max:pl-[calc(theme(spacing.3)+max(0px,env(safe-area-inset-left)))]"
+      >
+        <span>Start by creating a new inbox entry.</span>
+      </Flex>
+    )
+  }
 
   return (
     <List
