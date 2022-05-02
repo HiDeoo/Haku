@@ -1,4 +1,5 @@
 import { RiCloseLine } from 'react-icons/ri'
+import { LinkItUrl } from 'react-linkify-it'
 
 import Flex from 'components/ui/Flex'
 import List from 'components/ui/List'
@@ -8,6 +9,7 @@ import { useInboxEntryMutation } from 'hooks/useInboxEntryMutation'
 import { isNonEmptyArray } from 'libs/array'
 import { InboxEntryData } from 'libs/db/inbox'
 import clst from 'styles/clst'
+import styles from 'styles/InboxList.module.css'
 
 const listClasses = clst(
   'grow overflow-y-auto border-t border-b border-zinc-900 p-3',
@@ -50,9 +52,13 @@ const InboxListEntry: React.FC<InboxListEntryProps> = ({ entry }) => {
     mutate({ action: 'delete', id: entry.id })
   }
 
+  const textClasses = clst(styles.entry, 'min-w-0 break-words')
+
   return (
     <List.Item className="items-start py-2 pr-2">
-      <div className="min-w-0 break-words">{entry.text}</div>
+      <LinkItUrl>
+        <div className={textClasses}>{entry.text}</div>
+      </LinkItUrl>
       <div className="flex">
         <List.Button icon={RiCloseLine} tooltip="Delete" onPress={onClickRemove} />
       </div>
