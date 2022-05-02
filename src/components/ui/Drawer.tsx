@@ -12,6 +12,11 @@ const drawerContentClasses = clst(
 
 const drawerOverlayClasses = 'animate-modal-overlay fixed inset-0 z-40 bg-zinc-900/80'
 
+const headerClasses = clst(
+  'border-b border-black/10 bg-zinc-900 py-2 pl-3 pr-2 font-bold',
+  'supports-max:pl-[calc(theme(spacing.3)+max(0px,env(safe-area-inset-left)))]'
+)
+
 const Drawer: React.FC<DrawerProps> = ({ children, className, onOpenChange, opened, title, trigger }) => {
   const childrenClasses = clst('grow overflow-y-auto', className)
 
@@ -21,12 +26,7 @@ const Drawer: React.FC<DrawerProps> = ({ children, className, onOpenChange, open
       <Portal>
         <Overlay className={drawerOverlayClasses}>
           <Content className={drawerContentClasses}>
-            <Flex
-              as="header"
-              alignItems="center"
-              justifyContent="between"
-              className="border-b border-black/10 bg-zinc-900 py-2 pl-3 pr-2 font-bold"
-            >
+            <Flex as="header" alignItems="center" justifyContent="between" className={headerClasses}>
               <Title>{title}</Title>
               <Close asChild>
                 <IconButton tooltip="Close" icon={RiCloseLine} className="rounded-full p-1" />

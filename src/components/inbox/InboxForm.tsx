@@ -6,6 +6,7 @@ import IconButton from 'components/form/IconButton'
 import TextInput from 'components/form/TextInput'
 import { useInboxEntryMutation } from 'hooks/useInboxEntryMutation'
 import { useNetworkStatus } from 'hooks/useNetworkStatus'
+import clst from 'styles/clst'
 
 const InboxForm: React.FC = () => {
   const { offline } = useNetworkStatus()
@@ -19,6 +20,11 @@ const InboxForm: React.FC = () => {
   } = useForm<FormFields>()
 
   const { error, isLoading, mutate } = useInboxEntryMutation()
+
+  const formClasses = clst(
+    'z-10 flex gap-2.5 bg-zinc-900/10 p-3 shadow-[0px_1px_2px_0px_rgb(0,0,0,0.5)]',
+    'supports-max:pl-[calc(theme(spacing.3)+max(0px,env(safe-area-inset-left)))]'
+  )
 
   const onSubmit = handleSubmit((data) => {
     mutate({ action: 'insert', ...data }, { onSuccess: onSuccessfulMutation })
@@ -38,11 +44,7 @@ const InboxForm: React.FC = () => {
   // TODO(HiDeoo) error UI is broken (flex)
 
   return (
-    <Form
-      error={error}
-      onSubmit={onSubmit}
-      className="z-10 flex gap-2.5 bg-zinc-900/10 p-3 shadow-[0px_1px_2px_0px_rgb(0,0,0,0.5)]"
-    >
+    <Form error={error} onSubmit={onSubmit} className={formClasses}>
       <TextInput
         autoFocus
         type="text"
