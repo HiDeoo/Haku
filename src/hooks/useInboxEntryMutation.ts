@@ -2,37 +2,60 @@ import cuid from 'cuid'
 import { useMutation, useQueryClient } from 'react-query'
 
 import { getInboxEntriesQueryKey } from 'hooks/useInboxEntriesQuery'
-import { getClient } from 'libs/api/client'
+import { getClient, Mutation } from 'libs/api/client'
 import { type InboxEntriesData, type InboxEntryData } from 'libs/db/inbox'
+import { type RemoveInboxEntryQuery } from 'pages/api/inbox/[id]'
 import { type AddInboxEntryBody } from 'pages/api/inbox/share'
 
 export function useInboxEntryMutation() {
   const queryClient = useQueryClient()
 
-  return useMutation(addInboxEntry, {
-    onError: (_error, _variables, context?: { previousInboxEntries?: InboxEntriesData }) => {
-      if (context?.previousInboxEntries) {
-        queryClient.setQueryData<InboxEntriesData>(getInboxEntriesQueryKey(), context.previousInboxEntries)
+  return useMutation<InboxEntryData | void, unknown, InboxEntryMutation, InboxEntryContext>(
+    (data) => {
+      switch (data.action) {
+        case 'insert': {
+          return addInboxEntry({ text: data.text, token: data.token })
+        }
+        case 'delete': {
+          return removeInboxEntry({ id: data.id })
+        }
+        default: {
+          throw new Error(`Unsupported inbox entry mutation type.`)
+        }
       }
     },
-    onMutate: async (newInboxEntry) => {
-      const queryKey = getInboxEntriesQueryKey()
+    {
+      onError: (_error, _variables, context) => {
+        if (context?.oldInboxEntries) {
+          queryClient.setQueryData<InboxEntriesData>(getInboxEntriesQueryKey(), context.oldInboxEntries)
+        }
+      },
+      onMutate: async (newInboxEntry) => {
+        const queryKey = getInboxEntriesQueryKey()
 
-      await queryClient.cancelQueries(queryKey)
+        await queryClient.cancelQueries(queryKey)
 
-      const previousInboxEntries = queryClient.getQueryData<InboxEntriesData>(queryKey)
+        const oldInboxEntries = queryClient.getQueryData<InboxEntriesData>(queryKey)
 
-      queryClient.setQueryData<InboxEntriesData>(queryKey, (prevInboxEntries) => [
-        { ...newInboxEntry, createdAt: new Date(), id: cuid() },
-        ...(prevInboxEntries ?? []),
-      ])
+        if (newInboxEntry.action === 'insert') {
+          queryClient.setQueryData<InboxEntriesData>(queryKey, (prevInboxEntries) => [
+            { ...newInboxEntry, createdAt: new Date(), id: cuid() },
+            ...(prevInboxEntries ?? []),
+          ])
+        } else if (newInboxEntry.action === 'delete') {
+          queryClient.setQueryData<InboxEntriesData>(
+            queryKey,
+            (prevInboxEntries) => prevInboxEntries?.filter((entry) => entry.id !== newInboxEntry.id) ?? []
+          )
+        }
 
-      return { previousInboxEntries }
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries(getInboxEntriesQueryKey())
-    },
-  })
+        return { oldInboxEntries }
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries(getInboxEntriesQueryKey())
+      },
+    }
+  )
 }
 
 async function addInboxEntry({ text }: AddInboxEntryBody) {
@@ -40,4 +63,14 @@ async function addInboxEntry({ text }: AddInboxEntryBody) {
   body.append('text', text)
 
   return (await getClient()).post('inbox/share', { body }).json<InboxEntryData>()
+}
+
+async function removeInboxEntry({ id }: RemoveInboxEntryQuery) {
+  await (await getClient()).delete(`inbox/${id}`)
+}
+
+type InboxEntryMutation = Mutation<AddInboxEntryBody, 'insert'> | Mutation<RemoveInboxEntryQuery, 'delete'>
+
+interface InboxEntryContext {
+  oldInboxEntries?: InboxEntriesData
 }

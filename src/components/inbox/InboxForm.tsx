@@ -21,7 +21,7 @@ const InboxForm: React.FC = () => {
   const { error, isLoading, mutate } = useInboxEntryMutation()
 
   const onSubmit = handleSubmit((data) => {
-    mutate(data, { onSuccess: onSuccessfulMutation })
+    mutate({ action: 'insert', ...data }, { onSuccess: onSuccessfulMutation })
   })
 
   function onSuccessfulMutation() {
