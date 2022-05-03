@@ -77,11 +77,11 @@ const InboxListEntry: React.FC<InboxListEntryProps> = ({ entry }) => {
   const textClasses = clst(styles.entry, 'min-w-0 break-words')
 
   return (
-    <List.Item className="items-start py-2 pr-2">
+    <List.Item className="py-2 pr-2">
       <LinkItUrl>
         <div className={textClasses}>{entry.text}</div>
       </LinkItUrl>
-      <div className="flex">
+      <div className="flex self-start">
         <List.Button icon={RiClipboardLine} tooltip="Copy" onPress={onClickCopy} />
         <List.Button icon={RiDeleteBin7Line} tooltip="Delete" onPress={onClickRemove} />
       </div>
