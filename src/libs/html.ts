@@ -1,7 +1,11 @@
+const applePlatforms = ['macOS', 'iOS', 'iPadOS']
+
 // As of 02/15/22, the `userAgentData` Navigator API is currently not available on any iOS browser.
 // https://caniuse.com/mdn-api_navigator_useragentdata
-export const isPlatformMacOS =
-  (isUserAgentDataPlatformAvailable() && navigator.userAgentData?.platform === 'macOS') ||
+export const isApplePlatform =
+  (isUserAgentDataPlatformAvailable() &&
+    navigator.userAgentData?.platform &&
+    applePlatforms.includes(navigator.userAgentData.platform)) ||
   (typeof navigator === 'object' && /Mac|iPad|iPhone|iPod/.test(navigator.platform))
 
 export function isPwa() {
