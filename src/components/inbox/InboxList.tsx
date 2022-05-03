@@ -6,6 +6,7 @@ import List from 'components/ui/List'
 import { LIST_SHIMMER_CLASSES } from 'constants/shimmer'
 import useInboxEntriesQuery from 'hooks/useInboxEntriesQuery'
 import { useInboxEntryMutation } from 'hooks/useInboxEntryMutation'
+import { useNetworkStatus } from 'hooks/useNetworkStatus'
 import useToast from 'hooks/useToast'
 import { isNonEmptyArray } from 'libs/array'
 import { InboxEntryData } from 'libs/db/inbox'
@@ -47,6 +48,8 @@ const InboxList: React.FC = () => {
 export default InboxList
 
 const InboxListEntry: React.FC<InboxListEntryProps> = ({ entry }) => {
+  const { offline } = useNetworkStatus()
+
   const { addToast } = useToast()
 
   const { mutate } = useInboxEntryMutation()
@@ -83,7 +86,7 @@ const InboxListEntry: React.FC<InboxListEntryProps> = ({ entry }) => {
       </LinkItUrl>
       <div className="flex self-start">
         <List.Button icon={RiClipboardLine} tooltip="Copy" onPress={onClickCopy} />
-        <List.Button icon={RiDeleteBin7Line} tooltip="Delete" onPress={onClickRemove} />
+        <List.Button icon={RiDeleteBin7Line} tooltip="Delete" onPress={onClickRemove} disabled={offline} />
       </div>
     </List.Item>
   )
