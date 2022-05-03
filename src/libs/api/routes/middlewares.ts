@@ -4,7 +4,6 @@ import { getSession } from 'next-auth/react'
 import StatusCode from 'status-code-enum'
 
 import { IMAGE_SUPPORTED_TYPES } from 'constants/image'
-import { getUserByInboxToken } from 'libs/db/user'
 import { z } from 'libs/validation'
 
 const fileMemoryStorage = multer.memoryStorage()
@@ -30,35 +29,6 @@ export function withAuth(handler: NextApiHandler) {
     }
 
     req.user = session.user
-
-    return handler(req, res)
-  }
-}
-
-export function withAuthOrInboxToken<
-  TSchema extends Omit<ApiRequestValidationSchema, 'body'> & { body: { token?: string } },
-  TResponseType
->(handler: ApiHandlerWithFormDataValidation<TSchema, TResponseType>) {
-  return async (req: ValidatedApiFormDataRequest<TSchema>, res: NextApiResponse<TResponseType>) => {
-    const session = await getSession({ req })
-
-    if (session) {
-      req.user = session.user
-    }
-
-    if (req.body.token) {
-      const user = await getUserByInboxToken(req.body.token)
-
-      if (user && user.email) {
-        req.user = { email: user.email, id: user.id }
-      } else {
-        req.user = undefined
-      }
-    }
-
-    if (!req.user) {
-      return res.status(StatusCode.ClientErrorUnauthorized).end()
-    }
 
     return handler(req, res)
   }

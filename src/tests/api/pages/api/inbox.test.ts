@@ -1,12 +1,13 @@
 import assert from 'assert'
 
+import faker from '@faker-js/faker'
 import cuid from 'cuid'
 import StatusCode from 'status-code-enum'
 
 import { HttpMethod } from 'constants/http'
 import { ApiErrorResponse, API_ERROR_INBOX_ENTRY_DOES_NOT_EXIST } from 'libs/api/routes/errors'
 import { isDateEqual } from 'libs/date'
-import { type InboxEntriesData } from 'libs/db/inbox'
+import { type InboxEntryData, type InboxEntriesData } from 'libs/db/inbox'
 import indexHandler from 'pages/api/inbox'
 import idHandler from 'pages/api/inbox/[id]'
 import { getTestUser, testApiRoute } from 'tests/api'
@@ -73,6 +74,35 @@ describe('inbox', () => {
       }))
   })
 
+  describe('POST', () => {
+    test('should not add an inbox entry with no text', async () =>
+      testApiRoute(indexHandler, async ({ fetch }) => {
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: JSON.stringify({}),
+        })
+
+        expect(res.status).toBe(StatusCode.ClientErrorBadRequest)
+      }))
+
+    test('should add an inbox entry', async () =>
+      testApiRoute(indexHandler, async ({ fetch }) => {
+        const { text } = getFakeInboxEntry()
+
+        const res = await fetch({
+          method: HttpMethod.POST,
+          body: JSON.stringify({ text }),
+        })
+        const json = await res.json<InboxEntryData>()
+
+        const testInboxEntry = await getTestInboxEntry(json.id)
+
+        expect(testInboxEntry).toBeDefined()
+        expect(testInboxEntry?.text).toBe(text)
+        expect(testInboxEntry?.createdAt).toBeDefined()
+      }))
+  })
+
   describe('DELETE', () => {
     test('should remove an empty folder', async () => {
       const { id } = await createTestInboxEntry()
@@ -131,3 +161,7 @@ describe('inbox', () => {
     })
   })
 })
+
+function getFakeInboxEntry() {
+  return { text: faker.random.words() }
+}

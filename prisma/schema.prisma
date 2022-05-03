@@ -20,8 +20,6 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
 
-  inboxToken String @default(cuid())
-
   sessions     Session[]
   folders      Folder[]
   notes        Note[]

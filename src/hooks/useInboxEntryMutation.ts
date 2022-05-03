@@ -4,8 +4,8 @@ import { useMutation, useQueryClient } from 'react-query'
 import { getInboxEntriesQueryKey } from 'hooks/useInboxEntriesQuery'
 import { getClient, Mutation } from 'libs/api/client'
 import { type InboxEntriesData, type InboxEntryData } from 'libs/db/inbox'
+import { type AddInboxEntryBody } from 'pages/api/inbox'
 import { type RemoveInboxEntryQuery } from 'pages/api/inbox/[id]'
-import { type AddInboxEntryBody } from 'pages/api/inbox/share'
 
 export function useInboxEntryMutation() {
   const queryClient = useQueryClient()
@@ -14,7 +14,7 @@ export function useInboxEntryMutation() {
     (data) => {
       switch (data.action) {
         case 'insert': {
-          return addInboxEntry({ text: data.text, token: data.token })
+          return addInboxEntry({ text: data.text })
         }
         case 'delete': {
           return removeInboxEntry({ id: data.id })
@@ -58,11 +58,8 @@ export function useInboxEntryMutation() {
   )
 }
 
-async function addInboxEntry({ text }: AddInboxEntryBody) {
-  const body = new FormData()
-  body.append('text', text)
-
-  return (await getClient()).post('inbox/share', { body }).json<InboxEntryData>()
+async function addInboxEntry(data: AddInboxEntryBody) {
+  return (await getClient()).post('inbox', { json: data }).json<InboxEntryData>()
 }
 
 async function removeInboxEntry({ id }: RemoveInboxEntryQuery) {
