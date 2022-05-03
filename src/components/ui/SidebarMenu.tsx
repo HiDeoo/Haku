@@ -2,6 +2,7 @@ import { Arrow, Content, Item, Root, Trigger } from '@radix-ui/react-dropdown-me
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useResetAtom } from 'jotai/utils'
 import { forwardRef } from 'react'
+import { BsFillLayersFill } from 'react-icons/bs'
 import {
   RiBugLine,
   RiInstallLine,
@@ -27,6 +28,7 @@ import Flex from 'components/ui/Flex'
 import Icon, { type IconProps } from 'components/ui/Icon'
 import { logout } from 'libs/auth'
 import { openGitHubIssuePage } from 'libs/github'
+import { isApplePlatform } from 'libs/html'
 import clst from 'styles/clst'
 
 const SidebarMenu: React.FC = () => {
@@ -46,6 +48,10 @@ const SidebarMenu: React.FC = () => {
     deferrefPromptEvent?.prompt()
 
     resetDeferrefPromptEvent()
+  }
+
+  function onClickInstallShortcut() {
+    window.open(`/Add to Haku inbox${process.env.NODE_ENV === 'production' ? '' : ' (dev)'}.shortcut`)
   }
 
   const menuClasses = clst(
@@ -93,6 +99,11 @@ const SidebarMenu: React.FC = () => {
             <Item asChild>
               <SidebarMenuItem label="Keyboard Shortcuts" icon={RiKeyboardFill} onClick={onClickKeyboardShortcuts} />
             </Item>
+            {isApplePlatform ? (
+              <Item asChild>
+                <SidebarMenuItem label="Get Apple Shortcut" icon={BsFillLayersFill} onClick={onClickInstallShortcut} />
+              </Item>
+            ) : null}
             {deferrefPromptEvent ? (
               <Item asChild>
                 <SidebarMenuItem label="Install App" icon={RiInstallLine} onClick={onClickInstallApp} />
