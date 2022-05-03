@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useMemo } from 'react'
 
-import { setShortcutModalOpenedAtom, shortcutModalAtom } from 'atoms/modal'
+import { setShortcutModalOpenedAtom, shortcutModalAtom } from 'atoms/togglable'
 import ShortcutList from 'components/shortcut/ShortcutList'
 import Modal from 'components/ui/Modal'
 import useGlobalShortcuts from 'hooks/useGlobalShortcuts'

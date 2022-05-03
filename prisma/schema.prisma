@@ -20,10 +20,11 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
 
-  sessions Session[]
-  folders  Folder[]
-  notes    Note[]
-  todos    Todo[]
+  sessions     Session[]
+  folders      Folder[]
+  notes        Note[]
+  todos        Todo[]
+  inboxEntries InboxEntry[]
 }
 
 model Session {
@@ -132,4 +133,17 @@ enum TodoNodeStatus {
   ACTIVE
   CANCELLED
   COMPLETED
+}
+
+model InboxEntry {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  text      String
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  searchVector Unsupported("TSVECTOR")?
+
+  @@index([searchVector], name: "InboxEntry_searchVector_index")
 }

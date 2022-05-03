@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { type NestedValue, useForm } from 'react-hook-form'
 import { RiFolderAddLine } from 'react-icons/ri'
 
-import { folderModalAtom, setFolderModalOpenedAtom } from 'atoms/modal'
+import { folderModalAtom, setFolderModalOpenedAtom } from 'atoms/togglable'
 import FolderPicker from 'components/folder/FolderPicker'
 import Button from 'components/form/Button'
 import Form from 'components/form/Form'

@@ -33,6 +33,18 @@
     }
   }
 
+  .animate-drawer-content {
+    @media (prefers-reduced-motion: no-preference) {
+      &[data-state='open'] {
+        @apply animate-swipe-in-left;
+      }
+
+      &[data-state='closed'] {
+        @apply animate-swipe-out-left;
+      }
+    }
+  }
+
   .animate-palette-content {
     @media (prefers-reduced-motion: no-preference) {
       &[data-state='open'] {

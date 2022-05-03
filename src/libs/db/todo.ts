@@ -1,4 +1,4 @@
-import { FolderType, Prisma, Todo } from '@prisma/client'
+import { FolderType, Prisma, type Todo } from '@prisma/client'
 import slug from 'url-slug'
 
 import { ApiError, API_ERROR_TODO_ALREADY_EXISTS, API_ERROR_TODO_DOES_NOT_EXIST } from 'libs/api/routes/errors'

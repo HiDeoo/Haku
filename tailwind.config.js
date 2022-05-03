@@ -24,8 +24,10 @@ module.exports = {
         'scale-out': 'scaleOut 150ms ease-in',
         'slide-in': 'slideIn 250ms ease-out',
         'slide-out': 'slideOut 200ms ease-in',
-        'swipe-in': 'swipeIn 250ms ease-out',
-        'swipe-out': 'swipeOut 200ms ease-in',
+        'swipe-in-left': 'swipeInLeft 250ms ease-out',
+        'swipe-out-left': 'swipeOutLeft 200ms ease-in',
+        'swipe-in-right': 'swipeInRight 250ms ease-out',
+        'swipe-out-right': 'swipeOutRight 200ms ease-in',
       },
       backgroundImage: {
         checkboard: "repeating-conic-gradient(theme('colors.zinc.600') 0% 25%, theme('colors.zinc.400') 0% 50%)",
@@ -144,7 +146,7 @@ module.exports = {
             transform: 'scaleY(0)',
           },
         },
-        swipeIn: {
+        swipeInRight: {
           '0%': {
             opacity: '0',
             transform: 'translateX(100%)',
@@ -154,7 +156,7 @@ module.exports = {
             transform: 'translateX(0)',
           },
         },
-        swipeOut: {
+        swipeOutRight: {
           '0%': {
             opacity: '1',
             transform: 'translateX(0)',
@@ -162,6 +164,26 @@ module.exports = {
           '100%': {
             opacity: '0',
             transform: 'translateX(100%)',
+          },
+        },
+        swipeInLeft: {
+          '0%': {
+            opacity: '0',
+            transform: 'translateX(-100%)',
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'translateX(0)',
+          },
+        },
+        swipeOutLeft: {
+          '0%': {
+            opacity: '1',
+            transform: 'translateX(0)',
+          },
+          '100%': {
+            opacity: '0',
+            transform: 'translateX(-100%)',
           },
         },
       },

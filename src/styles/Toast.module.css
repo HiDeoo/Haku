@@ -5,11 +5,11 @@
 
   @media (prefers-reduced-motion: no-preference) {
     &[data-state='open'] {
-      @apply animate-swipe-in;
+      @apply animate-swipe-in-right;
     }
 
     &[data-state='closed'] {
-      @apply animate-swipe-out;
+      @apply animate-swipe-out-right;
     }
 
     &[data-swipe='move'] {

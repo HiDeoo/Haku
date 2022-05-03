@@ -11,10 +11,13 @@ export interface FileData {
   type: ContentType
 }
 
-export type SearchResulstData = SearchResultData[]
-export interface SearchResultData extends FileData {
+type InboxEntrySearchData = Omit<FileData, 'name' | 'slug' | 'type'> & { name: null; slug: null; type: 'INBOX' }
+
+export type SearchResultData = (FileData | InboxEntrySearchData) & {
   excerpt: string
 }
+
+export type SearchResultsData = SearchResultData[]
 
 export function getFiles(userId: UserId): Promise<FilesData> {
   return prisma.$queryRaw<FilesData>`
@@ -41,14 +44,14 @@ ORDER BY
   "name" ASC`
 }
 
-export function searchFiles(userId: UserId, query: string, page?: string): Promise<SearchResulstData> {
+export function searchFiles(userId: UserId, query: string, page?: string): Promise<SearchResultsData> {
   if (query.length < SEARCH_QUERY_MIN_LENGTH) {
     throw new ApiError(API_ERROR_SEARCH_QUERY_TOO_SHORT)
   }
 
   const offset = (page ? parseInt(page, 10) : 0) * SEARCH_RESULT_LIMIT
 
-  return prisma.$queryRaw<SearchResulstData>`
+  return prisma.$queryRaw<SearchResultsData>`
 WITH search AS (
   SELECT websearch_to_tsquery('simple', ${query}) AS query
 )
@@ -60,6 +63,20 @@ SELECT
   ts_headline('simple', results."content", search."query", 'StartSel=<strong>, StopSel=</strong>') AS "excerpt"
 FROM
   (
+    SELECT
+      inboxEntry."id",
+      NULL AS "name",
+      NULL AS "slug",
+      inboxEntry."text" AS "content",
+      'INBOX' AS "type",
+      ts_rank(inboxEntry."searchVector", search."query") AS "rank"
+    FROM
+      "InboxEntry" inboxEntry,
+      search
+    WHERE
+      inboxEntry."userId" = ${userId}
+      AND inboxEntry."searchVector" @@ search."query"
+    UNION
     SELECT
       note."id",
       note."name",
@@ -114,7 +131,7 @@ FROM
       ) AS todoAndTodoNode
     ORDER BY
       "rank" DESC,
-      "name" ASC,
+      "name" ASC NULLS LAST,
       "type" ASC,
       "id" ASC
     LIMIT ${SEARCH_RESULT_LIMIT}

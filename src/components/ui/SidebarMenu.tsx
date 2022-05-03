@@ -2,6 +2,7 @@ import { Arrow, Content, Item, Root, Trigger } from '@radix-ui/react-dropdown-me
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useResetAtom } from 'jotai/utils'
 import { forwardRef } from 'react'
+import { BsFillLayersFill } from 'react-icons/bs'
 import {
   RiBugLine,
   RiInstallLine,
@@ -13,19 +14,21 @@ import {
 } from 'react-icons/ri'
 
 import { sidebarCollapsedAtom, toggleSidebarCollapsedAtom } from 'atoms/collapsible'
-import { setShortcutModalOpenedAtom } from 'atoms/modal'
 import { deferrefPromptEventAtom } from 'atoms/pwa'
+import { setShortcutModalOpenedAtom } from 'atoms/togglable'
 import ContentModal from 'components/content/ContentModal'
 import ContentTypeSwitch from 'components/content/ContentTypeSwitch'
 import FolderModal from 'components/folder/FolderModal'
 import Button, { type ButtonPropsWithOnClickHandler } from 'components/form/Button'
 import IconButton from 'components/form/IconButton'
+import InboxDrawer from 'components/inbox/InboxDrawer'
 import SearchPalette from 'components/palette/SearchPalette'
 import ShortcutModal from 'components/shortcut/ShortcutModal'
 import Flex from 'components/ui/Flex'
 import Icon, { type IconProps } from 'components/ui/Icon'
 import { logout } from 'libs/auth'
 import { openGitHubIssuePage } from 'libs/github'
+import { isApplePlatform } from 'libs/html'
 import clst from 'styles/clst'
 
 const SidebarMenu: React.FC = () => {
@@ -47,12 +50,16 @@ const SidebarMenu: React.FC = () => {
     resetDeferrefPromptEvent()
   }
 
+  function onClickInstallShortcut() {
+    window.open(`/Add to Haku inbox${process.env.NODE_ENV === 'production' ? '' : ' (dev)'}.shortcut`)
+  }
+
   const menuClasses = clst(
     'z-10 py-2 supports-max:pb-[calc(theme(spacing.2)+max(0px,env(safe-area-inset-bottom)))]',
     sidebarCollapsed
       ? 'px-2 supports-max:pl-[calc(theme(spacing.2)+max(0px,env(safe-area-inset-left)))] h-full gap-1'
       : [
-          'px-4 supports-max:pl-[calc(theme(spacing.4)+max(0px,env(safe-area-inset-left)))]',
+          'px-2.5 supports-max:pl-[calc(theme(spacing[2.5])+max(0px,env(safe-area-inset-left)))]',
           'border-t border-zinc-600/40 shadow-[0_-1px_1px_0_theme(colors.black)]',
         ]
   )
@@ -60,7 +67,8 @@ const SidebarMenu: React.FC = () => {
   return (
     <Flex justifyContent="center" direction={sidebarCollapsed ? 'col' : 'row'} className={menuClasses}>
       <ContentTypeSwitch />
-      <div className="grow" />
+      {sidebarCollapsed ? <div className="grow" /> : null}
+      <InboxDrawer />
       <ContentModal />
       <FolderModal />
       <ShortcutModal />
@@ -91,6 +99,11 @@ const SidebarMenu: React.FC = () => {
             <Item asChild>
               <SidebarMenuItem label="Keyboard Shortcuts" icon={RiKeyboardFill} onClick={onClickKeyboardShortcuts} />
             </Item>
+            {isApplePlatform ? (
+              <Item asChild>
+                <SidebarMenuItem label="Get Apple Shortcut" icon={BsFillLayersFill} onClick={onClickInstallShortcut} />
+              </Item>
+            ) : null}
             {deferrefPromptEvent ? (
               <Item asChild>
                 <SidebarMenuItem label="Install App" icon={RiInstallLine} onClick={onClickInstallApp} />

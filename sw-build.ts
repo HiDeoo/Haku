@@ -1,4 +1,5 @@
 import fs from 'fs/promises'
+import path from 'path'
 
 import * as swc from '@swc/core'
 import { type BuildManifest } from 'next/dist/server/get-page-files'
@@ -31,7 +32,7 @@ async function build() {
 async function buildServiceWorker() {
   const { code } = await swc.transformFile('src/sw/sw.ts', swcOptions)
 
-  return fs.writeFile('./public/sw.js', code)
+  return fs.writeFile(path.resolve('public', 'sw.js'), code)
 }
 
 async function buildServiceWorkerConfig() {
@@ -74,7 +75,7 @@ const CACHES = ${JSON.stringify(SW_CACHES)};`,
     swcOptions
   )
 
-  return fs.writeFile('./public/sw-config.js', code)
+  return fs.writeFile(path.resolve('public', 'sw-config.js'), code)
 }
 
 function getAssetPath(file: string) {

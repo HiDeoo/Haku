@@ -1,8 +1,8 @@
-import { isPlatformMacOS, isTextInputElement } from 'libs/html'
+import { isApplePlatform, isTextInputElement } from 'libs/html'
 
 const modifiers = ['Alt', 'Control', 'Meta', 'Shift']
 
-const platformNativeMetaModifier = isPlatformMacOS ? 'Meta' : 'Control'
+const platformNativeMetaModifier = isApplePlatform ? 'Meta' : 'Control'
 
 export function getShortcutMap<TKeybinding extends Keybinding>(shortcuts: readonly Shortcut<TKeybinding>[]) {
   const shortcutMap = {} as Record<TKeybinding, Shortcut & { parsedKeybinding: ParsedKeybinding }>
@@ -33,15 +33,15 @@ export function isShortcutEvent(
 }
 
 export function getKeyAriaLabel(key: string): string {
-  return key.replace('Alt', isPlatformMacOS ? 'Option' : 'Alt').replace('Meta', isPlatformMacOS ? 'Command' : 'Control')
+  return key.replace('Alt', isApplePlatform ? 'Option' : 'Alt').replace('Meta', isApplePlatform ? 'Command' : 'Control')
 }
 
 export function prettyPrintKey(key: string): string {
   return key
-    .replace('Alt', isPlatformMacOS ? '⌥' : 'Alt')
-    .replace('Meta', isPlatformMacOS ? '⌘' : 'Ctrl')
-    .replace('Control', isPlatformMacOS ? '⌃' : 'Ctrl')
-    .replace('Shift', isPlatformMacOS ? '⇧' : 'Shift')
+    .replace('Alt', isApplePlatform ? '⌥' : 'Alt')
+    .replace('Meta', isApplePlatform ? '⌘' : 'Ctrl')
+    .replace('Control', isApplePlatform ? '⌃' : 'Ctrl')
+    .replace('Shift', isApplePlatform ? '⇧' : 'Shift')
     .replace('Enter', '⏎')
     .replace('Backspace', '⌫')
     .replace('Tab', '⇥')

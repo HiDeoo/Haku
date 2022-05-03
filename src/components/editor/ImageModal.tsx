@@ -1,7 +1,7 @@
 import { useAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { imageModalAtom } from 'atoms/modal'
+import { imageModalAtom } from 'atoms/togglable'
 import Modal from 'components/ui/Modal'
 import { getA11yImageReactAttributes } from 'libs/image'
 

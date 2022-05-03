@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react'
 import Callout from 'components/form/Callout'
 import { type ApiErrorResponse } from 'libs/api/routes/errors'
 
-const Form: React.FC<FormProps> = ({ children, error, errorMessage, onSubmit }) => {
+const Form: React.FC<FormProps> = ({ children, className, error, errorMessage, onSubmit }) => {
   return (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={onSubmit} className={className}>
       {error || errorMessage ? <FormError error={error} errorMessage={errorMessage} /> : null}
       {children}
     </form>
@@ -53,6 +53,7 @@ function isApiErrorResponse(json: unknown): json is ApiErrorResponse {
 
 interface FormProps {
   children: React.ReactNode
+  className?: string
   error?: unknown
   errorMessage?: string
   onSubmit: NonNullable<React.DOMAttributes<HTMLFormElement>['onSubmit']>

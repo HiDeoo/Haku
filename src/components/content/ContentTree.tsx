@@ -3,7 +3,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { RiFileTextLine, RiFolderLine } from 'react-icons/ri'
 
 import { sidebarCollapsedAtom } from 'atoms/collapsible'
-import { contentModalAtom, folderModalAtom, setContentModalOpenedAtom } from 'atoms/modal'
+import { contentModalAtom, folderModalAtom, setContentModalOpenedAtom } from 'atoms/togglable'
 import ContentTreeNode from 'components/content/ContentTreeNode'
 import Button from 'components/form/Button'
 import ContextMenu from 'components/ui/ContextMenu'

@@ -38,4 +38,4 @@ export const TODO_SHIMMER_CLASSES_AND_LEVELS = [
   ['w-4/6', 2],
 ] as const
 
-export const HISTORY_SHIMMER_CLASSES = ['w-3/5', 'w-3/6', 'w-10/12', 'w-8/12', 'w-4/5']
+export const LIST_SHIMMER_CLASSES = ['w-3/5', 'w-3/6', 'w-10/12', 'w-8/12', 'w-4/5']

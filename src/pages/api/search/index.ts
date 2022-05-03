@@ -2,7 +2,7 @@ import { type NextApiResponse } from 'next'
 
 import { createApiRoute, getApiRequestUser } from 'libs/api/routes'
 import { type ValidatedApiRequest, withAuth, withValidation } from 'libs/api/routes/middlewares'
-import { type SearchResulstData, searchFiles } from 'libs/db/file'
+import { type SearchResultsData, searchFiles } from 'libs/db/file'
 import { z } from 'libs/validation'
 
 const getQueryScrhema = z.object({
@@ -21,7 +21,7 @@ export default route
 
 async function getHandler(
   req: ValidatedApiRequest<{ query: SearchFileQuery }>,
-  res: NextApiResponse<SearchResulstData>
+  res: NextApiResponse<SearchResultsData>
 ) {
   const { userId } = getApiRequestUser(req)
 

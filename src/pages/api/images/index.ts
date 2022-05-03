@@ -1,12 +1,12 @@
-import { type NextApiResponse } from 'next'
+import { type NextApiResponse, type PageConfig } from 'next'
 
 import { IMAGE_MAX_SIZE_IN_MEGABYTES } from 'constants/image'
 import { createApiRoute, getApiRequestUser } from 'libs/api/routes'
 import {
   imageFileFilter,
-  type ValidatedApiRequestWithFile,
+  type ValidatedApiFormDataRequest,
   withAuth,
-  withValidationAndFile,
+  withFormDataValidation,
 } from 'libs/api/routes/middlewares'
 import { type ImageData, uploadToCloudinary } from 'libs/cloudinary'
 import { getBytesFromMegaBytes } from 'libs/math'
@@ -18,19 +18,21 @@ const postBodySchema = z.object({
 
 const route = createApiRoute(
   {
-    post: withValidationAndFile(
-      postHandler,
-      getBytesFromMegaBytes(IMAGE_MAX_SIZE_IN_MEGABYTES),
-      imageFileFilter,
-      postBodySchema
-    ),
+    post: withFormDataValidation(postHandler, {
+      maxFileSizeInBytes: getBytesFromMegaBytes(IMAGE_MAX_SIZE_IN_MEGABYTES),
+      fileFilter: imageFileFilter,
+      bodySchema: postBodySchema,
+    }),
   },
   [withAuth]
 )
 
 export default route
 
-async function postHandler(req: ValidatedApiRequestWithFile<{ body: AddImageBody }>, res: NextApiResponse<ImageData>) {
+async function postHandler(
+  req: ValidatedApiFormDataRequest<{ body: AddImageBody; file: true }>,
+  res: NextApiResponse<ImageData>
+) {
   const { userId } = getApiRequestUser(req)
 
   const image = await uploadToCloudinary(userId, req.file, req.body.referenceId)
@@ -38,7 +40,7 @@ async function postHandler(req: ValidatedApiRequestWithFile<{ body: AddImageBody
   return res.status(200).json(image)
 }
 
-export const config = {
+export const config: PageConfig = {
   api: {
     bodyParser: false,
   },

@@ -3,10 +3,9 @@ import { RiArrowRightSLine } from 'react-icons/ri'
 
 import Flex from 'components/ui/Flex'
 import Icon from 'components/ui/Icon'
-import Shimmer from 'components/ui/Shimmer'
+import List from 'components/ui/List'
 import { ContentType } from 'constants/contentType'
-import { HISTORY_RESULT_LIMIT_PER_TYPE } from 'constants/history'
-import { HISTORY_SHIMMER_CLASSES } from 'constants/shimmer'
+import { LIST_SHIMMER_CLASSES } from 'constants/shimmer'
 import useContentHistoryQuery from 'hooks/useContentHistoryQuery'
 import { getContentType } from 'hooks/useContentType'
 import { isNonEmptyArray } from 'libs/array'
@@ -48,33 +47,27 @@ const ContentHistorySection: React.FC<ContentHistorySectionProps> = ({ entries, 
 
   const { cType, urlPath } = getContentType(type)
 
-  const entryClasses = clst(
-    'flex items-center gap-3 px-3 py-3 bg-zinc-700/40',
-    'border border-zinc-900 border-b-0 last:border-b first:rounded-t-lg last:rounded-b-lg',
-    'focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-inset'
-  )
-  const shimmerClasses = clst(entryClasses, 'min-h-[2.8125rem] block')
-  const linkClasses = clst(entryClasses, 'hover:bg-blue-600 hover:text-blue-50')
-
   return (
-    <div className="w-full xs:w-96">
-      <h1 className="mb-1.5 ml-0.5 text-lg">Recent {cType}s</h1>
-      <div>
-        {isLoading
-          ? Array.from({ length: HISTORY_RESULT_LIMIT_PER_TYPE }).map((_, index) => (
-              <Shimmer key={`shimmer-${index}`} className={shimmerClasses}>
-                <Shimmer.Line className={HISTORY_SHIMMER_CLASSES[index]} />
-              </Shimmer>
-            ))
-          : entries.map((entry) => (
-              <Link key={entry.id} href={`${urlPath}/${entry.id}/${entry.slug}`} prefetch={false}>
-                <a className={linkClasses}>
-                  <span className="grow truncate">{entry.name}</span>
-                  <Icon icon={RiArrowRightSLine} className="block shrink-0 opacity-75" aria-hidden />
-                </a>
-              </Link>
-            ))}
-      </div>
+    <div className="w-full md:w-96">
+      <List isLoading={isLoading} title={`Recent ${cType}s`} shimmerClassNames={LIST_SHIMMER_CLASSES}>
+        {entries.map((entry) => (
+          <List.Item key={entry.id}>
+            {(itemProps) => {
+              const { className, ...props } = itemProps
+              const linkCkasses = clst(className, 'hover:bg-blue-600 hover:text-blue-50')
+
+              return (
+                <Link href={`${urlPath}/${entry.id}/${entry.slug}`} prefetch={false}>
+                  <a {...props} className={linkCkasses}>
+                    <span className="grow truncate">{entry.name}</span>
+                    <Icon icon={RiArrowRightSLine} className="block shrink-0 opacity-75" aria-hidden />
+                  </a>
+                </Link>
+              )
+            }}
+          </List.Item>
+        ))}
+      </List>
     </div>
   )
 }
