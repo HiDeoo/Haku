@@ -1,6 +1,8 @@
+import { useAtomValue } from 'jotai'
 import Link from 'next/link'
 import { RiArrowRightSLine } from 'react-icons/ri'
 
+import { sidebarCollapsedAtom } from 'atoms/collapsible'
 import Flex from 'components/ui/Flex'
 import Icon from 'components/ui/Icon'
 import List from 'components/ui/List'
@@ -41,11 +43,15 @@ const ContentHistory: React.FC<ContentHistoryProps> = ({ focusedType }) => {
 export default ContentHistory
 
 const ContentHistorySection: React.FC<ContentHistorySectionProps> = ({ entries, isLoading, type }) => {
+  const sidebarCollapsed = useAtomValue(sidebarCollapsedAtom)
+
   if (!isLoading && isEmpty(entries)) {
     return null
   }
 
   const { cType, urlPath } = getContentType(type)
+
+  const iconClasses = clst('block shrink-0 opacity-75', !sidebarCollapsed && 'hidden xs:block')
 
   return (
     <div className="w-full md:w-96">
@@ -60,7 +66,7 @@ const ContentHistorySection: React.FC<ContentHistorySectionProps> = ({ entries, 
                 <Link href={`${urlPath}/${entry.id}/${entry.slug}`} prefetch={false}>
                   <a {...props} className={linkCkasses}>
                     <span className="grow truncate">{entry.name}</span>
-                    <Icon icon={RiArrowRightSLine} className="block shrink-0 opacity-75" aria-hidden />
+                    <Icon icon={RiArrowRightSLine} className={iconClasses} aria-hidden />
                   </a>
                 </Link>
               )
