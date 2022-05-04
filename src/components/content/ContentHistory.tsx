@@ -8,7 +8,7 @@ import { ContentType } from 'constants/contentType'
 import { LIST_SHIMMER_CLASSES } from 'constants/shimmer'
 import useContentHistoryQuery from 'hooks/useContentHistoryQuery'
 import { getContentType } from 'hooks/useContentType'
-import { isNonEmptyArray } from 'libs/array'
+import { isEmpty } from 'libs/array'
 import { HistoryData } from 'libs/db/history'
 import clst from 'styles/clst'
 
@@ -18,7 +18,7 @@ const ContentHistory: React.FC<ContentHistoryProps> = ({ focusedType }) => {
   const isNoteFocusedType = focusedType === ContentType.NOTE
   const alternateType = isNoteFocusedType ? ContentType.TODO : ContentType.NOTE
 
-  if (!isLoading && !isNonEmptyArray(data?.notes) && !isNonEmptyArray(data?.todos)) {
+  if (!isLoading && isEmpty(data?.notes) && isEmpty(data?.todos)) {
     return null
   }
 
@@ -41,7 +41,7 @@ const ContentHistory: React.FC<ContentHistoryProps> = ({ focusedType }) => {
 export default ContentHistory
 
 const ContentHistorySection: React.FC<ContentHistorySectionProps> = ({ entries, isLoading, type }) => {
-  if (!isLoading && !isNonEmptyArray(entries)) {
+  if (!isLoading && isEmpty(entries)) {
     return null
   }
 

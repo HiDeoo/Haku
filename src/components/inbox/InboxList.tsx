@@ -8,7 +8,7 @@ import useInboxEntriesQuery from 'hooks/useInboxEntriesQuery'
 import { useInboxEntryMutation } from 'hooks/useInboxEntryMutation'
 import { useNetworkStatus } from 'hooks/useNetworkStatus'
 import useToast from 'hooks/useToast'
-import { isNonEmptyArray } from 'libs/array'
+import { isEmpty } from 'libs/array'
 import { InboxEntryData } from 'libs/db/inbox'
 import clst from 'styles/clst'
 import styles from 'styles/InboxList.module.css'
@@ -22,7 +22,7 @@ const listClasses = clst(
 const InboxList: React.FC = () => {
   const { data, isLoading } = useInboxEntriesQuery()
 
-  if (!isLoading && !isNonEmptyArray(data)) {
+  if (!isLoading && isEmpty(data)) {
     return (
       <Flex
         fullWidth

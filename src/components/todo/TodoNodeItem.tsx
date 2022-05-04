@@ -12,7 +12,7 @@ import { TODO_NODE_ITEM_SHORTCUTS } from 'constants/shortcut'
 import { TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS } from 'constants/ui'
 import useTodoNode, { TodoContext } from 'hooks/useTodoNode'
 import useTodoNodeChildren from 'hooks/useTodoNodeChildren'
-import { isNonEmptyArray } from 'libs/array'
+import { isNotEmpty } from 'libs/array'
 import { type TodoNodeData } from 'libs/db/todoNodes'
 import {
   type CaretPosition,
@@ -326,7 +326,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
             status={node.status}
             collapsed={node.collapsed}
             toggleCollapsed={toggleCollapsed}
-            hasChildren={isNonEmptyArray(children)}
+            hasChildren={isNotEmpty(children)}
           />
           <div className="w-full">
             <div

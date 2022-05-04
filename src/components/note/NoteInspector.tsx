@@ -38,7 +38,7 @@ import FloatingButton from 'components/ui/FloatingButton'
 import Icon from 'components/ui/Icon'
 import Inspector from 'components/ui/Inspector'
 import { IMAGE_SUPPORTED_TYPES } from 'constants/image'
-import { isNonEmptyArray } from 'libs/array'
+import { isNotEmpty } from 'libs/array'
 import clst from 'styles/clst'
 
 const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorState, setLinkModalOpened }) => {
@@ -260,7 +260,7 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
             onPress={addHorizontalRule}
           />
         </Inspector.Section>
-        {!collapsed && isNonEmptyArray(editorState.toc) ? (
+        {!collapsed && isNotEmpty(editorState.toc) ? (
           <Inspector.Section
             role="tree"
             title="Table of contents"

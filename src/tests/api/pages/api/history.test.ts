@@ -2,7 +2,7 @@ import assert from 'assert'
 
 import { HISTORY_RESULT_LIMIT_PER_TYPE } from 'constants/history'
 import { HttpMethod } from 'constants/http'
-import { isNonEmptyArray } from 'libs/array'
+import { isEmpty, isNotEmpty } from 'libs/array'
 import { type HistoryData } from 'libs/db/history'
 import indexHandler from 'pages/api/history'
 import { getTestUser, testApiRoute } from 'tests/api'
@@ -16,9 +16,9 @@ describe('history', () => {
           const res = await fetch({ method: HttpMethod.GET })
           const json = await res.json<HistoryData>()
 
-          expect(!isNonEmptyArray(json.notes)).toBe(true)
+          expect(isEmpty(json.notes)).toBe(true)
 
-          expect(!isNonEmptyArray(json.todos)).toBe(true)
+          expect(isEmpty(json.todos)).toBe(true)
         }))
 
       test('should return an history without notes', () =>
@@ -28,9 +28,9 @@ describe('history', () => {
           const res = await fetch({ method: HttpMethod.GET })
           const json = await res.json<HistoryData>()
 
-          expect(!isNonEmptyArray(json.notes)).toBe(true)
+          expect(isEmpty(json.notes)).toBe(true)
 
-          assert(isNonEmptyArray(json.todos))
+          assert(isNotEmpty(json.todos))
 
           expect(json.todos[0].id).toBe(todo_0_id)
         }))
@@ -42,11 +42,11 @@ describe('history', () => {
           const res = await fetch({ method: HttpMethod.GET })
           const json = await res.json<HistoryData>()
 
-          assert(isNonEmptyArray(json.notes))
+          assert(isNotEmpty(json.notes))
 
           expect(json.notes[0].id).toBe(note_0_id)
 
-          expect(!isNonEmptyArray(json.todos)).toBe(true)
+          expect(isEmpty(json.todos)).toBe(true)
         }))
 
       test('should return only note & todo metadatas', () =>
@@ -57,14 +57,14 @@ describe('history', () => {
           const res = await fetch({ method: HttpMethod.GET })
           const json = await res.json<HistoryData>()
 
-          assert(isNonEmptyArray(json.notes))
+          assert(isNotEmpty(json.notes))
 
           expect(Object.keys(json.notes[0]).length).toBe(3)
           expect(json.notes[0].id).toBe(note_0_id)
           expect(json.notes[0].name).toBe(note_0_name)
           expect(json.notes[0].slug).toBe(note_0_slug)
 
-          assert(isNonEmptyArray(json.todos))
+          assert(isNotEmpty(json.todos))
 
           expect(Object.keys(json.todos[0]).length).toBe(3)
           expect(json.todos[0].id).toBe(todo_0_id)

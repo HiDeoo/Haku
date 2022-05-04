@@ -12,7 +12,7 @@ import { type PaletteItem, type PaletteProps } from 'components/palette/Palette'
 import Icon from 'components/ui/Icon'
 import Spinner from 'components/ui/Spinner'
 import useIntersectionObserver from 'hooks/useIntersectionObserver'
-import { isNonEmptyArray } from 'libs/array'
+import { isEmpty, isNotEmpty } from 'libs/array'
 import { getShortcutMap, isShortcutEvent } from 'libs/shortcut'
 import clst from 'styles/clst'
 import styles from 'styles/PalettePicker.module.css'
@@ -61,7 +61,7 @@ const PalettePicker = <TItem extends PaletteItem>(
     stateReducer,
   })
 
-  const isInfiniteEnabled = infinite && !isLoading && isNonEmptyArray(filteredItems) && typeof loadMore === 'function'
+  const isInfiniteEnabled = infinite && !isLoading && isNotEmpty(filteredItems) && typeof loadMore === 'function'
 
   const shouldLoadMore = useIntersectionObserver(infiniteDetectorElement, { enabled: isInfiniteEnabled })
 
@@ -176,7 +176,7 @@ const PalettePicker = <TItem extends PaletteItem>(
         ) : null}
       </div>
       <ul {...getMenuProps({ className: 'h-full overflow-y-auto' })}>
-        {(!isNonEmptyArray(filteredItems) && inputValue.length >= minQueryLength) || isLoading ? (
+        {(isEmpty(filteredItems) && inputValue.length >= minQueryLength) || isLoading ? (
           <li className={clst(baseMenuItemClasses, 'mb-1.5 opacity-75')}>
             {isLoading ? 'Loading…' : 'No matching results'}
           </li>
