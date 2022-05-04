@@ -1,5 +1,5 @@
 export async function registerServiceWorker(swPath: string, onAvailableUpdate: ServiceWorkerRegistrationUpdateHandler) {
-  if (!('serviceWorker' in navigator)) {
+  if ('serviceWorker' in navigator === false) {
     return
   }
 
@@ -19,7 +19,7 @@ export function sendServiceWorkerMessage<TMessage extends ServiceWorkerMessage>(
 }
 
 export async function isResourceCached(cacheName: string, resource: RequestInfo) {
-  if (!('serviceWorker' in navigator) || !('caches' in window)) {
+  if ('serviceWorker' in navigator === false || 'caches' in window === false) {
     return false
   }
 

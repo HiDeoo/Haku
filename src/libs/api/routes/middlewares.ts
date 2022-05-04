@@ -89,7 +89,7 @@ export function withFormDataValidation<
         }
       })
 
-      if (withFile && !('file' in req)) {
+      if (withFile && 'file' in req === false) {
         throw new Error('Missing request file.')
       }
 
