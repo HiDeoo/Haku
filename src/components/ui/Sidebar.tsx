@@ -19,8 +19,8 @@ const skipLinksClasses = clst(
 )
 
 const Sidebar: React.FC = () => {
-  const router = useRouter()
-  const isOnNotePage = router.pathname.startsWith('/notes/')
+  const { pathname } = useRouter()
+  const isOnNotePage = pathname.startsWith('/notes/')
 
   const collapsed = useAtomValue(sidebarCollapsedAtom)
   const toggleCollapsed = useSetAtom(toggleSidebarCollapsedAtom)

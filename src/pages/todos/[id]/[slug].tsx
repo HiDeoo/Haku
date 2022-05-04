@@ -8,7 +8,11 @@ const Todo = dynamic(import('components/todo/Todo'), {
 })
 
 const TodoPage: Page = () => {
-  const contentId = useContentId()
+  const { contentId, isReady } = useContentId()
+
+  if (!isReady) {
+    return null
+  }
 
   if (!contentId) {
     throw new Error('Missing ID to render a todo.')

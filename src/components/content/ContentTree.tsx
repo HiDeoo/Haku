@@ -37,7 +37,7 @@ const ContentTree: React.FC = () => {
 
   const sidebarCollapsed = useAtomValue(sidebarCollapsedAtom)
 
-  const contentId = useContentId()
+  const { contentId } = useContentId()
   const { data, isLoading } = useContentTreeQuery()
   const setContentModalOpened = useSetAtom(setContentModalOpenedAtom)
 
