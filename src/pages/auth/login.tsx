@@ -1,7 +1,8 @@
 import { Presence } from '@radix-ui/react-presence'
 import { signIn } from 'next-auth/react'
+import Image from 'next/image'
 import { useRouter } from 'next/router'
-import { useReducer, useRef } from 'react'
+import { useReducer, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 import Button from 'components/form/Button'
@@ -11,9 +12,12 @@ import MagicCodeInput, { type MagicCodeInputHandle } from 'components/form/Magic
 import TextInput from 'components/form/TextInput'
 import Flex from 'components/ui/Flex'
 import { getAuthErrorMesssage } from 'libs/auth'
+import clst from 'styles/clst'
 
 const Login: Page = () => {
   const { push, query } = useRouter()
+
+  const [isIconLoaded, setIsIconLoaded] = useState(false)
 
   const {
     control,
@@ -30,6 +34,10 @@ const Login: Page = () => {
   const isError = typeof state.errorType === 'string'
   const isValidating = state.status === 'validatingEmail' || state.status === 'validatingCode'
   const shouldShowCodeInput = state.status === 'waitingCode' || state.status === 'validatingCode'
+
+  function onIconLoaded() {
+    setIsIconLoaded(true)
+  }
 
   async function onSubmit({ code, email }: FormFields) {
     if (state.status === 'idle') {
@@ -63,8 +71,19 @@ const Login: Page = () => {
     }
   }
 
+  const iconWrapperClasses = clst('mb-5 flex justify-center', isIconLoaded ? 'animate-fade-in' : 'opacity-0')
+
   return (
     <Flex direction="col" className="w-60">
+      <div className={iconWrapperClasses}>
+        <Image
+          width={100}
+          height={100}
+          alt="Haku application icon"
+          src="/images/icons/favicon.svg"
+          onLoadingComplete={onIconLoaded}
+        />
+      </div>
       <Presence present={shouldShowCodeInput}>
         <Callout
           className="animate-modal-content"
