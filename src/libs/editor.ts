@@ -1,4 +1,5 @@
-import { Extension, Node, type Editor } from '@tiptap/core'
+import { Extension, findChildren, Node, type Editor } from '@tiptap/core'
+import cuid from 'cuid'
 import { type LanguageFn } from 'highlight.js'
 import bash from 'highlight.js/lib/languages/bash'
 import css from 'highlight.js/lib/languages/css'
@@ -17,7 +18,6 @@ import typescript from 'highlight.js/lib/languages/typescript'
 import xml from 'highlight.js/lib/languages/xml'
 import yaml from 'highlight.js/lib/languages/yaml'
 import { lowlight } from 'lowlight/lib/core'
-import slug from 'url-slug'
 
 import { isNotEmpty } from './array'
 
@@ -75,13 +75,11 @@ export function getToc(editor: Editor) {
 
   editor.state.doc.descendants((node, pos) => {
     if (node.type.name === 'heading') {
-      const id = slug(`${node.textContent}-${pos}`)
-
-      if (node.attrs.id !== id) {
-        transaction.setNodeMarkup(pos, undefined, { ...node.attrs, id })
+      if (!node.attrs.id) {
+        transaction.setNodeMarkup(pos, undefined, { ...node.attrs, id: cuid() })
       }
 
-      toc.push({ id, level: node.attrs.level, name: node.textContent, pos })
+      toc.push({ id: node.attrs.id, level: node.attrs.level, name: node.textContent, pos })
     }
   })
 
@@ -91,6 +89,24 @@ export function getToc(editor: Editor) {
   editor.view.dispatch(transaction)
 
   return toc
+}
+
+export function focusNodeWithId(editor: Editor, id: string) {
+  const domNode = document.querySelector(id)
+
+  if (!domNode) {
+    return
+  }
+
+  const [node] = findChildren(editor.state.doc, (node) => node.attrs.id === domNode.id)
+
+  if (!node) {
+    return
+  }
+
+  editor.chain().setTextSelection(node.pos).focus().run()
+
+  domNode.scrollIntoView()
 }
 
 export const HeadingWithId = Node.create({
