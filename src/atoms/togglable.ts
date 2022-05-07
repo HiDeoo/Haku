@@ -13,7 +13,7 @@ export const [contentModalAtom, setContentModalOpenedAtom] = createMutationModal
 export const [shortcutModalAtom, setShortcutModalOpenedAtom] = createTogglableAtom()
 export const [inboxDrawerAtom, setInboxDrawerOpenedAtom] = createTogglableAtom()
 
-export const imageModalAtom = atom<ImageModal>({ opened: false })
+export const editorImageModalAtom = atom<EditorImageModal>({ opened: false })
 
 function createMutationModalAtom<TData>(): [
   WritableAtom<MutationModal<TData>, MutationModal<TData>>,
@@ -50,6 +50,6 @@ interface MutationModal<TData> {
   opened: boolean
 }
 
-interface ImageModal extends Partial<A11yImageParams> {
+interface EditorImageModal extends Partial<A11yImageParams> {
   opened: boolean
 }
