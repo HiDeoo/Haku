@@ -30,7 +30,11 @@ const defaultExtensions: Extensions = [
   Highlight,
   Strike,
   Link,
-  CodeBlockLowlight.extend({ addNodeView: addCodeBlockLowlightNodeView }).configure({
+  CodeBlockLowlight.extend({
+    addNodeView() {
+      return ReactNodeViewRenderer(EditorCodeBlock)
+    },
+  }).configure({
     defaultLanguage: CODE_BLOCK_DEFAULT_LANGUAGE,
     lowlight: getLowlight(),
   }),
@@ -117,10 +121,6 @@ function getExtensions(
     Cloudinary(cloudinaryOptions),
     ...extensions,
   ]
-}
-
-function addCodeBlockLowlightNodeView() {
-  return ReactNodeViewRenderer(EditorCodeBlock)
 }
 
 interface UseEditorOptions extends Partial<Omit<EditorOptions, 'editorProps'>> {
