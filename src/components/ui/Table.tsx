@@ -8,7 +8,7 @@ const Table: TableComponent = ({ children }) => {
 
 export default Table
 
-const TableHead: React.FCWithChildren = ({ children }) => {
+const TableHead: React.FC<TableBaseProps> = ({ children }) => {
   return (
     <thead>
       {Children.map(children, (child) => {
@@ -24,7 +24,7 @@ const TableHead: React.FCWithChildren = ({ children }) => {
 
 Table.Head = TableHead
 
-const TableBody: React.FCWithChildren = ({ children }) => {
+const TableBody: React.FC<TableBaseProps> = ({ children }) => {
   return <tbody>{children}</tbody>
 }
 
@@ -58,15 +58,18 @@ const TableCell: React.FC<TableCellProps> = ({ children, className, inTableHead 
 
 Table.Cell = TableCell
 
-type TableComponent = React.FCWithChildren & {
+type TableComponent = React.FC<TableBaseProps> & {
   Body: typeof TableBody
   Cell: typeof TableCell
   Head: typeof TableHead
   Row: typeof TableRow
 }
 
-interface TableRowProps {
+interface TableBaseProps {
   children: React.ReactNode
+}
+
+interface TableRowProps extends TableBaseProps {
   inTableHead?: boolean
 }
 
