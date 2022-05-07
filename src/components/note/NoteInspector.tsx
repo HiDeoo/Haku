@@ -30,6 +30,7 @@ import {
 } from 'react-icons/ri'
 
 import { noteInspectorCollapsedAtom, sidebarCollapsedAtom, toggleNoteInspectorCollapsedAtom } from 'atoms/collapsible'
+import EditorSyntaxModal from 'components/editor/EditorSyntaxModal'
 import FileButton from 'components/form/FileButton'
 import IconButton from 'components/form/IconButton'
 import { type NoteEditorState } from 'components/note/Note'
@@ -161,6 +162,7 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
             disabled={!editor?.can().redo()}
           />
           <Inspector.IconButton tooltip="Clear Format" onPress={clearFormat} icon={RiFormatClear} />
+          <EditorSyntaxModal />
         </Inspector.Section>
         <Inspector.Section title="Text">
           <Inspector.IconMenu
