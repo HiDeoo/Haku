@@ -5,7 +5,8 @@ import Select from 'components/form/Select'
 import { CODE_BLOCK_DEFAULT_LANGUAGE } from 'constants/editor'
 import { getLanguageName } from 'libs/editor'
 
-const triggerClases = 'shadow-none bg-zinc-700 hover:bg-zinc-600 px-2 py-1 text-xs rounded min-w-0 w-28 rounded-b-none'
+const triggerClases =
+  'shadow-none bg-zinc-700 hover:bg-zinc-600 px-2 py-1 text-xs rounded min-w-0 w-28 rounded-b-none z-10'
 
 const EditorCodeBlock: React.FC<NodeViewProps> = ({ editor, extension, node, updateAttributes }) => {
   const [tabIndex, setTabIndex] = useState<-1 | undefined>(-1)
