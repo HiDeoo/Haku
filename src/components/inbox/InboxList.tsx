@@ -1,13 +1,13 @@
-import { RiClipboardLine, RiDeleteBin7Line, RiErrorWarningLine } from 'react-icons/ri'
+import { RiClipboardLine, RiDeleteBin7Line } from 'react-icons/ri'
 import { LinkItUrl } from 'react-linkify-it'
 
 import Flex from 'components/ui/Flex'
 import List from 'components/ui/List'
 import { LIST_SHIMMER_CLASSES } from 'constants/shimmer'
+import useClipboard from 'hooks/useClipboard'
 import useInboxEntriesQuery from 'hooks/useInboxEntriesQuery'
 import { useInboxEntryMutation } from 'hooks/useInboxEntryMutation'
 import { useNetworkStatus } from 'hooks/useNetworkStatus'
-import useToast from 'hooks/useToast'
 import { isEmpty } from 'libs/array'
 import { InboxEntryData } from 'libs/db/inbox'
 import clst from 'styles/clst'
@@ -50,27 +50,12 @@ export default InboxList
 const InboxListEntry: React.FC<InboxListEntryProps> = ({ entry }) => {
   const { offline } = useNetworkStatus()
 
-  const { addToast } = useToast()
+  const { copy } = useClipboard()
 
   const { mutate } = useInboxEntryMutation()
 
-  async function onClickCopy() {
-    let didError = false
-
-    try {
-      await navigator.clipboard.writeText(entry.text)
-    } catch (error) {
-      didError = true
-
-      console.error('Failed to copy inbox entry to the clipboard:', error)
-    } finally {
-      addToast({
-        details: didError ? 'Please try again.' : undefined,
-        icon: didError ? RiErrorWarningLine : RiClipboardLine,
-        text: didError ? 'Failed to copy to the clipboard.' : 'Text copied to the clipboard.',
-        type: didError ? 'foreground' : 'background',
-      })
-    }
+  function onClickCopy() {
+    copy(entry.text)
   }
 
   function onClickRemove() {
