@@ -8,7 +8,7 @@ import clst from 'styles/clst'
 import styles from 'styles/Editor.module.css'
 
 const EditorSyntaxModal: React.FC = () => {
-  const [opened, setOpened] = useState(true)
+  const [opened, setOpened] = useState(false)
 
   return (
     <Modal
