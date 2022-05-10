@@ -57,7 +57,7 @@ WITH RECURSIVE root_to_leaf AS (
     "Folder"
   WHERE
     ${baseFolderId ? Prisma.sql`"parentId" = ${baseFolderId}` : Prisma.sql`"parentId" IS NULL`}
-    AND "type" = ${folderType}
+    AND "type" = ${folderType}::"FolderType"
     AND "userId" = ${userId}
 
   UNION

@@ -1809,7 +1809,7 @@ function getFakeTodoNode(
     noteText: data,
     parentId,
     status:
-      status ?? faker.random.arrayElement([TodoNodeStatus.ACTIVE, TodoNodeStatus.COMPLETED, TodoNodeStatus.CANCELLED]),
+      status ?? faker.helpers.arrayElement([TodoNodeStatus.ACTIVE, TodoNodeStatus.COMPLETED, TodoNodeStatus.CANCELLED]),
   }
 }
 
