@@ -19,7 +19,7 @@ specifiers:
   '@react-aria/button': 3.4.4
   '@react-aria/textfield': 3.5.5
   '@react-aria/utils': 3.12.0
-  '@swc/core': 1.2.181
+  '@swc/core': 1.2.182
   '@testing-library/react-hooks': 8.0.0
   '@tiptap/core': 2.0.0-beta.175
   '@tiptap/extension-code-block-lowlight': 2.0.0-beta.68
@@ -70,7 +70,7 @@ specifiers:
   react: 18.1.0
   react-dom: 18.1.0
   react-error-boundary: 3.1.4
-  react-hook-form: 7.31.0
+  react-hook-form: 7.31.1
   react-icons: 4.3.1
   react-linkify-it: 1.0.5
   react-query: 4.0.0-beta.5
@@ -125,7 +125,7 @@ dependencies:
   react: 18.1.0
   react-dom: 18.1.0_react@18.1.0
   react-error-boundary: 3.1.4_react@18.1.0
-  react-hook-form: 7.31.0_react@18.1.0
+  react-hook-form: 7.31.1_react@18.1.0
   react-icons: 4.3.1_react@18.1.0
   react-linkify-it: 1.0.5_react@18.1.0
   react-query: 4.0.0-beta.5_react-dom@18.1.0+react@18.1.0
@@ -141,7 +141,7 @@ devDependencies:
   '@faker-js/faker': 6.3.1
   '@jcoreio/wait-for-postgres': 2.0.0
   '@next/bundle-analyzer': 12.1.6
-  '@swc/core': 1.2.181
+  '@swc/core': 1.2.182
   '@testing-library/react-hooks': 8.0.0_96f99b59345b300fe3783ec39f75ac12
   '@types/fuzzaldrin-plus': 0.6.2
   '@types/jest': 27.5.0
@@ -172,7 +172,7 @@ devDependencies:
   prisma: 3.14.0
   react-test-renderer: 18.1.0_react@18.1.0
   tailwindcss: 3.0.24_ts-node@10.7.0
-  ts-node: 10.7.0_9ce29be09f5fa37b336b2f3134aa1167
+  ts-node: 10.7.0_32e038eb70d373df35b03c813e13122b
   tsconfig-paths: 4.0.0
   typescript: 4.6.4
 
@@ -1732,8 +1732,8 @@ packages:
       '@sinonjs/commons': 1.8.3
     dev: true
 
-  /@swc/core-android-arm-eabi/1.2.181:
-    resolution: {integrity: sha512-H3HNf8j6M13uIbSruef8iMsCElJJDZOhp5qxwm/+P1jAG4eQ4vPfajIlTVdFJes8Adrbr4WQaVvl+m4BQw51JQ==}
+  /@swc/core-android-arm-eabi/1.2.182:
+    resolution: {integrity: sha512-NLjye+oyMoGsGFO+w5Opo9Q55GOZw1bnXhw7MHlGibUIhxkJk3kJ+EgFNdXUPgh2B3c9qsDqY2d6v3WD+N4XyA==}
     engines: {node: '>=10'}
     cpu: [arm]
     os: [android]
@@ -1741,8 +1741,8 @@ packages:
     dev: true
     optional: true
 
-  /@swc/core-android-arm64/1.2.181:
-    resolution: {integrity: sha512-b1apYKeosBaXl28xE/By4QVHYrXaR2+nOdcP6rsDXg6nyLBArtoiS5YUFikFN/VQbSAQqNeJQ+rovT5zITrgSQ==}
+  /@swc/core-android-arm64/1.2.182:
+    resolution: {integrity: sha512-80wldTfsY3JtSQQkIZKj8Vc9QpKObVapWXBfOrebfN1vJesUN/NSf2RGue8RGGkiqjZI0g4ErVHZXZl1CC3hBw==}
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [android]
@@ -1750,8 +1750,8 @@ packages:
     dev: true
     optional: true
 
-  /@swc/core-darwin-arm64/1.2.181:
-    resolution: {integrity: sha512-M3/PPeO6NTN7GYa1mOWPNMaAPxEQH8xd+X6FHMa7OBCi+Qxkarafu4DZRfzR88TcS3XikqFLgmmzSP7Z/tye2w==}
+  /@swc/core-darwin-arm64/1.2.182:
+    resolution: {integrity: sha512-CrJToIWnrh6mPHHxPW8bwAZzlQ85sbQmtWh5/DNWQe3MAtrcPDdxxoEIMu+d+HVFcO24EpqOvxI9ok7Cj0SaLQ==}
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [darwin]
@@ -1759,8 +1759,8 @@ packages:
     dev: true
     optional: true
 
-  /@swc/core-darwin-x64/1.2.181:
-    resolution: {integrity: sha512-8Uc6gx7YN5+eSnk3h7aHqp1f3RFoBJPDPeH9cURm4mfE4BTgkVgkctUm0IE5sS5AotazVbrOwhEFrl7TONSfPA==}
+  /@swc/core-darwin-x64/1.2.182:
+    resolution: {integrity: sha512-FFtLCYcSxJDw6OTQMz8TmfudxwcCuinC4O2qdph5ocOb5fAbw/QQS9M3oYuCPN8KXlLyfQ/2zebaAUbKD1mr7g==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [darwin]
@@ -1768,8 +1768,8 @@ packages:
     dev: true
     optional: true
 
-  /@swc/core-freebsd-x64/1.2.181:
-    resolution: {integrity: sha512-SbnsbJHGFNY7VSTA5OhBh2PmLgQumIGerAxTCTYO1IgtbADCTL+gCjU0TK0viG/zpH4jnjaL965BI4JTo/bpRg==}
+  /@swc/core-freebsd-x64/1.2.182:
+    resolution: {integrity: sha512-evWeqrw8HnhZroHhPsiWtCQKSFZ6knQfejeDx8Jqu99NGjYm6WtUKSG+yXPJRhlTTxDB0zj8QzjF1C0HDU1EFw==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [freebsd]
@@ -1777,8 +1777,8 @@ packages:
     dev: true
     optional: true
 
-  /@swc/core-linux-arm-gnueabihf/1.2.181:
-    resolution: {integrity: sha512-aWO6Lr9wea96Z7AEagzf4reKgDb3UWXZnClwJK7baScwF8KV+Mh99vVgkSe1nj2gKOZ31pBLp62RDJkc3gdlnA==}
+  /@swc/core-linux-arm-gnueabihf/1.2.182:
+    resolution: {integrity: sha512-vix9LI1QUkaa33F42t0T4nmk9Yqeyh+P7zkc8STn26sc/mFaJ1T4PrF8rLZfACcX1B1vJxJ3+HoGLdTLqFBPRg==}
     engines: {node: '>=10'}
     cpu: [arm]
     os: [linux]
@@ -1786,8 +1786,8 @@ packages:
     dev: true
     optional: true
 
-  /@swc/core-linux-arm64-gnu/1.2.181:
-    resolution: {integrity: sha512-+7fzDwsvcbhPafKdminMQrU3Ej1NHltXy7k+zgjj8BDPZbfi8hRzQcONeBV7sfl4xvw3d3roNHu2UMmKzLNs0w==}
+  /@swc/core-linux-arm64-gnu/1.2.182:
+    resolution: {integrity: sha512-co6NlUl2gxTUcN3/U5OJMIqUGK1j1OZSI9R2FMknaf0olymtSoRB0ww/+p/PKPD69sl+pZd7DvzeIjFrJKeOPw==}
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [linux]
@@ -1795,8 +1795,8 @@ packages:
     dev: true
     optional: true
 
-  /@swc/core-linux-arm64-musl/1.2.181:
-    resolution: {integrity: sha512-U9k8pv2oCxYYfu9DdOO1ZZgqbmF97NgJzSaIu3PsTedF4RcGIiPcuGOFqrUECsGUW2i6uKejE8onbXPj9UmaZQ==}
+  /@swc/core-linux-arm64-musl/1.2.182:
+    resolution: {integrity: sha512-NoT9aZjjANCtS/yECBRiwmA2oJjFn6X/NhXcQdapcNk2vVid9Hr3NZD5CgBhs3XncXUF/Fjfn6lbRNgZ4MqDRg==}
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [linux]
@@ -1804,8 +1804,8 @@ packages:
     dev: true
     optional: true
 
-  /@swc/core-linux-x64-gnu/1.2.181:
-    resolution: {integrity: sha512-9AQXrvZ9BFQJeqYMpKQZRf9h/DEwhfHIR39krehO+g594i+mkkp+UNTToez6Ifn+NBYl58xyEcQGwsYIqtdYVw==}
+  /@swc/core-linux-x64-gnu/1.2.182:
+    resolution: {integrity: sha512-Fq7sGcc3NyuEVCFIme5xAJLQ2d27ztAoI9Ct5a3/4mP6+E/uEIPSs9eridOOqedq5bi4ZEPU1GsisLUmkVML0g==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [linux]
@@ -1813,8 +1813,8 @@ packages:
     dev: true
     optional: true
 
-  /@swc/core-linux-x64-musl/1.2.181:
-    resolution: {integrity: sha512-Pq/aBMj3F4CR4tXq85t7IW3piu76a677nIoo6QtBkAjrQ5QuJqpaez/5aewipG+kIXpiu/DNFIN+cISa1QeC8A==}
+  /@swc/core-linux-x64-musl/1.2.182:
+    resolution: {integrity: sha512-O8nZOXPMTLL4m0AVJPygkxU8pp/Mv7WeNgFlEqYcQbK0ZdmW7jU0ZWwAD+IfgzUhdvy3nezorsBnNCRT/YVLiA==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [linux]
@@ -1822,8 +1822,8 @@ packages:
     dev: true
     optional: true
 
-  /@swc/core-win32-arm64-msvc/1.2.181:
-    resolution: {integrity: sha512-m24036tVFDE8ZJ3fBVBfsHw4tHd0BG6g3TvT2MLAiW2MezYeTdrGpmvPBz4Woz686I/06cWeSg7cZF1/ZcZMMA==}
+  /@swc/core-win32-arm64-msvc/1.2.182:
+    resolution: {integrity: sha512-KAr39wz+H7nqZ3wmzkR1h1FmFJhRNfDDvmBfIcqZCtM45YpeikRgxUrbq+Ph7lUob/6cUIKA8QGP5mHmxxzN1A==}
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [win32]
@@ -1831,8 +1831,8 @@ packages:
     dev: true
     optional: true
 
-  /@swc/core-win32-ia32-msvc/1.2.181:
-    resolution: {integrity: sha512-OPROzGapmr29qqwvB/aP9SA80r2eIukj+q7gghdQVptJrQU4GrTyzW1TpnGtpzj8rLZz4hEG6KtyPUh54bJZ/g==}
+  /@swc/core-win32-ia32-msvc/1.2.182:
+    resolution: {integrity: sha512-Ng2b/AE3CUulaattHo19+xPhCKQ9xjwKUgK8zBzx9h8yU7NdRJw5KCe58lMi5axVF0uIqbu0hFdHfQWQIX+bhQ==}
     engines: {node: '>=10'}
     cpu: [ia32]
     os: [win32]
@@ -1840,8 +1840,8 @@ packages:
     dev: true
     optional: true
 
-  /@swc/core-win32-x64-msvc/1.2.181:
-    resolution: {integrity: sha512-YrIaS63XsGiQ9AgxUVZ7Irt4pwQc3c2TPN7PyQP7ok9zBZxY5pBTwRTdLctlF4LNsSavlHE5+rvdPzcYAG0ekQ==}
+  /@swc/core-win32-x64-msvc/1.2.182:
+    resolution: {integrity: sha512-GRN6AyTVZsvbfMMXKblf+27kQwFnVguaLYqK1H1xk6UKx0U26wcrCM/01hczcoD3NmIVtljANm3VOqqbwlNAJQ==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [win32]
@@ -1849,24 +1849,24 @@ packages:
     dev: true
     optional: true
 
-  /@swc/core/1.2.181:
-    resolution: {integrity: sha512-evQX+Br/gC+FYLbUIF1dOQa7hUzBpowrcbgPkIRCEvi4HrCn7pGBZ2ZHBXmwEtBdLfOlyQvN/8USClApQKK4Rw==}
+  /@swc/core/1.2.182:
+    resolution: {integrity: sha512-ao/6J7VPS8NElpSElGw5KtAB2aYJriSvRkDdjFnX7N06H3w4qo+CweeS8NXnS2/XCoFuCtPBGEpecuBhfKkHNA==}
     engines: {node: '>=10'}
     hasBin: true
     optionalDependencies:
-      '@swc/core-android-arm-eabi': 1.2.181
-      '@swc/core-android-arm64': 1.2.181
-      '@swc/core-darwin-arm64': 1.2.181
-      '@swc/core-darwin-x64': 1.2.181
-      '@swc/core-freebsd-x64': 1.2.181
-      '@swc/core-linux-arm-gnueabihf': 1.2.181
-      '@swc/core-linux-arm64-gnu': 1.2.181
-      '@swc/core-linux-arm64-musl': 1.2.181
-      '@swc/core-linux-x64-gnu': 1.2.181
-      '@swc/core-linux-x64-musl': 1.2.181
-      '@swc/core-win32-arm64-msvc': 1.2.181
-      '@swc/core-win32-ia32-msvc': 1.2.181
-      '@swc/core-win32-x64-msvc': 1.2.181
+      '@swc/core-android-arm-eabi': 1.2.182
+      '@swc/core-android-arm64': 1.2.182
+      '@swc/core-darwin-arm64': 1.2.182
+      '@swc/core-darwin-x64': 1.2.182
+      '@swc/core-freebsd-x64': 1.2.182
+      '@swc/core-linux-arm-gnueabihf': 1.2.182
+      '@swc/core-linux-arm64-gnu': 1.2.182
+      '@swc/core-linux-arm64-musl': 1.2.182
+      '@swc/core-linux-x64-gnu': 1.2.182
+      '@swc/core-linux-x64-musl': 1.2.182
+      '@swc/core-win32-arm64-msvc': 1.2.182
+      '@swc/core-win32-ia32-msvc': 1.2.182
+      '@swc/core-win32-x64-msvc': 1.2.182
     dev: true
 
   /@testing-library/react-hooks/8.0.0_96f99b59345b300fe3783ec39f75ac12:
@@ -4568,7 +4568,7 @@ packages:
       pretty-format: 28.1.0
       slash: 3.0.0
       strip-json-comments: 3.1.1
-      ts-node: 10.7.0_9ce29be09f5fa37b336b2f3134aa1167
+      ts-node: 10.7.0_32e038eb70d373df35b03c813e13122b
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -4608,7 +4608,7 @@ packages:
       pretty-format: 28.1.0
       slash: 3.0.0
       strip-json-comments: 3.1.1
-      ts-node: 10.7.0_9ce29be09f5fa37b336b2f3134aa1167
+      ts-node: 10.7.0_32e038eb70d373df35b03c813e13122b
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -5871,7 +5871,7 @@ packages:
     dependencies:
       lilconfig: 2.0.5
       postcss: 8.4.13
-      ts-node: 10.7.0_9ce29be09f5fa37b336b2f3134aa1167
+      ts-node: 10.7.0_32e038eb70d373df35b03c813e13122b
       yaml: 1.10.2
     dev: true
 
@@ -6137,8 +6137,8 @@ packages:
       '@babel/runtime': 7.16.3
       react: 18.1.0
 
-  /react-hook-form/7.31.0_react@18.1.0:
-    resolution: {integrity: sha512-dDZSOk0eRf8z2EFt/XVA+HnmffxMYSWQaVX5EXCp2ozYtqyqrCDdfQRVBoVC43YyKIDtWfbiRcFkMvnvxv9q5g==}
+  /react-hook-form/7.31.1_react@18.1.0:
+    resolution: {integrity: sha512-QjtjZ8r8KtEBWWpcXLyQordCraTFxILtyQpaz5KLLxN2YzcC+FZ9LLtOnNGuOnzZo9gCoB+viK3ZHV9Mb2htmQ==}
     engines: {node: '>=12.22.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18
@@ -6846,7 +6846,7 @@ packages:
     resolution: {integrity: sha1-gYT9NH2snNwYWZLzpmIuFLnZq2o=}
     dev: true
 
-  /ts-node/10.7.0_9ce29be09f5fa37b336b2f3134aa1167:
+  /ts-node/10.7.0_32e038eb70d373df35b03c813e13122b:
     resolution: {integrity: sha512-TbIGS4xgJoX2i3do417KSaep1uRAW/Lu+WAL2doDHC0D6ummjirVOXU5/7aiZotbQ5p1Zp9tP7U6cYhA0O7M8A==}
     hasBin: true
     peerDependencies:
@@ -6861,7 +6861,7 @@ packages:
         optional: true
     dependencies:
       '@cspotcode/source-map-support': 0.7.0
-      '@swc/core': 1.2.181
+      '@swc/core': 1.2.182
       '@tsconfig/node10': 1.0.8
       '@tsconfig/node12': 1.0.9
       '@tsconfig/node14': 1.0.1
