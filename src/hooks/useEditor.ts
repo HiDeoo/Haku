@@ -14,7 +14,7 @@ import { useSetAtom } from 'jotai'
 import { useCallback, type DependencyList } from 'react'
 import { RiErrorWarningLine } from 'react-icons/ri'
 
-import { imageModalAtom } from 'atoms/togglable'
+import { editorImageModalAtom } from 'atoms/togglable'
 import EditorCodeBlock from 'components/editor/EditorCodeBlock'
 import { CODE_BLOCK_DEFAULT_LANGUAGE } from 'constants/editor'
 import useToast from 'hooks/useToast'
@@ -30,7 +30,11 @@ const defaultExtensions: Extensions = [
   Highlight,
   Strike,
   Link,
-  CodeBlockLowlight.extend({ addNodeView: addCodeBlockLowlightNodeView }).configure({
+  CodeBlockLowlight.extend({
+    addNodeView() {
+      return ReactNodeViewRenderer(EditorCodeBlock)
+    },
+  }).configure({
     defaultLanguage: CODE_BLOCK_DEFAULT_LANGUAGE,
     lowlight: getLowlight(),
   }),
@@ -46,7 +50,7 @@ const starterKitDefaultOptions: Partial<StarterKitOptions> = {
 
 export function useEditor(options: UseEditorOptions, deps?: DependencyList): Editor | null {
   const { addToast } = useToast()
-  const setImageModal = useSetAtom(imageModalAtom)
+  const setEditorImageModal = useSetAtom(editorImageModalAtom)
 
   const { className, contentId, extensions, setLinkModalOpened, spellcheck, starterKitOptions, ...editorOptions } =
     options
@@ -55,9 +59,9 @@ export function useEditor(options: UseEditorOptions, deps?: DependencyList): Edi
 
   const onImageDoubleClick = useCallback(
     (params: A11yImageParams) => {
-      setImageModal({ ...params, opened: true })
+      setEditorImageModal({ ...params, opened: true })
     },
-    [setImageModal]
+    [setEditorImageModal]
   )
 
   const onUploadError = useCallback(
@@ -117,10 +121,6 @@ function getExtensions(
     Cloudinary(cloudinaryOptions),
     ...extensions,
   ]
-}
-
-function addCodeBlockLowlightNodeView() {
-  return ReactNodeViewRenderer(EditorCodeBlock)
 }
 
 interface UseEditorOptions extends Partial<Omit<EditorOptions, 'editorProps'>> {

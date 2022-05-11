@@ -5,7 +5,7 @@ import { useCallback, useContext, useEffect, useRef } from 'react'
 import { resetTodoAtomsAtom, type TodoEditorState, todoEditorStateAtom, todoFocusMapAtom } from 'atoms/todo'
 import { todoNodeChildrenAtom, todoNodeNodesAtom } from 'atoms/todoNode'
 import Title from 'components/app/Title'
-import ImageModal from 'components/editor/ImageModal'
+import EditorImageModal from 'components/editor/EditorImageModal'
 import TodoNavbar from 'components/todo/TodoNavbar'
 import TodoNodeChildren from 'components/todo/TodoNodeChildren'
 import { type TodoNodeItemHandle } from 'components/todo/TodoNodeItem'
@@ -142,7 +142,7 @@ const Todo: React.FC<TodoProps> = ({ id }) => {
                 <TodoNodeChildren onFocusTodoNode={setTodoFocus} setTodoNodeItemRef={setTodoNodeItemRef} />
               </Flex>
             </TodoContext.Provider>
-            <ImageModal />
+            <EditorImageModal />
           </>
         )}
       </Flex>

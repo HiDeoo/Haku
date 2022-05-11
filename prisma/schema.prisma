@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["interactiveTransactions"]
+  previewFeatures = ["improvedQueryRaw", "interactiveTransactions", "extendedIndexes"]
 }
 
 datasource db {
@@ -86,7 +86,7 @@ model Note {
   searchVector Unsupported("TSVECTOR")?
 
   @@unique([folderId, userId, name], map: "Note_folderId_userId_name_unique_constraint")
-  @@index([searchVector], name: "Note_searchVector_index")
+  @@index([searchVector], type: Gin, name: "Note_searchVector_index")
 }
 
 model Todo {
@@ -108,7 +108,7 @@ model Todo {
   searchVector Unsupported("TSVECTOR")?
 
   @@unique([folderId, userId, name], map: "Todo_folderId_userId_name_unique_constraint")
-  @@index([searchVector], name: "Todo_searchVector_index")
+  @@index([searchVector], type: Gin, name: "Todo_searchVector_index")
 }
 
 model TodoNode {
@@ -126,7 +126,7 @@ model TodoNode {
 
   searchVector Unsupported("TSVECTOR")?
 
-  @@index([searchVector], name: "TodoNode_searchVector_index")
+  @@index([searchVector], type: Gin, name: "TodoNode_searchVector_index")
 }
 
 enum TodoNodeStatus {
@@ -145,5 +145,5 @@ model InboxEntry {
 
   searchVector Unsupported("TSVECTOR")?
 
-  @@index([searchVector], name: "InboxEntry_searchVector_index")
+  @@index([searchVector], type: Gin, name: "InboxEntry_searchVector_index")
 }

@@ -16,7 +16,7 @@ const TodoNodeNote: React.ForwardRefRenderFunction<TodoNodeNoteHandle, TodoNodeN
 ) => {
   useImperativeHandle(forwardedRef, () => ({ focusNote }))
 
-  const todoId = useContentId()
+  const { contentId } = useContentId()
 
   const onEditorUpdate = useCallback(
     ({ editor }: EditorEvents['update']) => {
@@ -28,7 +28,7 @@ const TodoNodeNote: React.ForwardRefRenderFunction<TodoNodeNoteHandle, TodoNodeN
   const editor = useEditor(
     {
       content: node.noteHtml,
-      contentId: todoId,
+      contentId,
       extensions: [ShiftEnter.configure({ callback: onShiftEnter })],
       onBlur,
       onUpdate: onEditorUpdate,

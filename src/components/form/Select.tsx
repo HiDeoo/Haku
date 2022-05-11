@@ -73,6 +73,7 @@ const Select = <TItem,>({
       <ControlMenu
         items={items}
         isOpen={isOpen}
+        className="z-20"
         container={container}
         itemToString={renderItem}
         menuProps={getMenuProps()}

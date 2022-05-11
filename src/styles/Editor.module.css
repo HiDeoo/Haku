@@ -117,7 +117,7 @@
   }
 
   pre {
-    @apply mt-8 rounded rounded-tr-none bg-zinc-700 px-2 py-1.5;
+    @apply mt-8 rounded rounded-tr-none bg-zinc-700 py-1.5 pl-2 pr-7;
 
     /**
      * Based on GitHub Dark.

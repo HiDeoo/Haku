@@ -14,7 +14,7 @@ import useContentId from 'hooks/useContentId'
 import useContentTreeQuery from 'hooks/useContentTreeQuery'
 import useContentType, { type UseContentTypeReturnValue } from 'hooks/useContentType'
 import { useNetworkStatus } from 'hooks/useNetworkStatus'
-import { isNonEmptyArray } from 'libs/array'
+import { isEmpty } from 'libs/array'
 import { type FolderData } from 'libs/db/folder'
 import { type NoteMetadata } from 'libs/db/note'
 import { type TodoMetadata } from 'libs/db/todo'
@@ -37,7 +37,7 @@ const ContentTree: React.FC = () => {
 
   const sidebarCollapsed = useAtomValue(sidebarCollapsedAtom)
 
-  const contentId = useContentId()
+  const { contentId } = useContentId()
   const { data, isLoading } = useContentTreeQuery()
   const setContentModalOpened = useSetAtom(setContentModalOpenedAtom)
 
@@ -63,7 +63,7 @@ const ContentTree: React.FC = () => {
     <Root orientation="vertical" asChild role="navigation">
       <Flex as="nav" direction="col" flex className="relative overflow-y-auto" role="tree">
         <div className="pointer-events-none absolute inset-0 shadow-[inset_-1px_0_1px_0_rgba(0_0_0/0.4)]" />
-        {!isNonEmptyArray(data) ? (
+        {isEmpty(data) ? (
           <Flex fullWidth fullHeight direction="col" alignItems="center" justifyContent="center" className={nisClasses}>
             <span>Start by creating a new {contentType.lcType}.</span>
             <Button onPress={openNewContentModal} primary disabled={offline}>

@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import Title from 'components/app/Title'
+import EditorImageModal from 'components/editor/EditorImageModal'
 import EditorLinkModal from 'components/editor/EditorLinkModal'
-import ImageModal from 'components/editor/ImageModal'
 import NoteInspector from 'components/note/NoteInspector'
 import NoteNavbar from 'components/note/NoteNavbar'
 import Flex from 'components/ui/Flex'
@@ -20,9 +20,7 @@ import useNavigationPrompt from 'hooks/useNavigationPrompt'
 import { useNetworkStatus } from 'hooks/useNetworkStatus'
 import useNoteQuery from 'hooks/useNoteQuery'
 import { type TodoMetadata } from 'libs/db/todo'
-import { getToc, HeadingWithId, ReplaceContent, type ToC } from 'libs/editor'
-
-const anchorHeadingRegExp = /^#.*-(?<pos>\d+)$/
+import { focusNodeWithId, getToc, HeadingWithId, ReplaceContent, type ToC } from 'libs/editor'
 
 const Note: React.FC<NoteProps> = ({ id }) => {
   const { offline } = useNetworkStatus()
@@ -105,20 +103,7 @@ const Note: React.FC<NoteProps> = ({ id }) => {
   const onNewContent = useCallback(
     ({ editor }: EditorEvents['create']) => {
       if (location.hash.length !== 0) {
-        const heading = document.querySelector(location.hash)
-
-        if (heading) {
-          const matches = anchorHeadingRegExp.exec(location.hash)
-          const pos = matches?.groups?.pos
-
-          if (pos) {
-            const headingPos = parseInt(pos, 10)
-
-            editor.chain().setTextSelection(headingPos).focus().run()
-
-            heading.scrollIntoView()
-          }
-        }
+        focusNodeWithId(editor, location.hash)
       }
 
       updateToc({ editor }, false)
@@ -174,7 +159,7 @@ const Note: React.FC<NoteProps> = ({ id }) => {
           setLinkModalOpened={setLinkModalOpened}
         />
         <EditorLinkModal opened={linkModalOpened} onOpenChange={setLinkModalOpened} editor={editor} />
-        <ImageModal />
+        <EditorImageModal />
       </Flex>
     </>
   )

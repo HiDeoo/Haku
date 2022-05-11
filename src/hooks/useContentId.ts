@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
 
 export default function useContentId() {
-  const { query } = useRouter()
+  const { isReady, query } = useRouter()
 
-  return query.id && typeof query.id === 'string' ? query.id : undefined
+  return { contentId: query.id && typeof query.id === 'string' ? query.id : undefined, isReady }
 }

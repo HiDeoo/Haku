@@ -15,7 +15,7 @@ import { type RemoveTodoQuery } from 'pages/api/todos/[id]'
 
 export default function useMetadataMutation() {
   const { push } = useRouter()
-  const contentId = useContentId()
+  const { contentId } = useContentId()
   const { lcType, type, urlPath } = useContentType()
   const queryClient = useQueryClient()
 

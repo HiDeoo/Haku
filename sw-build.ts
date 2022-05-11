@@ -8,6 +8,7 @@ import pkg from './package.json'
 
 import { SW_CACHES } from 'constants/sw'
 import { CLOUDINARY_BASE_DELIVERY_URL } from 'libs/cloudinary'
+import { toError } from 'libs/error'
 
 const buildManifestPath = '.next/build-manifest.json'
 const pageToIgnore = ['/_app', '/_error', '/404']
@@ -43,7 +44,7 @@ async function buildServiceWorkerConfig() {
       const rawBuildManifest = await fs.readFile(buildManifestPath, 'utf8')
       buildManifest = JSON.parse(rawBuildManifest)
     } catch (error) {
-      throw new Error(`Unable to open build manifest at '${buildManifestPath}'.`)
+      throw new Error(`Unable to open build manifest at '${buildManifestPath}'.`, { cause: toError(error) })
     }
   } else {
     buildManifest = { lowPriorityFiles: [], pages: {}, polyfillFiles: [] } as unknown as BuildManifest

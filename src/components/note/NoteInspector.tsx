@@ -30,6 +30,7 @@ import {
 } from 'react-icons/ri'
 
 import { noteInspectorCollapsedAtom, sidebarCollapsedAtom, toggleNoteInspectorCollapsedAtom } from 'atoms/collapsible'
+import EditorSyntaxModal from 'components/editor/EditorSyntaxModal'
 import FileButton from 'components/form/FileButton'
 import IconButton from 'components/form/IconButton'
 import { type NoteEditorState } from 'components/note/Note'
@@ -38,7 +39,7 @@ import FloatingButton from 'components/ui/FloatingButton'
 import Icon from 'components/ui/Icon'
 import Inspector from 'components/ui/Inspector'
 import { IMAGE_SUPPORTED_TYPES } from 'constants/image'
-import { isNonEmptyArray } from 'libs/array'
+import { isNotEmpty } from 'libs/array'
 import clst from 'styles/clst'
 
 const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorState, setLinkModalOpened }) => {
@@ -161,6 +162,7 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
             disabled={!editor?.can().redo()}
           />
           <Inspector.IconButton tooltip="Clear Format" onPress={clearFormat} icon={RiFormatClear} />
+          <EditorSyntaxModal />
         </Inspector.Section>
         <Inspector.Section title="Text">
           <Inspector.IconMenu
@@ -260,7 +262,7 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
             onPress={addHorizontalRule}
           />
         </Inspector.Section>
-        {!collapsed && isNonEmptyArray(editorState.toc) ? (
+        {!collapsed && isNotEmpty(editorState.toc) ? (
           <Inspector.Section
             role="tree"
             title="Table of contents"

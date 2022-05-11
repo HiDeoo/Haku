@@ -12,7 +12,7 @@ const shimmerClasses = clst(itemClasses, 'min-h-[2.8125rem] block')
 const List: ListComponent = ({ children, className, isLoading, shimmerClassNames, title }) => {
   return (
     <div className={className}>
-      {title ? <h1 className="mb-1.5 ml-0.5 text-lg">{title}</h1> : null}
+      {title ? <h1 className="mb-1.5 ml-0.5 truncate text-lg">{title}</h1> : null}
       <div>
         {isLoading
           ? Array.from({ length: shimmerClassNames.length }).map((_, index) => (

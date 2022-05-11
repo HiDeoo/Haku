@@ -125,7 +125,7 @@ export function createTestTodoNode(options?: TestTodoNodeOptions) {
       todoId: options?.todoId,
       status:
         options?.status ??
-        faker.random.arrayElement([TodoNodeStatus.ACTIVE, TodoNodeStatus.COMPLETED, TodoNodeStatus.CANCELLED]),
+        faker.helpers.arrayElement([TodoNodeStatus.ACTIVE, TodoNodeStatus.COMPLETED, TodoNodeStatus.CANCELLED]),
     },
   })
 }

@@ -1570,6 +1570,6 @@ function getFakeTodoNode(options?: Partial<TodoNodeData>): TodoNodeData {
     noteText: options?.noteText ?? data,
     status:
       options?.status ??
-      faker.random.arrayElement([TodoNodeStatus.ACTIVE, TodoNodeStatus.COMPLETED, TodoNodeStatus.CANCELLED]),
+      faker.helpers.arrayElement([TodoNodeStatus.ACTIVE, TodoNodeStatus.COMPLETED, TodoNodeStatus.CANCELLED]),
   }
 }

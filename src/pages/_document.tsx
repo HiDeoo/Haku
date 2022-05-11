@@ -22,7 +22,9 @@ const Document: React.FC = () => {
           content="Craft, consolidate and tackle your notebooks and to-do lists all in one place."
         />
         <link rel="manifest" href="/manifest.webmanifest" />
-        <link rel="apple-touch-icon" href="/images/icons/180.png" />
+        <link rel="icon" href="/images/icons/favicon.ico" sizes="any" />
+        <link rel="icon" href="/images/icons/favicon.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/images/icons/maskables/180.png" />
         <link
           rel="apple-touch-startup-image"
           href="/images/startup/apple-splash-2048-2732.jpg"

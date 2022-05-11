@@ -9,7 +9,7 @@ import IconButton from 'components/form/IconButton'
 import Drawer from 'components/ui/Drawer'
 import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
 import { getInboxEntriesQueryKey } from 'hooks/useInboxEntriesQuery'
-import { isNonEmptyArray } from 'libs/array'
+import { isNotEmpty } from 'libs/array'
 import { type InboxEntriesData } from 'libs/db/inbox'
 import clst from 'styles/clst'
 
@@ -27,7 +27,7 @@ const InboxDrawer: React.FC = () => {
       queryKey: getInboxEntriesQueryKey(),
     })
     const unsubscribe = observer.subscribe((result) => {
-      setShowInboxIndicator(isNonEmptyArray(result.data))
+      setShowInboxIndicator(isNotEmpty(result.data))
     })
 
     return () => {

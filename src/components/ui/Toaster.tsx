@@ -3,7 +3,7 @@ import { useAtomValue } from 'jotai'
 
 import { toastsAtom } from 'atoms/toast'
 import Toast from 'components/ui/Toast'
-import { isNonEmptyArray } from 'libs/array'
+import { isNotEmpty } from 'libs/array'
 import clst from 'styles/clst'
 
 const Toaster: React.FC = () => {
@@ -16,7 +16,7 @@ const Toaster: React.FC = () => {
     'overflow-y-auto overflow-x-hidden',
     'focus:outline-none',
     {
-      'focus-visible:ring-2 focus-visible:ring-blue-600': isNonEmptyArray(toasts),
+      'focus-visible:ring-2 focus-visible:ring-blue-600': isNotEmpty(toasts),
     }
   )
 
