@@ -1,4 +1,5 @@
 import { HttpMethod } from 'constants/http'
+import { toError } from 'libs/error'
 
 async function sendEmail(templateId: string, templateParams: Record<string, string> = {}) {
   try {
@@ -20,7 +21,7 @@ async function sendEmail(templateId: string, templateParams: Record<string, stri
       throw new Error(text)
     }
   } catch (error) {
-    throw new Error(`Something went wrong while sending an email: ${error instanceof Error ? error.message : error}`)
+    throw new Error('Something went wrong while sending an email.', { cause: toError(error) })
   }
 }
 
