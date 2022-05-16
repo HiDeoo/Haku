@@ -39,6 +39,7 @@ const Dynalist: Page = () => {
         <Form onSubmit={onSubmit} error={undefined /* TODO */}>
           <TextArea
             rows={3}
+            autoFocus
             label="OPML"
             enterKeyHint="done"
             disabled={isLoading}

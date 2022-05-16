@@ -57,6 +57,7 @@ TextArea.displayName = 'TextArea'
 export default TextArea
 
 interface TextAreaProps extends Partial<Omit<UseFormRegisterReturn, 'ref' | 'onBlur' | 'onChange'>> {
+  autoFocus?: React.TextareaHTMLAttributes<HTMLTextAreaElement>['autoFocus']
   className?: string
   disabled?: boolean
   enterKeyHint?: React.TextareaHTMLAttributes<HTMLTextAreaElement>['enterKeyHint']
