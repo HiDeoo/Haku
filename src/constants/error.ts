@@ -39,3 +39,5 @@ export const API_ERROR_IMAGE_DELETE_UNKNOWN = 'The image(s) could not be deleted
 export const API_ERROR_IMAGE_REFERENCE_DOES_NOT_EXIST = 'The reference specified does not exist.'
 
 export const API_ERROR_INBOX_ENTRY_DOES_NOT_EXIST = 'The inbox entry specified does not exist.'
+
+export const API_ERROR_IMPORT_DYNALIST_INVALID_OPML = 'Unable to parse Dynalist OPML data.'

@@ -51,6 +51,7 @@ specifiers:
   form-data: 4.0.0
   fuzzaldrin-plus: 0.6.0
   highlight.js: 11.5.1
+  html-entities: 2.3.3
   husky: 8.0.1
   jest: 28.1.0
   jotai: 1.6.6
@@ -58,11 +59,13 @@ specifiers:
   lambda-multipart-parser: 1.0.1
   lint-staged: 12.4.1
   lowlight: 2.6.1
+  markdown-to-txt: 2.0.1
   msw: 0.39.2
   multer: 1.4.4
   next: 12.1.6
   next-auth: 4.3.4
   next-test-api-route-handler: 3.1.2
+  opml-to-json: 1.0.1
   postcss: 8.4.13
   prettier: 2.6.2
   prettier-plugin-tailwindcss: 0.1.10
@@ -116,12 +119,15 @@ dependencies:
   form-data: 4.0.0
   fuzzaldrin-plus: 0.6.0
   highlight.js: 11.5.1
+  html-entities: 2.3.3
   jotai: 1.6.6_c4712a3108f6356e187f2b5f95a519d1
   ky: 0.30.0
   lowlight: 2.6.1
+  markdown-to-txt: 2.0.1
   multer: 1.4.4
   next: 12.1.6_react-dom@18.1.0+react@18.1.0
   next-auth: 4.3.4_react-dom@18.1.0+react@18.1.0
+  opml-to-json: 1.0.1
   react: 18.1.0
   react-dom: 18.1.0_react@18.1.0
   react-error-boundary: 3.1.4_react@18.1.0
@@ -532,7 +538,7 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dependencies:
       ajv: 6.12.6
-      debug: 4.3.3
+      debug: 4.3.4
       espree: 9.3.2
       globals: 13.12.0
       ignore: 5.2.0
@@ -554,7 +560,7 @@ packages:
     engines: {node: '>=10.10.0'}
     dependencies:
       '@humanwhocodes/object-schema': 1.2.1
-      debug: 4.3.3
+      debug: 4.3.4
       minimatch: 3.1.2
     transitivePeerDependencies:
       - supports-color
@@ -4172,6 +4178,10 @@ packages:
     engines: {node: '>=12.0.0'}
     dev: false
 
+  /html-entities/2.3.3:
+    resolution: {integrity: sha512-DV5Ln36z34NNTDgnz0EWGBLZENelNAtkiFA4kyNOG2tDI6Mz1uSWiq1wAKdyjnJwyDiDO7Fa2SO1CTxPXL8VxA==}
+    dev: false
+
   /html-escaper/2.0.2:
     resolution: {integrity: sha512-H2iMtd0I4Mt5eYiapRdIDjp+XzelXQ0tFE4JS7YFwFevXXMmOp9myNrUvCg0D6ws8iqkRPBfKHgbwig1SmlLfg==}
     dev: true
@@ -5163,9 +5173,17 @@ packages:
       p-locate: 4.1.0
     dev: true
 
+  /lodash.escape/4.0.1:
+    resolution: {integrity: sha1-yQRGkMIeBClL6qUXcS/e0fqI3pg=}
+    dev: false
+
   /lodash.merge/4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
     dev: true
+
+  /lodash.unescape/4.0.1:
+    resolution: {integrity: sha1-vyJJiGzlFM2hEvrpIYzcBlIR/Jw=}
+    dev: false
 
   /lodash/4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
@@ -5232,6 +5250,20 @@ packages:
     dependencies:
       tmpl: 1.0.5
     dev: true
+
+  /markdown-to-txt/2.0.1:
+    resolution: {integrity: sha512-Hsj7KTN8k1gutlLum3vosHwVZGnv8/cbYKWVkUyo/D1rzOYddbDesILebRfOsaVfjIBJank/AVOySBlHAYqfZw==}
+    dependencies:
+      lodash.escape: 4.0.1
+      lodash.unescape: 4.0.1
+      marked: 4.0.15
+    dev: false
+
+  /marked/4.0.15:
+    resolution: {integrity: sha512-esX5lPdTfG4p8LDkv+obbRCyOKzB+820ZZyMOXJZygZBHrH9b3xXR64X4kT3sPe9Nx8qQXbmcz6kFSMt4Nfk6Q==}
+    engines: {node: '>= 12'}
+    hasBin: true
+    dev: false
 
   /match-sorter/6.3.1:
     resolution: {integrity: sha512-mxybbo3pPNuA+ZuCUhm5bwNkXrJTbsk5VWbR5wiwz/GC6LIiegBGn2w3O08UG/jdbYLinw51fSQ5xNU1U3MgBw==}
@@ -5606,6 +5638,20 @@ packages:
       lru-cache: 6.0.0
       object-hash: 2.2.0
       oidc-token-hash: 5.0.1
+    dev: false
+
+  /opml-to-json/1.0.1:
+    resolution: {integrity: sha512-o/czEw150VWKww6Xa9as9ozTqj6L6LnxsVTfmKGFQ3eZiolTQBcDVRA87hzTBtflVZyeP6x0QYTMBM86cTW/kQ==}
+    dependencies:
+      opmlparser: 0.8.0
+    dev: false
+
+  /opmlparser/0.8.0:
+    resolution: {integrity: sha1-pddINLE2r5pjkBP13Dl0a3wnBj8=}
+    engines: {node: '>= 0.8.0'}
+    dependencies:
+      readable-stream: 1.1.14
+      sax: 0.6.1
     dev: false
 
   /optionator/0.9.1:
@@ -6427,6 +6473,10 @@ packages:
   /safer-buffer/2.1.2:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
     dev: true
+
+  /sax/0.6.1:
+    resolution: {integrity: sha1-VjsZx8HeiS4Jv8Ty/DDjwn8JUrk=}
+    dev: false
 
   /scheduler/0.22.0:
     resolution: {integrity: sha512-6QAm1BgQI88NPYymgGQLCZgvep4FyePDWFpXVK+zNSUgHwlqpJy8VEh8Et0KxTACS4VWwMousBElAZOH9nkkoQ==}
