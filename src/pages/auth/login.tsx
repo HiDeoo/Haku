@@ -71,7 +71,10 @@ const Login: Page = () => {
     }
   }
 
-  const iconWrapperClasses = clst('mb-5 flex justify-center', isIconLoaded ? 'animate-fade-in' : 'opacity-0')
+  const iconWrapperClasses = clst(
+    'mb-5 flex justify-center',
+    isIconLoaded ? 'motion-safe:animate-fade-in' : 'opacity-0'
+  )
 
   return (
     <Flex direction="col" className="w-60">
