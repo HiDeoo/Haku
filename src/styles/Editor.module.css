@@ -113,7 +113,9 @@
   }
 
   a {
-    @apply cursor-pointer text-blue-200 underline underline-offset-1 hover:no-underline;
+    @apply cursor-pointer underline underline-offset-1 hover:no-underline;
+
+    color: var(--editor-link-color);
   }
 
   pre {

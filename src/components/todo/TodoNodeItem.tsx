@@ -1,6 +1,7 @@
 import { TodoNodeStatus } from '@prisma/client'
 import cuid from 'cuid'
 import { forwardRef, memo, useCallback, useContext, useImperativeHandle, useRef, useState } from 'react'
+import { linkIt, urlRegex } from 'react-linkify-it'
 import { useEditable } from 'use-editable'
 
 import { AtomParamsWithDirection } from 'atoms/todoNode'
@@ -34,6 +35,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
 ) => {
   useImperativeHandle(forwardedRef, () => ({ focusContent, scrollIntoView }))
 
+  const [isContentFocused, setIsContentFocused] = useState(false)
   const [shouldFocusNote, setShouldFocusNote] = useState(false)
 
   const contentEditable = useRef<HTMLDivElement>(null)
@@ -221,15 +223,30 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     })
   }
 
-  function onFocusContent() {
+  function onFocusContent(event: React.FocusEvent<HTMLDivElement>) {
+    if (event.target instanceof HTMLAnchorElement) {
+      event.preventDefault()
+      event.stopPropagation()
+
+      window.open(event.target.href, '_blank')
+
+      requestAnimationFrame(() => {
+        focusContent()
+      })
+    }
+
     if (node?.id) {
       onFocusTodoNode(node.id)
     }
+
+    setIsContentFocused(true)
 
     contentEditable.current?.setAttribute('spellcheck', 'true')
   }
 
   function onBlurContent() {
+    setIsContentFocused(false)
+
     contentEditable.current?.setAttribute('spellcheck', 'false')
   }
 
@@ -256,28 +273,36 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
 
     contentEditable.current.focus()
 
-    if (
-      caretPositionOrIndex &&
-      typeof caretPositionOrIndex !== 'number' &&
-      direction &&
-      typeof fromLevel !== 'undefined'
-    ) {
-      // Adjust the caret left position based on the level offset difference between the previous and current levels.
-      const left = Math.max(
-        0,
-        caretPositionOrIndex.left +
-          fromLevel * TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS -
-          level * TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS
-      )
+    // If the node contains links, we need to wait for the unlinkified content to be rendered before properly setting
+    // the caret position.
+    requestAnimationFrame(() => {
+      if (!contentEditable.current) {
+        return
+      }
 
-      setContentEditableCaretPosition(contentEditable.current, { ...caretPositionOrIndex, left }, direction)
-    } else {
-      // Focus the passed down caret index or fallback to the end of the text content.
-      setContentEditableCaretIndex(
-        contentEditable.current,
-        typeof caretPositionOrIndex === 'number' ? caretPositionOrIndex : node?.content.length
-      )
-    }
+      if (
+        caretPositionOrIndex &&
+        typeof caretPositionOrIndex !== 'number' &&
+        direction &&
+        typeof fromLevel !== 'undefined'
+      ) {
+        // Adjust the caret left position based on the level offset difference between the previous and current levels.
+        const left = Math.max(
+          0,
+          caretPositionOrIndex.left +
+            fromLevel * TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS -
+            level * TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS
+        )
+
+        setContentEditableCaretPosition(contentEditable.current, { ...caretPositionOrIndex, left }, direction)
+      } else {
+        // Focus the passed down caret index or fallback to the end of the text content.
+        setContentEditableCaretIndex(
+          contentEditable.current,
+          typeof caretPositionOrIndex === 'number' ? caretPositionOrIndex : node?.content.length
+        )
+      }
+    })
   }
 
   function scrollIntoView() {
@@ -317,6 +342,26 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
 
   const levelOffset = level * TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS + 1
 
+  const itemContent = isContentFocused
+    ? content
+    : linkIt(
+        content,
+        (match, key) => {
+          const linkClasses = clst('cursor-pointer underline underline-offset-1 hover:no-underline', {
+            'text-blue-200': node.status === TodoNodeStatus.ACTIVE,
+            'text-zinc-400': node.status === TodoNodeStatus.COMPLETED,
+            'text-zinc-500': node.status === TodoNodeStatus.CANCELLED,
+          })
+
+          return (
+            <a key={key} href={match} target="_blank" rel="noreferrer" contentEditable={false} className={linkClasses}>
+              {match}
+            </a>
+          )
+        },
+        urlRegex
+      )
+
   return (
     <div className={containerClasses} style={{ marginLeft: `-${levelOffset}px` }}>
       <Flex className="px-2 focus-within:bg-zinc-600/30">
@@ -337,7 +382,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
               onKeyDown={onKeyDownContent}
               onPasteCapture={onPasteCaptureContent}
             >
-              {content}
+              {itemContent}
             </div>
             {isNoteVisible ? (
               <TodoNodeNote

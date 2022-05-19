@@ -109,8 +109,12 @@ div#__next {
 
 :root {
   --editor-text-color: theme('colors.blue.50');
+  --editor-link-color: theme('colors.blue.200');
   --editor-caret-color: theme('colors.blue.400');
   --todo-node-note-editor-text-color: theme('colors.zinc.400');
   --todo-node-completed-note-editor-text-color: theme('colors.zinc.500');
   --todo-node-cancelled-note-editor-text-color: theme('colors.zinc.600');
+  --todo-node-note-editor-link-color: theme('colors.blue.200');
+  --todo-node-completed-note-editor-link-color: theme('colors.zinc.500');
+  --todo-node-cancelled-note-editor-link-color: theme('colors.zinc.600');
 }
