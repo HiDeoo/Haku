@@ -5,6 +5,7 @@ import Form from 'components/form/Form'
 import TextArea from 'components/form/TextArea'
 import Box from 'components/ui/Box'
 import Safe from 'components/ui/Safe'
+import { useImportDynalistMutation } from 'hooks/useImportDynalistMutation'
 import { useNetworkStatus } from 'hooks/useNetworkStatus'
 
 const Dynalist: Page = () => {
@@ -16,11 +17,10 @@ const Dynalist: Page = () => {
     formState: { errors },
   } = useForm<FormFields>()
 
-  const isLoading = false
+  const { error, isLoading, mutate } = useImportDynalistMutation()
 
-  const onSubmit = handleSubmit(({ opml }) => {
-    // TODO(HiDeoo)
-    console.log('🚨 [dynalist.tsx:17] opml', opml)
+  const onSubmit = handleSubmit((data) => {
+    mutate(data)
   })
   return (
     <Safe>
@@ -36,7 +36,7 @@ const Dynalist: Page = () => {
           </>
         }
       >
-        <Form onSubmit={onSubmit} error={undefined /* TODO */}>
+        <Form onSubmit={onSubmit} error={error}>
           <TextArea
             rows={3}
             autoFocus
