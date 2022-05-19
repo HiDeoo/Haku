@@ -3,7 +3,6 @@ import Link from 'next/link'
 import { RiArrowRightSLine } from 'react-icons/ri'
 
 import { sidebarCollapsedAtom } from 'atoms/collapsible'
-import Flex from 'components/ui/Flex'
 import Icon from 'components/ui/Icon'
 import List from 'components/ui/List'
 import { ContentType } from 'constants/contentType'
@@ -25,7 +24,7 @@ const ContentHistory: React.FC<ContentHistoryProps> = ({ focusedType }) => {
   }
 
   return (
-    <Flex direction="col" alignItems="center" className="gap-6 p-6 xs:gap-12 xs:pt-12 xs:pb-8">
+    <>
       <ContentHistorySection
         type={focusedType}
         isLoading={isLoading}
@@ -36,7 +35,7 @@ const ContentHistory: React.FC<ContentHistoryProps> = ({ focusedType }) => {
         isLoading={isLoading}
         entries={(isNoteFocusedType ? data?.todos : data?.notes) ?? []}
       />
-    </Flex>
+    </>
   )
 }
 

@@ -1,4 +1,4 @@
-import { FolderType, Prisma, type Todo } from '@prisma/client'
+import { FolderType, Prisma, TodoNode, type Todo } from '@prisma/client'
 import slug from 'url-slug'
 
 import { ApiError, API_ERROR_TODO_ALREADY_EXISTS, API_ERROR_TODO_DOES_NOT_EXIST } from 'libs/api/routes/errors'
@@ -18,24 +18,31 @@ const todoMetadataSelect = Prisma.validator<Prisma.TodoSelect>()({
 export async function addTodo(
   userId: UserId,
   name: TodoMetadata['name'],
-  folderId?: TodoMetadata['folderId']
+  folderId?: TodoMetadata['folderId'],
+  createDefaultTodoNode = true
 ): Promise<TodoMetadata> {
   return prisma.$transaction(async (prisma) => {
     await validateFolder(folderId, userId, FolderType.TODO)
 
     try {
-      const todoNode = await prisma.todoNode.create({ data: { content: '' } })
+      let todoNode: TodoNode | undefined
+
+      if (createDefaultTodoNode) {
+        todoNode = await prisma.todoNode.create({ data: { content: '' } })
+      }
 
       return await prisma.todo.create({
         data: {
           userId,
           name,
           folderId,
-          root: [todoNode.id],
+          root: todoNode ? [todoNode.id] : [],
           slug: slug(name),
-          nodes: {
-            connect: [{ id: todoNode.id }],
-          },
+          nodes: todoNode
+            ? {
+                connect: [{ id: todoNode.id }],
+              }
+            : undefined,
         },
         select: todoMetadataSelect,
       })

@@ -1,10 +1,12 @@
 import { Arrow, Content, Item, Root, Trigger } from '@radix-ui/react-dropdown-menu'
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useResetAtom } from 'jotai/utils'
+import { useRouter } from 'next/router'
 import { forwardRef } from 'react'
 import { BsFillLayersFill } from 'react-icons/bs'
 import {
   RiBugLine,
+  RiInboxArchiveLine,
   RiInstallLine,
   RiKeyboardFill,
   RiLogoutCircleRLine,
@@ -32,6 +34,8 @@ import { isApplePlatform } from 'libs/html'
 import clst from 'styles/clst'
 
 const SidebarMenu: React.FC = () => {
+  const { push } = useRouter()
+
   const sidebarCollapsed = useAtomValue(sidebarCollapsedAtom)
   const toggleSidebarCollapsed = useSetAtom(toggleSidebarCollapsedAtom)
 
@@ -52,6 +56,10 @@ const SidebarMenu: React.FC = () => {
 
   function onClickInstallShortcut() {
     window.open(`/Add to Haku inbox${process.env.NODE_ENV === 'production' ? '' : ' (dev)'}.shortcut`)
+  }
+
+  function onClickImportData() {
+    push('/import')
   }
 
   const menuClasses = clst(
@@ -95,6 +103,9 @@ const SidebarMenu: React.FC = () => {
             </Item>
             <Item asChild>
               <SidebarMenuItem label="Report Bug" icon={RiBugLine} onClick={openGitHubIssuePage} />
+            </Item>
+            <Item asChild>
+              <SidebarMenuItem label="Import Data" icon={RiInboxArchiveLine} onClick={onClickImportData} />
             </Item>
             <Item asChild>
               <SidebarMenuItem label="Keyboard Shortcuts" icon={RiKeyboardFill} onClick={onClickKeyboardShortcuts} />

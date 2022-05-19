@@ -1,3 +1,4 @@
+import Flex from 'components/ui/Flex'
 import clst from 'styles/clst'
 
 const safeClasses = clst(
@@ -6,7 +7,13 @@ const safeClasses = clst(
 )
 
 const Safe: React.FC<SafeProps> = ({ children }) => {
-  return <div className={safeClasses}>{children}</div>
+  return (
+    <div className={safeClasses}>
+      <Flex direction="col" alignItems="center" className="gap-6 p-6 xs:gap-12 xs:pb-8 md:pt-12">
+        {children}
+      </Flex>
+    </div>
+  )
 }
 
 export default Safe

@@ -14,7 +14,7 @@ const List: ListComponent = ({ children, className, isLoading, shimmerClassNames
     <div className={className}>
       {title ? <h1 className="mb-1.5 ml-0.5 truncate text-lg">{title}</h1> : null}
       <div>
-        {isLoading
+        {isLoading && shimmerClassNames
           ? Array.from({ length: shimmerClassNames.length }).map((_, index) => (
               <Shimmer key={`shimmer-${index}`} className={shimmerClasses}>
                 <Shimmer.Line className={shimmerClassNames[index]} />
@@ -61,7 +61,7 @@ interface ListProps {
   children: React.ReactNode
   className?: string
   isLoading?: boolean
-  shimmerClassNames: string[]
+  shimmerClassNames?: string[]
   title?: string
 }
 
