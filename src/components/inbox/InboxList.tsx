@@ -5,11 +5,12 @@ import ClipboardCopyButton from 'components/form/ClipboardCopyButton'
 import Flex from 'components/ui/Flex'
 import List, { LIST_BUTTON_CLASSES, LIST_BUTTON_PRESSED_CLASSES } from 'components/ui/List'
 import { LIST_SHIMMER_CLASSES } from 'constants/shimmer'
-import useInboxEntriesQuery from 'hooks/useInboxEntriesQuery'
 import { useInboxEntryMutation } from 'hooks/useInboxEntryMutation'
 import { useNetworkStatus } from 'hooks/useNetworkStatus'
 import { isEmpty } from 'libs/array'
 import { InboxEntryData } from 'libs/db/inbox'
+import { isNetworkError } from 'libs/trpc'
+import { trpc } from 'libs/trpc'
 import clst from 'styles/clst'
 import styles from 'styles/InboxList.module.css'
 
@@ -20,7 +21,7 @@ const listClasses = clst(
 )
 
 const InboxList: React.FC = () => {
-  const { data, isLoading } = useInboxEntriesQuery()
+  const { data, isLoading } = trpc.useQuery(['inbox.list'], { useErrorBoundary: isNetworkError })
 
   if (!isLoading && isEmpty(data)) {
     return (
@@ -50,10 +51,10 @@ export default InboxList
 const InboxListEntry: React.FC<InboxListEntryProps> = ({ entry }) => {
   const { offline } = useNetworkStatus()
 
-  const { mutate } = useInboxEntryMutation()
+  const { mutateDelete } = useInboxEntryMutation()
 
   function onClickRemove() {
-    mutate({ action: 'delete', id: entry.id })
+    mutateDelete({ id: entry.id })
   }
 
   const textClasses = clst(styles.entry, 'min-w-0 break-words')

@@ -1,17 +1,16 @@
 import crypto from 'crypto'
+import path from 'path'
 
+import { TRPCError } from '@trpc/server'
 import FormData from 'form-data'
-import { StatusCode } from 'status-code-enum'
 
-import { HttpMethod } from 'constants/http'
-import { IMAGE_DEFAULT_FORMAT, IMAGE_RESPONSIVE_BREAKPOINTS_IN_PIXELS } from 'constants/image'
 import {
-  ApiError,
   API_ERROR_IMAGE_DELETE_UNKNOWN,
   API_ERROR_IMAGE_REFERENCE_DOES_NOT_EXIST,
   API_ERROR_IMAGE_UPLOAD_UNKNOWN,
-} from 'libs/api/routes/errors'
-import { ParsedFile } from 'libs/api/routes/middlewares'
+} from 'constants/error'
+import { HttpMethod } from 'constants/http'
+import { IMAGE_DEFAULT_FORMAT, IMAGE_RESPONSIVE_BREAKPOINTS_IN_PIXELS } from 'constants/image'
 import { isNotEmpty, sortTupleArrayAlphabetically } from 'libs/array'
 import { prisma } from 'libs/db'
 import { type NoteMetadata } from 'libs/db/note'
@@ -32,7 +31,8 @@ export const CLOUDINARY_BASE_DELIVERY_URL = 'https://res.cloudinary.com'
 
 export async function uploadToCloudinary(
   userId: UserId,
-  image: ParsedFile,
+  image: string,
+  filename: string,
   referenceId: NoteMetadata['id'] | TodoMetadata['id']
 ): Promise<ImageData> {
   const [{ exists: referenceExists }] = await prisma.$queryRaw<[{ exists: boolean }]>`
@@ -43,12 +43,12 @@ SELECT EXISTS(
 )`
 
   if (!referenceExists) {
-    throw new ApiError(API_ERROR_IMAGE_REFERENCE_DOES_NOT_EXIST)
+    throw new TRPCError({ code: 'NOT_FOUND', message: API_ERROR_IMAGE_REFERENCE_DOES_NOT_EXIST })
   }
 
   const formData = new FormData()
 
-  formData.append('file', image.buffer, image.originalname)
+  formData.append('file', image, filename)
   formData.append('api_key', process.env.CLOUDINARY_API_KEY)
 
   const parameters: [string, string][] = [
@@ -87,11 +87,11 @@ SELECT EXISTS(
       throw new Error('Unable to upload image to Cloudinary.')
     }
 
-    return await getImageData(json)
+    return await getImageData(json, path.parse(filename).name)
   } catch (error) {
     console.error('Unable to upload image to Cloudinary:', isCloudinaryError(json) ? json.error.message : error)
 
-    throw new ApiError(API_ERROR_IMAGE_UPLOAD_UNKNOWN, StatusCode.ServerErrorServiceUnavailable)
+    throw new TRPCError({ code: 'CLIENT_CLOSED_REQUEST', message: API_ERROR_IMAGE_UPLOAD_UNKNOWN })
   }
 }
 
@@ -120,7 +120,7 @@ export async function deleteFromCloudinaryByTag(tag: string): Promise<void> {
       isCloudinaryError(json) ? json.error.message : error
     )
 
-    throw new ApiError(API_ERROR_IMAGE_DELETE_UNKNOWN, StatusCode.ServerErrorServiceUnavailable)
+    throw new TRPCError({ code: 'CLIENT_CLOSED_REQUEST', message: API_ERROR_IMAGE_DELETE_UNKNOWN })
   }
 }
 
@@ -128,7 +128,7 @@ export function getCloudinaryApiUrl(action: `/${string}`) {
   return `${CLOUDINARY_BASE_API_URL}/${process.env.CLOUDINARY_CLOUD_NAME}${action}`
 }
 
-async function getImageData(file: CloudinaryFile): Promise<ImageData> {
+async function getImageData(file: CloudinaryFile, name: string): Promise<ImageData> {
   const format = `f_${IMAGE_DEFAULT_FORMAT}`
 
   const placeholderTransforms = [format, 'q_20', 'e_blur:1000', file.width < 100 ? `w_${file.width}` : 'w_100']
@@ -153,7 +153,7 @@ async function getImageData(file: CloudinaryFile): Promise<ImageData> {
     }
   }
 
-  return { height: file.height, name: file.original_filename, original, placeholder, responsive, width: file.width }
+  return { height: file.height, name, original, placeholder, responsive, width: file.width }
 }
 
 function getCloudinarySignedUrl(file: CloudinaryFile, transforms: string[]): string {
@@ -192,7 +192,6 @@ interface CloudinaryFile {
   folder: string
   format: string
   height: number
-  original_filename: string
   placeholder: boolean
   public_id: string
   resource_type: 'image' | 'raw' | 'video'

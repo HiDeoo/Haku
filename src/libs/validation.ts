@@ -1,17 +1,14 @@
 import { FolderType, TodoNodeStatus } from '@prisma/client'
+import { TRPCError } from '@trpc/server'
+import { fromBuffer } from 'file-type'
 import { z } from 'zod'
 
 export { z } from 'zod'
 
+export const zId = z.string().cuid()
 export const zEmail = z.string().email()
-
 export const zFolderType = z.nativeEnum(FolderType)
-
 export const zTodoNodeStatus = z.nativeEnum(TodoNodeStatus)
-
-export const zQuerySchemaWithId = z.object({
-  id: z.string().cuid(),
-})
 
 export function zAtLeastOneOf<TShape extends z.ZodRawShape>(objectSchema: z.ZodObject<TShape>) {
   const keys = Object.keys(objectSchema._def.shape())
@@ -21,4 +18,18 @@ export function zAtLeastOneOf<TShape extends z.ZodRawShape>(objectSchema: z.ZodO
 
     return keys.some((key) => dataKeys.indexOf(key) !== -1)
   })
+}
+
+export async function validateBase64Image(base64Image: string, maxFileSizeInBytes: number, supportedTypes: string[]) {
+  const dataBuffer = Buffer.from(base64Image.substring(base64Image.indexOf(',') + 1), 'base64')
+
+  if (dataBuffer.length > maxFileSizeInBytes) {
+    throw new TRPCError({ code: 'BAD_REQUEST' })
+  }
+
+  const fileType = await fromBuffer(dataBuffer)
+
+  if (!fileType || !supportedTypes.includes(fileType.mime)) {
+    throw new TRPCError({ code: 'BAD_REQUEST' })
+  }
 }

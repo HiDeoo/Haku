@@ -7,14 +7,15 @@ import Icon from 'components/ui/Icon'
 import List from 'components/ui/List'
 import { ContentType } from 'constants/contentType'
 import { LIST_SHIMMER_CLASSES } from 'constants/shimmer'
-import useContentHistoryQuery from 'hooks/useContentHistoryQuery'
 import { getContentType } from 'hooks/useContentType'
 import { isEmpty } from 'libs/array'
 import { HistoryData } from 'libs/db/history'
+import { isNetworkError } from 'libs/trpc'
+import { trpc } from 'libs/trpc'
 import clst from 'styles/clst'
 
 const ContentHistory: React.FC<ContentHistoryProps> = ({ focusedType }) => {
-  const { data, isLoading } = useContentHistoryQuery()
+  const { data, isLoading } = trpc.useQuery(['history'], { useErrorBoundary: isNetworkError })
 
   const isNoteFocusedType = focusedType === ContentType.NOTE
   const alternateType = isNoteFocusedType ? ContentType.TODO : ContentType.NOTE

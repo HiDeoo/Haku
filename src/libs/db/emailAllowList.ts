@@ -1,6 +1,6 @@
 import { type EmailAllowList } from '@prisma/client'
 
-import { API_ERROR_EMAIL_ALREADY_EXISTS, API_ERROR_EMAIL_DOES_NOT_EXISTS } from 'libs/api/routes/errors'
+import { API_ERROR_EMAIL_ALREADY_EXISTS, API_ERROR_EMAIL_DOES_NOT_EXISTS } from 'constants/error'
 import { handleDbError, prisma } from 'libs/db'
 
 export function getAllowedEmails(): Promise<EmailAllowList[]> {

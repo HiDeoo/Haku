@@ -1,13 +1,13 @@
 import { Prisma, type Folder, type FolderType } from '@prisma/client'
+import { TRPCError } from '@trpc/server'
 
 import {
-  ApiError,
   API_ERROR_FOLDER_ALREADY_EXISTS,
   API_ERROR_FOLDER_DOES_NOT_EXIST,
   API_ERROR_FOLDER_INVALID_TYPE,
   API_ERROR_FOLDER_PARENT_DOES_NOT_EXIST,
   API_ERROR_FOLDER_PARENT_INVALID_TYPE,
-} from 'libs/api/routes/errors'
+} from 'constants/error'
 import { handleDbError, prisma } from 'libs/db'
 import { getTreeChildrenFolderIds } from 'libs/db/tree'
 
@@ -49,7 +49,7 @@ export function updateFolder(id: FolderData['id'], userId: UserId, data: UpdateF
     const folder = await getFolderById(id, userId)
 
     if (!folder) {
-      throw new ApiError(API_ERROR_FOLDER_DOES_NOT_EXIST)
+      throw new TRPCError({ code: 'NOT_FOUND', message: API_ERROR_FOLDER_DOES_NOT_EXIST })
     }
 
     await validateParentFolder(data.parentId, userId, folder.type)
@@ -81,7 +81,7 @@ export function removeFolder(id: FolderData['id'], userId: UserId) {
     const folder = await getFolderById(id, userId)
 
     if (!folder) {
-      throw new ApiError(API_ERROR_FOLDER_DOES_NOT_EXIST)
+      throw new TRPCError({ code: 'NOT_FOUND', message: API_ERROR_FOLDER_DOES_NOT_EXIST })
     }
 
     const nestedFolders = await getTreeChildrenFolderIds(userId, folder.type, id)
@@ -95,11 +95,11 @@ export async function validateFolder(folderId: FolderData['parentId'] | undefine
     const folder = await getFolderById(folderId, userId)
 
     if (!folder) {
-      throw new ApiError(API_ERROR_FOLDER_DOES_NOT_EXIST)
+      throw new TRPCError({ code: 'NOT_FOUND', message: API_ERROR_FOLDER_DOES_NOT_EXIST })
     }
 
     if (folder.type !== type) {
-      throw new ApiError(API_ERROR_FOLDER_INVALID_TYPE)
+      throw new TRPCError({ code: 'CONFLICT', message: API_ERROR_FOLDER_INVALID_TYPE })
     }
   }
 }
@@ -108,11 +108,11 @@ async function validateParentFolder(parentId: FolderData['parentId'] | undefined
   try {
     await validateFolder(parentId, userId, type)
   } catch (error) {
-    if (error instanceof ApiError) {
+    if (error instanceof TRPCError) {
       if (error.message === API_ERROR_FOLDER_DOES_NOT_EXIST) {
-        throw new ApiError(API_ERROR_FOLDER_PARENT_DOES_NOT_EXIST)
+        throw new TRPCError({ ...error, message: API_ERROR_FOLDER_PARENT_DOES_NOT_EXIST })
       } else if (error.message === API_ERROR_FOLDER_INVALID_TYPE) {
-        throw new ApiError(API_ERROR_FOLDER_PARENT_INVALID_TYPE)
+        throw new TRPCError({ ...error, message: API_ERROR_FOLDER_PARENT_INVALID_TYPE })
       }
     }
 

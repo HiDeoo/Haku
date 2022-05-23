@@ -19,7 +19,7 @@ const InboxForm: React.FC = () => {
     setFocus,
   } = useForm<FormFields>()
 
-  const { error, isLoading, mutate } = useInboxEntryMutation()
+  const { error, isLoading, mutateAdd } = useInboxEntryMutation()
 
   const formClasses = clst(
     'z-10 bg-zinc-900/10 p-3 shadow-[0px_1px_2px_0px_rgb(0,0,0,0.5)]',
@@ -27,10 +27,10 @@ const InboxForm: React.FC = () => {
   )
 
   const onSubmit = handleSubmit((data) => {
-    mutate({ action: 'insert', ...data }, { onSuccess: onSuccessfulMutation })
+    mutateAdd(data, { onSuccess: onSuccessMutation })
   })
 
-  function onSuccessfulMutation() {
+  function onSuccessMutation() {
     // https://github.com/react-hook-form/react-hook-form/issues/6978#issuecomment-975668363
     requestAnimationFrame(() => {
       reset()

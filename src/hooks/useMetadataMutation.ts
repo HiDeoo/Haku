@@ -1,96 +1,65 @@
 import { useRouter } from 'next/router'
-import { useMutation, useQueryClient } from 'react-query'
 
 import useContentId from 'hooks/useContentId'
-import { getContentTreeQueryKey } from 'hooks/useContentTreeQuery'
+import { getContentTreeQueryPath } from 'hooks/useContentTreeQuery'
 import useContentType, { ContentType } from 'hooks/useContentType'
-import { getFilesQueryKey } from 'hooks/useFilesQuery'
-import { getClient, type Mutation } from 'libs/api/client'
-import { type NoteMetadata } from 'libs/db/note'
-import { type TodoMetadata } from 'libs/db/todo'
-import { type AddNoteBody } from 'pages/api/notes'
-import { type RemoveNoteQuery, type UpdateNoteBody, type UpdateNoteQuery } from 'pages/api/notes/[id]'
-import { type AddTodoBody } from 'pages/api/todos'
-import { type RemoveTodoQuery } from 'pages/api/todos/[id]'
+import { trpc } from 'libs/trpc'
 
 export default function useMetadataMutation() {
   const { push } = useRouter()
   const { contentId } = useContentId()
-  const { lcType, type, urlPath } = useContentType()
-  const queryClient = useQueryClient()
+  const { type, urlPath } = useContentType()
 
-  return useMutation<NoteMetadata | TodoMetadata | void, unknown, MetadataMutation>(
-    (data) => {
-      if (!type) {
-        throw new Error(`Missing content type to ${data.action} metadata.`)
-      }
+  const { invalidateQueries } = trpc.useContext()
 
-      switch (data.action) {
-        case 'insert': {
-          return type === ContentType.NOTE ? addNote(data) : addTodo(data)
-        }
-        case 'update': {
-          const updateFn = type === ContentType.NOTE ? updateNote : updateTodo
+  const {
+    error: errorAdd,
+    isLoading: isLoadingAdd,
+    mutate: mutateAdd,
+  } = trpc.useMutation([type === ContentType.NOTE ? 'note.add' : 'todo.add'], {
+    onSuccess: (newMetadata) => {
+      invalidateQueries([getContentTreeQueryPath(type)])
+      invalidateQueries(['file.list'])
 
-          return updateFn({ id: data.id, name: data.name, folderId: data.folderId })
-        }
-        case 'delete': {
-          const removeFn = type === ContentType.NOTE ? removeNote : removeTodo
+      push(`${urlPath}/${newMetadata.id}/${newMetadata.slug}`)
+    },
+  })
 
-          return removeFn({ id: data.id })
-        }
-        default: {
-          throw new Error(`Unsupported ${lcType} metadata mutation type.`)
-        }
+  const {
+    error: errorDelete,
+    isLoading: isLoadingDelete,
+    mutate: mutateDelete,
+  } = trpc.useMutation([type === ContentType.NOTE ? 'note.delete' : 'todo.delete'], {
+    onSuccess: (_newMetadata, variables) => {
+      invalidateQueries([getContentTreeQueryPath(type)])
+      invalidateQueries(['file.list'])
+
+      if (variables.id === contentId) {
+        push(urlPath)
       }
     },
-    {
-      onSuccess: (newMetadata, variables) => {
-        queryClient.invalidateQueries(getContentTreeQueryKey(type))
-        queryClient.invalidateQueries(getFilesQueryKey())
+  })
 
-        if (
-          newMetadata &&
-          (variables.action === 'insert' || (variables.action === 'update' && variables.id === contentId))
-        ) {
-          push(`${urlPath}/${newMetadata.id}/${newMetadata.slug}`)
-        } else if (variables.action === 'delete' && variables.id === contentId) {
-          push(urlPath)
-        }
-      },
-    }
-  )
+  const {
+    error: errorUpdate,
+    isLoading: isLoadingUpdate,
+    mutate: mutateUpdate,
+  } = trpc.useMutation([type === ContentType.NOTE ? 'note.update' : 'todo.update'], {
+    onSuccess: (newMetadata, variables) => {
+      invalidateQueries([getContentTreeQueryPath(type)])
+      invalidateQueries(['file.list'])
+
+      if (variables.id === contentId) {
+        push(`${urlPath}/${newMetadata.id}/${newMetadata.slug}`)
+      }
+    },
+  })
+
+  return {
+    error: errorAdd || errorDelete || errorUpdate,
+    isLoading: isLoadingAdd || isLoadingDelete || isLoadingUpdate,
+    mutateAdd,
+    mutateDelete,
+    mutateUpdate,
+  }
 }
-
-async function addNote(data: AddNoteBody) {
-  return (await getClient()).post('notes', { json: data }).json<NoteMetadata>()
-}
-
-async function addTodo(data: AddTodoBody) {
-  return (await getClient()).post('todos', { json: data }).json<TodoMetadata>()
-}
-
-async function updateNote({ id, ...data }: UpdateMetadata) {
-  return (await getClient()).patch(`notes/${id}`, { json: data }).json<NoteMetadata>()
-}
-
-async function updateTodo({ id, ...data }: UpdateMetadata) {
-  return (await getClient()).patch(`todos/${id}`, { json: data }).json<TodoMetadata>()
-}
-
-async function removeNote({ id }: RemoveNoteQuery) {
-  await (await getClient()).delete(`notes/${id}`)
-}
-
-async function removeTodo({ id }: RemoveTodoQuery) {
-  await (await getClient()).delete(`todos/${id}`)
-}
-
-type AddMetadata = AddNoteBody | AddTodoBody
-type UpdateMetadata = Omit<UpdateNoteBody, 'type'> & UpdateNoteQuery
-type RemoveMetadata = RemoveNoteQuery | RemoveTodoQuery
-
-export type MetadataMutation =
-  | Mutation<AddMetadata, 'insert'>
-  | Mutation<UpdateMetadata, 'update'>
-  | Mutation<RemoveMetadata, 'delete'>

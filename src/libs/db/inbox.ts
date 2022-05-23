@@ -1,6 +1,7 @@
 import { type InboxEntry, Prisma } from '@prisma/client'
+import { TRPCError } from '@trpc/server'
 
-import { ApiError, API_ERROR_INBOX_ENTRY_DOES_NOT_EXIST } from 'libs/api/routes/errors'
+import { API_ERROR_INBOX_ENTRY_DOES_NOT_EXIST } from 'constants/error'
 import { prisma } from 'libs/db'
 
 export type InboxEntryData = Prisma.InboxEntryGetPayload<{ select: typeof inboxEntryDataSelect }>
@@ -32,7 +33,7 @@ export function removeInboxEntry(userId: UserId, id: InboxEntry['id']) {
     const inboxEntry = await getInboxEntryById(userId, id)
 
     if (!inboxEntry) {
-      throw new ApiError(API_ERROR_INBOX_ENTRY_DOES_NOT_EXIST)
+      throw new TRPCError({ code: 'NOT_FOUND', message: API_ERROR_INBOX_ENTRY_DOES_NOT_EXIST })
     }
 
     return prisma.inboxEntry.delete({ where: { id } })

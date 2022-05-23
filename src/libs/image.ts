@@ -51,6 +51,22 @@ export function isGifExtension(ext: string) {
   return ext === 'gif'
 }
 
+export function getBase64ImageFromFile(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+
+    reader.onload = () => {
+      resolve(reader.result?.toString() ?? '')
+    }
+
+    reader.onerror = () => {
+      reject(reader.error)
+    }
+
+    reader.readAsDataURL(file)
+  })
+}
+
 export interface A11yImageParams {
   alt?: string | null
   base64Placeholder?: string | null

@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 
 import Button from 'components/form/Button'
@@ -5,11 +6,15 @@ import Form from 'components/form/Form'
 import TextArea from 'components/form/TextArea'
 import Box from 'components/ui/Box'
 import Safe from 'components/ui/Safe'
-import { useImportDynalistMutation } from 'hooks/useImportDynalistMutation'
+import { ContentType } from 'constants/contentType'
+import { getContentTreeQueryPath } from 'hooks/useContentTreeQuery'
 import { useNetworkStatus } from 'hooks/useNetworkStatus'
+import { type InferMutationOutput, trpc } from 'libs/trpc'
 
 const Dynalist: Page = () => {
   const { offline } = useNetworkStatus()
+
+  const { push } = useRouter()
 
   const {
     register,
@@ -17,11 +22,20 @@ const Dynalist: Page = () => {
     formState: { errors },
   } = useForm<FormFields>()
 
-  const { error, isLoading, mutate } = useImportDynalistMutation()
+  const { error, isLoading, mutate } = trpc.useMutation(['import.dynalist'], { onSuccess: onSuccessMutation })
+  const { invalidateQueries } = trpc.useContext()
 
   const onSubmit = handleSubmit((data) => {
     mutate(data)
   })
+
+  function onSuccessMutation(newMetadata: InferMutationOutput<'import.dynalist'>) {
+    invalidateQueries([getContentTreeQueryPath(ContentType.TODO)])
+    invalidateQueries(['file.list'])
+
+    push(`/todos/${newMetadata.id}/${newMetadata.slug}`)
+  }
+
   return (
     <Safe>
       <Box

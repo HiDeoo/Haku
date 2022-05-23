@@ -16,7 +16,7 @@ function createTestFolder(options: TestFolderOptions) {
       name: options?.name ?? faker.lorem.words(),
       parentId: options?.parentId,
       type: options.type,
-      userId: options?.userId ?? getTestUser().userId,
+      userId: options?.userId ?? getTestUser().id,
     },
   })
 }
@@ -34,7 +34,7 @@ export function getTestFolders(options: TestFolderOptions) {
     where: {
       ...options,
       type: options.type,
-      userId: options?.userId ?? getTestUser().userId,
+      userId: options?.userId ?? getTestUser().id,
     },
   })
 }
@@ -54,7 +54,7 @@ export function createTestNote(options?: TestNoteOptions) {
       html: data,
       slug: slug(name),
       text: data,
-      userId: options?.userId ?? getTestUser().userId,
+      userId: options?.userId ?? getTestUser().id,
     },
   })
 }
@@ -69,7 +69,7 @@ export async function createTestTodo(options?: TestTodoOptions, root?: TodoNodeD
       name,
       folderId: options?.folderId,
       slug: slug(name),
-      userId: options?.userId ?? getTestUser().userId,
+      userId: options?.userId ?? getTestUser().id,
       root: root ?? [todoNode.id],
       nodes: {
         connect: root?.map((id) => ({ id })) ?? [{ id: todoNode.id }],
@@ -85,7 +85,7 @@ export function getTestNotes(options?: TestNoteOptions) {
   return prisma.note.findMany({
     where: {
       ...options,
-      userId: options?.userId ?? getTestUser().userId,
+      userId: options?.userId ?? getTestUser().id,
     },
   })
 }
@@ -94,7 +94,7 @@ export function getTestTodos(options?: TestTodoOptions) {
   return prisma.todo.findMany({
     where: {
       ...options,
-      userId: options?.userId ?? getTestUser().userId,
+      userId: options?.userId ?? getTestUser().id,
     },
   })
 }
@@ -171,7 +171,7 @@ export function createTestInboxEntry(options?: TestInboxEntryOptions) {
   return prisma.inboxEntry.create({
     data: {
       text: options?.text ?? faker.random.words(),
-      userId: options?.userId ?? getTestUser().userId,
+      userId: options?.userId ?? getTestUser().id,
     },
   })
 }

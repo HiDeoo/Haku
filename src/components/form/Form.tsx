@@ -1,8 +1,7 @@
-import { HTTPError } from 'ky'
+import { TRPCClientError } from '@trpc/react'
 import { useEffect, useState } from 'react'
 
 import Callout from 'components/form/Callout'
-import { type ApiErrorResponse } from 'libs/api/routes/errors'
 
 const Form: React.FC<FormProps> = ({ children, className, error, errorMessage, onSubmit }) => {
   return (
@@ -19,19 +18,11 @@ const FormError: React.FC<Omit<FormProps, 'onSubmit' | 'children'>> = ({ error, 
   const [message, setMessage] = useState<string | null>(null)
 
   useEffect(() => {
-    async function getErrorMessage() {
+    function getErrorMessage() {
       let msg = errorMessage ?? 'Something went wrong!'
 
-      if (error instanceof HTTPError) {
-        try {
-          const json = await error.response.clone().json()
-
-          if (isApiErrorResponse(json)) {
-            msg = json.error
-          }
-        } catch (e) {
-          // We do not care about parsing related errors.
-        }
+      if (error instanceof TRPCClientError) {
+        msg = error.message
       }
 
       setMessage(msg)
@@ -45,10 +36,6 @@ const FormError: React.FC<Omit<FormProps, 'onSubmit' | 'children'>> = ({ error, 
   }
 
   return <Callout intent="error" message={message} />
-}
-
-function isApiErrorResponse(json: unknown): json is ApiErrorResponse {
-  return typeof json === 'object' && typeof (json as Record<string, unknown>).error === 'string'
 }
 
 interface FormProps {

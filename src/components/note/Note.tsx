@@ -11,7 +11,6 @@ import Shimmer from 'components/ui/Shimmer'
 import { type SyncStatus } from 'components/ui/SyncReport'
 import { NOTE_SHIMMER_CLASSES } from 'constants/shimmer'
 import { EDITOR_SHORTCUTS } from 'constants/shortcut'
-import useContentMutation from 'hooks/useContentMutation'
 import { EditorContent, EditorEvents, useEditor } from 'hooks/useEditor'
 import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
 import useIdle from 'hooks/useIdle'
@@ -21,6 +20,7 @@ import { useNetworkStatus } from 'hooks/useNetworkStatus'
 import useNoteQuery from 'hooks/useNoteQuery'
 import { type TodoMetadata } from 'libs/db/todo'
 import { focusNodeWithId, getToc, HeadingWithId, ReplaceContent, type ToC } from 'libs/editor'
+import { trpc } from 'libs/trpc'
 
 const Note: React.FC<NoteProps> = ({ id }) => {
   const { offline } = useNetworkStatus()
@@ -33,7 +33,7 @@ const Note: React.FC<NoteProps> = ({ id }) => {
   useNavigationPrompt(!editorState.pristine)
 
   const { data, isLoading } = useNoteQuery(id, { enabled: editorState.pristine })
-  const { isLoading: isSaving, mutate } = useContentMutation()
+  const { isLoading: isSaving, mutate } = trpc.useMutation(['note.update'])
 
   const updateToc = useCallback(({ editor }: EditorEvents['create'], emitUpdate = true) => {
     const toc = getToc(editor)
@@ -61,7 +61,7 @@ const Note: React.FC<NoteProps> = ({ id }) => {
     const text = editor.getText()
 
     mutate(
-      { action: 'update', id, html, text },
+      { id, html, text },
       {
         onSettled: (_: unknown, error: unknown) => {
           editor?.setEditable(true)

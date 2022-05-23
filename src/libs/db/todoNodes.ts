@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client'
+import { TRPCError } from '@trpc/server'
 
 import {
-  ApiError,
   API_ERROR_TODO_DOES_NOT_EXIST,
   API_ERROR_TODO_NODE_ALREADY_EXISTS,
   API_ERROR_TODO_NODE_DELETE_DOES_NOT_EXIST,
@@ -17,7 +17,7 @@ import {
   API_ERROR_TODO_NODE_UPDATE_CHILD_DELETE_CONFLICT,
   API_ERROR_TODO_NODE_UPDATE_CHILD_DOES_NOT_EXIST,
   API_ERROR_TODO_NODE_UPDATE_DOES_NOT_EXIST,
-} from 'libs/api/routes/errors'
+} from 'constants/error'
 import { isEmpty } from 'libs/array'
 import { handleDbError, prisma } from 'libs/db'
 import { getTodoById, type TodoMetadata } from 'libs/db/todo'
@@ -55,7 +55,7 @@ export async function getTodoNodes(todoId: TodoMetadata['id'], userId: UserId): 
   })
 
   if (!result) {
-    throw new ApiError(API_ERROR_TODO_DOES_NOT_EXIST)
+    throw new TRPCError({ code: 'NOT_FOUND', message: API_ERROR_TODO_DOES_NOT_EXIST })
   }
 
   const [nodes, children] = getTodosNodesMapKeyedById(result.nodes)
@@ -68,7 +68,7 @@ export function updateTodoNodes(todoId: TodoMetadata['id'], userId: UserId, data
     const todo = await getTodoById(todoId, userId)
 
     if (!todo) {
-      throw new ApiError(API_ERROR_TODO_DOES_NOT_EXIST)
+      throw new TRPCError({ code: 'NOT_FOUND', message: API_ERROR_TODO_DOES_NOT_EXIST })
     }
 
     const deletedNodeIds = await validateMutations(todoId, data)
@@ -113,7 +113,7 @@ function getTodoNodesByTodoId(todoId: TodoMetadata['id']) {
 
 async function validateMutations(todoId: TodoMetadata['id'], update: UpdateTodoNodesData): Promise<DeletedTodoNodeIds> {
   if (isEmpty(update.children.root)) {
-    throw new ApiError(API_ERROR_TODO_NODE_ROOT_NODE_EMPTY)
+    throw new TRPCError({ code: 'BAD_REQUEST', message: API_ERROR_TODO_NODE_ROOT_NODE_EMPTY })
   }
 
   const nodes = await getTodoNodesByTodoId(todoId)
@@ -121,7 +121,7 @@ async function validateMutations(todoId: TodoMetadata['id'], update: UpdateTodoN
 
   update.children.root.forEach((rootId) => {
     if (!hasKey(nodesMap, rootId) && !hasKey(update.mutations.insert, rootId)) {
-      throw new ApiError(API_ERROR_TODO_NODE_ROOT_NODE_DOES_NOT_EXIST)
+      throw new TRPCError({ code: 'BAD_REQUEST', message: API_ERROR_TODO_NODE_ROOT_NODE_DOES_NOT_EXIST })
     }
   })
 
@@ -129,11 +129,11 @@ async function validateMutations(todoId: TodoMetadata['id'], update: UpdateTodoN
 
   update.mutations.delete.forEach((deletedTodoNodeId) => {
     if (!hasKey(nodesMap, deletedTodoNodeId)) {
-      throw new ApiError(API_ERROR_TODO_NODE_DELETE_DOES_NOT_EXIST)
+      throw new TRPCError({ code: 'BAD_REQUEST', message: API_ERROR_TODO_NODE_DELETE_DOES_NOT_EXIST })
     } else if (hasKey(update.mutations.update, deletedTodoNodeId)) {
-      throw new ApiError(API_ERROR_TODO_NODE_DELETE_UPDATE_CONFLICT)
+      throw new TRPCError({ code: 'BAD_REQUEST', message: API_ERROR_TODO_NODE_DELETE_UPDATE_CONFLICT })
     } else if (update.children.root.includes(deletedTodoNodeId)) {
-      throw new ApiError(API_ERROR_TODO_NODE_DELETE_ROOT_NODE_CONFLICT)
+      throw new TRPCError({ code: 'BAD_REQUEST', message: API_ERROR_TODO_NODE_DELETE_ROOT_NODE_CONFLICT })
     }
 
     const deletedNode = nodesMap[deletedTodoNodeId]
@@ -144,7 +144,7 @@ async function validateMutations(todoId: TodoMetadata['id'], update: UpdateTodoN
       (parentId && (!updatedParentChildren || updatedParentChildren.includes(deletedTodoNodeId))) ||
       (!parentId && update.children.root.includes(deletedTodoNodeId))
     ) {
-      throw new ApiError(API_ERROR_TODO_NODE_DELETE_PARENT_NODE_CONFLICT)
+      throw new TRPCError({ code: 'BAD_REQUEST', message: API_ERROR_TODO_NODE_DELETE_PARENT_NODE_CONFLICT })
     }
 
     getNestedTodoNodeIds(deletedTodoNodeId, nodesMap, children, deletedNodeIds)
@@ -155,33 +155,33 @@ async function validateMutations(todoId: TodoMetadata['id'], update: UpdateTodoN
       (insertedTodoNode.noteHtml && !insertedTodoNode.noteText) ||
       (insertedTodoNode.noteText && !insertedTodoNode.noteHtml)
     ) {
-      throw new ApiError(API_ERROR_TODO_NODE_NOTE_HTML_OR_TEXT_MISSING)
+      throw new TRPCError({ code: 'BAD_REQUEST', message: API_ERROR_TODO_NODE_NOTE_HTML_OR_TEXT_MISSING })
     }
 
     update.children[insertedTodoNode.id]?.forEach((childrenId) => {
       if (!hasKey(nodesMap, childrenId) && !hasKey(update.mutations.insert, childrenId)) {
-        throw new ApiError(API_ERROR_TODO_NODE_INSERT_CHILD_DOES_NOT_EXIST)
+        throw new TRPCError({ code: 'BAD_REQUEST', message: API_ERROR_TODO_NODE_INSERT_CHILD_DOES_NOT_EXIST })
       } else if (update.mutations.delete.includes(childrenId)) {
-        throw new ApiError(API_ERROR_TODO_NODE_INSERT_CHILD_DELETE_CONFLICT)
+        throw new TRPCError({ code: 'BAD_REQUEST', message: API_ERROR_TODO_NODE_INSERT_CHILD_DELETE_CONFLICT })
       }
     })
   }
 
   for (const updatedTodoNode of Object.values(update.mutations.update)) {
     if (!hasKey(nodesMap, updatedTodoNode.id)) {
-      throw new ApiError(API_ERROR_TODO_NODE_UPDATE_DOES_NOT_EXIST)
+      throw new TRPCError({ code: 'BAD_REQUEST', message: API_ERROR_TODO_NODE_UPDATE_DOES_NOT_EXIST })
     } else if (
       (updatedTodoNode.noteHtml && !updatedTodoNode.noteText) ||
       (updatedTodoNode.noteText && !updatedTodoNode.noteHtml)
     ) {
-      throw new ApiError(API_ERROR_TODO_NODE_NOTE_HTML_OR_TEXT_MISSING)
+      throw new TRPCError({ code: 'BAD_REQUEST', message: API_ERROR_TODO_NODE_NOTE_HTML_OR_TEXT_MISSING })
     }
 
     update.children[updatedTodoNode.id]?.forEach((childrenId) => {
       if (!hasKey(nodesMap, childrenId) && !hasKey(update.mutations.insert, childrenId)) {
-        throw new ApiError(API_ERROR_TODO_NODE_UPDATE_CHILD_DOES_NOT_EXIST)
+        throw new TRPCError({ code: 'BAD_REQUEST', message: API_ERROR_TODO_NODE_UPDATE_CHILD_DOES_NOT_EXIST })
       } else if (update.mutations.delete.includes(childrenId)) {
-        throw new ApiError(API_ERROR_TODO_NODE_UPDATE_CHILD_DELETE_CONFLICT)
+        throw new TRPCError({ code: 'BAD_REQUEST', message: API_ERROR_TODO_NODE_UPDATE_CHILD_DELETE_CONFLICT })
       }
     })
   }

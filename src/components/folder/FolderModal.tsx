@@ -12,7 +12,7 @@ import TextInput from 'components/form/TextInput'
 import Alert from 'components/ui/Alert'
 import Modal from 'components/ui/Modal'
 import { ROOT_FOLDER_ID } from 'constants/folder'
-import useFolderMutation, { type FolderMutation } from 'hooks/useFolderMutation'
+import useFolderMutation from 'hooks/useFolderMutation'
 import { useNetworkStatus } from 'hooks/useNetworkStatus'
 import { type FolderData } from 'libs/db/folder'
 
@@ -27,7 +27,7 @@ const FolderModal: React.FC = () => {
     reset,
   } = useForm<FormFields>()
 
-  const { error, isLoading, mutate } = useFolderMutation()
+  const { error, isLoading, mutateAdd, mutateDelete, mutateUpdate, type } = useFolderMutation()
   const { action, data: folder, opened } = useAtomValue(folderModalAtom)
   const setOpened = useSetAtom(setFolderModalOpenedAtom)
 
@@ -41,20 +41,20 @@ const FolderModal: React.FC = () => {
   const onSubmit = handleSubmit(({ parentFolder, ...data }) => {
     const parentId = parentFolder.id === ROOT_FOLDER_ID ? null : parentFolder.id
 
-    const mutationData: FolderMutation = isUpdating
-      ? { ...data, action: 'update', id: folder.id, parentId }
-      : { ...data, action: 'insert', parentId }
-
-    mutate(mutationData, { onSuccess: onSuccessfulMutation })
+    if (isUpdating) {
+      mutateUpdate({ ...data, id: folder.id, parentId }, { onSuccess: onSuccessMutation })
+    } else if (!isUpdating) {
+      mutateAdd({ ...data, parentId, type }, { onSuccess: onSuccessMutation })
+    }
   })
 
   function onConfirmDelete() {
     if (isRemoving) {
-      mutate({ action: 'delete', id: folder.id }, { onSuccess: onSuccessfulMutation })
+      mutateDelete({ id: folder.id }, { onSuccess: onSuccessMutation })
     }
   }
 
-  function onSuccessfulMutation() {
+  function onSuccessMutation() {
     setOpened(false)
     reset()
   }

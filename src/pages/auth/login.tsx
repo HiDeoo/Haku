@@ -1,6 +1,5 @@
 import { Presence } from '@radix-ui/react-presence'
 import { signIn } from 'next-auth/react'
-import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useReducer, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -79,12 +78,12 @@ const Login: Page = () => {
   return (
     <Flex direction="col" className="w-60">
       <div className={iconWrapperClasses}>
-        <Image
+        <img
           width={100}
           height={100}
+          onLoad={onIconLoaded}
           alt="Haku application icon"
           src="/images/icons/favicon.svg"
-          onLoadingComplete={onIconLoaded}
         />
       </div>
       <Presence present={shouldShowCodeInput}>

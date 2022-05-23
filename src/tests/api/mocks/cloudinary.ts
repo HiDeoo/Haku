@@ -37,7 +37,6 @@ const handlers = [
         folder: formData.folder,
         format: extension,
         height: 200,
-        original_filename: filename,
         placeholder: false,
         public_id: `${formData.folder}/${cuid()}`,
         resource_type: 'image',

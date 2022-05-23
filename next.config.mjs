@@ -17,6 +17,16 @@ const commonHeaders = [
  * @type {import('next').NextConfig}
  */
 const nextConfig = {
+  webpack: (config, { dev, isServer }) => {
+    if (!dev && !isServer) {
+      return {
+        ...config,
+        externals: [...config.externals, { 'react-ssr-prepass': {} }],
+      }
+    }
+
+    return config
+  },
   devIndicators: {
     buildActivity: false,
   },

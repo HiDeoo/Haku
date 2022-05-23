@@ -8,11 +8,11 @@ import CacheStatus from 'components/ui/CacheStatus'
 import Navbar from 'components/ui/Navbar'
 import NetworkStatus from 'components/ui/NetworkStatus'
 import SyncReport from 'components/ui/SyncReport'
-import useContentMutation, { type ContentMutation } from 'hooks/useContentMutation'
 import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
 import useIdle from 'hooks/useIdle'
 import { useNetworkStatus } from 'hooks/useNetworkStatus'
 import { type TodoMetadata } from 'libs/db/todo'
+import { type InferMutationInput, trpc } from 'libs/trpc'
 
 const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, focusTodoNode, todoId, todoName }) => {
   const { offline } = useNetworkStatus()
@@ -20,7 +20,7 @@ const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, focusTodoNode, todoId
   const [editorState, setEditorState] = useAtom(todoEditorStateAtom)
   const resetMutations = useResetAtom(todoNodeMutations)
 
-  const { isLoading, mutate } = useContentMutation()
+  const { isLoading, mutate } = trpc.useMutation(['todo.node.update'])
 
   const idle = useIdle()
 
@@ -57,8 +57,7 @@ const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, focusTodoNode, todoId
 
     const { children, mutations, nodes } = await getTodoAtoms()
 
-    const mutationData: ContentMutation = {
-      action: 'update',
+    const mutationData: InferMutationInput<'todo.node.update'> = {
       id: todoId,
       children: { root: children.root },
       mutations: { delete: [], insert: {}, update: {} },

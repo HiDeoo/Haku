@@ -1,14 +1,11 @@
 import { TodoNodeStatus } from '@prisma/client'
+import { TRPCError } from '@trpc/server'
 import cuid from 'cuid'
 import { decode } from 'html-entities'
 import markdownToTxt from 'markdown-to-txt'
 import { opmlToJSON, type opmlToJsonResult } from 'opml-to-json'
 
-import {
-  ApiError,
-  API_ERROR_IMPORT_DYNALIST_INVALID_OPML,
-  API_ERROR_TODO_NODE_ROOT_NODE_EMPTY,
-} from 'libs/api/routes/errors'
+import { API_ERROR_IMPORT_DYNALIST_INVALID_OPML, API_ERROR_TODO_NODE_ROOT_NODE_EMPTY } from 'constants/error'
 import { type TodoNodeDataMap, type TodoNodeChildrenMapWithRoot, type TodoNodeData } from 'libs/db/todoNodes'
 
 export async function getTodoFromDynalistOpml(opml: string): Promise<TodoFromDynalistOpml> {
@@ -32,12 +29,12 @@ export async function getTodoFromDynalistOpml(opml: string): Promise<TodoFromDyn
     getTodoNodesFromDynalistOpml(rootNode, children, nodes)
 
     if (Object.keys(nodes).length === 0) {
-      throw new ApiError(API_ERROR_TODO_NODE_ROOT_NODE_EMPTY)
+      throw new Error(API_ERROR_TODO_NODE_ROOT_NODE_EMPTY)
     }
 
     return { children, name: `${rootNode.text} (Dynalist ${Date.now()})`, nodes }
   } catch (error) {
-    throw new ApiError(API_ERROR_IMPORT_DYNALIST_INVALID_OPML)
+    throw new TRPCError({ code: 'BAD_REQUEST', message: API_ERROR_IMPORT_DYNALIST_INVALID_OPML })
   }
 }
 

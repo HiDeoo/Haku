@@ -18,13 +18,19 @@ export function sendServiceWorkerMessage<TMessage extends ServiceWorkerMessage>(
   }
 }
 
-export async function isResourceCached(cacheName: string, resource: RequestInfo) {
+export async function isResourceCached(cacheName: string, resource: string, input?: Record<string, string>) {
   if ('serviceWorker' in navigator === false || 'caches' in window === false) {
     return false
   }
 
+  let resourceUri = resource
+
+  if (input) {
+    resourceUri = `${resource}?input=${encodeURIComponent(JSON.stringify(input))}`
+  }
+
   const cache = await caches.open(cacheName)
-  const response = await cache.match(resource)
+  const response = await cache.match(resourceUri)
 
   return typeof response !== 'undefined'
 }

@@ -13,7 +13,7 @@ const Inbox: Page = () => {
   const didSubmit = useRef(false)
   const [submitState, setSubmitState] = useState<'pending' | 'success' | 'error'>('pending')
 
-  const { mutateAsync } = useInboxEntryMutation()
+  const { mutateAddAsync } = useInboxEntryMutation()
 
   useEffect(() => {
     // https://github.com/reactwg/react-18/discussions/18#discussion-3385714
@@ -23,7 +23,7 @@ const Inbox: Page = () => {
       }
 
       try {
-        await mutateAsync({ action: 'insert', text: entryText })
+        await mutateAddAsync({ text: entryText })
 
         setSubmitState('success')
 
@@ -38,7 +38,7 @@ const Inbox: Page = () => {
 
       addInboxEntry()
     }
-  }, [entryText, mutateAsync, pathname, replace])
+  }, [entryText, mutateAddAsync, pathname, replace])
 
   const isLoading = entryText && submitState === 'pending'
   const isSuccess = submitState === 'success'

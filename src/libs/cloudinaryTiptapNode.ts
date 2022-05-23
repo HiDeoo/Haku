@@ -6,9 +6,8 @@ import { Plugin } from 'prosemirror-state'
 import { Step, type Mappable, StepResult } from 'prosemirror-transform'
 
 import { IMAGE_MAX_SIZE_IN_MEGABYTES, IMAGE_SUPPORTED_TYPES } from 'constants/image'
-import { getClient } from 'libs/api/client'
 import { type ImageData } from 'libs/cloudinary'
-import { getA11yImageAttributes, getA11yImageParams, type A11yImageParams } from 'libs/image'
+import { getA11yImageAttributes, getA11yImageParams, getBase64ImageFromFile, type A11yImageParams } from 'libs/image'
 import { getBytesFromMegaBytes } from 'libs/math'
 
 const tiptapNodeName = 'cloudinary-image'
@@ -230,7 +229,13 @@ async function uploadImageToEditor(
       return
     }
 
-    const data = await upload(image, options.referenceId)
+    const base64Image = await getBase64ImageFromFile(image)
+
+    const data = await options.upload({
+      filename: image.name,
+      image: base64Image,
+      referenceId: options.referenceId,
+    })
 
     const position = getCloudinaryNodePositionWithId(editor, id)
 
@@ -277,17 +282,6 @@ function getCloudinaryNodePositionWithId(editor: Editor, id: string): number | u
   return position
 }
 
-async function upload(
-  image: File,
-  referenceId: NonNullable<CloudinaryTiptapNodeOptions['referenceId']>
-): Promise<ImageData> {
-  const body = new FormData()
-  body.append('file', image)
-  body.append('referenceId', referenceId)
-
-  return (await getClient()).post('images', { body }).json<ImageData>()
-}
-
 export class CloudinaryError extends Error {
   constructor(public message: string, public details?: string) {
     super(message)
@@ -297,7 +291,7 @@ export class CloudinaryError extends Error {
 }
 
 // https://discuss.prosemirror.net/t/preventing-image-placeholder-replacement-from-being-undone/1394/2
-export class SetAttrsStep extends Step {
+class SetAttrsStep extends Step {
   constructor(private pos: number, private attrs: NodeAttributes) {
     super()
   }
@@ -349,6 +343,7 @@ export interface CloudinaryTiptapNodeOptions {
   referenceId?: string
   onImageDoubleClick?: (params: A11yImageParams) => void
   onUploadError?: (error: CloudinaryError) => void
+  upload: (params: { filename: string; image: string; referenceId: string }) => Promise<ImageData>
 }
 
 type UploadQueue = Set<string>

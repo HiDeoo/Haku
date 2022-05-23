@@ -89,7 +89,7 @@ function handleFetchEvent(event: FetchEvent) {
   if (IS_PROD && (requestUrl.origin === location.origin || requestUrl.origin === IMAGE_DELIVERY_URL)) {
     if (/^\/(?:_next\/static|images)\/.*\.(?:js|css|png|jpg|ico|svg)$/i.test(requestUrl.pathname)) {
       return respondWithCacheThenNetwork(event, CACHES.Assets)
-    } else if (/^\/api\/(?!.*csrf$)[/\w-]+$/i.test(requestUrl.pathname)) {
+    } else if (/^\/api\/(?!.*(?:csrf|search)$)[/\w-.]+$/i.test(requestUrl.pathname)) {
       return respondWithNetworkThenCache(event, CACHES.Api)
     } else if (/^\/[a-z]+\/image\/private\//.test(requestUrl.pathname)) {
       return respondWithCacheThenNetwork(event, CACHES.Images)

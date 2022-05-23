@@ -6,16 +6,16 @@ import { RiBookletLine, RiTodoLine } from 'react-icons/ri'
 import { navigationPaletteOpenedAtom } from 'atoms/palette'
 import Palette, { type PaletteItem } from 'components/palette/Palette'
 import { ContentType, getContentType } from 'hooks/useContentType'
-import useFilesQuery from 'hooks/useFilesQuery'
 import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
 import { type FileData } from 'libs/db/file'
+import { trpc } from 'libs/trpc'
 
 const NavigationPalette: React.FC = () => {
   const { push } = useRouter()
 
   const [opened, setOpened] = useAtom(navigationPaletteOpenedAtom)
 
-  const { data, isLoading } = useFilesQuery(opened)
+  const { data, isLoading } = trpc.useQuery(['file.list'], { enabled: opened })
 
   useGlobalShortcuts(
     useMemo(
