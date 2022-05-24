@@ -3,8 +3,9 @@ import { useEffect } from 'react'
 import { RiRefreshLine } from 'react-icons/ri'
 
 import { deferrefPromptEventAtom } from 'atoms/pwa'
+import useInterval from 'hooks/useInterval'
 import useToast from 'hooks/useToast'
-import { registerServiceWorker, sendServiceWorkerMessage } from 'libs/sw'
+import { checkServiceWorkerUpdate, registerServiceWorker, sendServiceWorkerMessage } from 'libs/sw'
 
 export default function usePwa() {
   const { addToast } = useToast()
@@ -42,4 +43,8 @@ export default function usePwa() {
       window.removeEventListener('beforeinstallprompt', beforeInstallPrompt)
     }
   }, [setDeferrefPromptEventAtom])
+
+  useInterval(() => {
+    checkServiceWorkerUpdate()
+  }, 86_400_000 /* 1 day */)
 }
