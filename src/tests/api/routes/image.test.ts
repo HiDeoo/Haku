@@ -1,6 +1,6 @@
 import assert from 'assert'
 
-import faker from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
 import cuid from 'cuid'
 import multipartParser from 'lambda-multipart-parser'
 

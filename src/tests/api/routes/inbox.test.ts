@@ -1,6 +1,6 @@
 import assert from 'assert'
 
-import faker from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
 import cuid from 'cuid'
 
 import { API_ERROR_INBOX_ENTRY_DOES_NOT_EXIST } from 'constants/error'

@@ -1,6 +1,6 @@
 import assert from 'assert'
 
-import faker from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
 import { type TodoNode, TodoNodeStatus } from '@prisma/client'
 import slug from 'url-slug'
 

@@ -1,6 +1,6 @@
 import assert from 'assert'
 
-import faker from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
 import { TodoNodeStatus, type TodoNode } from '@prisma/client'
 import cuid from 'cuid'
 
