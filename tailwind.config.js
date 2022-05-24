@@ -1,3 +1,4 @@
+const hideScrollbarPlugin = require('tailwind-scrollbar-hide')
 const defaultTheme = require('tailwindcss/defaultTheme')
 const plugin = require('tailwindcss/plugin')
 
@@ -194,6 +195,7 @@ module.exports = {
     },
   },
   plugins: [
+    hideScrollbarPlugin,
     plugin(({ addVariant }) => {
       addVariant('supports-max', '@supports (padding: max(0px))')
     }),

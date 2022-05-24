@@ -31,7 +31,7 @@ const Inspector: InspectorComponent = ({ children, collapsed, controls, disabled
         role="toolbar"
         direction="col"
         aria-orientation="vertical"
-        className="overflow-y-auto supports-max:pr-[max(0px,env(safe-area-inset-right))]"
+        className="overflow-y-auto scrollbar-hide supports-max:pr-[max(0px,env(safe-area-inset-right))]"
       >
         {Children.map(children, (child) => {
           if (!isValidElement(child)) {

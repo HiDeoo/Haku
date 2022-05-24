@@ -86,6 +86,7 @@ specifiers:
   react-query: 4.0.0-beta.5
   react-test-renderer: 18.1.0
   tailwind-merge: 1.2.1
+  tailwind-scrollbar-hide: 1.1.7
   tailwindcss: 3.0.24
   throttle-debounce: 5.0.0
   ts-node: 10.8.0
@@ -147,6 +148,7 @@ dependencies:
   react-linkify-it: 1.0.5_react@18.1.0
   react-query: 4.0.0-beta.5_ef5jwxihqo6n7gxfmzogljlgcm
   tailwind-merge: 1.2.1
+  tailwind-scrollbar-hide: 1.1.7
   throttle-debounce: 5.0.0
   ua-parser-js: 1.0.2
   url-slug: 3.0.4
@@ -6746,6 +6748,10 @@ packages:
     resolution: {integrity: sha512-kWfy/u91XoE408Kb42HQd1krdiZjw2sbSWjE1C/lXXXsbK+6dhTpnd37DHrwNP6ofKj5/HKXlY/jTjPYgPxSsw==}
     dependencies:
       hashlru: 2.3.0
+    dev: false
+
+  /tailwind-scrollbar-hide/1.1.7:
+    resolution: {integrity: sha512-X324n9OtpTmOMqEgDUEA/RgLrNfBF/jwJdctaPZDzB3mppxJk7TLIDmOreEDm1Bq4R9LSPu4Epf8VSdovNU+iA==}
     dev: false
 
   /tailwindcss/3.0.24_ts-node@10.8.0:
