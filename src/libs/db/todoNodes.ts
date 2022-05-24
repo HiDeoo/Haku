@@ -247,7 +247,7 @@ export type TodoNodeChildrenMapWithRoot = TodoNodeChildrenMap & { root: TodoNode
 export type TodoNodeDataWithParentId = TodoNodeData & { parentId?: TodoNodeData['id'] }
 export type TodoNodeDataMap = Record<TodoNodeData['id'], TodoNodeDataWithParentId>
 
-interface UpdateTodoNodesData {
+export interface UpdateTodoNodesData {
   children: TodoNodeChildrenMapWithRoot
   mutations: {
     delete: TodoNodeData['id'][]
