@@ -117,6 +117,45 @@ export const todosToSeed: TodoSeedDefinition[] = [
     folderName: folderNames.TODO_PROJECTS,
     nodes: [
       {
+        content: 'Read https://web.dev/progressive-web-apps',
+        status: TodoNodeStatus.COMPLETED,
+      },
+      {
+        content: 'Add support for uploading images',
+        collapsed: true,
+        noteHtml: '<p>Check Cloudinary</p>',
+        noteText: 'Check Cloudinary',
+        status: TodoNodeStatus.COMPLETED,
+        children: [
+          { content: 'Cloudinary', status: TodoNodeStatus.COMPLETED },
+          { content: 'API', status: TodoNodeStatus.COMPLETED },
+          { content: 'Tests', status: TodoNodeStatus.COMPLETED },
+          { content: 'Client support', status: TodoNodeStatus.COMPLETED },
+        ],
+      },
+      { content: 'Update to React 18', status: TodoNodeStatus.COMPLETED },
+      {
+        content: 'Add support for cancelled todos',
+        collapsed: true,
+        status: TodoNodeStatus.COMPLETED,
+        children: [
+          { content: 'API', status: TodoNodeStatus.COMPLETED },
+          { content: 'Tests', status: TodoNodeStatus.COMPLETED },
+          { content: 'Client UI', status: TodoNodeStatus.COMPLETED },
+          { content: 'Keyboard shortcut', status: TodoNodeStatus.COMPLETED },
+        ],
+      },
+      {
+        content: 'Design icon',
+        collapsed: true,
+        status: TodoNodeStatus.COMPLETED,
+        children: [
+          { content: 'Design in Figma', status: TodoNodeStatus.COMPLETED },
+          { content: 'Export favicon', status: TodoNodeStatus.COMPLETED },
+          { content: 'Add to login screen', status: TodoNodeStatus.COMPLETED },
+        ],
+      },
+      {
         content: 'Add import feature',
         status: TodoNodeStatus.COMPLETED,
         children: [
@@ -124,7 +163,7 @@ export const todosToSeed: TodoSeedDefinition[] = [
             content: 'Dynalist',
             status: TodoNodeStatus.COMPLETED,
             children: [
-              { content: 'Parse OPML', status: TodoNodeStatus.COMPLETED },
+              { content: 'Parse OPML', status: TodoNodeStatus.ACTIVE },
               {
                 content: 'Tests',
                 status: TodoNodeStatus.COMPLETED,
@@ -143,7 +182,7 @@ export const todosToSeed: TodoSeedDefinition[] = [
       { content: 'Add fireworks', status: TodoNodeStatus.CANCELLED },
       {
         content: 'Add periodic update detection mechanism',
-        noteHtml: `<p>Check <a target="_blank" rel="noopener noreferrer nofollow" href="https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/update">https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/update</a></p><pre><code class="language-javascript">serviceWorkerRegistration.update()</code></pre>`,
+        noteHtml: `<p>Check <a target="_blank" rel="noopener noreferrer nofollow" href="https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/update">https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/update</a></p><pre><code class="language-typescript">serviceWorkerRegistration.update()</code></pre>`,
         noteText: `Check https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/update
 
 serviceWorkerRegistration.update()`,
