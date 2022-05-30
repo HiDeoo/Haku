@@ -19,7 +19,7 @@ export default function useGlobalShortcuts(shortcuts: Shortcut[]) {
     }
   }, [registerGlobalShortcuts, shortcuts, unregisterGlobalShortcuts])
 
-  const onKeyDown = useCallback(
+  const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
       for (const shortcut of Object.values(shortcutMap)) {
         if (shortcut.onKeyDown && isShortcutEvent(event, shortcut)) {
@@ -31,10 +31,10 @@ export default function useGlobalShortcuts(shortcuts: Shortcut[]) {
   )
 
   useEffect(() => {
-    document.addEventListener('keydown', onKeyDown, true)
+    document.addEventListener('keydown', handleKeyDown, true)
 
     return () => {
-      document.removeEventListener('keydown', onKeyDown, true)
+      document.removeEventListener('keydown', handleKeyDown, true)
     }
-  }, [onKeyDown])
+  }, [handleKeyDown])
 }

@@ -165,16 +165,16 @@ const CommandPalette: React.FC = () => {
     return item.icon
   }
 
-  function onPick(item: Command | null | undefined) {
+  function handlePick(item: Command | null | undefined) {
     item?.action()
   }
 
   return (
     <Palette
       opened={opened}
-      onPick={onPick}
       items={commands}
       enterKeyHint="done"
+      onPick={handlePick}
       title="Command Palette"
       itemToIcon={itemToIcon}
       onOpenChange={setOpened}

@@ -23,7 +23,7 @@ const EditorLinkModal: React.FC<EditorLinkModalProps> = ({ editor, opened, onOpe
     }
   }, [editor, opened, reset])
 
-  const onSubmit = handleSubmit(({ url }) => {
+  const handleFormSubmit = handleSubmit(({ url }) => {
     onOpenChange(false)
 
     if (url.length === 0) {
@@ -35,7 +35,7 @@ const EditorLinkModal: React.FC<EditorLinkModalProps> = ({ editor, opened, onOpe
 
   return (
     <Modal opened={opened} onOpenChange={onOpenChange} title="Link">
-      <Form onSubmit={onSubmit}>
+      <Form onSubmit={handleFormSubmit}>
         <TextInput
           type="url"
           label="URL"

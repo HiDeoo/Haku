@@ -47,7 +47,7 @@ const NavigationPalette: React.FC = () => {
     return item.type === ContentType.NOTE ? RiBookletLine : RiTodoLine
   }
 
-  function onPick(item: FileData | null | undefined) {
+  function handlePick(item: FileData | null | undefined) {
     if (!item) {
       return
     }
@@ -60,9 +60,9 @@ const NavigationPalette: React.FC = () => {
   return (
     <Palette<Navigation>
       opened={opened}
-      onPick={onPick}
       enterKeyHint="go"
       items={data ?? []}
+      onPick={handlePick}
       isLoading={isLoading}
       itemToIcon={itemToIcon}
       onOpenChange={setOpened}

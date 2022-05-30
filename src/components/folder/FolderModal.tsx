@@ -38,23 +38,23 @@ const FolderModal: React.FC = () => {
     reset()
   }, [opened, reset])
 
-  const onSubmit = handleSubmit(({ parentFolder, ...data }) => {
+  const handleFormSubmit = handleSubmit(({ parentFolder, ...data }) => {
     const parentId = parentFolder.id === ROOT_FOLDER_ID ? null : parentFolder.id
 
     if (isUpdating) {
-      mutateUpdate({ ...data, id: folder.id, parentId }, { onSuccess: onSuccessMutation })
+      mutateUpdate({ ...data, id: folder.id, parentId }, { onSuccess: handleMutationSuccess })
     } else if (!isUpdating) {
-      mutateAdd({ ...data, parentId, type }, { onSuccess: onSuccessMutation })
+      mutateAdd({ ...data, parentId, type }, { onSuccess: handleMutationSuccess })
     }
   })
 
-  function onConfirmDelete() {
+  function handleDeleteConfirm() {
     if (isRemoving) {
-      mutateDelete({ id: folder.id }, { onSuccess: onSuccessMutation })
+      mutateDelete({ id: folder.id }, { onSuccess: handleMutationSuccess })
     }
   }
 
-  function onSuccessMutation() {
+  function handleMutationSuccess() {
     setOpened(false)
     reset()
   }
@@ -65,8 +65,8 @@ const FolderModal: React.FC = () => {
         disabled={isLoading}
         title="Delete Folder"
         onOpenChange={setOpened}
-        onConfirm={onConfirmDelete}
         opened={opened && isRemoving}
+        onConfirm={handleDeleteConfirm}
       >
         Are you sure you want to delete the folder <strong>&ldquo;{folder?.name}&rdquo;</strong> and all its contents?
       </Alert>
@@ -77,7 +77,7 @@ const FolderModal: React.FC = () => {
         title={`${isUpdating ? 'Edit' : 'New'} Folder`}
         trigger={<IconButton icon={RiFolderAddLine} tooltip="New Folder" disabled={offline} />}
       >
-        <Form onSubmit={onSubmit} error={error}>
+        <Form onSubmit={handleFormSubmit} error={error}>
           <TextInput
             type="text"
             label="Name"

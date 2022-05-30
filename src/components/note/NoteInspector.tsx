@@ -120,7 +120,7 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
     editor?.chain().focus().undo().run()
   }
 
-  function onChangeImageInput(event: React.ChangeEvent<HTMLInputElement>) {
+  function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
     if (!event.target.files || event.target.files.length === 0) {
       return
     }
@@ -251,7 +251,7 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
           />
           <FileButton
             multiple
-            onChange={onChangeImageInput}
+            onChange={handleImageChange}
             accept={IMAGE_SUPPORTED_TYPES}
             trigger={<Inspector.IconButton tooltip="Upload Images" icon={RiImageAddLine} />}
           />
@@ -290,7 +290,7 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
 export default NoteInspector
 
 const TocEntry: React.FC<TocEntryProps> = ({ editor, entry }) => {
-  function onClick() {
+  function handleClick() {
     editor?.chain().setTextSelection(entry.pos).focus().run()
   }
 
@@ -307,7 +307,7 @@ const TocEntry: React.FC<TocEntryProps> = ({ editor, entry }) => {
       style={{ paddingLeft: `calc(0.625rem * (${entry.level - 1}))` }}
     >
       <Icon icon={RiArrowDropRightFill} className="mr-0.5 mt-px shrink-0" />
-      <a onClick={onClick} href={`#${entry.id}`} className={linkClasses}>
+      <a onClick={handleClick} href={`#${entry.id}`} className={linkClasses}>
         {entry.name}
       </a>
     </Flex>

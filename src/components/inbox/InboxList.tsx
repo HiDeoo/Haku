@@ -53,7 +53,7 @@ const InboxListEntry: React.FC<InboxListEntryProps> = ({ entry }) => {
 
   const { mutateDelete } = useInboxEntryMutation()
 
-  function onClickRemove() {
+  function handleRemovePress() {
     mutateDelete({ id: entry.id })
   }
 
@@ -70,7 +70,7 @@ const InboxListEntry: React.FC<InboxListEntryProps> = ({ entry }) => {
           className={LIST_BUTTON_CLASSES}
           pressedClassName={LIST_BUTTON_PRESSED_CLASSES}
         />
-        <List.Button icon={RiDeleteBin7Line} tooltip="Delete" onPress={onClickRemove} disabled={offline} />
+        <List.Button icon={RiDeleteBin7Line} tooltip="Delete" onPress={handleRemovePress} disabled={offline} />
       </div>
     </List.Item>
   )

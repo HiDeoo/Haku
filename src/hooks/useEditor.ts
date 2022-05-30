@@ -60,14 +60,14 @@ export function useEditor(options: UseEditorOptions, deps?: DependencyList): Edi
 
   const editorClasses = clst(styles.editor, className)
 
-  const onImageDoubleClick = useCallback(
+  const handleImageDoubleClick = useCallback(
     (params: A11yImageParams) => {
       setEditorImageModal({ ...params, opened: true })
     },
     [setEditorImageModal]
   )
 
-  const onUploadError = useCallback(
+  const handleUploadError = useCallback(
     (error: CloudinaryError) => {
       addToast({
         details: error.details,
@@ -85,7 +85,12 @@ export function useEditor(options: UseEditorOptions, deps?: DependencyList): Edi
       editorProps: { attributes: { class: editorClasses, spellcheck: spellcheck ?? 'false' } },
       extensions: getExtensions(
         starterKitOptions,
-        { onImageDoubleClick, onUploadError, referenceId: contentId, upload: mutateAsync },
+        {
+          onImageDoubleClick: handleImageDoubleClick,
+          onUploadError: handleUploadError,
+          referenceId: contentId,
+          upload: mutateAsync,
+        },
         extensions,
         setLinkModalOpened
       ),

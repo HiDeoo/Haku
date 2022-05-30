@@ -22,14 +22,14 @@ const Dynalist: Page = () => {
     formState: { errors },
   } = useForm<FormFields>()
 
-  const { error, isLoading, mutate } = trpc.useMutation(['import.dynalist'], { onSuccess: onSuccessMutation })
+  const { error, isLoading, mutate } = trpc.useMutation(['import.dynalist'], { onSuccess: handleMutationSuccess })
   const { invalidateQueries } = trpc.useContext()
 
-  const onSubmit = handleSubmit((data) => {
+  const handleFormSubmit = handleSubmit((data) => {
     mutate(data)
   })
 
-  function onSuccessMutation(newMetadata: InferMutationOutput<'import.dynalist'>) {
+  function handleMutationSuccess(newMetadata: InferMutationOutput<'import.dynalist'>) {
     invalidateQueries([getContentTreeQueryPath(ContentType.TODO)])
     invalidateQueries(['file.list'])
 
@@ -50,7 +50,7 @@ const Dynalist: Page = () => {
           </>
         }
       >
-        <Form onSubmit={onSubmit} error={error}>
+        <Form onSubmit={handleFormSubmit} error={error}>
           <TextArea
             rows={3}
             autoFocus

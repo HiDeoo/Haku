@@ -37,7 +37,7 @@ const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, focusTodoNode, todoId
     )
   )
 
-  const onSettledMutation = useCallback(
+  const handleMutationSettled = useCallback(
     (_: unknown, error: unknown) => {
       setEditorState({ error, isLoading: false, lastSync: error ? undefined : new Date() })
 
@@ -46,7 +46,7 @@ const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, focusTodoNode, todoId
     [focusTodoNode, setEditorState]
   )
 
-  const onSuccessMutation = useCallback(() => {
+  const handleMutationSuccess = useCallback(() => {
     resetMutations()
   }, [resetMutations])
 
@@ -85,8 +85,8 @@ const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, focusTodoNode, todoId
 
     setEditorState({ isLoading: true })
 
-    mutate(mutationData, { onSettled: onSettledMutation, onSuccess: onSuccessMutation })
-  }, [getTodoAtoms, mutate, offline, onSettledMutation, onSuccessMutation, setEditorState, todoId])
+    mutate(mutationData, { onSettled: handleMutationSettled, onSuccess: handleMutationSuccess })
+  }, [getTodoAtoms, mutate, offline, handleMutationSettled, handleMutationSuccess, setEditorState, todoId])
 
   useGlobalShortcuts(
     useMemo(

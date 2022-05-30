@@ -9,7 +9,7 @@ import { getAuthErrorMesssage } from 'libs/auth'
 const Error: Page = () => {
   const { query } = useRouter()
 
-  function login() {
+  function handleTryAgainPress() {
     signIn(undefined, { callbackUrl: '/' })
   }
 
@@ -17,7 +17,7 @@ const Error: Page = () => {
     <Flex direction="col" alignItems="center">
       <Callout intent="error" title="Unable to login" message={getAuthErrorMesssage(query.error)} className="mx-4" />
       <div className="mt-3">
-        <Button primary onPress={login}>
+        <Button primary onPress={handleTryAgainPress}>
           Try again
         </Button>
       </div>

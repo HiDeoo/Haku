@@ -16,7 +16,7 @@ const ErrorBoundary: React.FC<ErrorBoundaryProps> = ({ children }) => {
 export default ErrorBoundary
 
 const Fallback: React.FC<FallbackProps> = ({ error, resetErrorBoundary }) => {
-  function reportAndTryAgain() {
+  function handleReportAndTryAgainPress() {
     openGitHubErrorReport(error)
 
     resetErrorBoundary()
@@ -27,7 +27,7 @@ const Fallback: React.FC<FallbackProps> = ({ error, resetErrorBoundary }) => {
       <Puzzle layout="broken" />
       <Callout intent="error" message="Oops, something went wrong!" />
       <div className="mt-3">
-        <Button primary onPress={reportAndTryAgain}>
+        <Button primary onPress={handleReportAndTryAgainPress}>
           Report & Try again
         </Button>
         <Button onPress={resetErrorBoundary}>Try again</Button>

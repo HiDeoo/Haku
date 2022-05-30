@@ -55,13 +55,13 @@ const SearchPalette: React.FC = () => {
     )
   )
 
-  function onPressTrigger() {
+  function handleTriggerPress() {
     triggerUsed.current = true
 
     setOpened(true)
   }
 
-  function onOpenChange(opened: boolean) {
+  function handleOpenChange(opened: boolean) {
     setOpened(opened)
 
     if (!opened && triggerUsed.current) {
@@ -87,7 +87,7 @@ const SearchPalette: React.FC = () => {
     return item?.excerpt ?? ''
   }
 
-  function onPick(item: SearchResultData | null | undefined) {
+  function handlePick(item: SearchResultData | null | undefined) {
     if (!item) {
       return
     }
@@ -103,20 +103,20 @@ const SearchPalette: React.FC = () => {
 
   return (
     <>
-      <IconButton icon={RiSearchLine} tooltip="Search" onPress={onPressTrigger} ref={trigger} />
+      <IconButton icon={RiSearchLine} tooltip="Search" onPress={handleTriggerPress} ref={trigger} />
       <Palette<SearchResult>
         role="search"
         fuzzy={false}
         opened={opened}
-        onPick={onPick}
         enterKeyHint="go"
+        onPick={handlePick}
         initialQuery={query}
         title="Search Palette"
         itemToIcon={itemToIcon}
         onQueryChange={setQuery}
         loadMore={fetchNextPage}
-        onOpenChange={onOpenChange}
         itemToString={itemToString}
+        onOpenChange={handleOpenChange}
         forwardedRef={paletteTextInput}
         items={data?.pages.flat() ?? []}
         isLoadingMore={isFetchingNextPage}

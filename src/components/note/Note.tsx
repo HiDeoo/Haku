@@ -100,7 +100,7 @@ const Note: React.FC<NoteProps> = ({ id }) => {
 
   useLocalShortcuts(EDITOR_SHORTCUTS)
 
-  const onNewContent = useCallback(
+  const handleNewContent = useCallback(
     ({ editor }: EditorEvents['create']) => {
       if (location.hash.length !== 0) {
         focusNodeWithId(editor, location.hash)
@@ -120,9 +120,9 @@ const Note: React.FC<NoteProps> = ({ id }) => {
 
       editor.chain().replaceContent(data.html).focus().run()
 
-      onNewContent({ editor })
+      handleNewContent({ editor })
     }
-  }, [data, editor, onNewContent])
+  }, [data, editor, handleNewContent])
 
   useEffect(() => {
     if (idle && !editorState.pristine) {

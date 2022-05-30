@@ -12,7 +12,7 @@ const ClipboardCopyButton: React.FC<ClipboardCopyButtonProps> = ({ content, ...p
 
   const [status, setStatus] = useState<'idle' | 'copied' | 'errored'>('idle')
 
-  const copy = useCallback(async () => {
+  const handleCopyPress = useCallback(async () => {
     try {
       if (iconTimeout.current) {
         clearTimeout(iconTimeout.current)
@@ -42,7 +42,7 @@ const ClipboardCopyButton: React.FC<ClipboardCopyButtonProps> = ({ content, ...p
   const icon = status === 'idle' ? RiClipboardLine : status === 'copied' ? RiCheckLine : RiErrorWarningLine
   const iconClasses = clst(status !== 'idle' && 'motion-safe:animate-bounce-in')
 
-  return <IconButton tooltip="Copy" {...props} onPress={copy} icon={icon} iconClassName={iconClasses} />
+  return <IconButton tooltip="Copy" {...props} onPress={handleCopyPress} icon={icon} iconClassName={iconClasses} />
 }
 
 export default ClipboardCopyButton

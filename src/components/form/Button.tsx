@@ -19,7 +19,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     const useButtonProps: UseButtonProps = {
       ...sanitizedProps,
-      onPress: isButtonPropsWithOnClickHandler(props) ? onDeprecatedOnClick : onPress,
+      onPress: isButtonPropsWithOnClickHandler(props) ? handleDeprecatedClick : onPress,
     }
 
     const ref = useObjectRef(forwardedRef)
@@ -28,7 +28,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       ref
     )
 
-    function onDeprecatedOnClick(event: PressEvent) {
+    function handleDeprecatedClick(event: PressEvent) {
       if (isButtonPropsWithOnClickHandler(props)) {
         props.onClick(event)
 

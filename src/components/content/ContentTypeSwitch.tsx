@@ -19,7 +19,7 @@ const ContentTypeSwitch: React.FC = () => {
 
   const altContentType = getContentType(isBrowsingNotes ? ContentType.TODO : ContentType.NOTE)
 
-  function onCheckedChange() {
+  function handleCheckedChange() {
     push(altContentType.urlPath)
   }
 
@@ -47,7 +47,7 @@ const ContentTypeSwitch: React.FC = () => {
   return (
     <>
       <Tooltip content={`Switch to ${altContentType.cType}s`}>
-        <Root checked={isBrowsingNotes} onCheckedChange={onCheckedChange} className={rootClasses}>
+        <Root checked={isBrowsingNotes} onCheckedChange={handleCheckedChange} className={rootClasses}>
           <Thumb asChild>
             <div className={gridClasses}>
               <Icon icon={RiBookletLine} className={leftNodeClasses} label="Notes" />

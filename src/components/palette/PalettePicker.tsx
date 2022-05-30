@@ -56,8 +56,8 @@ const PalettePicker = <TItem extends PaletteItem>(
     isOpen: true,
     items: filteredItems,
     itemToString,
-    onInputValueChange,
-    onSelectedItemChange,
+    onInputValueChange: handleInputValueChange,
+    onSelectedItemChange: handleSelectedItemChange,
     stateReducer,
   })
 
@@ -119,7 +119,7 @@ const PalettePicker = <TItem extends PaletteItem>(
     }
   }
 
-  function onInputValueChange(changes: UseComboboxStateChange<TItem>) {
+  function handleInputValueChange(changes: UseComboboxStateChange<TItem>) {
     if (onQueryChange) {
       startTransition(() => {
         onQueryChange(changes.inputValue)
@@ -127,18 +127,18 @@ const PalettePicker = <TItem extends PaletteItem>(
     }
   }
 
-  function onSelectedItemChange(changes: UseComboboxStateChange<TItem>) {
+  function handleSelectedItemChange(changes: UseComboboxStateChange<TItem>) {
     onOpenChange(false)
     onPick(changes.selectedItem)
   }
 
-  function onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+  function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
     if (isShortcutEvent(event, shortcutMap['Escape'])) {
       onOpenChange(false)
     }
   }
 
-  function onBlur() {
+  function handleBlur() {
     onOpenChange(false)
   }
 
@@ -164,8 +164,8 @@ const PalettePicker = <TItem extends PaletteItem>(
           enterKeyHint={enterKeyHint}
           {...getInputProps({
             className: showLoadingSpinner ? 'pr-8' : undefined,
-            onKeyDown,
-            onBlur,
+            onKeyDown: handleKeyDown,
+            onBlur: handleBlur,
             placeholder,
             ref: forwardedRef,
             spellCheck: false,

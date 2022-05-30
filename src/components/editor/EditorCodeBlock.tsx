@@ -14,19 +14,19 @@ const EditorCodeBlock: React.FC<NodeViewProps> = ({ editor, extension, node, upd
 
   const languages = extension.options.lowlight.listLanguages()
 
-  function onChangeLanguage(language: string) {
+  function handleLanguageChange(language: string) {
     updateAttributes({ language })
   }
 
   useEffect(() => {
-    function onSelectionUpdate() {
+    function handleSelectionUpdate() {
       setTabIndex(editor?.isActive('codeBlock') ? undefined : -1)
     }
 
-    editor.on('selectionUpdate', onSelectionUpdate)
+    editor.on('selectionUpdate', handleSelectionUpdate)
 
     return () => {
-      editor.off('selectionUpdate', onSelectionUpdate)
+      editor.off('selectionUpdate', handleSelectionUpdate)
     }
   }, [editor])
 
@@ -35,8 +35,8 @@ const EditorCodeBlock: React.FC<NodeViewProps> = ({ editor, extension, node, upd
       <Select
         items={languages}
         tabIndex={tabIndex}
-        onChange={onChangeLanguage}
         itemToString={getLanguageName}
+        onChange={handleLanguageChange}
         triggerClassName={triggerClases}
         className="absolute bottom-full right-0"
         triggerPressedClassName="bg-zinc-500 hover:bg-zinc-500"

@@ -34,11 +34,11 @@ const Login: Page = () => {
   const isValidating = state.status === 'validatingEmail' || state.status === 'validatingCode'
   const shouldShowCodeInput = state.status === 'waitingCode' || state.status === 'validatingCode'
 
-  function onIconLoaded() {
+  function handleIconLoaded() {
     setIsIconLoaded(true)
   }
 
-  async function onSubmit({ code, email }: FormFields) {
+  async function handleFormSubmit({ code, email }: FormFields) {
     if (state.status === 'idle') {
       dispatch({ type: 'validatingEmail' })
 
@@ -81,7 +81,7 @@ const Login: Page = () => {
         <img
           width={100}
           height={100}
-          onLoad={onIconLoaded}
+          onLoad={handleIconLoaded}
           alt="Haku application icon"
           src="/images/icons/favicon.svg"
         />
@@ -103,7 +103,7 @@ const Login: Page = () => {
           message={getAuthErrorMesssage(state.errorType)}
         />
       </Presence>
-      <Form onSubmit={handleSubmit(onSubmit)}>
+      <Form onSubmit={handleSubmit(handleFormSubmit)}>
         <TextInput
           autoFocus
           type="email"

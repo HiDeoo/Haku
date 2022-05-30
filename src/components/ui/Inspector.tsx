@@ -109,14 +109,14 @@ const InspectorToggle: React.FC<InspectorToggleProps> = ({ collapsed, onToggle, 
   })
   const pressedButtonClasses = clst(toggled ? 'bg-blue-300 hover:bg-blue-300' : 'bg-zinc-400 hover:bg-zinc-500')
 
-  function onPress() {
+  function handlePress() {
     onToggle(!toggled)
   }
 
   return (
     <InspectorIconButton
       {...props}
-      onPress={onPress}
+      onPress={handlePress}
       className={buttonClasses}
       pressedClassName={pressedButtonClasses}
     />
@@ -163,7 +163,7 @@ const InspectorIconMenu: React.FC<InspectorIconButtonMenuProps> = ({
     'bg-blue-300 hover:bg-blue-300': toggled,
   })
 
-  function onCloseAutoFocus(event: Event) {
+  function handleCloseAutoFocus(event: Event) {
     event.preventDefault()
   }
 
@@ -181,8 +181,8 @@ const InspectorIconMenu: React.FC<InspectorIconButtonMenuProps> = ({
       <Content
         loop
         sideOffset={collapsed ? 7 : 0}
-        onCloseAutoFocus={onCloseAutoFocus}
         side={collapsed ? 'left' : 'bottom'}
+        onCloseAutoFocus={handleCloseAutoFocus}
       >
         <Flex direction="col" className="mt-[theme(spacing[0.5])] rounded-md bg-zinc-700 shadow-sm shadow-black/50">
           {children}

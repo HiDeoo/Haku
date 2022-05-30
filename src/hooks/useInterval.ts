@@ -8,11 +8,11 @@ export default function useInterval(callback: () => void, delay: number) {
   }, [callback])
 
   useEffect(() => {
-    function onInterval() {
+    function handleInterval() {
       savedCallback.current()
     }
 
-    const interval = setInterval(onInterval, delay)
+    const interval = setInterval(handleInterval, delay)
 
     return () => {
       clearInterval(interval)

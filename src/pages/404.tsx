@@ -8,7 +8,7 @@ import Puzzle from 'components/ui/Puzzle'
 const PageNotFound: Page = () => {
   const { push } = useRouter()
 
-  function goHome() {
+  function handleHomePress() {
     push('/')
   }
 
@@ -17,7 +17,7 @@ const PageNotFound: Page = () => {
       <Puzzle layout="incomplete" />
       <Callout intent="error" message="Oops, something is missing!" />
       <div className="mt-3">
-        <Button primary onPress={goHome}>
+        <Button primary onPress={handleHomePress}>
           Back to Home
         </Button>
       </div>

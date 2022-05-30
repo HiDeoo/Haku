@@ -60,7 +60,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
   } = useTodoNode(id)
   const children = useTodoNodeChildren(id)
 
-  const onChangeContent = useCallback(
+  const handleContentChange = useCallback(
     (content: string) => {
       if (node?.id) {
         // Remove the trailing line break automatically added in the content editable element.
@@ -70,7 +70,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     [node?.id, updateContent]
   )
 
-  useEditable(contentEditable, onChangeContent, { disabled: isLoading || shouldFocusNote })
+  useEditable(contentEditable, handleContentChange, { disabled: isLoading || shouldFocusNote })
 
   const focusClosestNode = useCallback(
     async (
@@ -90,7 +90,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     [getClosestNodeId, level, todoNodeItems]
   )
 
-  function onKeyDownContent(event: React.KeyboardEvent<HTMLDivElement>) {
+  function handleContentKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     if (!node) {
       return
     }
@@ -183,7 +183,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     }
   }
 
-  function onPasteCaptureContent(event: React.ClipboardEvent) {
+  function handleContentPasteCapture(event: React.ClipboardEvent) {
     event.preventDefault()
     event.stopPropagation()
 
@@ -223,7 +223,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     })
   }
 
-  function onFocusContent(event: React.FocusEvent<HTMLDivElement>) {
+  function handleContentFocus(event: React.FocusEvent<HTMLDivElement>) {
     if (event.target instanceof HTMLAnchorElement) {
       event.preventDefault()
       event.stopPropagation()
@@ -244,17 +244,17 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     contentEditable.current?.setAttribute('spellcheck', 'true')
   }
 
-  function onBlurContent() {
+  function handleContentBlur() {
     setIsContentFocused(false)
 
     contentEditable.current?.setAttribute('spellcheck', 'false')
   }
 
-  function onBlurNote() {
+  function handleNoteBlur() {
     setShouldFocusNote(false)
   }
 
-  function onShiftEnterNote() {
+  function handleNoteShiftEnter() {
     setShouldFocusNote(false)
 
     requestAnimationFrame(() => {
@@ -376,11 +376,11 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
           <div className="w-full">
             <div
               ref={contentEditable}
-              onBlur={onBlurContent}
-              onFocus={onFocusContent}
               className={contentClasses}
-              onKeyDown={onKeyDownContent}
-              onPasteCapture={onPasteCaptureContent}
+              onBlur={handleContentBlur}
+              onFocus={handleContentFocus}
+              onKeyDown={handleContentKeyDown}
+              onPasteCapture={handleContentPasteCapture}
             >
               {itemContent}
             </div>
@@ -388,9 +388,9 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
               <TodoNodeNote
                 node={node}
                 ref={todoNodeNote}
-                onBlur={onBlurNote}
                 onChange={updateNote}
-                onShiftEnter={onShiftEnterNote}
+                onBlur={handleNoteBlur}
+                onShiftEnter={handleNoteShiftEnter}
               />
             ) : null}
           </div>

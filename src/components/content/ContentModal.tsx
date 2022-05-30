@@ -44,28 +44,28 @@ const ContentModal: React.FC = () => {
     reset()
   }, [opened, reset])
 
-  const onSubmit = handleSubmit(({ folder, ...data }) => {
+  const handleFormSubmit = handleSubmit(({ folder, ...data }) => {
     const folderId = folder.id === ROOT_FOLDER_ID ? undefined : folder.id
 
     if (isUpdating) {
-      mutateUpdate({ ...data, folderId, id: content.id }, { onSuccess: onSuccessMutation })
+      mutateUpdate({ ...data, folderId, id: content.id }, { onSuccess: handleMutationSuccess })
     } else {
-      mutateAdd({ ...data, folderId }, { onSuccess: onSuccessMutation })
+      mutateAdd({ ...data, folderId }, { onSuccess: handleMutationSuccess })
     }
   })
 
-  function onConfirmDelete() {
+  function handleDeleteConfirm() {
     if (isRemoving) {
-      mutateDelete({ id: content.id }, { onSuccess: onSuccessMutation, onError: onErrorMutation })
+      mutateDelete({ id: content.id }, { onSuccess: handleMutationSuccess, onError: handleMutationError })
     }
   }
 
-  function onSuccessMutation() {
+  function handleMutationSuccess() {
     setOpened(false)
     reset()
   }
 
-  function onErrorMutation() {
+  function handleMutationError() {
     const action = isRemoving ? 'delete' : isUpdating ? 'update' : 'create'
 
     addToast({
@@ -84,8 +84,8 @@ const ContentModal: React.FC = () => {
         disabled={isLoading}
         onOpenChange={setOpened}
         title={`Delete ${cType}`}
-        onConfirm={onConfirmDelete}
         opened={opened && isRemoving}
+        onConfirm={handleDeleteConfirm}
       >
         Are you sure you want to delete the {lcType} <strong>&ldquo;{content?.name}&rdquo;</strong>?
       </Alert>
@@ -96,7 +96,7 @@ const ContentModal: React.FC = () => {
         opened={opened && !isRemoving}
         trigger={<IconButton icon={RiFileAddLine} tooltip={title} disabled={offline} />}
       >
-        <Form onSubmit={onSubmit} error={error}>
+        <Form onSubmit={handleFormSubmit} error={error}>
           <TextInput
             type="text"
             label="Name"

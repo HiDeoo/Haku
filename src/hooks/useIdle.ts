@@ -20,7 +20,7 @@ export default function useIdle(durationInSeconds = 10) {
       }, durationInSeconds * 1_000)
     }
 
-    const onActivity = throttle(250, () => {
+    const handleActivity = throttle(250, () => {
       setIdle(false)
 
       if (timeout.current) {
@@ -30,18 +30,18 @@ export default function useIdle(durationInSeconds = 10) {
       startIdleTimer()
     })
 
-    function onVisibilityChange() {
+    function handleVisibilityChange() {
       if (!document.hidden) {
-        onActivity()
+        handleActivity()
       }
     }
 
     const eventListenerOptions: AddEventListenerOptions & EventListenerOptions = { passive: true }
 
-    document.addEventListener('visibilitychange', onVisibilityChange, eventListenerOptions)
+    document.addEventListener('visibilitychange', handleVisibilityChange, eventListenerOptions)
 
     for (const event of activityEvents) {
-      window.addEventListener(event, onActivity, eventListenerOptions)
+      window.addEventListener(event, handleActivity, eventListenerOptions)
     }
 
     startIdleTimer()
@@ -53,10 +53,10 @@ export default function useIdle(durationInSeconds = 10) {
         clearTimeout(timeout.current)
       }
 
-      document.removeEventListener('visibilitychange', onVisibilityChange, eventListenerOptions)
+      document.removeEventListener('visibilitychange', handleVisibilityChange, eventListenerOptions)
 
       for (const event of activityEvents) {
-        window.removeEventListener(event, onActivity, eventListenerOptions)
+        window.removeEventListener(event, handleActivity, eventListenerOptions)
       }
     }
   }, [durationInSeconds])

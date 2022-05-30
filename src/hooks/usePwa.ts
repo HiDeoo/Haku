@@ -12,7 +12,7 @@ export default function usePwa() {
   const setDeferrefPromptEventAtom = useSetAtom(deferrefPromptEventAtom)
 
   useEffect(() => {
-    function onLoad() {
+    function handleLoad() {
       registerServiceWorker('/sw.js', (updateServiceWorker) => {
         addToast({
           action: updateServiceWorker,
@@ -27,7 +27,7 @@ export default function usePwa() {
       sendServiceWorkerMessage({ type: 'LOAD' })
     }
 
-    window.addEventListener('load', onLoad, { once: true, passive: true })
+    window.addEventListener('load', handleLoad, { once: true, passive: true })
   }, [addToast])
 
   useEffect(() => {

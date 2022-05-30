@@ -10,13 +10,13 @@ const FileButton: React.FC<FileButtonProps> = ({ accept, disabled, multiple, onC
     return null
   }
 
-  function onPress() {
+  function handlePress() {
     input.current?.click()
   }
 
   return (
     <>
-      {cloneElement(trigger, { id: triggerId, disabled, onPress })}
+      {cloneElement(trigger, { id: triggerId, disabled, onPress: handlePress })}
       <input
         ref={input}
         type="file"
