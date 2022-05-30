@@ -47,5 +47,49 @@
       "sizes": "512x512",
       "purpose": "maskable"
     }
+  ],
+  "screenshots": [
+    {
+      "src": "/images/screenshots/narrow-home.png",
+      "type": "image/png",
+      "sizes": "390x844",
+      "platform": "narrow",
+      "label": "Homescreen of the Haku application"
+    },
+    {
+      "src": "/images/screenshots/narrow-note.png",
+      "type": "image/png",
+      "sizes": "390x844",
+      "platform": "narrow",
+      "label": "A note in the Haku application"
+    },
+    {
+      "src": "/images/screenshots/narrow-todo.png",
+      "type": "image/png",
+      "sizes": "390x844",
+      "platform": "narrow",
+      "label": "A todo in the Haku application"
+    },
+    {
+      "src": "/images/screenshots/wide-home.png",
+      "type": "image/png",
+      "sizes": "1280x880",
+      "platform": "wide",
+      "label": "Homescreen of the Haku application"
+    },
+    {
+      "src": "/images/screenshots/wide-note.png",
+      "type": "image/png",
+      "sizes": "1280x880",
+      "platform": "wide",
+      "label": "A note in the Haku application"
+    },
+    {
+      "src": "/images/screenshots/wide-todo.png",
+      "type": "image/png",
+      "sizes": "1280x880",
+      "platform": "wide",
+      "label": "A todo in the Haku application"
+    }
   ]
 }
