@@ -460,7 +460,7 @@ describe('search', () => {
       expect(res.length).toBe(SEARCH_RESULT_LIMIT)
 
       expect(res[0]?.name).toBe(names[0])
-      expect(res[res.length - 1]?.name).toBe(names[24])
+      expect(res.at(-1)?.name).toBe(names[24])
     }))
 
   test('should return paginated results', async () =>

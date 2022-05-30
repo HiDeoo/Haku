@@ -363,7 +363,7 @@ function getLastNestedChildren(
   const nodeChildren = children[from]
 
   if (node && !node.collapsed && nodeChildren) {
-    const lastChildId = nodeChildren[nodeChildren.length - 1]
+    const lastChildId = nodeChildren.at(-1)
 
     if (lastChildId) {
       return getLastNestedChildren(lastChildId, nodes, children)

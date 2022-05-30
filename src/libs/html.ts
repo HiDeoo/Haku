@@ -75,7 +75,7 @@ export function setContentEditableCaretPosition(
   const lines = getContentEditableLines(element)
   const isGoingDown = direction === 'down'
 
-  const line = lines[isGoingDown ? 0 : lines.length - 1]
+  const line = lines.at(isGoingDown ? 0 : -1)
 
   if (!line || (line.range[0] === 0 && line.range[1] === 0)) {
     return
@@ -132,7 +132,7 @@ export function getContentEditableCaretPosition(element: HTMLElement): CaretPosi
   const lines = getContentEditableLines(element)
 
   const firstLine = lines[0]
-  const lastLine = lines[lines.length - 1]
+  const lastLine = lines.at(-1)
 
   if (!firstLine || !lastLine) {
     return { atFirstLine: true, atLastLine: true, left: 0 }
