@@ -240,9 +240,12 @@ async function uploadImageToEditor(
     const position = getCloudinaryNodePositionWithId(editor, id)
 
     if (position) {
-      editor.view.dispatch(
-        editor.view.state.tr.step(new SetAttrsStep(position, { data, pending: false })).setMeta('addToHistory', false)
-      )
+      // https://github.com/ueberdosis/tiptap/issues/2836
+      const step = new SetAttrsStep(position, { data, pending: false }) as unknown as Parameters<
+        typeof editor['view']['state']['tr']['step']
+      >[0]
+
+      editor.view.dispatch(editor.view.state.tr.step(step).setMeta('addToHistory', false))
     }
 
     uploadQueue.delete(id)
