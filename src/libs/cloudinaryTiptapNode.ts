@@ -64,7 +64,7 @@ export function CloudinaryTiptapNode(options: CloudinaryTiptapNodeOptions) {
               continue
             }
 
-            responsive[parseInt(width.substring(-1), 10)] = src
+            responsive[Number(width.substring(-1))] = src
           }
 
           return { data: { height, name: alt, original: src, placeholder: base64Placeholder, responsive, width } }

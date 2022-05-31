@@ -11,7 +11,7 @@ export async function testApiRoute(handler: TestApiRouteHandler, callerContext?:
 }
 
 export function getTestUser(id = '0') {
-  const idAsNumber = parseInt(id, 10)
+  const idAsNumber = Number(id)
 
   if (idAsNumber < 0 || idAsNumber >= TEST_USER_COUNT) {
     throw new Error('Invalid test user ID.')

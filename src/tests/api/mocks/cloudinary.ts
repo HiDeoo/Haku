@@ -24,7 +24,7 @@ const handlers = [
 
     const url = `${CLOUDINARY_BASE_DELIVERY_URL}/${process.env.CLOUDINARY_CLOUD_NAME}/image/private/s--${signature}--/v${version}/${publicId}`
 
-    const width = parseInt(filename?.split('_')[1] ?? '800', 10)
+    const width = Number(filename?.split('_')[1] ?? '800')
 
     return res(
       ctx.status(200),
