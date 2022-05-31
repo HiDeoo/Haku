@@ -17,7 +17,7 @@ export default function useIdle(durationInSeconds = 10) {
         if (enabled.current) {
           setIdle(true)
         }
-      }, durationInSeconds * 1_000)
+      }, durationInSeconds * 1000)
     }
 
     const handleActivity = throttle(250, () => {

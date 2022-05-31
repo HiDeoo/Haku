@@ -71,22 +71,6 @@ const SearchPalette: React.FC = () => {
     }
   }
 
-  function itemToString(item: SearchResultData | null) {
-    return (item?.type === 'INBOX' ? 'Inbox' : item?.name) ?? ''
-  }
-
-  function itemToIcon(item: SearchResultData | null) {
-    if (!item) {
-      return null
-    }
-
-    return item.type === 'INBOX' ? RiInboxFill : item.type === ContentType.NOTE ? RiBookletLine : RiTodoLine
-  }
-
-  function itemDetailsToString(item: SearchResultData | null) {
-    return item?.excerpt ?? ''
-  }
-
   function handlePick(item: SearchResultData | null | undefined) {
     if (!item) {
       return
@@ -131,5 +115,21 @@ const SearchPalette: React.FC = () => {
 }
 
 export default SearchPalette
+
+function itemToString(item: SearchResultData | null) {
+  return (item?.type === 'INBOX' ? 'Inbox' : item?.name) ?? ''
+}
+
+function itemToIcon(item: SearchResultData | null) {
+  if (!item) {
+    return null
+  }
+
+  return item.type === 'INBOX' ? RiInboxFill : item.type === ContentType.NOTE ? RiBookletLine : RiTodoLine
+}
+
+function itemDetailsToString(item: SearchResultData | null) {
+  return item?.excerpt ?? ''
+}
 
 type SearchResult = SearchResultData & PaletteItem

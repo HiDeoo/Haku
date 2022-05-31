@@ -35,18 +35,6 @@ const NavigationPalette: React.FC = () => {
     )
   )
 
-  function itemToString(item: FileData | null) {
-    return item?.name ?? ''
-  }
-
-  function itemToIcon(item: FileData | null) {
-    if (!item) {
-      return null
-    }
-
-    return item.type === ContentType.NOTE ? RiBookletLine : RiTodoLine
-  }
-
   function handlePick(item: FileData | null | undefined) {
     if (!item) {
       return
@@ -74,5 +62,17 @@ const NavigationPalette: React.FC = () => {
 }
 
 export default NavigationPalette
+
+function itemToString(item: FileData | null) {
+  return item?.name ?? ''
+}
+
+function itemToIcon(item: FileData | null) {
+  if (!item) {
+    return null
+  }
+
+  return item.type === ContentType.NOTE ? RiBookletLine : RiTodoLine
+}
 
 type Navigation = FileData & PaletteItem

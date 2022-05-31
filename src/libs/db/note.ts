@@ -68,9 +68,9 @@ export async function getNotesMetadataGroupedByFolder(userId: UserId): Promise<N
 
   const noteMetadataGroupedByFolder: NoteMetadataGroupedByFolder = new Map()
 
-  metaDatas.forEach((note) => {
+  for (const note of metaDatas) {
     noteMetadataGroupedByFolder.set(note.folderId, [...(noteMetadataGroupedByFolder.get(note.folderId) ?? []), note])
-  })
+  }
 
   return noteMetadataGroupedByFolder
 }

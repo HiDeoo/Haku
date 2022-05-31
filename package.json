@@ -98,6 +98,7 @@
     "eslint": "8.16.0",
     "eslint-config-next": "12.1.6",
     "eslint-config-prettier": "8.5.0",
+    "eslint-plugin-unicorn": "42.0.0",
     "execa": "5.1.1",
     "husky": "8.0.1",
     "jest": "28.1.0",

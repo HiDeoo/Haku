@@ -193,10 +193,8 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     if (range && node?.id) {
       updateContent({
         id: node.id,
-        content: `${node.content.substring(0, range.startOffset)}${text.replaceAll(
-          /\n/gm,
-          ' '
-        )}${node.content.substring(range.endOffset)}`,
+        content:
+          node.content.slice(0, range.startOffset) + text.replaceAll(/\n/gm, ' ') + node.content.slice(range.endOffset),
       })
 
       const nextCaretIndex = range.startOffset + text.length

@@ -63,7 +63,7 @@ const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, focusTodoNode, todoId
       mutations: { delete: [], insert: {}, update: {} },
     }
 
-    Object.entries(mutations).forEach(([id, mutationType]) => {
+    for (const [id, mutationType] of Object.entries(mutations)) {
       const node = nodes[id]
       const nodeChildren = children[id]
 
@@ -81,7 +81,7 @@ const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, focusTodoNode, todoId
       } else if (mutationType === 'delete') {
         mutationData.mutations.delete.push(id)
       }
-    })
+    }
 
     setEditorState({ isLoading: true })
 

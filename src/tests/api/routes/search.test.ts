@@ -451,8 +451,8 @@ describe('search', () => {
         (_, index) => `amazing name ${'a'.repeat(index + 1)}`
       )
 
-      for (let index = 0; index < names.length; index++) {
-        await createTestNote({ name: names[index] })
+      for (const name of names) {
+        await createTestNote({ name })
       }
 
       const res = await caller.query('search', { q: 'amazing' })
@@ -468,8 +468,8 @@ describe('search', () => {
       // 3 pages: `SEARCH_RESULT_LIMIT` + `SEARCH_RESULT_LIMIT` + 2
       const names = Array.from({ length: 52 }, (_, index) => `amazing name ${'a'.repeat(index + 1)}`)
 
-      for (let index = 0; index < names.length; index++) {
-        await createTestNote({ name: names[index] })
+      for (const name of names) {
+        await createTestNote({ name })
       }
 
       let res = await caller.query('search', { q: 'amazing' })

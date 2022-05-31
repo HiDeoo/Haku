@@ -126,8 +126,12 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
     }
 
     try {
-      editor?.chain().focus().uploadImages(Array.from(event.target.files)).run()
-    } catch (error) {
+      editor
+        ?.chain()
+        .focus()
+        .uploadImages([...event.target.files])
+        .run()
+    } catch {
       // Ignore potential errors that will be handled by the editor plugin.
     }
   }

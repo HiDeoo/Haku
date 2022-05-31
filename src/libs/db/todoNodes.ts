@@ -119,15 +119,15 @@ async function validateMutations(todoId: TodoMetadata['id'], update: UpdateTodoN
   const nodes = await getTodoNodesByTodoId(todoId)
   const [nodesMap, children] = getTodosNodesMapKeyedById(nodes)
 
-  update.children.root.forEach((rootId) => {
+  for (const rootId of update.children.root) {
     if (!hasKey(nodesMap, rootId) && !hasKey(update.mutations.insert, rootId)) {
       throw new TRPCError({ code: 'BAD_REQUEST', message: API_ERROR_TODO_NODE_ROOT_NODE_DOES_NOT_EXIST })
     }
-  })
+  }
 
   const deletedNodeIds: DeletedTodoNodeIds = []
 
-  update.mutations.delete.forEach((deletedTodoNodeId) => {
+  for (const deletedTodoNodeId of update.mutations.delete) {
     if (!hasKey(nodesMap, deletedTodoNodeId)) {
       throw new TRPCError({ code: 'BAD_REQUEST', message: API_ERROR_TODO_NODE_DELETE_DOES_NOT_EXIST })
     } else if (hasKey(update.mutations.update, deletedTodoNodeId)) {
@@ -148,7 +148,7 @@ async function validateMutations(todoId: TodoMetadata['id'], update: UpdateTodoN
     }
 
     getNestedTodoNodeIds(deletedTodoNodeId, nodesMap, children, deletedNodeIds)
-  })
+  }
 
   for (const insertedTodoNode of Object.values(update.mutations.insert)) {
     if (
@@ -158,13 +158,17 @@ async function validateMutations(todoId: TodoMetadata['id'], update: UpdateTodoN
       throw new TRPCError({ code: 'BAD_REQUEST', message: API_ERROR_TODO_NODE_NOTE_HTML_OR_TEXT_MISSING })
     }
 
-    update.children[insertedTodoNode.id]?.forEach((childrenId) => {
-      if (!hasKey(nodesMap, childrenId) && !hasKey(update.mutations.insert, childrenId)) {
-        throw new TRPCError({ code: 'BAD_REQUEST', message: API_ERROR_TODO_NODE_INSERT_CHILD_DOES_NOT_EXIST })
-      } else if (update.mutations.delete.includes(childrenId)) {
-        throw new TRPCError({ code: 'BAD_REQUEST', message: API_ERROR_TODO_NODE_INSERT_CHILD_DELETE_CONFLICT })
+    const childrenIds = update.children[insertedTodoNode.id]
+
+    if (childrenIds) {
+      for (const childrenId of childrenIds) {
+        if (!hasKey(nodesMap, childrenId) && !hasKey(update.mutations.insert, childrenId)) {
+          throw new TRPCError({ code: 'BAD_REQUEST', message: API_ERROR_TODO_NODE_INSERT_CHILD_DOES_NOT_EXIST })
+        } else if (update.mutations.delete.includes(childrenId)) {
+          throw new TRPCError({ code: 'BAD_REQUEST', message: API_ERROR_TODO_NODE_INSERT_CHILD_DELETE_CONFLICT })
+        }
       }
-    })
+    }
   }
 
   for (const updatedTodoNode of Object.values(update.mutations.update)) {
@@ -177,13 +181,17 @@ async function validateMutations(todoId: TodoMetadata['id'], update: UpdateTodoN
       throw new TRPCError({ code: 'BAD_REQUEST', message: API_ERROR_TODO_NODE_NOTE_HTML_OR_TEXT_MISSING })
     }
 
-    update.children[updatedTodoNode.id]?.forEach((childrenId) => {
-      if (!hasKey(nodesMap, childrenId) && !hasKey(update.mutations.insert, childrenId)) {
-        throw new TRPCError({ code: 'BAD_REQUEST', message: API_ERROR_TODO_NODE_UPDATE_CHILD_DOES_NOT_EXIST })
-      } else if (update.mutations.delete.includes(childrenId)) {
-        throw new TRPCError({ code: 'BAD_REQUEST', message: API_ERROR_TODO_NODE_UPDATE_CHILD_DELETE_CONFLICT })
+    const childrenIds = update.children[updatedTodoNode.id]
+
+    if (childrenIds) {
+      for (const childrenId of childrenIds) {
+        if (!hasKey(nodesMap, childrenId) && !hasKey(update.mutations.insert, childrenId)) {
+          throw new TRPCError({ code: 'BAD_REQUEST', message: API_ERROR_TODO_NODE_UPDATE_CHILD_DOES_NOT_EXIST })
+        } else if (update.mutations.delete.includes(childrenId)) {
+          throw new TRPCError({ code: 'BAD_REQUEST', message: API_ERROR_TODO_NODE_UPDATE_CHILD_DELETE_CONFLICT })
+        }
       }
-    })
+    }
   }
 
   return deletedNodeIds

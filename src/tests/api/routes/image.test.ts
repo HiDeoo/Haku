@@ -295,11 +295,11 @@ async function getFakeImage(options?: FakeImageOptions) {
     filename: `${faker.random.words().toLowerCase().replace(/\W/g, '-')}${
       options?.width ? `_${options?.width}` : ''
     }.${extension}`,
-    image: dataUriPrefix.concat(
+    image:
+      dataUriPrefix +
       base64Image.repeat(
         options?.sizeInBytes ? Math.ceil(options.sizeInBytes / Buffer.from(base64Image, 'base64').length) : 1
-      )
-    ),
+      ),
     referenceId: id,
   }
 }

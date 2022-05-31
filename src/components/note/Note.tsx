@@ -102,7 +102,7 @@ const Note: React.FC<NoteProps> = ({ id }) => {
 
   const handleNewContent = useCallback(
     ({ editor }: EditorEvents['create']) => {
-      if (location.hash.length !== 0) {
+      if (location.hash.length > 0) {
         focusNodeWithId(editor, location.hash)
       }
 

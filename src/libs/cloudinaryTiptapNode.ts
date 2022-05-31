@@ -64,7 +64,7 @@ export function CloudinaryTiptapNode(options: CloudinaryTiptapNodeOptions) {
               continue
             }
 
-            responsive[Number(width.substring(-1))] = src
+            responsive[Number(width.slice(0, -1))] = src
           }
 
           return { data: { height, name: alt, original: src, placeholder: base64Placeholder, responsive, width } }
@@ -126,7 +126,7 @@ function cloudinaryProseMirrorPlugin(editor: Editor, options: CloudinaryTiptapNo
 
         event.preventDefault()
 
-        return uploadImagesToEditor(editor, Array.from(event.dataTransfer.files), options, pos)
+        return uploadImagesToEditor(editor, [...event.dataTransfer.files], options, pos)
       },
       handlePaste(_view, event) {
         if (!event.clipboardData || event.clipboardData.files.length === 0) {
@@ -135,7 +135,7 @@ function cloudinaryProseMirrorPlugin(editor: Editor, options: CloudinaryTiptapNo
 
         event.preventDefault()
 
-        return uploadImagesToEditor(editor, Array.from(event.clipboardData.items), options)
+        return uploadImagesToEditor(editor, [...event.clipboardData.items], options)
       },
     },
   })
@@ -249,7 +249,7 @@ async function uploadImageToEditor(
     }
 
     uploadQueue.delete(id)
-  } catch (error) {
+  } catch {
     const position = getCloudinaryNodePositionWithId(editor, id)
 
     if (position) {
@@ -306,10 +306,7 @@ class SetAttrsStep extends Step {
       return StepResult.fail('No node at given position.')
     }
 
-    const attrs = {
-      ...(node.attrs ?? {}),
-      ...(this.attrs ?? {}),
-    }
+    const attrs = { ...node.attrs, ...this.attrs }
 
     const newNode = node.type.create(attrs, Fragment.empty, node.marks)
     const slice = new Slice(Fragment.from(newNode), 0, node.isLeaf ? 0 : 1)

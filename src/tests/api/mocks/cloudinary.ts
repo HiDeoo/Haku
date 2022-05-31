@@ -19,7 +19,7 @@ const handlers = [
     const [filename, extension] = formData.files[0].filename.split('.')
 
     const publicId = `${formData.folder}/${cuid()}`
-    const signature = cuid().substring(0, 8)
+    const signature = cuid().slice(0, 8)
     const version = cuid()
 
     const url = `${CLOUDINARY_BASE_DELIVERY_URL}/${process.env.CLOUDINARY_CLOUD_NAME}/image/private/s--${signature}--/v${version}/${publicId}`
@@ -31,7 +31,7 @@ const handlers = [
       ctx.json({
         api_key: cuid(),
         asset_id: cuid(),
-        bytes: 23957,
+        bytes: 23_957,
         created_at: new Date(),
         etag: cuid(),
         folder: formData.folder,

@@ -55,13 +55,13 @@ export function getBase64ImageFromFile(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
 
-    reader.onload = () => {
+    reader.addEventListener('load', () => {
       resolve(reader.result?.toString() ?? '')
-    }
+    })
 
-    reader.onerror = () => {
+    reader.addEventListener('error', () => {
       reject(reader.error)
-    }
+    })
 
     reader.readAsDataURL(file)
   })

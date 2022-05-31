@@ -135,7 +135,7 @@ function respondWithNetworkThenCache(event: FetchEvent, cacheName: string) {
     (async () => {
       try {
         return await fetchAndCacheResponse(event, cacheName, true)
-      } catch (error) {
+      } catch {
         // Silently fallback to the cache if the network request failed.
       }
 
@@ -168,7 +168,7 @@ function respondWithPage(event: FetchEvent, pathName: string) {
         if (preloadResponse) {
           return preloadResponse
         }
-      } catch (error) {
+      } catch {
         // Silently fallback to the cache if the preload request failed.
       }
 
@@ -181,7 +181,7 @@ function respondWithPage(event: FetchEvent, pathName: string) {
 
       try {
         return await fetchAndCacheResponse(event, CACHES.Assets, true, requestInfo, false)
-      } catch (error) {
+      } catch {
         return cache.match('/offline')
       }
     })()

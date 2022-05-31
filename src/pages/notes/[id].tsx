@@ -1,3 +1,1 @@
-import Note from 'pages/notes/[id]/[slug]'
-
-export default Note
+export { default } from 'pages/notes/[id]/[slug]'

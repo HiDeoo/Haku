@@ -35,7 +35,7 @@ const ClipboardCopyButton: React.FC<ClipboardCopyButtonProps> = ({ content, ...p
     } finally {
       iconTimeout.current = setTimeout(() => {
         setStatus('idle')
-      }, 1_000)
+      }, 1000)
     }
   }, [addToast, content])
 

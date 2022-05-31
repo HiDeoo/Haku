@@ -28,7 +28,7 @@ const Inbox: Page = () => {
         setSubmitState('success')
 
         replace(pathname, undefined, { shallow: true })
-      } catch (error) {
+      } catch {
         setSubmitState('error')
       }
     }

@@ -12,9 +12,9 @@ const MagicCodeInput = <TFormFields extends FieldValues>(
 ) => {
   useImperativeHandle(forwardedRef, () => ({ focus }))
 
-  const inputElements = useRef<(HTMLInputElement | null)[]>(new Array(length))
+  const inputElements = useRef<(HTMLInputElement | null)[]>(Array.from({ length }))
 
-  const [values, setValues] = useState<string[]>(new Array(length).fill(''))
+  const [values, setValues] = useState<string[]>(Array.from<string>({ length }).fill(''))
 
   const {
     field: { onBlur, onChange, ref: setFieldRef },
@@ -173,12 +173,19 @@ const MagicCodeDigitInput: React.FC<MagicCodeDigitInputProps> = ({
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
-    if (event.key === 'Backspace') {
-      onBackspace(index)
-    } else if (event.key === 'ArrowLeft') {
-      onMove(index, 'left')
-    } else if (event.key === 'ArrowRight') {
-      onMove(index, 'right')
+    switch (event.key) {
+      case 'Backspace': {
+        onBackspace(index)
+        break
+      }
+      case 'ArrowLeft': {
+        onMove(index, 'left')
+        break
+      }
+      case 'ArrowRight': {
+        onMove(index, 'right')
+        break
+      }
     }
   }
 

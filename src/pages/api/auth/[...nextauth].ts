@@ -44,7 +44,7 @@ function generateVerificationToken() {
         return
       }
 
-      resolve(parseInt(buffer.toString('hex'), 16).toString().substring(0, AUTH_TOKEN_LENGTH))
+      resolve(Number.parseInt(buffer.toString('hex'), 16).toString().slice(0, AUTH_TOKEN_LENGTH))
     })
   )
 }

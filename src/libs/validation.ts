@@ -16,12 +16,12 @@ export function zAtLeastOneOf<TShape extends z.ZodRawShape>(objectSchema: z.ZodO
   return objectSchema.partial().refine((data) => {
     const dataKeys = Object.keys(data)
 
-    return keys.some((key) => dataKeys.indexOf(key) !== -1)
+    return keys.some((key) => dataKeys.includes(key))
   })
 }
 
 export async function validateBase64Image(base64Image: string, maxFileSizeInBytes: number, supportedTypes: string[]) {
-  const dataBuffer = Buffer.from(base64Image.substring(base64Image.indexOf(',') + 1), 'base64')
+  const dataBuffer = Buffer.from(base64Image.slice(base64Image.indexOf(',') + 1), 'base64')
 
   if (dataBuffer.length > maxFileSizeInBytes) {
     throw new TRPCError({ code: 'BAD_REQUEST' })

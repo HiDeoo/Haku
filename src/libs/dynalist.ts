@@ -33,7 +33,7 @@ export async function getTodoFromDynalistOpml(opml: string): Promise<TodoFromDyn
     }
 
     return { children, name: `${rootNode.text} (Dynalist ${Date.now()})`, nodes }
-  } catch (error) {
+  } catch {
     throw new TRPCError({ code: 'BAD_REQUEST', message: API_ERROR_IMPORT_DYNALIST_INVALID_OPML })
   }
 }
@@ -44,7 +44,11 @@ function getTodoNodesFromDynalistOpml(
   nodes: TodoNodeDataMap,
   parentId?: TodoNodeData['id']
 ) {
-  node.children?.forEach((child) => {
+  if (!node.children) {
+    return
+  }
+
+  for (const child of node.children) {
     if (!isValidTodoNodeDynalistOpml(child)) {
       throw new Error('Invalid Dynalist OPML todo node.')
     }
@@ -72,7 +76,7 @@ function getTodoNodesFromDynalistOpml(
     }
 
     getTodoNodesFromDynalistOpml(child, children, nodes, id)
-  })
+  }
 }
 
 function isValidTodoNodeDynalistOpml(todoNodeDynalistOpml: unknown): todoNodeDynalistOpml is TodoNodeDynalistOpml {

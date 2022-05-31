@@ -163,10 +163,6 @@ const InspectorIconMenu: React.FC<InspectorIconButtonMenuProps> = ({
     'bg-blue-300 hover:bg-blue-300': toggled,
   })
 
-  function handleCloseAutoFocus(event: Event) {
-    event.preventDefault()
-  }
-
   return (
     <Root>
       <Trigger asChild>
@@ -182,7 +178,7 @@ const InspectorIconMenu: React.FC<InspectorIconButtonMenuProps> = ({
         loop
         sideOffset={collapsed ? 7 : 0}
         side={collapsed ? 'left' : 'bottom'}
-        onCloseAutoFocus={handleCloseAutoFocus}
+        onCloseAutoFocus={handleIconMenuCloseAutoFocus}
       >
         <Flex direction="col" className="mt-[theme(spacing[0.5])] rounded-md bg-zinc-700 shadow-sm shadow-black/50">
           {children}
@@ -193,6 +189,10 @@ const InspectorIconMenu: React.FC<InspectorIconButtonMenuProps> = ({
 }
 
 Inspector.IconMenu = InspectorIconMenu
+
+function handleIconMenuCloseAutoFocus(event: Event) {
+  event.preventDefault()
+}
 
 const InspectorIconMenuItem: React.FC<InspectorIconMenuItemProps> = ({ icon, onClick }) => {
   return (

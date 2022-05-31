@@ -7,7 +7,7 @@ import { contentTypeAtom } from 'atoms/contentType'
 import Spinner from 'components/ui/Spinner'
 import { ContentType } from 'constants/contentType'
 
-const unsecureRoutes = ['/auth/error', '/auth/login', '/auth/verify']
+const unsecureRoutes = new Set(['/auth/error', '/auth/login', '/auth/verify'])
 
 const Route: React.FC<RouteProps> = ({ children }) => {
   const { push, query, route } = useRouter()
@@ -16,7 +16,7 @@ const Route: React.FC<RouteProps> = ({ children }) => {
   const [contentType, setContentType] = useAtom(contentTypeAtom)
 
   const isAuthenticated = status === 'authenticated'
-  const isSecureRoute = !unsecureRoutes.includes(route)
+  const isSecureRoute = !unsecureRoutes.has(route)
 
   const callbackUrl = typeof query.callbackUrl === 'string' ? query.callbackUrl : undefined
 

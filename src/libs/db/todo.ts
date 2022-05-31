@@ -67,9 +67,9 @@ export async function getTodosMetadataGroupedByFolder(userId: UserId): Promise<T
 
   const todoMetadataGroupedByFolder: TodoMetadataGroupedByFolder = new Map()
 
-  metaDatas.forEach((todo) => {
+  for (const todo of metaDatas) {
     todoMetadataGroupedByFolder.set(todo.folderId, [...(todoMetadataGroupedByFolder.get(todo.folderId) ?? []), todo])
-  })
+  }
 
   return todoMetadataGroupedByFolder
 }

@@ -55,7 +55,7 @@ SELECT EXISTS(
     ['folder', userId],
     ['type', 'private'],
     ['tags', referenceId],
-    ['timestamp', ((Date.now() / 1000) | 0).toString()],
+    ['timestamp', Math.trunc(Date.now() / 1000).toString()],
   ]
 
   const sortedParameters = sortTupleArrayAlphabetically(parameters)
@@ -63,7 +63,7 @@ SELECT EXISTS(
 
   const signature = crypto
     .createHash('sha1')
-    .update(parametersStr.concat(process.env.CLOUDINARY_API_SECRET))
+    .update(parametersStr + process.env.CLOUDINARY_API_SECRET)
     .digest('hex')
 
   for (const [key, value] of sortedParameters) {
@@ -166,11 +166,11 @@ function getCloudinarySignedUrl(file: CloudinaryFile, transforms: string[]): str
   // https://github.com/cloudinary/cloudinary_npm/blob/c6298a7d1f49b4a4045969d2cfec7cb30668a341/lib/utils/index.js#L791
   const signature = crypto
     .createHash('sha1')
-    .update(parameters.concat(process.env.CLOUDINARY_API_SECRET))
+    .update(parameters + process.env.CLOUDINARY_API_SECRET)
     .digest('base64')
     .replace(/\//g, '_')
     .replace(/\+/g, '-')
-    .substring(0, 8)
+    .slice(0, 8)
 
   return `${CLOUDINARY_BASE_DELIVERY_URL}/${process.env.CLOUDINARY_CLOUD_NAME}/image/private/s--${signature}--/${parameters}`
 }

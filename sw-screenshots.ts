@@ -1,4 +1,5 @@
 import path from 'path'
+import { fileURLToPath } from 'url'
 
 import { type Browser, chromium, BrowserContext } from 'playwright'
 
@@ -60,7 +61,7 @@ async function login(): Promise<BrowserWithStorageState> {
   await page.mainFrame().waitForFunction(() => {
     const lastMagicCodeInput = document.querySelector<HTMLInputElement>('#magic-code-input-5')
 
-    return lastMagicCodeInput && lastMagicCodeInput.value.length !== 0
+    return lastMagicCodeInput && lastMagicCodeInput.value.length > 0
   })
 
   await Promise.all([page.waitForNavigation(), page.click('"Confirm"')])
@@ -102,7 +103,7 @@ async function generateScreenshots({ browser, storageState }: BrowserWithStorage
           }
 
           // Wait for any potential animations to be done.
-          await page.waitForTimeout(1_000)
+          await page.waitForTimeout(1000)
         }
       }
 
@@ -112,12 +113,12 @@ async function generateScreenshots({ browser, storageState }: BrowserWithStorage
         }, pageToScreenshot.scrollSelectorToTop[1])
 
         // Wait for the scrollbar to disappear.
-        await page.waitForTimeout(1_000)
+        await page.waitForTimeout(1000)
       }
 
       if (pageToScreenshot.waitForImages) {
         await page.waitForFunction(() => {
-          return Array.from(document.images).every((image) => image.complete)
+          return [...document.images].every((image) => image.complete)
         })
       }
 
@@ -127,7 +128,7 @@ async function generateScreenshots({ browser, storageState }: BrowserWithStorage
 
       await page.screenshot({
         path: path.join(
-          __dirname,
+          path.dirname(fileURLToPath(import.meta.url)),
           'public',
           'images',
           'screenshots',

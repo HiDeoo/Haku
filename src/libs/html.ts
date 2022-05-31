@@ -89,9 +89,9 @@ export function setContentEditableCaretPosition(
 
   const textElement = document.createElement('span')
   textElement.style.display = 'inline-block'
-  containerElement.appendChild(textElement)
+  containerElement.append(textElement)
 
-  document.body.appendChild(containerElement)
+  document.body.append(containerElement)
 
   let textIndex = 0
   let textOffset = position.left
