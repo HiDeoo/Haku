@@ -16,6 +16,7 @@ const customJestConfig = {
   globalSetup: getFilePathConfig('globalSetup.ts'),
   globalTeardown: getFilePathConfig('globalTeardown.ts'),
   setupFilesAfterEnv: getFilePathConfig('filesSetup.ts', true),
+  testEnvironment: getTestEnvironment(),
   testMatch: [`<rootDir>/src/tests/${process.env.TEST_TYPE}/**/*.test.ts`],
 }
 
@@ -29,4 +30,15 @@ function getFilePathConfig(fileName, inArray = false) {
   const filePath = `<rootDir>/${relativePath}`
 
   return exists ? (inArray ? [filePath] : filePath) : undefined
+}
+
+function getTestEnvironment() {
+  switch (process.env.TEST_TYPE) {
+    case 'client': {
+      return 'jsdom'
+    }
+    default: {
+      return 'node'
+    }
+  }
 }
