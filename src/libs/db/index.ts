@@ -1,7 +1,9 @@
 import { PrismaClient } from '@prisma/client'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime'
+import { TRPCError } from '@trpc/server'
+import { TRPC_ERROR_CODE_KEY } from '@trpc/server/rpc'
 
-import { ApiError } from 'libs/api/routes/errors'
+import { API_ERROR_UNKNOWN } from 'constants/error'
 
 declare global {
   var prisma: PrismaClient | undefined
@@ -15,19 +17,14 @@ if (process.env.NODE_ENV !== 'production') {
 
 export function handleDbError(error: unknown, options: DbErrorHandlerOptions): never {
   let apiClientErrorMessage: string | undefined
+  let apiClientErrorCode: TRPC_ERROR_CODE_KEY | undefined
 
   if (error instanceof PrismaClientKnownRequestError) {
     switch (error.code) {
       case 'P2002': {
         if (isDbErrorMetaWithTarget(error.meta)) {
           apiClientErrorMessage = options.unique?.[error.meta.target.join('_')]
-        }
-
-        break
-      }
-      case 'P2003': {
-        if (isDbErrorMetaWithFieldName(error.meta)) {
-          apiClientErrorMessage = options.fKey?.[error.meta.field_name.replace('_fkey (index)', '')]
+          apiClientErrorCode = 'CONFLICT'
         }
 
         break
@@ -36,8 +33,10 @@ export function handleDbError(error: unknown, options: DbErrorHandlerOptions): n
         if (isDbErrorMetaWithCause(error.meta)) {
           if (error.meta.cause === 'Record to delete does not exist.' && options.delete) {
             apiClientErrorMessage = options.delete
+            apiClientErrorCode = 'NOT_FOUND'
           } else if (error.meta.cause === 'Record to update not found.' && options.update) {
             apiClientErrorMessage = options.update
+            apiClientErrorCode = 'NOT_FOUND'
           }
         }
 
@@ -46,11 +45,11 @@ export function handleDbError(error: unknown, options: DbErrorHandlerOptions): n
     }
   }
 
-  if (apiClientErrorMessage) {
-    throw new ApiError(apiClientErrorMessage)
-  }
-
-  throw error
+  throw new TRPCError({
+    cause: error,
+    code: apiClientErrorCode ?? 'BAD_REQUEST',
+    message: apiClientErrorMessage ?? API_ERROR_UNKNOWN,
+  })
 }
 
 function isDbErrorMetaWithTarget(meta: unknown): meta is DbErrorMetaWithTarget {
@@ -61,14 +60,9 @@ function isDbErrorMetaWithCause(meta: unknown): meta is DbErrorMetaWithCause {
   return typeof meta !== 'undefined' && typeof (meta as DbErrorMetaWithCause).cause === 'string'
 }
 
-function isDbErrorMetaWithFieldName(meta: unknown): meta is DbErrorMetaWithFieldName {
-  return typeof meta !== 'undefined' && typeof (meta as DbErrorMetaWithFieldName).field_name === 'string'
-}
-
 // Multi-column constraints should be identified using a string being an underscore separated list of columns.
 interface DbErrorHandlerOptions {
   delete?: string
-  fKey?: Record<string, string>
   unique?: Record<string, string>
   update?: string
 }
@@ -79,8 +73,4 @@ interface DbErrorMetaWithTarget {
 
 interface DbErrorMetaWithCause {
   cause: string
-}
-
-interface DbErrorMetaWithFieldName {
-  field_name: string
 }

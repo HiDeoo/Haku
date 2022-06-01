@@ -1,7 +1,6 @@
 import { atom, type PrimitiveAtom, type WritableAtom } from 'jotai'
 
 import { onlineAtom } from 'atoms/network'
-import { type MutationAction } from 'libs/api/client'
 import { type FolderData } from 'libs/db/folder'
 import { type NoteMetadata } from 'libs/db/note'
 import { type TodoMetadata } from 'libs/db/todo'
@@ -45,7 +44,7 @@ function createTogglableAtom(): [PrimitiveAtom<boolean>, WritableAtom<null, bool
 }
 
 interface MutationModal<TData> {
-  action: MutationAction
+  action: 'insert' | 'update' | 'delete'
   data: TData | undefined
   opened: boolean
 }

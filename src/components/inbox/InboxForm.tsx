@@ -19,18 +19,18 @@ const InboxForm: React.FC = () => {
     setFocus,
   } = useForm<FormFields>()
 
-  const { error, isLoading, mutate } = useInboxEntryMutation()
+  const { error, isLoading, mutateAdd } = useInboxEntryMutation()
 
   const formClasses = clst(
     'z-10 bg-zinc-900/10 p-3 shadow-[0px_1px_2px_0px_rgb(0,0,0,0.5)]',
     'supports-max:pl-[calc(theme(spacing.3)+max(0px,env(safe-area-inset-left)))]'
   )
 
-  const onSubmit = handleSubmit((data) => {
-    mutate({ action: 'insert', ...data }, { onSuccess: onSuccessfulMutation })
+  const handleFormSubmit = handleSubmit((data) => {
+    mutateAdd(data, { onSuccess: handleMutationSuccess })
   })
 
-  function onSuccessfulMutation() {
+  function handleMutationSuccess() {
     // https://github.com/react-hook-form/react-hook-form/issues/6978#issuecomment-975668363
     requestAnimationFrame(() => {
       reset()
@@ -42,7 +42,7 @@ const InboxForm: React.FC = () => {
   }
 
   return (
-    <Form error={error} onSubmit={onSubmit} className={formClasses}>
+    <Form error={error} onSubmit={handleFormSubmit} className={formClasses}>
       <div className="flex gap-2.5">
         <TextInput
           autoFocus

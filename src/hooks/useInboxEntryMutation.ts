@@ -1,72 +1,78 @@
 import cuid from 'cuid'
-import { useMutation, useQueryClient } from 'react-query'
 
-import { getInboxEntriesQueryKey } from 'hooks/useInboxEntriesQuery'
-import { getClient, Mutation } from 'libs/api/client'
-import { type InboxEntriesData, type InboxEntryData } from 'libs/db/inbox'
-import { type AddInboxEntryBody } from 'pages/api/inbox'
-import { type RemoveInboxEntryQuery } from 'pages/api/inbox/[id]'
+import { type InboxEntriesData } from 'libs/db/inbox'
+import { trpc } from 'libs/trpc'
 
 export function useInboxEntryMutation() {
-  const queryClient = useQueryClient()
+  const { cancelQuery, getQueryData, invalidateQueries, setQueryData } = trpc.useContext()
 
-  return useMutation<InboxEntryData | void, unknown, InboxEntryMutation, InboxEntryContext>(
-    (data) => {
-      switch (data.action) {
-        case 'insert': {
-          return addInboxEntry({ text: data.text })
-        }
-        case 'delete': {
-          return removeInboxEntry({ id: data.id })
-        }
-        default: {
-          throw new Error(`Unsupported inbox entry mutation type.`)
-        }
+  const {
+    error: errorAdd,
+    isLoading: isLoadingAdd,
+    mutate: mutateAdd,
+    mutateAsync: mutateAddAsync,
+  } = trpc.useMutation(['inbox.add'], {
+    onError: (_error, _variables, context) => {
+      if (isInboxEntryContext(context) && context.oldInboxEntries) {
+        setQueryData(['inbox.list'], context.oldInboxEntries)
       }
     },
-    {
-      onError: (_error, _variables, context) => {
-        if (context?.oldInboxEntries) {
-          queryClient.setQueryData<InboxEntriesData>(getInboxEntriesQueryKey(), context.oldInboxEntries)
-        }
-      },
-      onMutate: async (newInboxEntry) => {
-        const queryKey = getInboxEntriesQueryKey()
+    onMutate: async (newInboxEntry) => {
+      await cancelQuery(['inbox.list'])
 
-        await queryClient.cancelQueries(queryKey)
+      const oldInboxEntries = getQueryData(['inbox.list'])
 
-        const oldInboxEntries = queryClient.getQueryData<InboxEntriesData>(queryKey)
+      setQueryData(['inbox.list'], (prevInboxEntries) => [
+        { ...newInboxEntry, createdAt: new Date(), id: cuid() },
+        ...(prevInboxEntries ?? []),
+      ])
 
-        if (newInboxEntry.action === 'insert') {
-          queryClient.setQueryData<InboxEntriesData>(queryKey, (prevInboxEntries) => [
-            { ...newInboxEntry, createdAt: new Date(), id: cuid() },
-            ...(prevInboxEntries ?? []),
-          ])
-        } else if (newInboxEntry.action === 'delete') {
-          queryClient.setQueryData<InboxEntriesData>(
-            queryKey,
-            (prevInboxEntries) => prevInboxEntries?.filter((entry) => entry.id !== newInboxEntry.id) ?? []
-          )
-        }
+      return { oldInboxEntries }
+    },
+    onSettled: () => {
+      invalidateQueries(['inbox.list'])
+    },
+  })
 
-        return { oldInboxEntries }
-      },
-      onSettled: () => {
-        queryClient.invalidateQueries(getInboxEntriesQueryKey())
-      },
-    }
-  )
+  const {
+    error: errorDelete,
+    isLoading: isLoadingDelete,
+    mutate: mutateDelete,
+  } = trpc.useMutation(['inbox.delete'], {
+    onError: (_error, _variables, context) => {
+      if (isInboxEntryContext(context) && context.oldInboxEntries) {
+        setQueryData(['inbox.list'], context.oldInboxEntries)
+      }
+    },
+    onMutate: async (newInboxEntry) => {
+      await cancelQuery(['inbox.list'])
+
+      const oldInboxEntries = getQueryData(['inbox.list'])
+
+      setQueryData(
+        ['inbox.list'],
+        (prevInboxEntries) => prevInboxEntries?.filter((entry) => entry.id !== newInboxEntry.id) ?? []
+      )
+
+      return { oldInboxEntries }
+    },
+    onSettled: () => {
+      invalidateQueries(['inbox.list'])
+    },
+  })
+
+  return {
+    error: errorAdd || errorDelete,
+    isLoading: isLoadingAdd || isLoadingDelete,
+    mutateAdd,
+    mutateAddAsync,
+    mutateDelete,
+  }
 }
 
-async function addInboxEntry(data: AddInboxEntryBody) {
-  return (await getClient()).post('inbox', { json: data }).json<InboxEntryData>()
+function isInboxEntryContext(context: unknown): context is InboxEntryContext {
+  return typeof context === 'object' && typeof (context as InboxEntryContext).oldInboxEntries !== 'undefined'
 }
-
-async function removeInboxEntry({ id }: RemoveInboxEntryQuery) {
-  await (await getClient()).delete(`inbox/${id}`)
-}
-
-type InboxEntryMutation = Mutation<AddInboxEntryBody, 'insert'> | Mutation<RemoveInboxEntryQuery, 'delete'>
 
 interface InboxEntryContext {
   oldInboxEntries?: InboxEntriesData

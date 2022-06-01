@@ -1,9 +1,8 @@
 import { ContentType } from 'constants/contentType'
-import { SEARCH_QUERY_MIN_LENGTH, SEARCH_RESULT_LIMIT } from 'constants/search'
-import { ApiError, API_ERROR_SEARCH_QUERY_TOO_SHORT } from 'libs/api/routes/errors'
+import { SEARCH_RESULT_LIMIT } from 'constants/search'
 import { prisma } from 'libs/db'
 
-export type FilesData = FileData[]
+type FilesData = FileData[]
 export interface FileData {
   id: string
   name: string
@@ -44,12 +43,8 @@ ORDER BY
   "name" ASC`
 }
 
-export function searchFiles(userId: UserId, query: string, page?: string): Promise<SearchResultsData> {
-  if (query.length < SEARCH_QUERY_MIN_LENGTH) {
-    throw new ApiError(API_ERROR_SEARCH_QUERY_TOO_SHORT)
-  }
-
-  const offset = (page ? parseInt(page, 10) : 0) * SEARCH_RESULT_LIMIT
+export function searchFiles(userId: UserId, query: string, page?: number): Promise<SearchResultsData> {
+  const offset = (page ?? 0) * SEARCH_RESULT_LIMIT
 
   return prisma.$queryRaw<SearchResultsData>`
 WITH search AS (

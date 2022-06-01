@@ -44,21 +44,17 @@ const SidebarMenu: React.FC = () => {
 
   const setShortcutModalOpened = useSetAtom(setShortcutModalOpenedAtom)
 
-  function onClickKeyboardShortcuts() {
+  function handleKeyboardShortcutsClick() {
     setShortcutModalOpened(true)
   }
 
-  function onClickInstallApp() {
+  function handleInstallAppClick() {
     deferrefPromptEvent?.prompt()
 
     resetDeferrefPromptEvent()
   }
 
-  function onClickInstallShortcut() {
-    window.open(`/Add to Haku inbox${process.env.NODE_ENV === 'production' ? '' : ' (dev)'}.shortcut`)
-  }
-
-  function onClickImportData() {
+  function handleImportDataClick() {
     push('/import')
   }
 
@@ -105,19 +101,27 @@ const SidebarMenu: React.FC = () => {
               <SidebarMenuItem label="Report Bug" icon={RiBugLine} onClick={openGitHubIssuePage} />
             </Item>
             <Item asChild>
-              <SidebarMenuItem label="Import Data" icon={RiInboxArchiveLine} onClick={onClickImportData} />
+              <SidebarMenuItem label="Import Data" icon={RiInboxArchiveLine} onClick={handleImportDataClick} />
             </Item>
             <Item asChild>
-              <SidebarMenuItem label="Keyboard Shortcuts" icon={RiKeyboardFill} onClick={onClickKeyboardShortcuts} />
+              <SidebarMenuItem
+                label="Keyboard Shortcuts"
+                icon={RiKeyboardFill}
+                onClick={handleKeyboardShortcutsClick}
+              />
             </Item>
             {isApplePlatform ? (
               <Item asChild>
-                <SidebarMenuItem label="Get Apple Shortcut" icon={BsFillLayersFill} onClick={onClickInstallShortcut} />
+                <SidebarMenuItem
+                  label="Get Apple Shortcut"
+                  icon={BsFillLayersFill}
+                  onClick={handleSidebarMenuInstallShortcutClick}
+                />
               </Item>
             ) : null}
             {deferrefPromptEvent ? (
               <Item asChild>
-                <SidebarMenuItem label="Install App" icon={RiInstallLine} onClick={onClickInstallApp} />
+                <SidebarMenuItem label="Install App" icon={RiInstallLine} onClick={handleInstallAppClick} />
               </Item>
             ) : null}
           </Flex>
@@ -128,6 +132,10 @@ const SidebarMenu: React.FC = () => {
 }
 
 export default SidebarMenu
+
+function handleSidebarMenuInstallShortcutClick() {
+  window.open(`/Add to Haku inbox${process.env.NODE_ENV === 'production' ? '' : ' (dev)'}.shortcut`)
+}
 
 const sidebarMenuItemClasses = clst(
   'mx-0 flex items-center justify-start gap-2.5 bg-zinc-700 text-left shadow-none px-2 py-1 rounded font-medium',

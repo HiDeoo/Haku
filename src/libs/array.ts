@@ -19,15 +19,17 @@ export function groupByKey<
   TKey extends TIndex,
   TRecord extends unknown & { [key in TKey]: TIndex }
 >(records: TRecord[], key: TKey): Record<TRecord[TKey], TRecord[]> {
-  return records.reduce((acc, record) => {
+  const groupedRecords = {} as Record<TRecord[TKey], TRecord[]>
+
+  for (const record of records) {
     const keyValue = record[key]
 
     if (typeof keyValue === 'string') {
-      acc[keyValue] = [...(acc[keyValue] ?? []), record]
+      groupedRecords[keyValue] = [...(groupedRecords[keyValue] ?? []), record]
     }
+  }
 
-    return acc
-  }, {} as Record<TRecord[TKey], TRecord[]>)
+  return groupedRecords
 }
 
 export function sortTupleArrayAlphabetically<TItem extends [string, string]>(array: TItem[]): TItem[] {

@@ -10,7 +10,7 @@ async function setup() {
     password: process.env.DB_PASSWORD,
     user: process.env.DB_USER,
     database: process.env.DB_USER,
-    timeout: 5_000,
+    timeout: 5000,
   })
 
   await execa.command('prisma migrate deploy', { env: { ...process.env, DB_URL: process.env.DB_URL } })

@@ -13,7 +13,7 @@ import Alert from 'components/ui/Alert'
 import Modal from 'components/ui/Modal'
 import { ROOT_FOLDER_ID } from 'constants/folder'
 import useContentType from 'hooks/useContentType'
-import useMetadataMutation, { type MetadataMutation } from 'hooks/useMetadataMutation'
+import useMetadataMutation from 'hooks/useMetadataMutation'
 import { useNetworkStatus } from 'hooks/useNetworkStatus'
 import useToast from 'hooks/useToast'
 import { type FolderData } from 'libs/db/folder'
@@ -33,7 +33,7 @@ const ContentModal: React.FC = () => {
     reset,
   } = useForm<FormFields>()
 
-  const { error, isLoading, mutate } = useMetadataMutation()
+  const { error, isLoading, mutateAdd, mutateDelete, mutateUpdate } = useMetadataMutation()
   const { action, data: content, opened } = useAtomValue(contentModalAtom)
   const setOpened = useSetAtom(setContentModalOpenedAtom)
 
@@ -44,28 +44,28 @@ const ContentModal: React.FC = () => {
     reset()
   }, [opened, reset])
 
-  const onSubmit = handleSubmit(({ folder, ...data }) => {
+  const handleFormSubmit = handleSubmit(({ folder, ...data }) => {
     const folderId = folder.id === ROOT_FOLDER_ID ? undefined : folder.id
 
-    const mutationData: MetadataMutation = isUpdating
-      ? { ...data, action: 'update', folderId, id: content.id }
-      : { ...data, action: 'insert', folderId }
-
-    mutate(mutationData, { onSuccess: onSuccessfulMutation })
+    if (isUpdating) {
+      mutateUpdate({ ...data, folderId, id: content.id }, { onSuccess: handleMutationSuccess })
+    } else {
+      mutateAdd({ ...data, folderId }, { onSuccess: handleMutationSuccess })
+    }
   })
 
-  function onConfirmDelete() {
+  function handleDeleteConfirm() {
     if (isRemoving) {
-      mutate({ action: 'delete', id: content.id }, { onSuccess: onSuccessfulMutation, onError: onErrorMutation })
+      mutateDelete({ id: content.id }, { onSuccess: handleMutationSuccess, onError: handleMutationError })
     }
   }
 
-  function onSuccessfulMutation() {
+  function handleMutationSuccess() {
     setOpened(false)
     reset()
   }
 
-  function onErrorMutation() {
+  function handleMutationError() {
     const action = isRemoving ? 'delete' : isUpdating ? 'update' : 'create'
 
     addToast({
@@ -84,8 +84,8 @@ const ContentModal: React.FC = () => {
         disabled={isLoading}
         onOpenChange={setOpened}
         title={`Delete ${cType}`}
-        onConfirm={onConfirmDelete}
         opened={opened && isRemoving}
+        onConfirm={handleDeleteConfirm}
       >
         Are you sure you want to delete the {lcType} <strong>&ldquo;{content?.name}&rdquo;</strong>?
       </Alert>
@@ -96,7 +96,7 @@ const ContentModal: React.FC = () => {
         opened={opened && !isRemoving}
         trigger={<IconButton icon={RiFileAddLine} tooltip={title} disabled={offline} />}
       >
-        <Form onSubmit={onSubmit} error={error}>
+        <Form onSubmit={handleFormSubmit} error={error}>
           <TextInput
             type="text"
             label="Name"

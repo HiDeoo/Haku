@@ -14,7 +14,7 @@ const Toast: React.FC<ToastProps> = ({ toast }) => {
 
   const removeToast = useSetAtom(removeToastAtom)
 
-  const onToastOpenChange = useCallback(
+  const handleToastOpenChange = useCallback(
     (opened: boolean) => {
       if (!opened) {
         toastRoot.current?.addEventListener(
@@ -35,7 +35,7 @@ const Toast: React.FC<ToastProps> = ({ toast }) => {
       type={toast.type}
       className={styles.toast}
       duration={toast.duration}
-      onOpenChange={onToastOpenChange}
+      onOpenChange={handleToastOpenChange}
     >
       <div className="mt-0.5 shrink-0 p-0.5 text-zinc-300">
         <Icon icon={toast.icon} label={toast.text} />

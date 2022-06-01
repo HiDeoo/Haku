@@ -5,7 +5,11 @@ export function openGitHubIssuePage() {
 }
 
 export async function openGitHubErrorReport(error: Error) {
-  const parser = new (await import('ua-parser-js')).default.UAParser()
+  const {
+    default: { UAParser },
+  } = await import('ua-parser-js')
+
+  const parser = new UAParser()
   const browser = parser.getBrowser()
   const os = parser.getOS()
 

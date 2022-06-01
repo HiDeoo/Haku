@@ -6,8 +6,8 @@ import { getNotesMetadataGroupedByFolder, type NoteMetadata } from 'libs/db/note
 import { getTodosMetadataGroupedByFolder, type TodoMetadata } from 'libs/db/todo'
 import { type HierarchicalListFolder, type HierarchicalListItem, hierarchicalListToTree, type Tree } from 'libs/tree'
 
-export type NoteTreeData = Tree<FolderData, NoteMetadata>
-export type TodoTreeData = Tree<FolderData, TodoMetadata>
+type NoteTreeData = Tree<FolderData, NoteMetadata>
+type TodoTreeData = Tree<FolderData, TodoMetadata>
 
 export async function getNoteTree(userId: UserId): Promise<NoteTreeData> {
   const notesGroupedByFolder = await getNotesMetadataGroupedByFolder(userId)

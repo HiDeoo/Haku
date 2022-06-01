@@ -12,9 +12,9 @@ const MagicCodeInput = <TFormFields extends FieldValues>(
 ) => {
   useImperativeHandle(forwardedRef, () => ({ focus }))
 
-  const inputElements = useRef<(HTMLInputElement | null)[]>(new Array(length))
+  const inputElements = useRef<(HTMLInputElement | null)[]>(Array.from({ length }))
 
-  const [values, setValues] = useState<string[]>(new Array(length).fill(''))
+  const [values, setValues] = useState<string[]>(Array.from<string>({ length }).fill(''))
 
   const {
     field: { onBlur, onChange, ref: setFieldRef },
@@ -42,7 +42,7 @@ const MagicCodeInput = <TFormFields extends FieldValues>(
     [setFieldRef]
   )
 
-  const onChangeInput = useCallback(
+  const handleChange = useCallback(
     (index: number, value: string) => {
       setValues((prevValues) => {
         const newValues = [...prevValues.slice(0, index), value, ...prevValues.slice(index + 1)]
@@ -59,7 +59,7 @@ const MagicCodeInput = <TFormFields extends FieldValues>(
     [length, onChange]
   )
 
-  const onBackspace = useCallback(
+  const handleBackspace = useCallback(
     (index: number) => {
       const value = values[index]
 
@@ -72,7 +72,7 @@ const MagicCodeInput = <TFormFields extends FieldValues>(
     [values]
   )
 
-  const onMove = useCallback(
+  const handleMove = useCallback(
     (index: number, direction: 'left' | 'right') => {
       if ((direction === 'left' && index === 0) || (direction === 'right' && index === length - 1)) {
         return
@@ -88,7 +88,7 @@ const MagicCodeInput = <TFormFields extends FieldValues>(
     [length]
   )
 
-  const onPaste = useCallback(
+  const handlePaste = useCallback(
     (value: string) => {
       const newValues = Array.from({ length }, (_, index) => value[index] ?? '')
 
@@ -106,18 +106,29 @@ const MagicCodeInput = <TFormFields extends FieldValues>(
       <MagicCodeDigitInput
         index={index}
         onBlur={onBlur}
-        onMove={onMove}
-        onPaste={onPaste}
+        onMove={handleMove}
         disabled={disabled}
         setRef={setInputRef}
-        onChange={onChangeInput}
-        onBackspace={onBackspace}
+        onPaste={handlePaste}
+        onChange={handleChange}
         errorMessage={errorMessage}
         value={values[index] ?? ''}
+        onBackspace={handleBackspace}
         key={`magic-code-input-${index}`}
       />
     ))
-  }, [disabled, errorMessage, length, onBackspace, onBlur, onChangeInput, onMove, onPaste, setInputRef, values])
+  }, [
+    disabled,
+    errorMessage,
+    length,
+    handleBackspace,
+    onBlur,
+    handleChange,
+    handleMove,
+    handlePaste,
+    setInputRef,
+    values,
+  ])
 
   return (
     <div role="group" aria-labelledby="magic-code-label" className="mb-3 last-of-type:mb-4">
@@ -157,21 +168,28 @@ const MagicCodeDigitInput: React.FC<MagicCodeDigitInputProps> = ({
     setRef(index, ref)
   }
 
-  function onChangeValue(event: React.ChangeEvent<HTMLInputElement>) {
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     onChange(index, event.target.value.replace(value, ''))
   }
 
-  function onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
-    if (event.key === 'Backspace') {
-      onBackspace(index)
-    } else if (event.key === 'ArrowLeft') {
-      onMove(index, 'left')
-    } else if (event.key === 'ArrowRight') {
-      onMove(index, 'right')
+  function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+    switch (event.key) {
+      case 'Backspace': {
+        onBackspace(index)
+        break
+      }
+      case 'ArrowLeft': {
+        onMove(index, 'left')
+        break
+      }
+      case 'ArrowRight': {
+        onMove(index, 'right')
+        break
+      }
     }
   }
 
-  function onPasteValue(event: React.ClipboardEvent<HTMLInputElement>) {
+  function handlePaste(event: React.ClipboardEvent<HTMLInputElement>) {
     event.preventDefault()
 
     onPaste(event.clipboardData.getData('text'))
@@ -184,10 +202,10 @@ const MagicCodeDigitInput: React.FC<MagicCodeDigitInputProps> = ({
       ref={setInputRef}
       inputMode="numeric"
       disabled={disabled}
-      onKeyDown={onKeyDown}
-      onPaste={onPasteValue}
-      onChange={onChangeValue}
+      onPaste={handlePaste}
+      onChange={handleChange}
       className={inputClasses}
+      onKeyDown={handleKeyDown}
       autoComplete="one-time-code"
       id={`magic-code-input-${index}`}
       aria-labelledby="magic-code-label"

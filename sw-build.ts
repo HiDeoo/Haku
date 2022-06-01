@@ -11,10 +11,10 @@ import { CLOUDINARY_BASE_DELIVERY_URL } from 'libs/cloudinary'
 import { toError } from 'libs/error'
 
 const buildManifestPath = '.next/build-manifest.json'
-const pageToIgnore = ['/_app', '/_error', '/404']
+const pagesToIgnore = new Set(['/_app', '/_error', '/404'])
 const pathPrefix = '/_next/'
 
-const [, , ...args] = process.argv
+const args = process.argv.slice(2)
 const isProd = args.includes('--prod')
 
 const swcOptions: swc.Options = { minify: isProd, jsc: { target: 'es2015' } }
@@ -52,16 +52,19 @@ async function buildServiceWorkerConfig() {
 
   const assets = new Set<string>(isProd ? ['/offline', '/manifest.webmanifest'] : [])
 
-  Object.entries(buildManifest.pages).forEach(([page, files]) => {
-    if (!pageToIgnore.includes(page)) {
+  for (const [page, files] of Object.entries(buildManifest.pages)) {
+    if (!pagesToIgnore.has(page)) {
       assets.add(page)
     }
 
-    files.forEach((file) => assets.add(getAssetPath(file)))
-  })
+    for (const file of files) {
+      assets.add(getAssetPath(file))
+    }
+  }
 
-  buildManifest.lowPriorityFiles.forEach((file) => assets.add(getAssetPath(file)))
-  buildManifest.polyfillFiles.forEach((file) => assets.add(getAssetPath(file)))
+  for (const file of [...buildManifest.lowPriorityFiles, ...buildManifest.polyfillFiles]) {
+    assets.add(getAssetPath(file))
+  }
 
   const { code } = await swc.transform(
     `const VERSION = '${pkg.version}';
@@ -70,7 +73,7 @@ const IS_PROD = ${isProd};
 
 const IMAGE_DELIVERY_URL = '${CLOUDINARY_BASE_DELIVERY_URL}';
 
-const ASSETS = ${JSON.stringify(Array.from(assets))};
+const ASSETS = ${JSON.stringify([...assets])};
 
 const CACHES = ${JSON.stringify(SW_CACHES)};`,
     swcOptions
@@ -80,7 +83,7 @@ const CACHES = ${JSON.stringify(SW_CACHES)};`,
 }
 
 function getAssetPath(file: string) {
-  return `${pathPrefix}${file}`
+  return pathPrefix + file
 }
 
 build()

@@ -41,10 +41,10 @@ const Select = <TItem,>({
       initialSelectedItem: defaultItem,
       items,
       itemToString: renderItem,
-      onSelectedItemChange,
+      onSelectedItemChange: handleSelectedItemChange,
     })
 
-  function onSelectedItemChange(changes: UseSelectStateChange<TItem>) {
+  function handleSelectedItemChange(changes: UseSelectStateChange<TItem>) {
     if (changes.selectedItem) {
       onChange(changes.selectedItem)
     }

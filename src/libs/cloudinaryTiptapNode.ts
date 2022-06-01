@@ -6,9 +6,8 @@ import { Plugin } from 'prosemirror-state'
 import { Step, type Mappable, StepResult } from 'prosemirror-transform'
 
 import { IMAGE_MAX_SIZE_IN_MEGABYTES, IMAGE_SUPPORTED_TYPES } from 'constants/image'
-import { getClient } from 'libs/api/client'
 import { type ImageData } from 'libs/cloudinary'
-import { getA11yImageAttributes, getA11yImageParams, type A11yImageParams } from 'libs/image'
+import { getA11yImageAttributes, getA11yImageParams, getBase64ImageFromFile, type A11yImageParams } from 'libs/image'
 import { getBytesFromMegaBytes } from 'libs/math'
 
 const tiptapNodeName = 'cloudinary-image'
@@ -65,7 +64,7 @@ export function CloudinaryTiptapNode(options: CloudinaryTiptapNodeOptions) {
               continue
             }
 
-            responsive[parseInt(width.substring(-1), 10)] = src
+            responsive[Number(width.slice(0, -1))] = src
           }
 
           return { data: { height, name: alt, original: src, placeholder: base64Placeholder, responsive, width } }
@@ -127,7 +126,7 @@ function cloudinaryProseMirrorPlugin(editor: Editor, options: CloudinaryTiptapNo
 
         event.preventDefault()
 
-        return uploadImagesToEditor(editor, Array.from(event.dataTransfer.files), options, pos)
+        return uploadImagesToEditor(editor, [...event.dataTransfer.files], options, pos)
       },
       handlePaste(_view, event) {
         if (!event.clipboardData || event.clipboardData.files.length === 0) {
@@ -136,7 +135,7 @@ function cloudinaryProseMirrorPlugin(editor: Editor, options: CloudinaryTiptapNo
 
         event.preventDefault()
 
-        return uploadImagesToEditor(editor, Array.from(event.clipboardData.items), options)
+        return uploadImagesToEditor(editor, [...event.clipboardData.items], options)
       },
     },
   })
@@ -230,18 +229,27 @@ async function uploadImageToEditor(
       return
     }
 
-    const data = await upload(image, options.referenceId)
+    const base64Image = await getBase64ImageFromFile(image)
+
+    const data = await options.upload({
+      filename: image.name,
+      image: base64Image,
+      referenceId: options.referenceId,
+    })
 
     const position = getCloudinaryNodePositionWithId(editor, id)
 
     if (position) {
-      editor.view.dispatch(
-        editor.view.state.tr.step(new SetAttrsStep(position, { data, pending: false })).setMeta('addToHistory', false)
-      )
+      // https://github.com/ueberdosis/tiptap/issues/2836
+      const step = new SetAttrsStep(position, { data, pending: false }) as unknown as Parameters<
+        typeof editor['view']['state']['tr']['step']
+      >[0]
+
+      editor.view.dispatch(editor.view.state.tr.step(step).setMeta('addToHistory', false))
     }
 
     uploadQueue.delete(id)
-  } catch (error) {
+  } catch {
     const position = getCloudinaryNodePositionWithId(editor, id)
 
     if (position) {
@@ -277,17 +285,6 @@ function getCloudinaryNodePositionWithId(editor: Editor, id: string): number | u
   return position
 }
 
-async function upload(
-  image: File,
-  referenceId: NonNullable<CloudinaryTiptapNodeOptions['referenceId']>
-): Promise<ImageData> {
-  const body = new FormData()
-  body.append('file', image)
-  body.append('referenceId', referenceId)
-
-  return (await getClient()).post('images', { body }).json<ImageData>()
-}
-
 export class CloudinaryError extends Error {
   constructor(public message: string, public details?: string) {
     super(message)
@@ -297,7 +294,7 @@ export class CloudinaryError extends Error {
 }
 
 // https://discuss.prosemirror.net/t/preventing-image-placeholder-replacement-from-being-undone/1394/2
-export class SetAttrsStep extends Step {
+class SetAttrsStep extends Step {
   constructor(private pos: number, private attrs: NodeAttributes) {
     super()
   }
@@ -309,10 +306,7 @@ export class SetAttrsStep extends Step {
       return StepResult.fail('No node at given position.')
     }
 
-    const attrs = {
-      ...(node.attrs ?? {}),
-      ...(this.attrs ?? {}),
-    }
+    const attrs = { ...node.attrs, ...this.attrs }
 
     const newNode = node.type.create(attrs, Fragment.empty, node.marks)
     const slice = new Slice(Fragment.from(newNode), 0, node.isLeaf ? 0 : 1)
@@ -349,6 +343,7 @@ export interface CloudinaryTiptapNodeOptions {
   referenceId?: string
   onImageDoubleClick?: (params: A11yImageParams) => void
   onUploadError?: (error: CloudinaryError) => void
+  upload: (params: { filename: string; image: string; referenceId: string }) => Promise<ImageData>
 }
 
 type UploadQueue = Set<string>

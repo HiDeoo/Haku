@@ -1,5 +1,6 @@
 // https://github.com/microsoft/TypeScript/issues/14877#issuecomment-872329108
-const sw = self as ServiceWorkerGlobalScope & typeof globalThis
+// https://github.com/microsoft/TypeScript/issues/11781#issuecomment-1116384712
+const sw = self as unknown as ServiceWorkerGlobalScope & typeof globalThis
 
 self.importScripts('/sw-config.js')
 
@@ -89,7 +90,7 @@ function handleFetchEvent(event: FetchEvent) {
   if (IS_PROD && (requestUrl.origin === location.origin || requestUrl.origin === IMAGE_DELIVERY_URL)) {
     if (/^\/(?:_next\/static|images)\/.*\.(?:js|css|png|jpg|ico|svg)$/i.test(requestUrl.pathname)) {
       return respondWithCacheThenNetwork(event, CACHES.Assets)
-    } else if (/^\/api\/(?!.*csrf$)[/\w-]+$/i.test(requestUrl.pathname)) {
+    } else if (/^\/api\/(?!.*(?:csrf|search)$)[/\w-.]+$/i.test(requestUrl.pathname)) {
       return respondWithNetworkThenCache(event, CACHES.Api)
     } else if (/^\/[a-z]+\/image\/private\//.test(requestUrl.pathname)) {
       return respondWithCacheThenNetwork(event, CACHES.Images)
@@ -135,7 +136,7 @@ function respondWithNetworkThenCache(event: FetchEvent, cacheName: string) {
     (async () => {
       try {
         return await fetchAndCacheResponse(event, cacheName, true)
-      } catch (error) {
+      } catch {
         // Silently fallback to the cache if the network request failed.
       }
 
@@ -168,7 +169,7 @@ function respondWithPage(event: FetchEvent, pathName: string) {
         if (preloadResponse) {
           return preloadResponse
         }
-      } catch (error) {
+      } catch {
         // Silently fallback to the cache if the preload request failed.
       }
 
@@ -181,7 +182,7 @@ function respondWithPage(event: FetchEvent, pathName: string) {
 
       try {
         return await fetchAndCacheResponse(event, CACHES.Assets, true, requestInfo, false)
-      } catch (error) {
+      } catch {
         return cache.match('/offline')
       }
     })()

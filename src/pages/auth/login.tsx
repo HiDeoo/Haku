@@ -1,6 +1,5 @@
 import { Presence } from '@radix-ui/react-presence'
 import { signIn } from 'next-auth/react'
-import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useReducer, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -35,11 +34,11 @@ const Login: Page = () => {
   const isValidating = state.status === 'validatingEmail' || state.status === 'validatingCode'
   const shouldShowCodeInput = state.status === 'waitingCode' || state.status === 'validatingCode'
 
-  function onIconLoaded() {
+  function handleIconLoaded() {
     setIsIconLoaded(true)
   }
 
-  async function onSubmit({ code, email }: FormFields) {
+  async function handleFormSubmit({ code, email }: FormFields) {
     if (state.status === 'idle') {
       dispatch({ type: 'validatingEmail' })
 
@@ -71,17 +70,20 @@ const Login: Page = () => {
     }
   }
 
-  const iconWrapperClasses = clst('mb-5 flex justify-center', isIconLoaded ? 'animate-fade-in' : 'opacity-0')
+  const iconWrapperClasses = clst(
+    'mb-5 flex justify-center',
+    isIconLoaded ? 'motion-safe:animate-fade-in' : 'opacity-0'
+  )
 
   return (
     <Flex direction="col" className="w-60">
       <div className={iconWrapperClasses}>
-        <Image
+        <img
           width={100}
           height={100}
+          onLoad={handleIconLoaded}
           alt="Haku application icon"
           src="/images/icons/favicon.svg"
-          onLoadingComplete={onIconLoaded}
         />
       </div>
       <Presence present={shouldShowCodeInput}>
@@ -101,7 +103,7 @@ const Login: Page = () => {
           message={getAuthErrorMesssage(state.errorType)}
         />
       </Presence>
-      <Form onSubmit={handleSubmit(onSubmit)}>
+      <Form onSubmit={handleSubmit(handleFormSubmit)}>
         <TextInput
           autoFocus
           type="email"

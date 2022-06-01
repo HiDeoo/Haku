@@ -1,8 +1,8 @@
 import assert from 'assert'
 
-import faker from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
 import { TodoNodeStatus } from '@prisma/client'
-import { act, renderHook } from '@testing-library/react-hooks/native'
+import { act, renderHook } from '@testing-library/react'
 import cuid from 'cuid'
 import { useAtom } from 'jotai'
 import { useAtomValue, useSetAtom } from 'jotai'

@@ -56,8 +56,8 @@ function getFolderList(
   const folders: Folders = []
   let defaultItem: DefaultFolder = undefined
 
-  treeFolders.forEach(({ children, id, name, parentId }) => {
-    const folder = { id, name, parentId, path: `${parentPath}${name}` }
+  for (const { children, id, name, parentId } of treeFolders) {
+    const folder = { id, name, parentId, path: parentPath + name }
 
     folders.push(folder)
 
@@ -69,7 +69,7 @@ function getFolderList(
       const [nestedFolders, nestedDefaultItem] = getFolderList(
         children,
         defaultFolderId,
-        `${parentPath}${name}${parentPath.length > 0 ? '/' : ''}`
+        parentPath + name + (parentPath.length > 0 ? '/' : '')
       )
 
       folders.push(...nestedFolders)
@@ -78,7 +78,7 @@ function getFolderList(
         defaultItem = nestedDefaultItem
       }
     }
-  })
+  }
 
   return [folders, defaultItem]
 }

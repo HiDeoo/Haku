@@ -32,13 +32,13 @@ const TodoNodeHandle: React.FC<TodoNodeHandleProps> = ({ collapsed, hasChildren,
 
   const actionClasses = clst('absolute h-4 w-4 -left-1 -top-0 hidden group-hover:inline')
 
-  function onPress() {
+  function handlePress() {
     toggleCollapsed({ id })
   }
 
   return (
     <Button
-      onPress={onPress}
+      onPress={handlePress}
       aria-label={'tooltip'}
       disabled={!hasChildren}
       className={buttonClasses}

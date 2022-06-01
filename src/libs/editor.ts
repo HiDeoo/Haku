@@ -71,7 +71,8 @@ export function getLanguageName(id: string | null) {
 export function getToc(editor: Editor) {
   const toc: ToC = []
 
-  const transaction = editor.state.tr
+  // https://github.com/ueberdosis/tiptap/issues/2836
+  const transaction = editor.state.tr as unknown as Parameters<typeof editor['view']['dispatch']>[0]
 
   editor.state.doc.descendants((node, pos) => {
     if (node.type.name === 'heading') {

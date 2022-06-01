@@ -8,11 +8,11 @@ import CacheStatus from 'components/ui/CacheStatus'
 import Navbar from 'components/ui/Navbar'
 import NetworkStatus from 'components/ui/NetworkStatus'
 import SyncReport from 'components/ui/SyncReport'
-import useContentMutation, { type ContentMutation } from 'hooks/useContentMutation'
 import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
 import useIdle from 'hooks/useIdle'
 import { useNetworkStatus } from 'hooks/useNetworkStatus'
 import { type TodoMetadata } from 'libs/db/todo'
+import { type InferMutationInput, trpc } from 'libs/trpc'
 
 const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, focusTodoNode, todoId, todoName }) => {
   const { offline } = useNetworkStatus()
@@ -20,7 +20,7 @@ const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, focusTodoNode, todoId
   const [editorState, setEditorState] = useAtom(todoEditorStateAtom)
   const resetMutations = useResetAtom(todoNodeMutations)
 
-  const { isLoading, mutate } = useContentMutation()
+  const { isLoading, mutate } = trpc.useMutation(['todo.node.update'])
 
   const idle = useIdle()
 
@@ -37,7 +37,7 @@ const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, focusTodoNode, todoId
     )
   )
 
-  const onSettledMutation = useCallback(
+  const handleMutationSettled = useCallback(
     (_: unknown, error: unknown) => {
       setEditorState({ error, isLoading: false, lastSync: error ? undefined : new Date() })
 
@@ -46,7 +46,7 @@ const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, focusTodoNode, todoId
     [focusTodoNode, setEditorState]
   )
 
-  const onSuccessMutation = useCallback(() => {
+  const handleMutationSuccess = useCallback(() => {
     resetMutations()
   }, [resetMutations])
 
@@ -57,14 +57,13 @@ const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, focusTodoNode, todoId
 
     const { children, mutations, nodes } = await getTodoAtoms()
 
-    const mutationData: ContentMutation = {
-      action: 'update',
+    const mutationData: InferMutationInput<'todo.node.update'> = {
       id: todoId,
       children: { root: children.root },
       mutations: { delete: [], insert: {}, update: {} },
     }
 
-    Object.entries(mutations).forEach(([id, mutationType]) => {
+    for (const [id, mutationType] of Object.entries(mutations)) {
       const node = nodes[id]
       const nodeChildren = children[id]
 
@@ -82,12 +81,12 @@ const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, focusTodoNode, todoId
       } else if (mutationType === 'delete') {
         mutationData.mutations.delete.push(id)
       }
-    })
+    }
 
     setEditorState({ isLoading: true })
 
-    mutate(mutationData, { onSettled: onSettledMutation, onSuccess: onSuccessMutation })
-  }, [getTodoAtoms, mutate, offline, onSettledMutation, onSuccessMutation, setEditorState, todoId])
+    mutate(mutationData, { onSettled: handleMutationSettled, onSuccess: handleMutationSuccess })
+  }, [getTodoAtoms, mutate, offline, handleMutationSettled, handleMutationSuccess, setEditorState, todoId])
 
   useGlobalShortcuts(
     useMemo(

@@ -1,3 +1,1 @@
-import Todo from 'pages/todos/[id]/[slug]'
-
-export default Todo
+export { default } from 'pages/todos/[id]/[slug]'

@@ -55,13 +55,13 @@ const SearchPalette: React.FC = () => {
     )
   )
 
-  function onPressTrigger() {
+  function handleTriggerPress() {
     triggerUsed.current = true
 
     setOpened(true)
   }
 
-  function onOpenChange(opened: boolean) {
+  function handleOpenChange(opened: boolean) {
     setOpened(opened)
 
     if (!opened && triggerUsed.current) {
@@ -71,23 +71,7 @@ const SearchPalette: React.FC = () => {
     }
   }
 
-  function itemToString(item: SearchResultData | null) {
-    return (item?.type === 'INBOX' ? 'Inbox' : item?.name) ?? ''
-  }
-
-  function itemToIcon(item: SearchResultData | null) {
-    if (!item) {
-      return null
-    }
-
-    return item.type === 'INBOX' ? RiInboxFill : item.type === ContentType.NOTE ? RiBookletLine : RiTodoLine
-  }
-
-  function itemDetailsToString(item: SearchResultData | null) {
-    return item?.excerpt ?? ''
-  }
-
-  function onPick(item: SearchResultData | null | undefined) {
+  function handlePick(item: SearchResultData | null | undefined) {
     if (!item) {
       return
     }
@@ -103,20 +87,20 @@ const SearchPalette: React.FC = () => {
 
   return (
     <>
-      <IconButton icon={RiSearchLine} tooltip="Search" onPress={onPressTrigger} ref={trigger} />
+      <IconButton icon={RiSearchLine} tooltip="Search" onPress={handleTriggerPress} ref={trigger} />
       <Palette<SearchResult>
         role="search"
         fuzzy={false}
         opened={opened}
-        onPick={onPick}
         enterKeyHint="go"
+        onPick={handlePick}
         initialQuery={query}
         title="Search Palette"
         itemToIcon={itemToIcon}
         onQueryChange={setQuery}
         loadMore={fetchNextPage}
-        onOpenChange={onOpenChange}
         itemToString={itemToString}
+        onOpenChange={handleOpenChange}
         forwardedRef={paletteTextInput}
         items={data?.pages.flat() ?? []}
         isLoadingMore={isFetchingNextPage}
@@ -131,5 +115,21 @@ const SearchPalette: React.FC = () => {
 }
 
 export default SearchPalette
+
+function itemToString(item: SearchResultData | null) {
+  return (item?.type === 'INBOX' ? 'Inbox' : item?.name) ?? ''
+}
+
+function itemToIcon(item: SearchResultData | null) {
+  if (!item) {
+    return null
+  }
+
+  return item.type === 'INBOX' ? RiInboxFill : item.type === ContentType.NOTE ? RiBookletLine : RiTodoLine
+}
+
+function itemDetailsToString(item: SearchResultData | null) {
+  return item?.excerpt ?? ''
+}
 
 type SearchResult = SearchResultData & PaletteItem

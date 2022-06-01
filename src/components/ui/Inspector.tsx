@@ -31,7 +31,7 @@ const Inspector: InspectorComponent = ({ children, collapsed, controls, disabled
         role="toolbar"
         direction="col"
         aria-orientation="vertical"
-        className="overflow-y-auto supports-max:pr-[max(0px,env(safe-area-inset-right))]"
+        className="overflow-y-auto scrollbar-hide supports-max:pr-[max(0px,env(safe-area-inset-right))]"
       >
         {Children.map(children, (child) => {
           if (!isValidElement(child)) {
@@ -109,14 +109,14 @@ const InspectorToggle: React.FC<InspectorToggleProps> = ({ collapsed, onToggle, 
   })
   const pressedButtonClasses = clst(toggled ? 'bg-blue-300 hover:bg-blue-300' : 'bg-zinc-400 hover:bg-zinc-500')
 
-  function onPress() {
+  function handlePress() {
     onToggle(!toggled)
   }
 
   return (
     <InspectorIconButton
       {...props}
-      onPress={onPress}
+      onPress={handlePress}
       className={buttonClasses}
       pressedClassName={pressedButtonClasses}
     />
@@ -163,10 +163,6 @@ const InspectorIconMenu: React.FC<InspectorIconButtonMenuProps> = ({
     'bg-blue-300 hover:bg-blue-300': toggled,
   })
 
-  function onCloseAutoFocus(event: Event) {
-    event.preventDefault()
-  }
-
   return (
     <Root>
       <Trigger asChild>
@@ -181,8 +177,8 @@ const InspectorIconMenu: React.FC<InspectorIconButtonMenuProps> = ({
       <Content
         loop
         sideOffset={collapsed ? 7 : 0}
-        onCloseAutoFocus={onCloseAutoFocus}
         side={collapsed ? 'left' : 'bottom'}
+        onCloseAutoFocus={handleIconMenuCloseAutoFocus}
       >
         <Flex direction="col" className="mt-[theme(spacing[0.5])] rounded-md bg-zinc-700 shadow-sm shadow-black/50">
           {children}
@@ -193,6 +189,10 @@ const InspectorIconMenu: React.FC<InspectorIconButtonMenuProps> = ({
 }
 
 Inspector.IconMenu = InspectorIconMenu
+
+function handleIconMenuCloseAutoFocus(event: Event) {
+  event.preventDefault()
+}
 
 const InspectorIconMenuItem: React.FC<InspectorIconMenuItemProps> = ({ icon, onClick }) => {
   return (

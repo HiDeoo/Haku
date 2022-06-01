@@ -19,7 +19,7 @@ export default function useNavigationPrompt(
   useEffect(() => {
     let prompted = false
 
-    function onRouteChangeStart(url: string) {
+    function handleRouteChangeStart(url: string) {
       if (router.asPath !== url && enabled && !prompted) {
         prompted = true
 
@@ -41,7 +41,7 @@ export default function useNavigationPrompt(
       }
     }
 
-    function onBeforeUnload(event: BeforeUnloadEvent) {
+    function handleBeforeUnload(event: BeforeUnloadEvent) {
       if (enabled && !prompted) {
         event.preventDefault()
 
@@ -51,17 +51,17 @@ export default function useNavigationPrompt(
       return null
     }
 
-    router.events.on('routeChangeStart', onRouteChangeStart)
+    router.events.on('routeChangeStart', handleRouteChangeStart)
 
     if (enabled) {
-      window.addEventListener('beforeunload', onBeforeUnload)
+      window.addEventListener('beforeunload', handleBeforeUnload)
     }
 
     return () => {
-      router.events.off('routeChangeStart', onRouteChangeStart)
+      router.events.off('routeChangeStart', handleRouteChangeStart)
 
       if (enabled) {
-        window.removeEventListener('beforeunload', onBeforeUnload)
+        window.removeEventListener('beforeunload', handleBeforeUnload)
       }
     }
   }, [enabled, message, router])

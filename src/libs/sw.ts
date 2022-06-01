@@ -1,3 +1,5 @@
+import { isNotEmpty } from 'libs/array'
+
 export async function registerServiceWorker(swPath: string, onAvailableUpdate: ServiceWorkerRegistrationUpdateHandler) {
   if ('serviceWorker' in navigator === false) {
     return
@@ -18,15 +20,37 @@ export function sendServiceWorkerMessage<TMessage extends ServiceWorkerMessage>(
   }
 }
 
-export async function isResourceCached(cacheName: string, resource: RequestInfo) {
+export async function isResourceCached(cacheName: string, resource: string, input?: Record<string, string>) {
   if ('serviceWorker' in navigator === false || 'caches' in window === false) {
     return false
   }
 
+  let resourceUri = resource
+
+  if (input) {
+    resourceUri = `${resource}?input=${encodeURIComponent(JSON.stringify(input))}`
+  }
+
   const cache = await caches.open(cacheName)
-  const response = await cache.match(resource)
+  const response = await cache.match(resourceUri)
 
   return typeof response !== 'undefined'
+}
+
+export async function checkServiceWorkerUpdate() {
+  if ('serviceWorker' in navigator === false) {
+    return
+  }
+
+  try {
+    const registrations = await navigator.serviceWorker.getRegistrations()
+
+    if (isNotEmpty(registrations)) {
+      await registrations[0].update()
+    }
+  } catch (error) {
+    console.error('Error while checking service worker update:', error)
+  }
 }
 
 function handleServiceWorkerUpdate(

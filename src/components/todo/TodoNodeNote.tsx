@@ -18,7 +18,7 @@ const TodoNodeNote: React.ForwardRefRenderFunction<TodoNodeNoteHandle, TodoNodeN
 
   const { contentId } = useContentId()
 
-  const onEditorUpdate = useCallback(
+  const handleEditorUpdate = useCallback(
     ({ editor }: EditorEvents['update']) => {
       onChange({ id: node.id, noteHtml: editor.getHTML(), noteText: editor.getText() })
     },
@@ -31,7 +31,7 @@ const TodoNodeNote: React.ForwardRefRenderFunction<TodoNodeNoteHandle, TodoNodeN
       contentId,
       extensions: [ShiftEnter.configure({ callback: onShiftEnter })],
       onBlur,
-      onUpdate: onEditorUpdate,
+      onUpdate: handleEditorUpdate,
     },
     [node.content]
   )
@@ -55,6 +55,12 @@ const TodoNodeNote: React.ForwardRefRenderFunction<TodoNodeNoteHandle, TodoNodeN
             : node.status === TodoNodeStatus.CANCELLED
             ? 'var(--todo-node-cancelled-note-editor-text-color)'
             : 'var(--todo-node-note-editor-text-color)',
+        '--editor-link-color':
+          node.status === TodoNodeStatus.COMPLETED
+            ? 'var(--todo-node-completed-note-editor-link-color)'
+            : node.status === TodoNodeStatus.CANCELLED
+            ? 'var(--todo-node-cancelled-note-editor-link-color)'
+            : 'var(--todo-node-note-editor-link-color)',
       }}
     />
   )

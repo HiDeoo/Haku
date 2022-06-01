@@ -1,5 +1,6 @@
 import { useButton } from '@react-aria/button'
 import { mergeProps, useObjectRef } from '@react-aria/utils'
+import { type AriaButtonProps } from '@react-types/button'
 import { forwardRef } from 'react'
 
 import Flex from 'components/ui/Flex'
@@ -18,7 +19,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     const useButtonProps: UseButtonProps = {
       ...sanitizedProps,
-      onPress: isButtonPropsWithOnClickHandler(props) ? onDeprecatedOnClick : onPress,
+      onPress: isButtonPropsWithOnClickHandler(props) ? handleDeprecatedClick : onPress,
     }
 
     const ref = useObjectRef(forwardedRef)
@@ -27,7 +28,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       ref
     )
 
-    function onDeprecatedOnClick(event: PressEvent) {
+    function handleDeprecatedClick(event: PressEvent) {
       if (isButtonPropsWithOnClickHandler(props)) {
         props.onClick(event)
 
@@ -96,6 +97,6 @@ export interface ButtonPropsWithOnClickHandler extends ButtonProps {
   onClick: (event: PressEvent) => void
 }
 
-type UseButtonProps = Parameters<typeof useButton>[0]
+type UseButtonProps = AriaButtonProps<'button'>
 
 type PressEvent = Parameters<NonNullable<UseButtonProps['onPress']>>[0]

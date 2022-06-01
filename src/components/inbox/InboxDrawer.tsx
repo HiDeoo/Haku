@@ -2,30 +2,31 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import dynamic from 'next/dynamic'
 import { useEffect, useMemo, useState } from 'react'
 import { RiInboxFill } from 'react-icons/ri'
-import { QueryObserver, useQueryClient } from 'react-query'
+import { QueryObserver } from 'react-query'
 
 import { inboxDrawerAtom, setInboxDrawerOpenedAtom } from 'atoms/togglable'
 import IconButton from 'components/form/IconButton'
 import Drawer from 'components/ui/Drawer'
 import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
-import { getInboxEntriesQueryKey } from 'hooks/useInboxEntriesQuery'
 import { isNotEmpty } from 'libs/array'
 import { type InboxEntriesData } from 'libs/db/inbox'
+import { trpc } from 'libs/trpc'
 import clst from 'styles/clst'
 
 const InboxForm = dynamic(import('components/inbox/InboxForm'))
 const InboxList = dynamic(import('components/inbox/InboxList'))
 
 const InboxDrawer: React.FC = () => {
-  const queryClient = useQueryClient()
+  const { queryClient } = trpc.useContext()
 
   const [showInboxIndicator, setShowInboxIndicator] = useState(false)
 
   useEffect(() => {
     const observer = new QueryObserver<unknown, unknown, InboxEntriesData>(queryClient, {
       enabled: false,
-      queryKey: getInboxEntriesQueryKey(),
+      queryKey: ['inbox.list'],
     })
+
     const unsubscribe = observer.subscribe((result) => {
       setShowInboxIndicator(isNotEmpty(result.data))
     })

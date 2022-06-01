@@ -41,7 +41,7 @@ const ContentTree: React.FC = () => {
   const { data, isLoading } = useContentTreeQuery()
   const setContentModalOpened = useSetAtom(setContentModalOpenedAtom)
 
-  function openNewContentModal() {
+  function handleCreateClick() {
     setContentModalOpened(true)
   }
 
@@ -66,7 +66,7 @@ const ContentTree: React.FC = () => {
         {isEmpty(data) ? (
           <Flex fullWidth fullHeight direction="col" alignItems="center" justifyContent="center" className={nisClasses}>
             <span>Start by creating a new {contentType.lcType}.</span>
-            <Button onPress={openNewContentModal} primary disabled={offline}>
+            <Button onPress={handleCreateClick} primary disabled={offline}>
               Create
             </Button>
           </Flex>
@@ -109,11 +109,11 @@ const ShimmerNode: React.FC<ShimmerNodeProps> = ({ depth, ...props }) => {
 const Folder: React.FC<FolderProps> = ({ contentType, depth = 1, folder, offline, selectedId, style }) => {
   const setFolderModal = useSetAtom(folderModalAtom)
 
-  function openEditModal() {
+  function handleEditClick() {
     setFolderModal({ opened: true, action: 'update', data: folder })
   }
 
-  function openDeleteModal() {
+  function handleDeleteClick() {
     setFolderModal({ opened: true, action: 'delete', data: folder })
   }
 
@@ -123,8 +123,8 @@ const Folder: React.FC<FolderProps> = ({ contentType, depth = 1, folder, offline
         <ContentTreeNode style={style} text={folder.name} iconLabel="folder" icon={RiFolderLine}>
           <ContextMenu.Label text={`Folder: ${folder.name}`} />
           <ContextMenu.Separator />
-          <ContextMenu.Item text="Edit" onClick={openEditModal} disabled={offline} />
-          <ContextMenu.Item intent="error" text="Delete" onClick={openDeleteModal} disabled={offline} />
+          <ContextMenu.Item text="Edit" onClick={handleEditClick} disabled={offline} />
+          <ContextMenu.Item intent="error" text="Delete" onClick={handleDeleteClick} disabled={offline} />
         </ContentTreeNode>
       </Roving>
       {folder.children.map((child) => (
@@ -155,11 +155,11 @@ const Folder: React.FC<FolderProps> = ({ contentType, depth = 1, folder, offline
 const Content: React.FC<ContentProps> = ({ content, contentType, depth = 0, offline, selectedId }) => {
   const setContentModal = useSetAtom(contentModalAtom)
 
-  function openEditModal() {
+  function handleEditClick() {
     setContentModal({ opened: true, action: 'update', data: content })
   }
 
-  function openDeleteModal() {
+  function handleDeleteClick() {
     setContentModal({ opened: true, action: 'delete', data: content })
   }
 
@@ -175,8 +175,8 @@ const Content: React.FC<ContentProps> = ({ content, contentType, depth = 0, offl
       >
         <ContextMenu.Label text={`${contentType.cType}: ${content.name}`} />
         <ContextMenu.Separator />
-        <ContextMenu.Item text="Edit" onClick={openEditModal} disabled={offline} />
-        <ContextMenu.Item intent="error" text="Delete" onClick={openDeleteModal} disabled={offline} />
+        <ContextMenu.Item text="Edit" onClick={handleEditClick} disabled={offline} />
+        <ContextMenu.Item intent="error" text="Delete" onClick={handleDeleteClick} disabled={offline} />
       </ContentTreeNode>
     </Roving>
   )

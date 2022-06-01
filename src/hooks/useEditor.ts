@@ -21,6 +21,7 @@ import useToast from 'hooks/useToast'
 import { CloudinaryError, type CloudinaryTiptapNodeOptions } from 'libs/cloudinaryTiptapNode'
 import { getLowlight, Cloudinary } from 'libs/editor'
 import { type A11yImageParams } from 'libs/image'
+import { trpc } from 'libs/trpc'
 import clst from 'styles/clst'
 import styles from 'styles/Editor.module.css'
 
@@ -52,19 +53,21 @@ export function useEditor(options: UseEditorOptions, deps?: DependencyList): Edi
   const { addToast } = useToast()
   const setEditorImageModal = useSetAtom(editorImageModalAtom)
 
+  const { mutateAsync } = trpc.useMutation(['image.add'])
+
   const { className, contentId, extensions, setLinkModalOpened, spellcheck, starterKitOptions, ...editorOptions } =
     options
 
   const editorClasses = clst(styles.editor, className)
 
-  const onImageDoubleClick = useCallback(
+  const handleImageDoubleClick = useCallback(
     (params: A11yImageParams) => {
       setEditorImageModal({ ...params, opened: true })
     },
     [setEditorImageModal]
   )
 
-  const onUploadError = useCallback(
+  const handleUploadError = useCallback(
     (error: CloudinaryError) => {
       addToast({
         details: error.details,
@@ -82,7 +85,12 @@ export function useEditor(options: UseEditorOptions, deps?: DependencyList): Edi
       editorProps: { attributes: { class: editorClasses, spellcheck: spellcheck ?? 'false' } },
       extensions: getExtensions(
         starterKitOptions,
-        { onImageDoubleClick, onUploadError, referenceId: contentId },
+        {
+          onImageDoubleClick: handleImageDoubleClick,
+          onUploadError: handleUploadError,
+          referenceId: contentId,
+          upload: mutateAsync,
+        },
         extensions,
         setLinkModalOpened
       ),
@@ -95,7 +103,7 @@ export function useEditor(options: UseEditorOptions, deps?: DependencyList): Edi
 
 function getExtensions(
   starterKitOptions = starterKitDefaultOptions,
-  cloudinaryOptions: CloudinaryTiptapNodeOptions = {},
+  cloudinaryOptions: CloudinaryTiptapNodeOptions,
   extensions: Extensions = [],
   setLinkModalOpened?: React.Dispatch<React.SetStateAction<boolean>>
 ): Extensions {

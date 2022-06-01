@@ -1,7 +1,8 @@
 import { FolderType, Prisma, TodoNode, type Todo } from '@prisma/client'
+import { TRPCError } from '@trpc/server'
 import slug from 'url-slug'
 
-import { ApiError, API_ERROR_TODO_ALREADY_EXISTS, API_ERROR_TODO_DOES_NOT_EXIST } from 'libs/api/routes/errors'
+import { API_ERROR_TODO_ALREADY_EXISTS, API_ERROR_TODO_DOES_NOT_EXIST } from 'constants/error'
 import { deleteFromCloudinaryByTag } from 'libs/cloudinary'
 import { handleDbError, prisma } from 'libs/db'
 import { validateFolder } from 'libs/db/folder'
@@ -66,9 +67,9 @@ export async function getTodosMetadataGroupedByFolder(userId: UserId): Promise<T
 
   const todoMetadataGroupedByFolder: TodoMetadataGroupedByFolder = new Map()
 
-  metaDatas.forEach((todo) => {
+  for (const todo of metaDatas) {
     todoMetadataGroupedByFolder.set(todo.folderId, [...(todoMetadataGroupedByFolder.get(todo.folderId) ?? []), todo])
-  })
+  }
 
   return todoMetadataGroupedByFolder
 }
@@ -78,7 +79,7 @@ export function updateTodo(id: TodoMetadata['id'], userId: UserId, data: UpdateT
     const todo = await getTodoById(id, userId)
 
     if (!todo) {
-      throw new ApiError(API_ERROR_TODO_DOES_NOT_EXIST)
+      throw new TRPCError({ code: 'NOT_FOUND', message: API_ERROR_TODO_DOES_NOT_EXIST })
     }
 
     await validateFolder(data.folderId, userId, FolderType.TODO)
@@ -111,7 +112,7 @@ export function removeTodo(id: TodoMetadata['id'], userId: UserId) {
     const todo = await getTodoById(id, userId)
 
     if (!todo) {
-      throw new ApiError(API_ERROR_TODO_DOES_NOT_EXIST)
+      throw new TRPCError({ code: 'NOT_FOUND', message: API_ERROR_TODO_DOES_NOT_EXIST })
     }
 
     await deleteFromCloudinaryByTag(id)

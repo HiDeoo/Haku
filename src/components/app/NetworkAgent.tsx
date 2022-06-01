@@ -7,18 +7,18 @@ const NetworkAgent: React.FC = () => {
   const setOnline = useSetAtom(onlineAtom)
 
   useEffect(() => {
-    function onNetworkStatusChange() {
+    function handleNetworkStatusChange() {
       setOnline(navigator.onLine)
     }
 
     const eventListenerOptions: AddEventListenerOptions & EventListenerOptions = { passive: true }
 
-    window.addEventListener('online', onNetworkStatusChange, eventListenerOptions)
-    window.addEventListener('offline', onNetworkStatusChange, eventListenerOptions)
+    window.addEventListener('online', handleNetworkStatusChange, eventListenerOptions)
+    window.addEventListener('offline', handleNetworkStatusChange, eventListenerOptions)
 
     return () => {
-      window.removeEventListener('online', onNetworkStatusChange, eventListenerOptions)
-      window.removeEventListener('offline', onNetworkStatusChange, eventListenerOptions)
+      window.removeEventListener('online', handleNetworkStatusChange, eventListenerOptions)
+      window.removeEventListener('offline', handleNetworkStatusChange, eventListenerOptions)
     }
   }, [setOnline])
 

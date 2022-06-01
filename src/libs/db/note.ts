@@ -1,13 +1,12 @@
 import { FolderType, type Note, Prisma } from '@prisma/client'
-import { StatusCode } from 'status-code-enum'
+import { TRPCError } from '@trpc/server'
 import slug from 'url-slug'
 
 import {
-  ApiError,
   API_ERROR_NOTE_ALREADY_EXISTS,
   API_ERROR_NOTE_DOES_NOT_EXIST,
   API_ERROR_NOTE_HTML_OR_TEXT_MISSING,
-} from 'libs/api/routes/errors'
+} from 'constants/error'
 import { deleteFromCloudinaryByTag } from 'libs/cloudinary'
 import { handleDbError, prisma } from 'libs/db'
 import { validateFolder } from 'libs/db/folder'
@@ -54,7 +53,7 @@ export async function getNote(id: NoteData['id'], userId: UserId): Promise<NoteD
   const note = await prisma.note.findFirst({ where: { id, userId }, select: noteDataSelect })
 
   if (!note) {
-    throw new ApiError(API_ERROR_NOTE_DOES_NOT_EXIST, StatusCode.ClientErrorNotFound)
+    throw new TRPCError({ code: 'NOT_FOUND', message: API_ERROR_NOTE_DOES_NOT_EXIST })
   }
 
   return note
@@ -69,23 +68,27 @@ export async function getNotesMetadataGroupedByFolder(userId: UserId): Promise<N
 
   const noteMetadataGroupedByFolder: NoteMetadataGroupedByFolder = new Map()
 
-  metaDatas.forEach((note) => {
+  for (const note of metaDatas) {
     noteMetadataGroupedByFolder.set(note.folderId, [...(noteMetadataGroupedByFolder.get(note.folderId) ?? []), note])
-  })
+  }
 
   return noteMetadataGroupedByFolder
 }
 
-export function updateNote(id: NoteMetadata['id'], userId: UserId, data: UpdateNoteData): Promise<NoteMetadata> {
+export function updateNote(
+  id: NoteMetadata['id'],
+  userId: UserId,
+  data: UpdateNoteData
+): Promise<NoteMetadata | NoteData> {
   return prisma.$transaction(async (prisma) => {
     const note = await getNoteById(id, userId)
 
     if (!note) {
-      throw new ApiError(API_ERROR_NOTE_DOES_NOT_EXIST)
+      throw new TRPCError({ code: 'NOT_FOUND', message: API_ERROR_NOTE_DOES_NOT_EXIST })
     }
 
     if ((data.html && !data.text) || (data.text && !data.html)) {
-      throw new ApiError(API_ERROR_NOTE_HTML_OR_TEXT_MISSING)
+      throw new TRPCError({ code: 'BAD_REQUEST', message: API_ERROR_NOTE_HTML_OR_TEXT_MISSING })
     }
 
     await validateFolder(data.folderId, userId, FolderType.NOTE)
@@ -121,7 +124,7 @@ export function removeNote(id: NoteMetadata['id'], userId: UserId) {
     const note = await getNoteById(id, userId)
 
     if (!note) {
-      throw new ApiError(API_ERROR_NOTE_DOES_NOT_EXIST)
+      throw new TRPCError({ code: 'NOT_FOUND', message: API_ERROR_NOTE_DOES_NOT_EXIST })
     }
 
     await deleteFromCloudinaryByTag(id)

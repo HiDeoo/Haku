@@ -2,6 +2,9 @@ import IconButton, { type IconButtonProps } from 'components/form/IconButton'
 import Shimmer from 'components/ui/Shimmer'
 import clst from 'styles/clst'
 
+export const LIST_BUTTON_CLASSES = 'rounded-full bg-transparent hover:bg-zinc-800'
+export const LIST_BUTTON_PRESSED_CLASSES = 'bg-zinc-900/75 hover:bg-zinc-900/75'
+
 const itemClasses = clst(
   'flex items-center justify-between gap-3 px-3 py-3 bg-zinc-700/40',
   'border border-zinc-900 border-b-0 last:border-b first:rounded-t-lg last:rounded-b-lg',
@@ -41,13 +44,7 @@ const ListItem: React.FC<ListItemProps> = ({ children, className }) => {
 List.Item = ListItem
 
 const ListButton: React.FC<ListButtonProps> = (props) => {
-  return (
-    <IconButton
-      {...props}
-      pressedClassName="bg-zinc-900/75 hover:bg-zinc-900/75"
-      className="rounded-full bg-transparent hover:bg-zinc-800"
-    />
-  )
+  return <IconButton {...props} className={LIST_BUTTON_CLASSES} pressedClassName={LIST_BUTTON_PRESSED_CLASSES} />
 }
 
 List.Button = ListButton

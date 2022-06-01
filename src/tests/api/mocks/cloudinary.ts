@@ -19,25 +19,24 @@ const handlers = [
     const [filename, extension] = formData.files[0].filename.split('.')
 
     const publicId = `${formData.folder}/${cuid()}`
-    const signature = cuid().substring(0, 8)
+    const signature = cuid().slice(0, 8)
     const version = cuid()
 
     const url = `${CLOUDINARY_BASE_DELIVERY_URL}/${process.env.CLOUDINARY_CLOUD_NAME}/image/private/s--${signature}--/v${version}/${publicId}`
 
-    const width = parseInt(filename?.split('_')[1] ?? '800', 10)
+    const width = Number(filename?.split('_')[1] ?? '800')
 
     return res(
       ctx.status(200),
       ctx.json({
         api_key: cuid(),
         asset_id: cuid(),
-        bytes: 23957,
+        bytes: 23_957,
         created_at: new Date(),
         etag: cuid(),
         folder: formData.folder,
         format: extension,
         height: 200,
-        original_filename: filename,
         placeholder: false,
         public_id: `${formData.folder}/${cuid()}`,
         resource_type: 'image',

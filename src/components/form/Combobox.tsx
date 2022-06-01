@@ -84,7 +84,7 @@ const Combobox = <TItem, TFormFields extends FieldValues>({
     initialSelectedItem: value,
     items: filteredItems,
     itemToString: renderItem,
-    onSelectedItemChange,
+    onSelectedItemChange: handleSelectedItemChange,
     stateReducer,
   })
 
@@ -160,7 +160,7 @@ const Combobox = <TItem, TFormFields extends FieldValues>({
     return !isOpen || 'required'
   }
 
-  function onSelectedItemChange(changes: UseComboboxStateChange<TItem>) {
+  function handleSelectedItemChange(changes: UseComboboxStateChange<TItem>) {
     onChange(changes.selectedItem)
   }
 

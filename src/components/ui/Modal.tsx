@@ -25,7 +25,7 @@ const Modal: ModalComponent = ({
   title,
   trigger,
 }) => {
-  function onCloseInteraction(event: KeyboardEvent | CustomEvent) {
+  function handleClose(event: KeyboardEvent | CustomEvent) {
     if (disabled) {
       event.preventDefault()
     }
@@ -42,9 +42,9 @@ const Modal: ModalComponent = ({
           <Content
             role={role}
             className={contentClasses}
-            onEscapeKeyDown={onCloseInteraction}
-            onInteractOutside={onCloseInteraction}
-            onPointerDownOutside={onCloseInteraction}
+            onEscapeKeyDown={handleClose}
+            onInteractOutside={handleClose}
+            onPointerDownOutside={handleClose}
           >
             <Flex
               as="header"

@@ -10,7 +10,7 @@ export function hierarchicalListToTree<TFolder extends HierarchicalListFolder, T
 
   const clonedList = [...list]
 
-  clonedList.forEach((folder, index) => {
+  for (const [index, folder] of clonedList.entries()) {
     indexMap[folder.id] = index
     clonedList[index] = treeFolder = { ...folder, children: [], items: [] }
 
@@ -35,7 +35,7 @@ export function hierarchicalListToTree<TFolder extends HierarchicalListFolder, T
 
       parent.children.push(treeFolder)
     }
-  })
+  }
 
   addItemsToFolder(tree, items)
 

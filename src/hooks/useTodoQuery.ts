@@ -1,39 +1,27 @@
 import { useSetAtom } from 'jotai'
-import { useQuery, type UseQueryOptions } from 'react-query'
 
 import { contentAvailableOfflineAtom } from 'atoms/network'
 import { SW_CACHES } from 'constants/sw'
-import { getClient, isNetworkError } from 'libs/api/client'
 import { type TodoMetadata } from 'libs/db/todo'
 import { type TodoNodesData } from 'libs/db/todoNodes'
 import { isResourceCached } from 'libs/sw'
+import { isNetworkError, trpc } from 'libs/trpc'
 
-export default function useTodoQuery(id: TodoMetadata['id'], options?: UseTodoQueryOptions) {
+export default function useTodoQuery(id: TodoMetadata['id'], options: UseTodoQueryOptions) {
   const setContentAvailableOffline = useSetAtom(contentAvailableOfflineAtom)
 
-  return useQuery<TodoNodesData>(
-    ['todo', id],
-    () => {
-      if (!id) {
-        throw new Error('Missing ID to fetch todo nodes.')
-      }
+  return trpc.useQuery(['todo.node.byId', { id }], {
+    ...options,
+    onSettled: async () => {
+      const isCached = await isResourceCached(SW_CACHES.Api, '/api/trpc/todo.node.byId', { id })
 
-      return getTodoNodes(id)
+      setContentAvailableOffline(isCached)
     },
-    {
-      onSettled: async () => {
-        const isCached = await isResourceCached(SW_CACHES.Api, `/api/todos/${id}/nodes`)
-
-        setContentAvailableOffline(isCached)
-      },
-      useErrorBoundary: isNetworkError,
-      ...options,
-    }
-  )
+    useErrorBoundary: isNetworkError,
+  })
 }
 
-async function getTodoNodes(id: TodoMetadata['id']) {
-  return (await getClient()).get(`todos/${id}/nodes`).json<TodoNodesData>()
+interface UseTodoQueryOptions {
+  enabled: boolean
+  onSuccess?: (todoNodes: TodoNodesData) => void
 }
-
-type UseTodoQueryOptions = Omit<UseQueryOptions<TodoNodesData>, 'onSettled' | 'useErrorBoundary'>
