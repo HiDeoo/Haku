@@ -1,5 +1,6 @@
 // https://github.com/microsoft/TypeScript/issues/14877#issuecomment-872329108
-const sw = self as ServiceWorkerGlobalScope & typeof globalThis
+// https://github.com/microsoft/TypeScript/issues/11781#issuecomment-1116384712
+const sw = self as unknown as ServiceWorkerGlobalScope & typeof globalThis
 
 self.importScripts('/sw-config.js')
 
