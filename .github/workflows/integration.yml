@@ -4,6 +4,7 @@ on: [push, pull_request]
 
 jobs:
   lint_test:
+    name: Lint & Test
     runs-on: ubuntu-latest
     # Run on external PRs only as the workflow will be already running for the push event on the branch for internal
     # PRs.
@@ -20,7 +21,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v2.0.1
         with:
-          version: 6.23.6
+          version: latest
           run_install: false
 
       - name: Get pnpm store directory path
