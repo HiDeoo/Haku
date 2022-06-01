@@ -16,16 +16,8 @@ jobs:
         with:
           node-version: '16'
 
-      - name: Install pnpm and dependencies
-        uses: pnpm/action-setup@v2.0.1
-        with:
-          version: latest
-          run_install: true
-        env:
-          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
-
       - name: Deploy
-        run: pnpm vercel -t "$VERCEL_TOKEN" --prod
+        run: npx vercel -t "$VERCEL_TOKEN" --prod > /dev/null 2>&1
         env:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
