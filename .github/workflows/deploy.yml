@@ -25,7 +25,7 @@ jobs:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
 
       - name: Deploy
-        run: pnpm vercel -t "$VERCEL_TOKEN"
+        run: pnpm vercel -t "$VERCEL_TOKEN" --prod
         env:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
