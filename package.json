@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "pnpm build:sw && next dev",
-    "dev:migrate": "dotenv -c -- ts-node prisma/migrate.ts",
+    "db:migrate": "dotenv -c -- ts-node prisma/migrate.ts",
     "build": "next build && pnpm build:sw --prod",
     "build:sw": "ts-node sw-build.ts",
     "build:analyze": "ANALYZE=true pnpm build",
@@ -16,7 +16,7 @@
     "test:client": "TEST_TYPE=client jest -i",
     "prepare": "husky install",
     "preinstall": "npx only-allow pnpm",
-    "vercel-build": "prisma generate && prisma migrate deploy && pnpm build"
+    "vercel-build": "prisma generate && pnpm db:migrate deploy && pnpm build"
   },
   "dependencies": {
     "@next-auth/prisma-adapter": "1.0.3",
