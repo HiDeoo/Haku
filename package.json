@@ -15,7 +15,8 @@
     "test:api": "TEST_TYPE=api jest -i",
     "test:client": "TEST_TYPE=client jest -i",
     "prepare": "husky install",
-    "preinstall": "npx only-allow pnpm"
+    "preinstall": "npx only-allow pnpm",
+    "vercel-build": "prisma generate && prisma migrate deploy && pnpm build"
   },
   "dependencies": {
     "@next-auth/prisma-adapter": "1.0.3",
