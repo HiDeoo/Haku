@@ -1,0 +1,30 @@
+name: integration
+
+# FIXME
+on: [push]
+
+jobs:
+  vercel:
+    name: Deploy on Vercel
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: Install pnpm and dependencies
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: latest
+          run_install: true
+
+      - name: Deploy
+        run: pnpm vercel -t "$VERCEL_TOKEN"
+        env:
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
