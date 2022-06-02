@@ -134,7 +134,7 @@ const SidebarMenu: React.FC = () => {
 export default SidebarMenu
 
 function handleSidebarMenuInstallShortcutClick() {
-  window.open(`/Add to Haku inbox${process.env.NODE_ENV === 'production' ? '' : ' (dev)'}.shortcut`)
+  window.open(process.env.NEXT_PUBLIC_INBOX_APPLE_SHORTCUT_LINK)
 }
 
 const sidebarMenuItemClasses = clst(
