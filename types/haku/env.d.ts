@@ -23,6 +23,8 @@ declare global {
       CLOUDINARY_API_KEY: string
       CLOUDINARY_API_SECRET: string
 
+      NEXT_PUBLIC_INBOX_APPLE_SHORTCUT_LINK: string
+
       ADMIN_API_KEY: string
 
       NEXTAUTH_SECRET: string

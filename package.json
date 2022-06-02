@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "pnpm build:sw && next dev",
-    "dev:migrate": "dotenv -c -- ts-node prisma/migrate.ts",
+    "db:migrate": "dotenv -c -- ts-node prisma/migrate.ts",
     "build": "next build && pnpm build:sw --prod",
     "build:sw": "ts-node sw-build.ts",
     "build:analyze": "ANALYZE=true pnpm build",
@@ -15,7 +15,8 @@
     "test:api": "TEST_TYPE=api jest -i",
     "test:client": "TEST_TYPE=client jest -i",
     "prepare": "husky install",
-    "preinstall": "npx only-allow pnpm"
+    "preinstall": "npx only-allow pnpm",
+    "vercel-build": "prisma generate && pnpm db:migrate deploy && pnpm build"
   },
   "dependencies": {
     "@next-auth/prisma-adapter": "1.0.3",
@@ -115,10 +116,11 @@
     "tailwindcss": "3.0.24",
     "ts-node": "10.8.0",
     "tsconfig-paths": "4.0.0",
-    "typescript": "4.7.2"
+    "typescript": "4.7.2",
+    "vercel": "24.2.5"
   },
   "engines": {
-    "node": "16"
+    "node": "16.x"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"

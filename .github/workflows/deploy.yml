@@ -1,0 +1,25 @@
+name: deploy
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  vercel:
+    name: Deploy on Vercel
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: Deploy
+        run: npx vercel -t "$VERCEL_TOKEN" --prod > /dev/null 2>&1
+        env:
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
