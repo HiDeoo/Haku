@@ -129,6 +129,7 @@ async function generateScreenshots({ browser, storageState }: BrowserWithStorage
       await page.screenshot({
         path: path.join(
           path.dirname(fileURLToPath(import.meta.url)),
+          '..',
           'public',
           'images',
           'screenshots',

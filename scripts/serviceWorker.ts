@@ -4,7 +4,7 @@ import path from 'path'
 import * as swc from '@swc/core'
 import { type BuildManifest } from 'next/dist/server/get-page-files'
 
-import pkg from './package.json'
+import pkg from '../package.json'
 
 import { SW_CACHES } from 'constants/sw'
 import { CLOUDINARY_BASE_DELIVERY_URL } from 'libs/cloudinary'
