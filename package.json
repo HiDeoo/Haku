@@ -9,7 +9,7 @@
     "build": "next build && pnpm build:sw --prod",
     "build:sw": "ts-node sw-build.ts",
     "build:analyze": "ANALYZE=true pnpm build",
-    "build:screenshots": "ts-node sw-screenshots.ts",
+    "build:screenshots": "ts-node scripts/screenshots",
     "start": "next start",
     "lint": "next lint -d . --max-warnings=0 && tsc --noEmit && tsc --noEmit -p src/sw/tsconfig.json",
     "test:api": "TEST_TYPE=api jest -i",
