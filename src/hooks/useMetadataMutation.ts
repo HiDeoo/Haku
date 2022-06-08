@@ -20,6 +20,7 @@ export default function useMetadataMutation() {
     onSuccess: (newMetadata) => {
       invalidateQueries([getContentTreeQueryPath(type)])
       invalidateQueries(['file.list'])
+      invalidateQueries(['history'])
 
       push(`${urlPath}/${newMetadata.id}/${newMetadata.slug}`)
     },
@@ -33,6 +34,7 @@ export default function useMetadataMutation() {
     onSuccess: (_newMetadata, variables) => {
       invalidateQueries([getContentTreeQueryPath(type)])
       invalidateQueries(['file.list'])
+      invalidateQueries(['history'])
 
       if (variables.id === contentId) {
         push(urlPath)
@@ -48,6 +50,7 @@ export default function useMetadataMutation() {
     onSuccess: (newMetadata, variables) => {
       invalidateQueries([getContentTreeQueryPath(type)])
       invalidateQueries(['file.list'])
+      invalidateQueries(['history'])
 
       if (variables.id === contentId) {
         push(`${urlPath}/${newMetadata.id}/${newMetadata.slug}`)
