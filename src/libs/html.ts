@@ -11,12 +11,16 @@ export const isApplePlatform =
 export function isPwa() {
   return (
     (typeof navigator === 'object' && 'standalone' in navigator && (navigator as SafariNavigator).standalone) ||
-    (typeof window === 'object' && window.matchMedia('(display-mode: standalone)').matches)
+    (typeof window === 'object' &&
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(display-mode: standalone)').matches)
   )
 }
 
 export function isTouchScreen() {
-  return typeof window === 'object' && window.matchMedia('(hover: none)').matches
+  return (
+    typeof window === 'object' && typeof window.matchMedia === 'function' && window.matchMedia('(hover: none)').matches
+  )
 }
 
 export function isTextInputElement(element: EventTarget | Element | null): boolean {
