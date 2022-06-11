@@ -14,12 +14,12 @@ export function isNetworkError(error: unknown) {
 export function getTRPCConfiguration(): Parameters<typeof withTRPC>[0] {
   return {
     config() {
-      const schemeAndAuthority = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'
+      const url = `${process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'}/api/trpc`
 
       return {
         links: [
           httpLink({
-            url: '/api/trpc',
+            url,
           }),
         ],
         queryClientConfig: {
@@ -29,19 +29,19 @@ export function getTRPCConfiguration(): Parameters<typeof withTRPC>[0] {
             },
           },
         },
-        url: `${schemeAndAuthority}/api/trpc`,
+        url,
       }
     },
     ssr: false,
   }
 }
 
-type TMutation = keyof AppRouter['_def']['mutations']
+type MutationPath = keyof AppRouter['_def']['mutations']
 
-export type InferMutationInput<TRouteKey extends TMutation> = inferProcedureInput<
+export type InferMutationInput<TRouteKey extends MutationPath> = inferProcedureInput<
   AppRouter['_def']['mutations'][TRouteKey]
 >
 
-export type InferMutationOutput<TRouteKey extends TMutation> = inferProcedureOutput<
+export type InferMutationOutput<TRouteKey extends MutationPath> = inferProcedureOutput<
   AppRouter['_def']['mutations'][TRouteKey]
 >
