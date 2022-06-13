@@ -21,8 +21,10 @@ import {
   getContentEditableCaretPosition,
   setContentEditableCaretIndex,
   setContentEditableCaretPosition,
+  getContentEditableWordAtCursorPosition,
 } from 'libs/html'
 import { getShortcutMap, isShortcutEvent } from 'libs/shortcut'
+import { isValidUrl } from 'libs/string'
 import clst from 'styles/clst'
 import styles from 'styles/TodoNodeItem.module.css'
 
@@ -178,6 +180,12 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
       preserveCaret(() => {
         toggleCollapsed(update)
       })
+    } else if (isShortcutEvent(event, shortcutMap['Alt+Enter']) && contentEditable.current) {
+      const text = getContentEditableWordAtCursorPosition(contentEditable.current)
+
+      if (text && isValidUrl(text)) {
+        window.open(text)
+      }
     }
   }
 
