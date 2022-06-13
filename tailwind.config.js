@@ -2,6 +2,7 @@ const hideScrollbarPlugin = require('tailwind-scrollbar-hide')
 const defaultTheme = require('tailwindcss/defaultTheme')
 const plugin = require('tailwindcss/plugin')
 
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./src/{components,constants,libs,pages}/**/*.{ts,tsx}', './src/styles/**/*.css'],
   theme: {

@@ -62,7 +62,7 @@ const ContentTree: React.FC = () => {
   return (
     <Root orientation="vertical" asChild role="navigation">
       <Flex as="nav" direction="col" flex className="relative overflow-y-auto" role="tree">
-        <div className="pointer-events-none absolute inset-0 shadow-[inset_-1px_0_1px_0_rgba(0_0_0/0.4)]" />
+        <div className="pointer-events-none absolute inset-0 shadow-[inset_-1px_0_1px_0_theme(colors.black/40%)]" />
         {isEmpty(data) ? (
           <Flex fullWidth fullHeight direction="col" alignItems="center" justifyContent="center" className={nisClasses}>
             <span>Start by creating a new {contentType.lcType}.</span>
