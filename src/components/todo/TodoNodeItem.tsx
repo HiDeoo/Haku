@@ -34,7 +34,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
 ) => {
   useImperativeHandle(forwardedRef, () => ({ focusContent, scrollIntoView }))
 
-  const [shouldFocusNote, setShouldFocusNote] = useState(false)
+  const [isNoteFocused, setIsNodeFocused] = useState(false)
 
   const contentEditable = useRef<HTMLDivElement>(null)
   const todoNodeNote = useRef<TodoNodeNoteHandle>(null)
@@ -68,7 +68,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     [node?.id, updateContent]
   )
 
-  useEditable(contentEditable, handleContentChange, { disabled: isLoading || shouldFocusNote })
+  useEditable(contentEditable, handleContentChange, { disabled: isLoading || isNoteFocused })
 
   const focusClosestNode = useCallback(
     async (
@@ -129,7 +129,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
         focusClosestNode({ ...update, direction: 'down' })
       }
     } else if (isShortcutEvent(event, shortcutMap['Shift+Enter'])) {
-      setShouldFocusNote((prevIsNoteFocused) => !prevIsNoteFocused)
+      setIsNodeFocused((prevIsNoteFocused) => !prevIsNoteFocused)
 
       requestAnimationFrame(() => {
         todoNodeNote.current?.focusNote()
@@ -232,11 +232,11 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
   }
 
   function handleNoteBlur() {
-    setShouldFocusNote(false)
+    setIsNodeFocused(false)
   }
 
   function handleNoteShiftEnter() {
-    setShouldFocusNote(false)
+    setIsNodeFocused(false)
 
     requestAnimationFrame(() => {
       focusContent()
@@ -294,7 +294,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
   // https://github.com/FormidableLabs/use-editable/issues/8#issuecomment-817390829
   const content = `${node?.content}\n`
 
-  const isNoteVisible = shouldFocusNote || (node.noteText && node.noteText.length > 0)
+  const isNoteVisible = isNoteFocused || (node.noteText && node.noteText.length > 0)
 
   const containerClasses = clst(
     styles.container,
