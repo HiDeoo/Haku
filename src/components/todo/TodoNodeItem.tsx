@@ -1,7 +1,6 @@
 import { TodoNodeStatus } from '@prisma/client'
 import cuid from 'cuid'
 import { forwardRef, memo, useCallback, useContext, useImperativeHandle, useRef, useState } from 'react'
-import { linkIt, urlRegex } from 'react-linkify-it'
 import { useEditable } from 'use-editable'
 
 import { AtomParamsWithDirection } from 'atoms/todoNode'
@@ -35,8 +34,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
 ) => {
   useImperativeHandle(forwardedRef, () => ({ focusContent, scrollIntoView }))
 
-  const [isContentFocused, setIsContentFocused] = useState(false)
-  const [shouldFocusNote, setShouldFocusNote] = useState(false)
+  const [isNoteFocused, setIsNodeFocused] = useState(false)
 
   const contentEditable = useRef<HTMLDivElement>(null)
   const todoNodeNote = useRef<TodoNodeNoteHandle>(null)
@@ -70,7 +68,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     [node?.id, updateContent]
   )
 
-  useEditable(contentEditable, handleContentChange, { disabled: isLoading || shouldFocusNote })
+  useEditable(contentEditable, handleContentChange, { disabled: isLoading || isNoteFocused })
 
   const focusClosestNode = useCallback(
     async (
@@ -131,7 +129,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
         focusClosestNode({ ...update, direction: 'down' })
       }
     } else if (isShortcutEvent(event, shortcutMap['Shift+Enter'])) {
-      setShouldFocusNote((prevIsNoteFocused) => !prevIsNoteFocused)
+      setIsNodeFocused((prevIsNoteFocused) => !prevIsNoteFocused)
 
       requestAnimationFrame(() => {
         todoNodeNote.current?.focusNote()
@@ -221,39 +219,24 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     })
   }
 
-  function handleContentFocus(event: React.FocusEvent<HTMLDivElement>) {
-    if (event.target instanceof HTMLAnchorElement) {
-      event.preventDefault()
-      event.stopPropagation()
-
-      window.open(event.target.href, '_blank')
-
-      requestAnimationFrame(() => {
-        focusContent()
-      })
-    }
-
+  function handleContentFocus() {
     if (node?.id) {
       onFocusTodoNode(node.id)
     }
-
-    setIsContentFocused(true)
 
     contentEditable.current?.setAttribute('spellcheck', 'true')
   }
 
   function handleContentBlur() {
-    setIsContentFocused(false)
-
     contentEditable.current?.setAttribute('spellcheck', 'false')
   }
 
   function handleNoteBlur() {
-    setShouldFocusNote(false)
+    setIsNodeFocused(false)
   }
 
   function handleNoteShiftEnter() {
-    setShouldFocusNote(false)
+    setIsNodeFocused(false)
 
     requestAnimationFrame(() => {
       focusContent()
@@ -271,36 +254,28 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
 
     contentEditable.current.focus()
 
-    // If the node contains links, we need to wait for the unlinkified content to be rendered before properly setting
-    // the caret position.
-    requestAnimationFrame(() => {
-      if (!contentEditable.current) {
-        return
-      }
+    if (
+      caretPositionOrIndex &&
+      typeof caretPositionOrIndex !== 'number' &&
+      direction &&
+      typeof fromLevel !== 'undefined'
+    ) {
+      // Adjust the caret left position based on the level offset difference between the previous and current levels.
+      const left = Math.max(
+        0,
+        caretPositionOrIndex.left +
+          fromLevel * TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS -
+          level * TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS
+      )
 
-      if (
-        caretPositionOrIndex &&
-        typeof caretPositionOrIndex !== 'number' &&
-        direction &&
-        typeof fromLevel !== 'undefined'
-      ) {
-        // Adjust the caret left position based on the level offset difference between the previous and current levels.
-        const left = Math.max(
-          0,
-          caretPositionOrIndex.left +
-            fromLevel * TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS -
-            level * TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS
-        )
-
-        setContentEditableCaretPosition(contentEditable.current, { ...caretPositionOrIndex, left }, direction)
-      } else {
-        // Focus the passed down caret index or fallback to the end of the text content.
-        setContentEditableCaretIndex(
-          contentEditable.current,
-          typeof caretPositionOrIndex === 'number' ? caretPositionOrIndex : node?.content.length
-        )
-      }
-    })
+      setContentEditableCaretPosition(contentEditable.current, { ...caretPositionOrIndex, left }, direction)
+    } else {
+      // Focus the passed down caret index or fallback to the end of the text content.
+      setContentEditableCaretIndex(
+        contentEditable.current,
+        typeof caretPositionOrIndex === 'number' ? caretPositionOrIndex : node?.content.length
+      )
+    }
   }
 
   function scrollIntoView() {
@@ -319,7 +294,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
   // https://github.com/FormidableLabs/use-editable/issues/8#issuecomment-817390829
   const content = `${node?.content}\n`
 
-  const isNoteVisible = shouldFocusNote || (node.noteText && node.noteText.length > 0)
+  const isNoteVisible = isNoteFocused || (node.noteText && node.noteText.length > 0)
 
   const containerClasses = clst(
     styles.container,
@@ -339,26 +314,6 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
   )
 
   const levelOffset = level * TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS + 1
-
-  const itemContent = isContentFocused
-    ? content
-    : linkIt(
-        content,
-        (match, key) => {
-          const linkClasses = clst('cursor-pointer underline underline-offset-1 hover:no-underline', {
-            'text-blue-200': node.status === TodoNodeStatus.ACTIVE,
-            'text-zinc-400': node.status === TodoNodeStatus.COMPLETED,
-            'text-zinc-500': node.status === TodoNodeStatus.CANCELLED,
-          })
-
-          return (
-            <a key={key} href={match} target="_blank" rel="noreferrer" contentEditable={false} className={linkClasses}>
-              {match}
-            </a>
-          )
-        },
-        urlRegex
-      )
 
   return (
     <div className={containerClasses} style={{ marginLeft: `-${levelOffset}px` }}>
@@ -380,7 +335,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
               onKeyDown={handleContentKeyDown}
               onPasteCapture={handleContentPasteCapture}
             >
-              {itemContent}
+              {content}
             </div>
             {isNoteVisible ? (
               <TodoNodeNote

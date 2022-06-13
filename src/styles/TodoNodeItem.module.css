@@ -1,7 +1,6 @@
 .container.completed > div > .container:not(.completed),
 .container.cancelled > div > .container:not(.cancelled) {
   .content,
-  .content a,
   .handle {
     @apply text-red-300;
   }
