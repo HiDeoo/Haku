@@ -1,4 +1,5 @@
 export const EDITOR_SHORTCUTS = [
+  { group: 'Note', keybinding: 'Alt+Enter', label: 'Open Link' },
   { group: 'Note', keybinding: 'Shift+Enter', label: 'Add a Line Break' },
   { group: 'Note', keybinding: 'Meta+B', label: 'Toggle Bold' },
   { group: 'Note', keybinding: 'Meta+I', label: 'Toggle Italic' },
@@ -34,6 +35,7 @@ export const TODO_NODE_ITEM_SHORTCUTS = [
   { group: 'Todo', keybinding: 'Meta+Shift+.', label: 'Collapse Todo' },
   { group: 'Todo', keybinding: 'Alt+Enter', label: 'Open Link' },
   ...EDITOR_SHORTCUTS.filter(
-    (shortcut) => shortcut.label !== 'Add a Line Break' && shortcut.label !== 'Toggle / Edit Link'
+    (shortcut) =>
+      shortcut.label !== 'Add a Line Break' && shortcut.label !== 'Toggle / Edit Link' && shortcut.label !== 'Open Link'
   ),
 ] as const
