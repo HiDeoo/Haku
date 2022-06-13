@@ -22,7 +22,7 @@ const InboxForm: React.FC = () => {
   const { error, isLoading, mutateAdd } = useInboxEntryMutation()
 
   const formClasses = clst(
-    'z-10 bg-zinc-900/10 p-3 shadow-[0px_1px_2px_0px_rgb(0,0,0,0.5)]',
+    'z-10 bg-zinc-900/10 p-3 shadow-[0px_1px_2px_0px_theme(colors.black/50%)]',
     'supports-max:pl-[calc(theme(spacing.3)+max(0px,env(safe-area-inset-left)))]'
   )
 
