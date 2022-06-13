@@ -110,12 +110,29 @@ function getExtensions(
   return [
     StarterKit.configure(starterKitOptions),
     ...defaultExtensions.map((extension) => {
-      if (extension.name === 'link' && setLinkModalOpened) {
+      if (extension.name === 'link') {
         return extension.extend({
           addKeyboardShortcuts() {
             return {
               'Mod-k': () => {
+                if (!setLinkModalOpened) {
+                  return false
+                }
+
                 setLinkModalOpened((prevLinkModalOpened) => !prevLinkModalOpened)
+
+                return true
+              },
+              'Alt-Enter': () => {
+                const { $from } = this.editor.view.state.selection
+
+                const linkMark = this.editor.view.state.schema.marks.link.isInSet($from.marks())
+
+                if (!linkMark?.attrs?.href) {
+                  return false
+                }
+
+                window.open(linkMark.attrs.href)
 
                 return true
               },

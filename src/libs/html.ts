@@ -44,6 +44,16 @@ export function isTextInputElement(element: EventTarget | Element | null): boole
   return true
 }
 
+export function getContentEditableWordAtCursorPosition(element: HTMLElement): string | undefined {
+  const caretIndex = getContentEditableCaretIndex(element)
+
+  if (typeof caretIndex === 'undefined') {
+    return
+  }
+
+  return getWordAtCaretIndex(element, caretIndex)
+}
+
 export function getContentEditableCaretIndex(element: HTMLElement): number | undefined {
   const range = window.getSelection()?.getRangeAt(0)
 
@@ -195,6 +205,24 @@ function getContentEditableLines(element: HTMLElement): ContentEditableLine[] {
   }
 
   return lines
+}
+
+function getWordAtCaretIndex(element: HTMLElement, caretIndex: number): string | undefined {
+  const content = element.textContent
+
+  if (!content) {
+    return
+  }
+
+  const sanitizedCaretIndex = content[caretIndex] === ' ' && caretIndex > 0 ? caretIndex - 1 : caretIndex
+
+  let startPosition = content.lastIndexOf(' ', sanitizedCaretIndex)
+  startPosition = startPosition === content.length ? 0 : startPosition
+
+  let endPosition = content.indexOf(' ', sanitizedCaretIndex)
+  endPosition = endPosition === -1 ? content.length : endPosition
+
+  return content.slice(startPosition + 1, endPosition)
 }
 
 function isUserAgentDataPlatformAvailable(): boolean {
