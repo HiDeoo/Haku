@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router'
+import { useCallback } from 'react'
 
 import useContentId from 'hooks/useContentId'
 import { getContentTreeQueryPath } from 'hooks/useContentTreeQuery'
@@ -16,6 +17,7 @@ export default function useMetadataMutation() {
     error: errorAdd,
     isLoading: isLoadingAdd,
     mutate: mutateAdd,
+    reset: resetAdd,
   } = trpc.useMutation([type === ContentType.NOTE ? 'note.add' : 'todo.add'], {
     onSuccess: (newMetadata) => {
       invalidateQueries([getContentTreeQueryPath(type)])
@@ -30,6 +32,7 @@ export default function useMetadataMutation() {
     error: errorDelete,
     isLoading: isLoadingDelete,
     mutate: mutateDelete,
+    reset: resetDelete,
   } = trpc.useMutation([type === ContentType.NOTE ? 'note.delete' : 'todo.delete'], {
     onSuccess: (_newMetadata, variables) => {
       invalidateQueries([getContentTreeQueryPath(type)])
@@ -46,6 +49,7 @@ export default function useMetadataMutation() {
     error: errorUpdate,
     isLoading: isLoadingUpdate,
     mutate: mutateUpdate,
+    reset: resetUpdate,
   } = trpc.useMutation([type === ContentType.NOTE ? 'note.update' : 'todo.update'], {
     onSuccess: (newMetadata, variables) => {
       invalidateQueries([getContentTreeQueryPath(type)])
@@ -58,11 +62,18 @@ export default function useMetadataMutation() {
     },
   })
 
+  const reset = useCallback(() => {
+    resetAdd()
+    resetDelete()
+    resetUpdate()
+  }, [resetAdd, resetDelete, resetUpdate])
+
   return {
     error: errorAdd || errorDelete || errorUpdate,
     isLoading: isLoadingAdd || isLoadingDelete || isLoadingUpdate,
     mutateAdd,
     mutateDelete,
     mutateUpdate,
+    reset,
   }
 }

@@ -30,10 +30,10 @@ const ContentModal: React.FC = () => {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
+    reset: resetForm,
   } = useForm<FormFields>()
 
-  const { error, isLoading, mutateAdd, mutateDelete, mutateUpdate } = useMetadataMutation()
+  const { error, isLoading, mutateAdd, mutateDelete, mutateUpdate, reset: resetMutation } = useMetadataMutation()
   const { action, data: content, opened } = useAtomValue(contentModalAtom)
   const setOpened = useSetAtom(setContentModalOpenedAtom)
 
@@ -41,8 +41,9 @@ const ContentModal: React.FC = () => {
   const isRemoving = action === 'delete' && typeof content !== 'undefined'
 
   useEffect(() => {
-    reset()
-  }, [opened, reset])
+    resetForm()
+    resetMutation()
+  }, [opened, resetForm, resetMutation])
 
   const handleFormSubmit = handleSubmit(({ folder, ...data }) => {
     const folderId = folder.id === ROOT_FOLDER_ID ? undefined : folder.id
@@ -62,7 +63,7 @@ const ContentModal: React.FC = () => {
 
   function handleMutationSuccess() {
     setOpened(false)
-    reset()
+    resetForm()
   }
 
   function handleMutationError() {

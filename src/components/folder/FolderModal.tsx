@@ -24,10 +24,10 @@ const FolderModal: React.FC = () => {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
+    reset: resetForm,
   } = useForm<FormFields>()
 
-  const { error, isLoading, mutateAdd, mutateDelete, mutateUpdate, type } = useFolderMutation()
+  const { error, isLoading, mutateAdd, mutateDelete, mutateUpdate, reset: resetMutation, type } = useFolderMutation()
   const { action, data: folder, opened } = useAtomValue(folderModalAtom)
   const setOpened = useSetAtom(setFolderModalOpenedAtom)
 
@@ -35,8 +35,9 @@ const FolderModal: React.FC = () => {
   const isRemoving = action === 'delete' && typeof folder !== 'undefined'
 
   useEffect(() => {
-    reset()
-  }, [opened, reset])
+    resetForm()
+    resetMutation()
+  }, [opened, resetForm, resetMutation])
 
   const handleFormSubmit = handleSubmit(({ parentFolder, ...data }) => {
     const parentId = parentFolder.id === ROOT_FOLDER_ID ? null : parentFolder.id
@@ -56,7 +57,7 @@ const FolderModal: React.FC = () => {
 
   function handleMutationSuccess() {
     setOpened(false)
-    reset()
+    resetForm()
   }
 
   return (
