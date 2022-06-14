@@ -1,7 +1,7 @@
 {
   "name": "haku",
   "description": "Craft, consolidate and tackle your notebooks and to-do lists all in one place.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "scripts": {
     "dev": "pnpm build:sw && next dev",
