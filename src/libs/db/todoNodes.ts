@@ -152,8 +152,8 @@ async function validateMutations(todoId: TodoMetadata['id'], update: UpdateTodoN
 
   for (const insertedTodoNode of Object.values(update.mutations.insert)) {
     if (
-      (insertedTodoNode.noteHtml && !insertedTodoNode.noteText) ||
-      (insertedTodoNode.noteText && !insertedTodoNode.noteHtml)
+      (typeof insertedTodoNode.noteHtml === 'string' && typeof insertedTodoNode.noteText !== 'string') ||
+      (typeof insertedTodoNode.noteText === 'string' && typeof insertedTodoNode.noteHtml !== 'string')
     ) {
       throw new TRPCError({ code: 'BAD_REQUEST', message: API_ERROR_TODO_NODE_NOTE_HTML_OR_TEXT_MISSING })
     }
@@ -175,8 +175,8 @@ async function validateMutations(todoId: TodoMetadata['id'], update: UpdateTodoN
     if (!hasKey(nodesMap, updatedTodoNode.id)) {
       throw new TRPCError({ code: 'BAD_REQUEST', message: API_ERROR_TODO_NODE_UPDATE_DOES_NOT_EXIST })
     } else if (
-      (updatedTodoNode.noteHtml && !updatedTodoNode.noteText) ||
-      (updatedTodoNode.noteText && !updatedTodoNode.noteHtml)
+      (typeof updatedTodoNode.noteHtml === 'string' && typeof updatedTodoNode.noteText !== 'string') ||
+      (typeof updatedTodoNode.noteText === 'string' && typeof updatedTodoNode.noteHtml !== 'string')
     ) {
       throw new TRPCError({ code: 'BAD_REQUEST', message: API_ERROR_TODO_NODE_NOTE_HTML_OR_TEXT_MISSING })
     }

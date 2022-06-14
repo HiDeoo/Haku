@@ -437,6 +437,28 @@ describe('todo.node', () => {
         expect(testTodoNode?.children[0]).toBe(newTodoNodeChild.id)
       }))
 
+    test('should insert a new todo node with an empty note', async () =>
+      testApiRoute(async ({ caller }) => {
+        const { id, root } = await createTestTodo()
+
+        const newTodoNode = getFakeTodoNode()
+
+        newTodoNode.noteHtml = '<p></p>'
+        newTodoNode.noteText = ''
+
+        await caller.mutation('todo.node.update', {
+          id,
+          children: { root },
+          mutations: { ...baseMutation, insert: { [newTodoNode.id]: newTodoNode } },
+        })
+
+        const testTodoNode = await getTestTodoNode(newTodoNode.id)
+
+        expect(testTodoNode).toBeDefined()
+        expect(testTodoNode?.noteHtml).toBe(newTodoNode.noteHtml)
+        expect(testTodoNode?.noteText).toBe(newTodoNode.noteText)
+      }))
+
     test('should insert nested todo nodes', async () =>
       testApiRoute(async ({ caller }) => {
         const { id, modifiedAt, nodes, root } = await createTestTodo()
@@ -691,6 +713,30 @@ describe('todo.node', () => {
         expect(testTodoNode).toBeDefined()
         expect(testTodoNode?.children.length).toBe(1)
         expect(testTodoNode?.children[0]).toBe(childTodoNode.id)
+      }))
+
+    test('should update an existing todo node children with an empty note', async () =>
+      testApiRoute(async ({ caller }) => {
+        const { id, nodes, root } = await createTestTodo()
+        const childTodoNode = await createTestTodoNode({ todoId: id })
+
+        const updatedTodoNodeId = nodes[0]?.id
+
+        assert(updatedTodoNodeId)
+
+        const updatedTodoNode = getFakeTodoNode({ id: updatedTodoNodeId, noteHtml: '<p></p>', noteText: '' })
+
+        await caller.mutation('todo.node.update', {
+          id,
+          children: { root, [updatedTodoNode.id]: [childTodoNode.id] },
+          mutations: { ...baseMutation, update: { [updatedTodoNode.id]: updatedTodoNode } },
+        })
+
+        const testTodoNode = await getTestTodoNode(updatedTodoNodeId)
+
+        expect(testTodoNode).toBeDefined()
+        expect(testTodoNode?.noteHtml).toBe(updatedTodoNode.noteHtml)
+        expect(testTodoNode?.noteText).toBe(updatedTodoNode.noteText)
       }))
 
     test('should update an existing todo node children order', async () =>

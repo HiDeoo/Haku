@@ -7,6 +7,8 @@ All notable changes to this project will be documented in this file.
 ### 🐞 Bug Fixes
 
 - Clear errors that may be visible when closing content creation modals.
+- Fix issue that could prevent focusing a todo note.
+- Fix issue when trying to remove a todo node.
 
 ## v0.1.3
 
