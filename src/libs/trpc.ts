@@ -15,7 +15,7 @@ export function getTRPCConfiguration(): Parameters<typeof withTRPC>[0] {
   return {
     config() {
       const url = `${
-        process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXTAUTH_URL}` : 'http://localhost:3000'
+        process.env.NEXT_PUBLIC_SITE_URL ? `https://${process.env.NEXT_PUBLIC_SITE_URL}` : 'http://localhost:3000'
       }/api/trpc`
 
       return {
