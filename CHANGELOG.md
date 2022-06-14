@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## Unreleased
+
+### 🐞 Bug Fixes
+
+- Clear errors that may be visible when closing content creation modals.
+
 ## v0.1.3
 
 ### 🐞 Bug Fixes

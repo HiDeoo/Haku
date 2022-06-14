@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router'
+import { useCallback } from 'react'
 
 import { getContentTreeQueryPath } from 'hooks/useContentTreeQuery'
 import useContentType, { ContentType } from 'hooks/useContentType'
@@ -13,6 +14,7 @@ export default function useFolderMutation() {
     error: errorAdd,
     isLoading: isLoadingAdd,
     mutate: mutateAdd,
+    reset: resetAdd,
   } = trpc.useMutation(['folder.add'], {
     onSuccess: () => {
       invalidateQueries([getContentTreeQueryPath(type)])
@@ -23,6 +25,7 @@ export default function useFolderMutation() {
     error: errorDelete,
     isLoading: isLoadingDelete,
     mutate: mutateDelete,
+    reset: resetDelete,
   } = trpc.useMutation(['folder.delete'], {
     onSuccess: () => {
       invalidateQueries([getContentTreeQueryPath(type)])
@@ -35,11 +38,18 @@ export default function useFolderMutation() {
     error: errorUpdate,
     isLoading: isLoadingUpdate,
     mutate: mutateUpdate,
+    reset: resetUpdate,
   } = trpc.useMutation(['folder.update'], {
     onSuccess: () => {
       invalidateQueries([getContentTreeQueryPath(type)])
     },
   })
+
+  const reset = useCallback(() => {
+    resetAdd()
+    resetDelete()
+    resetUpdate()
+  }, [resetAdd, resetDelete, resetUpdate])
 
   return {
     error: errorAdd || errorDelete || errorUpdate,
@@ -47,6 +57,7 @@ export default function useFolderMutation() {
     mutateAdd,
     mutateDelete,
     mutateUpdate,
+    reset,
     type: type ?? ContentType.NOTE,
   }
 }
