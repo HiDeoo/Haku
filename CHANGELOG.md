@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.1.2
+
+### 🐞 Bug Fixes
+
+- Fix Content Security Policy production issue.
+
 ## v0.1.1
 
 ### 🐞 Bug Fixes
