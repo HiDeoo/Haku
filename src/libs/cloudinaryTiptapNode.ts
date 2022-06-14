@@ -337,7 +337,9 @@ class SetAttrsStep extends Step {
   }
 }
 
-Step.jsonID('setAttrs', SetAttrsStep)
+if (typeof window === 'object') {
+  Step.jsonID('setAttrs', SetAttrsStep)
+}
 
 export interface CloudinaryTiptapNodeOptions {
   referenceId?: string
