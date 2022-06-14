@@ -133,8 +133,12 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     } else if (isShortcutEvent(event, shortcutMap['Shift+Enter'])) {
       setIsNodeFocused((prevIsNoteFocused) => !prevIsNoteFocused)
 
+      // The note editor will always return `null` on the first render which could prevent focusing it.
+      // https://github.com/ueberdosis/tiptap/issues/2182
       requestAnimationFrame(() => {
-        todoNodeNote.current?.focusNote()
+        requestAnimationFrame(() => {
+          todoNodeNote.current?.focusNote()
+        })
       })
     } else if (isShortcutEvent(event, shortcutMap['Meta+Backspace'])) {
       event.preventDefault()
