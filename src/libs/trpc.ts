@@ -14,7 +14,9 @@ export function isNetworkError(error: unknown) {
 export function getTRPCConfiguration(): Parameters<typeof withTRPC>[0] {
   return {
     config() {
-      const url = `${process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'}/api/trpc`
+      const url = `${
+        process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : 'http://localhost:3000'
+      }/api/trpc`
 
       return {
         links: [
