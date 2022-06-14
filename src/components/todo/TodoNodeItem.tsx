@@ -247,6 +247,10 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
     setIsNodeFocused(false)
   }
 
+  function handleNoteFocus() {
+    setIsNodeFocused(true)
+  }
+
   function handleNoteShiftEnter() {
     setIsNodeFocused(false)
 
@@ -355,6 +359,7 @@ const TodoNodeItem: React.ForwardRefRenderFunction<TodoNodeItemHandle, TodoNodeI
                 ref={todoNodeNote}
                 onChange={updateNote}
                 onBlur={handleNoteBlur}
+                onFocus={handleNoteFocus}
                 onShiftEnter={handleNoteShiftEnter}
               />
             ) : null}

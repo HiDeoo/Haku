@@ -11,7 +11,7 @@ const editorContentClasses =
   'pr-2 text-[0.84rem] leading-[1.2rem] supports-max:pr-[calc(theme(spacing.2)+max(0px,env(safe-area-inset-right)))]'
 
 const TodoNodeNote: React.ForwardRefRenderFunction<TodoNodeNoteHandle, TodoNodeNoteProps> = (
-  { node, onBlur, onChange, onShiftEnter },
+  { node, onBlur, onChange, onFocus, onShiftEnter },
   forwardedRef
 ) => {
   useImperativeHandle(forwardedRef, () => ({ focusNote }))
@@ -31,6 +31,7 @@ const TodoNodeNote: React.ForwardRefRenderFunction<TodoNodeNoteHandle, TodoNodeN
       contentId,
       extensions: [ShiftEnter.configure({ callback: onShiftEnter })],
       onBlur,
+      onFocus,
       onUpdate: handleEditorUpdate,
     },
     [node.content]
@@ -72,6 +73,7 @@ interface TodoNodeNoteProps {
   node: TodoNodeDataWithParentId
   onBlur: () => void
   onChange: (update: AtomParamsNoteUpdate) => void
+  onFocus: () => void
   onShiftEnter: () => void
 }
 
