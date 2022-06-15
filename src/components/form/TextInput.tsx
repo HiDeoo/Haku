@@ -13,7 +13,7 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
 
     const inputClasses = clst(
       'w-full px-3 py-1.5',
-      'bg-zinc-600 rounded-md placeholder:text-blue-50/40 disabled:cursor-not-allowed appearance-none',
+      'bg-zinc-600 rounded-md placeholder:text-zinc-100/40 disabled:cursor-not-allowed appearance-none',
       'focus:outline-none focus:ring-2 focus:ring-offset-zinc-800 focus:ring-offset-2',
       props.errorMessage ? 'focus:ring-red-400' : 'focus:ring-blue-600',
       { 'opacity-50': props.disabled || props.readOnly },

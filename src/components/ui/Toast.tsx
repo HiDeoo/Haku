@@ -59,7 +59,7 @@ const Toast: React.FC<ToastProps> = ({ toast }) => {
           icon={RiCloseLine}
           aria-label="Dismiss"
           iconClassName="h-5 w-5"
-          className="shrink-0 rounded-full p-0.5 text-zinc-300 hover:bg-zinc-500 hover:text-blue-50"
+          className="shrink-0 rounded-full p-0.5 text-zinc-300 hover:bg-zinc-500 hover:text-zinc-100"
         />
       </Close>
     </Root>

@@ -60,7 +60,7 @@ const ContentHistorySection: React.FC<ContentHistorySectionProps> = ({ entries, 
           <List.Item key={entry.id}>
             {(itemProps) => {
               const { className, ...props } = itemProps
-              const linkCkasses = clst(className, 'hover:bg-blue-600 hover:text-blue-50')
+              const linkCkasses = clst(className, 'hover:bg-blue-600 hover:text-zinc-100')
 
               return (
                 <Link href={`${urlPath}/${entry.id}/${entry.slug}`} prefetch={false}>

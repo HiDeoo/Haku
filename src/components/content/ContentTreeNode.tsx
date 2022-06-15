@@ -17,7 +17,7 @@ const ContentTreeNode = forwardRef<HTMLDivElement | HTMLAnchorElement, ContentTr
       ? clst(
           'flex w-full items-center',
           nodeClasses,
-          selected ? 'bg-zinc-700/60 text-blue-50' : 'hover:bg-blue-600 hover:text-blue-50'
+          selected ? 'bg-zinc-700/60 text-zinc-100' : 'hover:bg-blue-600 hover:text-zinc-100'
         )
       : undefined
 
