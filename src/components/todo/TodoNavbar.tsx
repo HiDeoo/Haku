@@ -3,7 +3,7 @@ import { useAtomCallback, useResetAtom } from 'jotai/utils'
 import { useCallback, useEffect, useMemo } from 'react'
 
 import { todoEditorStateAtom } from 'atoms/todo'
-import { todoNodeChildrenAtom, todoNodeMutations, todoNodeNodesAtom } from 'atoms/todoNode'
+import { todoNodeChildrenAtom, todoNodeMutationsAtom, todoNodeNodesAtom } from 'atoms/todoNode'
 import CacheStatus from 'components/ui/CacheStatus'
 import Navbar from 'components/ui/Navbar'
 import NetworkStatus from 'components/ui/NetworkStatus'
@@ -18,7 +18,7 @@ const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, focusTodoNode, todoId
   const { offline } = useNetworkStatus()
 
   const [editorState, setEditorState] = useAtom(todoEditorStateAtom)
-  const resetMutations = useResetAtom(todoNodeMutations)
+  const resetMutations = useResetAtom(todoNodeMutationsAtom)
 
   const { isLoading, mutate } = trpc.useMutation(['todo.node.update'])
 
@@ -30,7 +30,7 @@ const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, focusTodoNode, todoId
     useCallback(
       (get) => ({
         children: get(todoNodeChildrenAtom),
-        mutations: get(todoNodeMutations),
+        mutations: get(todoNodeMutationsAtom),
         nodes: get(todoNodeNodesAtom),
       }),
       []

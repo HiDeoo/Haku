@@ -7,7 +7,7 @@ import cuid from 'cuid'
 import { useAtom } from 'jotai'
 import { useAtomValue, useSetAtom } from 'jotai'
 
-import { todoNodeChildrenAtom, todoNodeMutations, todoNodeNodesAtom } from 'atoms/todoNode'
+import { todoNodeChildrenAtom, todoNodeMutationsAtom, todoNodeNodesAtom } from 'atoms/todoNode'
 import useTodoNode from 'hooks/useTodoNode'
 import {
   type TodoNodeDataWithParentId,
@@ -87,7 +87,7 @@ describe('useTodoNode', () => {
       const node = getTodoNodeFromIndexes(nodes, children, 0)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutationsAtom))
 
       act(() => {
         result.current.updateContent({ id: node.id, content: 'new content' })
@@ -101,7 +101,7 @@ describe('useTodoNode', () => {
       const node = getTodoNodeFromIndexes(nodes, children, 0)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutationsAtom))
 
       act(() => {
         todoMutations.current[1]((prevMutations) => ({ ...prevMutations, [node.id]: 'insert' }))
@@ -133,7 +133,7 @@ describe('useTodoNode', () => {
 
       const { result } = renderHook(() => useTodoNode(node.id))
       const { result: todoNodes } = renderHook(() => useAtom(todoNodeNodesAtom))
-      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutationsAtom))
 
       act(() => {
         const { [node.id]: nodeToDelete, ...otherNodes } = todoNodes.current[0]
@@ -157,7 +157,7 @@ describe('useTodoNode', () => {
       const { result } = renderHook(() => useTodoNode(node.id))
       const { result: todoNodes } = renderHook(() => useAtomValue(todoNodeNodesAtom))
       const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
-      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutationsAtom))
 
       const newId = cuid()
 
@@ -188,7 +188,7 @@ describe('useTodoNode', () => {
       const { result } = renderHook(() => useTodoNode(node.id))
       const { result: todoNodes } = renderHook(() => useAtom(todoNodeNodesAtom))
       const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
-      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutationsAtom))
 
       const newId = cuid()
 
@@ -220,7 +220,7 @@ describe('useTodoNode', () => {
       const { result } = renderHook(() => useTodoNode(node.id))
       const { result: todoNodes } = renderHook(() => useAtomValue(todoNodeNodesAtom))
       const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
-      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutationsAtom))
 
       const newId = cuid()
 
@@ -256,7 +256,7 @@ describe('useTodoNode', () => {
       const { result } = renderHook(() => useTodoNode(node.id))
       const { result: todoNodes } = renderHook(() => useAtomValue(todoNodeNodesAtom))
       const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
-      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutationsAtom))
 
       const newId = cuid()
 
@@ -296,7 +296,7 @@ describe('useTodoNode', () => {
       const { result } = renderHook(() => useTodoNode(node.id))
       const { result: todoNodes } = renderHook(() => useAtomValue(todoNodeNodesAtom))
       const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
-      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutationsAtom))
 
       const newId = cuid()
 
@@ -338,7 +338,7 @@ describe('useTodoNode', () => {
       const { result } = renderHook(() => useTodoNode(node.id))
       const { result: todoNodes } = renderHook(() => useAtomValue(todoNodeNodesAtom))
       const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
-      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutationsAtom))
 
       act(() => {
         result.current.deleteNode({ id: node.id, parentId: node.parentId })
@@ -365,7 +365,7 @@ describe('useTodoNode', () => {
       const { result } = renderHook(() => useTodoNode(node.id))
       const { result: todoNodes } = renderHook(() => useAtomValue(todoNodeNodesAtom))
       const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
-      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutationsAtom))
 
       act(() => {
         result.current.deleteNode({ id: node.id, parentId: node.parentId })
@@ -397,7 +397,7 @@ describe('useTodoNode', () => {
       const { result } = renderHook(() => useTodoNode(node.id))
       const { result: todoNodes } = renderHook(() => useAtomValue(todoNodeNodesAtom))
       const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
-      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutationsAtom))
 
       act(() => {
         todoMutations.current[1]((prevMutations) => ({ ...prevMutations, [parent.id]: 'insert' }))
@@ -427,7 +427,7 @@ describe('useTodoNode', () => {
 
       const { result } = renderHook(() => useTodoNode(node.id))
       const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
-      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutationsAtom))
 
       act(() => {
         result.current.deleteNode({ id: node.id, parentId: node.parentId })
@@ -450,7 +450,7 @@ describe('useTodoNode', () => {
 
       const { result } = renderHook(() => useTodoNode(node.id))
       const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
-      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutationsAtom))
 
       const newId = cuid()
 
@@ -480,7 +480,7 @@ describe('useTodoNode', () => {
 
       const { result } = renderHook(() => useTodoNode(node.id))
       const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
-      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutationsAtom))
 
       act(() => {
         result.current.nestNode({ id: node.id, parentId: node.parentId })
@@ -504,7 +504,7 @@ describe('useTodoNode', () => {
 
       const { result } = renderHook(() => useTodoNode(node.id))
       const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
-      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutationsAtom))
 
       act(() => {
         result.current.nestNode({ id: node.id, parentId: node.parentId })
@@ -526,7 +526,7 @@ describe('useTodoNode', () => {
 
       const { result } = renderHook(() => useTodoNode(node.id))
       const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
-      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutationsAtom))
 
       act(() => {
         result.current.nestNode({ id: node.id, parentId: node.parentId })
@@ -552,7 +552,7 @@ describe('useTodoNode', () => {
 
       const { result } = renderHook(() => useTodoNode(node.id))
       const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
-      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutationsAtom))
 
       act(() => {
         result.current.nestNode({ id: node.id, parentId: node.parentId })
@@ -576,7 +576,7 @@ describe('useTodoNode', () => {
 
       const { result } = renderHook(() => useTodoNode(node.id))
       const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
-      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutationsAtom))
 
       act(() => {
         todoMutations.current[1]((prevMutations) => ({ ...prevMutations, [node.id]: 'insert' }))
@@ -605,7 +605,7 @@ describe('useTodoNode', () => {
 
       const { result } = renderHook(() => useTodoNode(node.id))
       const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
-      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutationsAtom))
 
       act(() => {
         result.current.nestNode({ id: node.id, parentId: node.parentId })
@@ -633,7 +633,7 @@ describe('useTodoNode', () => {
       const { result } = renderHook(() => useTodoNode(node.id))
       const { result: todoNodes } = renderHook(() => useAtomValue(todoNodeNodesAtom))
       const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
-      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutationsAtom))
 
       act(() => {
         result.current.nestNode({ id: node.id, parentId: node.parentId })
@@ -662,7 +662,7 @@ describe('useTodoNode', () => {
 
       const { result } = renderHook(() => useTodoNode(node.id))
       const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
-      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutationsAtom))
 
       act(() => {
         result.current.unnestNode({ id: node.id, parentId: node.parentId })
@@ -684,7 +684,7 @@ describe('useTodoNode', () => {
 
       const { result } = renderHook(() => useTodoNode(node.id))
       const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
-      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutationsAtom))
 
       act(() => {
         result.current.unnestNode({ id: node.id, parentId: node.parentId })
@@ -710,7 +710,7 @@ describe('useTodoNode', () => {
 
       const { result } = renderHook(() => useTodoNode(node.id))
       const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
-      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutationsAtom))
 
       act(() => {
         result.current.unnestNode({ id: node.id, parentId: node.parentId })
@@ -741,7 +741,7 @@ describe('useTodoNode', () => {
 
       const { result } = renderHook(() => useTodoNode(node.id))
       const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
-      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutationsAtom))
 
       act(() => {
         todoMutations.current[1]((prevMutations) => ({ ...prevMutations, [node.id]: 'insert' }))
@@ -778,7 +778,7 @@ describe('useTodoNode', () => {
 
       const { result } = renderHook(() => useTodoNode(node.id))
       const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
-      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutationsAtom))
 
       act(() => {
         result.current.moveNode({ direction: 'up', id: node.id, parentId: node.parentId })
@@ -805,7 +805,7 @@ describe('useTodoNode', () => {
 
       const { result } = renderHook(() => useTodoNode(node.id))
       const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
-      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutationsAtom))
 
       act(() => {
         result.current.moveNode({ direction: 'down', id: node.id, parentId: node.parentId })
@@ -833,7 +833,7 @@ describe('useTodoNode', () => {
 
       const { result } = renderHook(() => useTodoNode(node.id))
       const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
-      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutationsAtom))
 
       act(() => {
         result.current.moveNode({ direction: 'up', id: node.id, parentId: node.parentId })
@@ -865,7 +865,7 @@ describe('useTodoNode', () => {
 
       const { result } = renderHook(() => useTodoNode(node.id))
       const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
-      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutationsAtom))
 
       act(() => {
         result.current.moveNode({ direction: 'down', id: node.id, parentId: node.parentId })
@@ -896,7 +896,7 @@ describe('useTodoNode', () => {
 
       const { result } = renderHook(() => useTodoNode(node.id))
       const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
-      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutationsAtom))
 
       act(() => {
         todoMutations.current[1]((prevMutations) => ({ ...prevMutations, [node.id]: 'insert' }))
@@ -927,7 +927,7 @@ describe('useTodoNode', () => {
 
       const { result } = renderHook(() => useTodoNode(node.id))
       const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
-      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutationsAtom))
 
       act(() => {
         result.current.moveNode({ direction: 'up', id: node.id, parentId: node.parentId })
@@ -953,7 +953,7 @@ describe('useTodoNode', () => {
 
       const { result } = renderHook(() => useTodoNode(node.id))
       const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
-      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutationsAtom))
 
       act(() => {
         result.current.moveNode({ direction: 'down', id: node.id, parentId: node.parentId })
@@ -1292,7 +1292,7 @@ describe('useTodoNode', () => {
       const node = getTodoNodeFromIndexes(nodes, children, 0)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutationsAtom))
 
       act(() => {
         result.current.toggleCompleted({ id: node.id })
@@ -1306,7 +1306,7 @@ describe('useTodoNode', () => {
       const node = getTodoNodeFromIndexes(nodes, children, 0)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutationsAtom))
 
       act(() => {
         todoMutations.current[1]((prevMutations) => ({ ...prevMutations, [node.id]: 'insert' }))
@@ -1336,7 +1336,7 @@ describe('useTodoNode', () => {
 
       const { result } = renderHook(() => useTodoNode(node.id))
       const { result: todoNodes } = renderHook(() => useAtom(todoNodeNodesAtom))
-      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutationsAtom))
 
       act(() => {
         const { [node.id]: nodeToDelete, ...otherNodes } = todoNodes.current[0]
@@ -1427,7 +1427,7 @@ describe('useTodoNode', () => {
       const node = getTodoNodeFromIndexes(nodes, children, 0)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutationsAtom))
 
       act(() => {
         result.current.toggleCancelled({ id: node.id })
@@ -1441,7 +1441,7 @@ describe('useTodoNode', () => {
       const node = getTodoNodeFromIndexes(nodes, children, 0)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutationsAtom))
 
       act(() => {
         todoMutations.current[1]((prevMutations) => ({ ...prevMutations, [node.id]: 'insert' }))
@@ -1471,7 +1471,7 @@ describe('useTodoNode', () => {
 
       const { result } = renderHook(() => useTodoNode(node.id))
       const { result: todoNodes } = renderHook(() => useAtom(todoNodeNodesAtom))
-      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutationsAtom))
 
       act(() => {
         const { [node.id]: nodeToDelete, ...otherNodes } = todoNodes.current[0]
@@ -1525,7 +1525,7 @@ describe('useTodoNode', () => {
       const node = getTodoNodeFromIndexes(nodes, children, 0)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutationsAtom))
 
       const newNote = 'new note'
 
@@ -1541,7 +1541,7 @@ describe('useTodoNode', () => {
       const node = getTodoNodeFromIndexes(nodes, children, 0)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutationsAtom))
 
       const newNote = 'new note'
 
@@ -1576,7 +1576,7 @@ describe('useTodoNode', () => {
 
       const { result } = renderHook(() => useTodoNode(node.id))
       const { result: todoNodes } = renderHook(() => useAtom(todoNodeNodesAtom))
-      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutationsAtom))
 
       const newNote = 'new note'
 
@@ -1639,7 +1639,7 @@ describe('useTodoNode', () => {
       const node = getTodoNodeFromIndexes(nodes, children, 0)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutationsAtom))
 
       act(() => {
         result.current.toggleCollapsed({ id: node.id })
@@ -1653,7 +1653,7 @@ describe('useTodoNode', () => {
       const node = getTodoNodeFromIndexes(nodes, children, 0)
 
       const { result } = renderHook(() => useTodoNode(node.id))
-      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutationsAtom))
 
       act(() => {
         todoMutations.current[1]((prevMutations) => ({ ...prevMutations, [node.id]: 'insert' }))
@@ -1683,7 +1683,7 @@ describe('useTodoNode', () => {
 
       const { result } = renderHook(() => useTodoNode(node.id))
       const { result: todoNodes } = renderHook(() => useAtom(todoNodeNodesAtom))
-      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutations))
+      const { result: todoMutations } = renderHook(() => useAtom(todoNodeMutationsAtom))
 
       act(() => {
         const { [node.id]: nodeToDelete, ...otherNodes } = todoNodes.current[0]

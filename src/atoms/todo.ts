@@ -1,7 +1,7 @@
 import { atom } from 'jotai'
 import { atomWithReset, atomWithStorage, RESET } from 'jotai/utils'
 
-import { todoNodeChildrenAtom, todoNodeMutations, todoNodeNodesAtom } from 'atoms/todoNode'
+import { todoNodeChildrenAtom, todoNodeMutationsAtom, todoNodeNodesAtom } from 'atoms/todoNode'
 import { type SyncStatus } from 'components/ui/SyncReport'
 import { isEmpty } from 'libs/array'
 import { type TodoMetadata } from 'libs/db/todo'
@@ -12,7 +12,7 @@ export const todoSyncStatusAtom = atomWithReset<TodoSyncStatus>({ isLoading: fal
 export const todoEditorStateAtom = atom<TodoEditorState, TodoSyncStatus>(
   (get) => {
     const state = get(todoSyncStatusAtom)
-    const mutations = get(todoNodeMutations)
+    const mutations = get(todoNodeMutationsAtom)
 
     return {
       ...state,
@@ -27,7 +27,7 @@ export const todoEditorStateAtom = atom<TodoEditorState, TodoSyncStatus>(
 export const resetTodoAtomsAtom = atom(null, (_get, set) => {
   set(todoNodeChildrenAtom, RESET)
   set(todoNodeNodesAtom, RESET)
-  set(todoNodeMutations, RESET)
+  set(todoNodeMutationsAtom, RESET)
   set(todoSyncStatusAtom, RESET)
 })
 
