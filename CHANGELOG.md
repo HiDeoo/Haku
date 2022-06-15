@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - Fix issue that could prevent focusing a todo note.
 - Fix issue when trying to remove a todo node.
 - Ensure current content is saved before creating a new folder, note or todo.
+- Fix various todo highlighting issues.
 
 ## v0.1.3
 
