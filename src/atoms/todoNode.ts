@@ -10,7 +10,7 @@ export const todoNodeChildrenAtom = atomWithReset<TodoNodesData['children']>({ r
 
 export const todoNodeNodesAtom = atomWithReset<TodoNodesData['nodes']>({})
 
-export const todoNodeMutations = atomWithReset<Record<TodoNodeData['id'], 'insert' | 'update' | 'delete'>>({})
+export const todoNodeMutationsAtom = atomWithReset<Record<TodoNodeData['id'], 'insert' | 'update' | 'delete'>>({})
 
 export const updateContentAtom = atom(null, (get, set, { content, id }: AtomParamsContentUpdate) => {
   const node = get(todoNodeNodesAtom)[id]
@@ -19,7 +19,7 @@ export const updateContentAtom = atom(null, (get, set, { content, id }: AtomPara
     return
   }
 
-  set(todoNodeMutations, (prevMutations) => ({ ...prevMutations, [id]: prevMutations[id] ?? 'update' }))
+  set(todoNodeMutationsAtom, (prevMutations) => ({ ...prevMutations, [id]: prevMutations[id] ?? 'update' }))
 
   set(todoNodeNodesAtom, (prevNodes) => ({ ...prevNodes, [id]: { ...node, content } }))
 })
@@ -31,7 +31,7 @@ export const updateNoteAtom = atom(null, (get, set, { id, noteHtml, noteText }: 
     return
   }
 
-  set(todoNodeMutations, (prevMutations) => ({ ...prevMutations, [id]: prevMutations[id] ?? 'update' }))
+  set(todoNodeMutationsAtom, (prevMutations) => ({ ...prevMutations, [id]: prevMutations[id] ?? 'update' }))
 
   set(todoNodeNodesAtom, (prevNodes) => ({ ...prevNodes, [id]: { ...node, noteHtml, noteText } }))
 })
@@ -44,7 +44,7 @@ export const toggleCollapsedAtom = atom(null, (get, set, { id }: AtomParamsWithP
     return
   }
 
-  set(todoNodeMutations, (prevMutations) => ({ ...prevMutations, [id]: prevMutations[id] ?? 'update' }))
+  set(todoNodeMutationsAtom, (prevMutations) => ({ ...prevMutations, [id]: prevMutations[id] ?? 'update' }))
 
   set(todoNodeNodesAtom, (prevNodes) => ({ ...prevNodes, [id]: { ...node, collapsed: !node.collapsed } }))
 })
@@ -56,7 +56,7 @@ export const toggleCompletedAtom = atom(null, (get, set, { id }: AtomParamsWithP
     return
   }
 
-  set(todoNodeMutations, (prevMutations) => ({ ...prevMutations, [id]: prevMutations[id] ?? 'update' }))
+  set(todoNodeMutationsAtom, (prevMutations) => ({ ...prevMutations, [id]: prevMutations[id] ?? 'update' }))
 
   set(todoNodeNodesAtom, (prevNodes) => ({
     ...prevNodes,
@@ -74,7 +74,7 @@ export const toggleCancelledAtom = atom(null, (get, set, { id }: AtomParamsWithP
     return
   }
 
-  set(todoNodeMutations, (prevMutations) => ({ ...prevMutations, [id]: prevMutations[id] ?? 'update' }))
+  set(todoNodeMutationsAtom, (prevMutations) => ({ ...prevMutations, [id]: prevMutations[id] ?? 'update' }))
 
   set(todoNodeNodesAtom, (prevNodes) => ({
     ...prevNodes,
@@ -124,7 +124,7 @@ export const addNodeAtom = atom(null, (get, set, { id, newId, parentId = 'root' 
     }
   })
 
-  set(todoNodeMutations, (prevMutations) => {
+  set(todoNodeMutationsAtom, (prevMutations) => {
     const newState: typeof prevMutations = { ...prevMutations, [newId]: 'insert' }
     const idToUpdate = addAsChildren ? id : parentId
 
@@ -164,7 +164,7 @@ export const deleteNodeAtom = atom(null, (get, set, { id, parentId = 'root' }: A
     }
   })
 
-  set(todoNodeMutations, (prevMutations) => {
+  set(todoNodeMutationsAtom, (prevMutations) => {
     const { [id]: prevNodeMutation, ...newState } = prevMutations
 
     if (!prevNodeMutation || prevNodeMutation === 'update') {
@@ -217,7 +217,7 @@ export const nestNodeAtom = atom(null, (get, set, { id, parentId = 'root' }: Ato
     [sibblingId]: { ...sibbling, collapsed: false },
   }))
 
-  set(todoNodeMutations, (prevMutations) => ({
+  set(todoNodeMutationsAtom, (prevMutations) => ({
     ...prevMutations,
     [id]: prevMutations[id] ?? 'update',
     [parentId]: prevMutations[parentId] ?? 'update',
@@ -262,7 +262,7 @@ export const unnestNodeAtom = atom(null, (get, set, { id, parentId }: AtomParams
     [id]: { ...node, parentId: parent.parentId },
   }))
 
-  set(todoNodeMutations, (prevMutations) => {
+  set(todoNodeMutationsAtom, (prevMutations) => {
     const newState: typeof prevMutations = {
       ...prevMutations,
       [id]: prevMutations[id] ?? 'update',
@@ -302,7 +302,7 @@ export const moveNodeAtom = atom(null, (get, set, { direction, id, parentId = 'r
   })
 
   if (parentId !== 'root') {
-    set(todoNodeMutations, (prevMutations) => ({
+    set(todoNodeMutationsAtom, (prevMutations) => ({
       ...prevMutations,
       [parentId]: prevMutations[parentId] ?? 'update',
     }))
