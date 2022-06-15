@@ -172,7 +172,7 @@ const PalettePicker = <TItem extends PaletteItem>(
           })}
         />
         {showLoadingSpinner ? (
-          <Spinner className="absolute right-5 bottom-1/3 my-0.5 h-4 w-4" color="text-blue-50/80" />
+          <Spinner className="absolute right-5 bottom-1/3 my-0.5 h-4 w-4" color="text-zinc-100/80" />
         ) : null}
       </div>
       <ul {...getMenuProps({ className: 'h-full overflow-y-auto' })}>

@@ -299,15 +299,15 @@ const TocEntry: React.FC<TocEntryProps> = ({ editor, entry }) => {
   }
 
   const linkClasses = clst(
-    'cursor-pointer hover:text-blue-500 outline-none rounded-sm truncate',
+    'cursor-pointer text-zinc-300 hover:text-blue-500 outline-none rounded-sm truncate',
     'focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-zinc-900 focus-visible:ring-offset-2'
   )
 
   return (
     <Flex
       role="treeitem"
+      className="w-full"
       alignItems="center"
-      className="w-full text-blue-100/90"
       style={{ paddingLeft: `calc(0.625rem * (${entry.level - 1}))` }}
     >
       <Icon icon={RiArrowDropRightFill} className="mr-0.5 mt-px shrink-0" />

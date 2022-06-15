@@ -139,7 +139,7 @@ function handleSidebarMenuInstallShortcutClick() {
 
 const sidebarMenuItemClasses = clst(
   'mx-0 flex items-center justify-start gap-2.5 bg-zinc-700 text-left shadow-none px-2 py-1 rounded font-medium',
-  'hover:bg-blue-600 hover:text-blue-50',
+  'hover:bg-blue-600 hover:text-zinc-100',
   'focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:bg-blue-600'
 )
 

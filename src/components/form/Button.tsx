@@ -58,7 +58,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <button {...mergeProps(sanitizedProps, buttonProps)} ref={ref} className={buttonClasses}>
         {loading ? (
           <Flex justifyContent="center">
-            <Spinner className="my-0.5 h-4 w-4" color="text-blue-50/80" />
+            <Spinner className="my-0.5 h-4 w-4" color="text-zinc-100/80" />
           </Flex>
         ) : (
           children

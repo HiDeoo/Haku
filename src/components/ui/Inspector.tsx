@@ -128,7 +128,7 @@ Inspector.Toggle = InspectorToggle
 const InspectorIconButton = forwardRef<HTMLButtonElement, InspectorIconButtonProps>(
   ({ className, collapsed, pressedClassName, tooltip, ...props }, forwardedRef) => {
     const buttonClasses = clst(
-      'mx-0 bg-zinc-700 hover:bg-zinc-600 hover:text-blue-50 shadow-none disabled:bg-zinc-700',
+      'mx-0 bg-zinc-700 hover:bg-zinc-600 hover:text-zinc-100 shadow-none disabled:bg-zinc-700',
       className
     )
     const pressedButtonClasses = clst('bg-zinc-500 hover:bg-zinc-500', pressedClassName)

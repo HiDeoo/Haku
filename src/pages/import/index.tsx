@@ -22,7 +22,7 @@ const Import: Page = () => {
           <List.Item key={source}>
             {(itemProps) => {
               const { className, ...props } = itemProps
-              const linkCkasses = clst(className, 'hover:bg-blue-600 hover:text-blue-50')
+              const linkCkasses = clst(className, 'hover:bg-blue-600 hover:text-zinc-100')
 
               return (
                 <Link href={`/import/${source.toLowerCase()}`} prefetch={false}>
