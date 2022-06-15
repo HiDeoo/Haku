@@ -1,5 +1,8 @@
+import { useAtomValue } from 'jotai'
 import { useEffect, useRef, useState } from 'react'
 import { throttle } from 'throttle-debounce'
+
+import { contentModalAtom, folderModalAtom } from 'atoms/togglable'
 
 const activityEvents: (keyof WindowEventMap)[] = ['keydown', 'mousedown', 'mousemove', 'resize', 'touchstart', 'wheel']
 
@@ -8,6 +11,9 @@ export default function useIdle(durationInSeconds = 10) {
 
   const enabled = useRef(true)
   const timeout = useRef<ReturnType<typeof setTimeout>>()
+
+  const { opened: folderModalOpened } = useAtomValue(folderModalAtom)
+  const { opened: contentModalOpened } = useAtomValue(contentModalAtom)
 
   useEffect(() => {
     enabled.current = true
@@ -60,6 +66,13 @@ export default function useIdle(durationInSeconds = 10) {
       }
     }
   }, [durationInSeconds])
+
+  useEffect(() => {
+    // Opening a modal triggering a navigation should mark the user as idle.
+    if (enabled.current && (folderModalOpened || contentModalOpened)) {
+      setIdle(true)
+    }
+  }, [folderModalOpened, contentModalOpened])
 
   return idle
 }
