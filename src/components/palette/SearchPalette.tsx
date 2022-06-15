@@ -18,10 +18,7 @@ import { type SearchResultData } from 'libs/db/file'
 const SearchPalette: React.FC = () => {
   const { push } = useRouter()
 
-  const trigger = useRef<HTMLButtonElement>(null)
   const paletteTextInput = useRef<HTMLInputElement>(null)
-
-  const triggerUsed = useRef(false)
 
   const [opened, setOpened] = useAtom(searchPaletteOpenedAtom)
   const [query, setQuery] = useState<string | undefined>('')
@@ -41,8 +38,6 @@ const SearchPalette: React.FC = () => {
           onKeyDown: (event) => {
             event.preventDefault()
 
-            triggerUsed.current = false
-
             setOpened(true)
 
             if (paletteTextInput.current && query && query.length > 0) {
@@ -56,19 +51,11 @@ const SearchPalette: React.FC = () => {
   )
 
   function handleTriggerPress() {
-    triggerUsed.current = true
-
     setOpened(true)
   }
 
   function handleOpenChange(opened: boolean) {
     setOpened(opened)
-
-    if (!opened && triggerUsed.current) {
-      requestAnimationFrame(() => {
-        trigger.current?.focus()
-      })
-    }
   }
 
   function handlePick(item: SearchResultData | null | undefined) {
@@ -87,7 +74,7 @@ const SearchPalette: React.FC = () => {
 
   return (
     <>
-      <IconButton icon={RiSearchLine} tooltip="Search" onPress={handleTriggerPress} ref={trigger} />
+      <IconButton icon={RiSearchLine} tooltip="Search" onPress={handleTriggerPress} />
       <Palette<SearchResult>
         role="search"
         fuzzy={false}
