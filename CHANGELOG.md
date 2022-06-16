@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## Unreleased
+
+### 🐞 Bug Fixes
+
+- Update inbox shortcut to `Control + i` to prevent conflicts with the note editor.
+
 ## v0.1.4
 
 ### 🐞 Bug Fixes

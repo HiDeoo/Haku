@@ -44,7 +44,7 @@ const InboxDrawer: React.FC = () => {
       () => [
         {
           group: 'Miscellaneous',
-          keybinding: 'Meta+i',
+          keybinding: 'Control+i',
           label: 'Open Inbox',
           onKeyDown: () => {
             setOpened(true)
