@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { type NestedValue, useForm } from 'react-hook-form'
 import { RiErrorWarningLine, RiFileAddLine } from 'react-icons/ri'
 
@@ -40,6 +40,8 @@ const ContentModal: React.FC = () => {
   const isUpdating = action === 'update' && typeof content !== 'undefined'
   const isRemoving = action === 'delete' && typeof content !== 'undefined'
 
+  const restoreFocusOnClose = useRef(true)
+
   useEffect(() => {
     resetForm()
     resetMutation()
@@ -62,6 +64,10 @@ const ContentModal: React.FC = () => {
   }
 
   function handleMutationSuccess() {
+    if (!isRemoving) {
+      restoreFocusOnClose.current = false
+    }
+
     setOpened(false)
     resetForm()
   }
@@ -75,6 +81,14 @@ const ContentModal: React.FC = () => {
       text: `Failed to ${action} ${lcType}.`,
       type: 'foreground',
     })
+  }
+
+  function handleModalCloseAutoFocus(event: Event) {
+    if (!restoreFocusOnClose.current) {
+      event.preventDefault()
+
+      restoreFocusOnClose.current = true
+    }
   }
 
   const title = `${isUpdating ? 'Edit' : 'New'} ${cType}`
@@ -95,6 +109,7 @@ const ContentModal: React.FC = () => {
         disabled={isLoading}
         onOpenChange={setOpened}
         opened={opened && !isRemoving}
+        onCloseAutoFocus={handleModalCloseAutoFocus}
         trigger={<IconButton icon={RiFileAddLine} tooltip={title} disabled={offline} />}
       >
         <Form onSubmit={handleFormSubmit} error={error}>
