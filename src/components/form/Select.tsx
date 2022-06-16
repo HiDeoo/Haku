@@ -1,5 +1,6 @@
 import { useSelect, UseSelectStateChange } from 'downshift'
 import { useCallback, useRef } from 'react'
+import { forwardRef } from 'react'
 import { RiArrowDownSLine } from 'react-icons/ri'
 
 import Button, { ButtonProps } from 'components/form/Button'
@@ -9,19 +10,23 @@ import Flex from 'components/ui/Flex'
 import Icon from 'components/ui/Icon'
 import clst from 'styles/clst'
 
-const Select = <TItem,>({
-  className,
-  defaultItem,
-  disabled,
-  items,
-  itemToString,
-  label,
-  menuClassName,
-  onChange,
-  tabIndex,
-  triggerClassName,
-  triggerPressedClassName,
-}: SelectProps<TItem>) => {
+const Select = <TItem,>(
+  {
+    className,
+    defaultItem,
+    disabled,
+    items,
+    itemToString,
+    label,
+    menuClassName,
+    onButtonKeyDown,
+    onChange,
+    tabIndex,
+    triggerClassName,
+    triggerPressedClassName,
+  }: SelectProps<TItem>,
+  forwardedRef: React.ForwardedRef<HTMLButtonElement>
+) => {
   const container = useRef<HTMLDivElement>(null)
 
   const renderItem = useCallback(
@@ -62,7 +67,14 @@ const Select = <TItem,>({
     <div className={containerClasses} ref={container} contentEditable={false}>
       {label ? <Label {...getLabelProps({ disabled })}>{label}</Label> : null}
       <Button
-        {...getToggleButtonProps({ 'aria-label': 'Toggle Menu', className: triggerClasses, disabled, tabIndex })}
+        {...getToggleButtonProps({
+          'aria-label': 'Toggle Menu',
+          className: triggerClasses,
+          disabled,
+          onKeyDown: onButtonKeyDown,
+          ref: forwardedRef,
+          tabIndex,
+        })}
         pressedClassName={triggerPressedClassName}
       >
         <Flex alignItems="center" justifyContent="between" className="gap-1">
@@ -85,7 +97,9 @@ const Select = <TItem,>({
   )
 }
 
-export default Select
+export default forwardRef(Select) as <TItem>(
+  props: SelectProps<TItem> & { ref?: React.ForwardedRef<HTMLButtonElement> }
+) => ReturnType<typeof Select>
 
 interface SelectProps<TItem> {
   className?: string
@@ -95,6 +109,7 @@ interface SelectProps<TItem> {
   itemToString?: (item: TItem | null) => string
   label?: string
   menuClassName?: ControlMenuProps<TItem>['menuClassName']
+  onButtonKeyDown?: (event: React.KeyboardEvent<HTMLButtonElement>) => void
   onChange: (item: TItem) => void
   tabIndex?: ButtonProps['tabIndex']
   triggerClassName?: string
