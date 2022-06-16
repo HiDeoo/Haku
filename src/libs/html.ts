@@ -165,6 +165,29 @@ export function getContentEditableCaretPosition(element: HTMLElement): CaretPosi
   }
 }
 
+export function isFocusable(element: HTMLElement): boolean {
+  if (
+    !(element instanceof HTMLAnchorElement) &&
+    !(element instanceof HTMLButtonElement) &&
+    !(element instanceof HTMLInputElement) &&
+    !(element instanceof HTMLSelectElement) &&
+    !(element instanceof HTMLTextAreaElement) &&
+    !(element instanceof HTMLDivElement && element.contentEditable)
+  ) {
+    return false
+  }
+
+  if (
+    element.hidden ||
+    element.getAttribute('disabled') === 'true' ||
+    element.getAttribute('aria-disabled') === 'true'
+  ) {
+    return false
+  }
+
+  return true
+}
+
 function getContentEditableLines(element: HTMLElement): ContentEditableLine[] {
   if (!element.firstChild || !element.textContent) {
     return []

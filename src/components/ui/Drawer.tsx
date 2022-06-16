@@ -3,6 +3,7 @@ import { RiCloseLine } from 'react-icons/ri'
 
 import IconButton from 'components/form/IconButton'
 import Flex from 'components/ui/Flex'
+import { useRestoreFocus } from 'hooks/useRestoreFocus'
 import clst from 'styles/clst'
 
 const drawerContentClasses = clst(
@@ -18,6 +19,8 @@ const headerClasses = clst(
 )
 
 const Drawer: React.FC<DrawerProps> = ({ children, className, onOpenChange, opened, title, trigger }) => {
+  useRestoreFocus(opened)
+
   const childrenClasses = clst('grow overflow-y-auto', className)
 
   return (
@@ -25,7 +28,7 @@ const Drawer: React.FC<DrawerProps> = ({ children, className, onOpenChange, open
       {trigger ? <Trigger asChild>{trigger}</Trigger> : null}
       <Portal>
         <Overlay className={drawerOverlayClasses}>
-          <Content className={drawerContentClasses}>
+          <Content className={drawerContentClasses} onCloseAutoFocus={handleCloseAutoFocus}>
             <Flex as="header" alignItems="center" justifyContent="between" className={headerClasses}>
               <Title>{title}</Title>
               <Close asChild>
@@ -41,6 +44,10 @@ const Drawer: React.FC<DrawerProps> = ({ children, className, onOpenChange, open
 }
 
 export default Drawer
+
+function handleCloseAutoFocus(event: Event) {
+  event.preventDefault()
+}
 
 interface DrawerProps {
   children: React.ReactNode
