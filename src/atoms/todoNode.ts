@@ -10,7 +10,9 @@ export const todoNodeChildrenAtom = atomWithReset<TodoNodesData['children']>({ r
 
 export const todoNodeNodesAtom = atomWithReset<TodoNodesData['nodes']>({})
 
-export const todoNodeMutationsAtom = atomWithReset<Record<TodoNodeData['id'], 'insert' | 'update' | 'delete'>>({})
+export const todoNodeMutationsAtom = atomWithReset<Record<TodoNodeData['id'] | 'root', 'insert' | 'update' | 'delete'>>(
+  {}
+)
 
 export const updateContentAtom = atom(null, (get, set, { content, id }: AtomParamsContentUpdate) => {
   const node = get(todoNodeNodesAtom)[id]
@@ -301,12 +303,10 @@ export const moveNodeAtom = atom(null, (get, set, { direction, id, parentId = 'r
     }
   })
 
-  if (parentId !== 'root') {
-    set(todoNodeMutationsAtom, (prevMutations) => ({
-      ...prevMutations,
-      [parentId]: prevMutations[parentId] ?? 'update',
-    }))
-  }
+  set(todoNodeMutationsAtom, (prevMutations) => ({
+    ...prevMutations,
+    [parentId]: prevMutations[parentId] ?? 'update',
+  }))
 })
 
 export function getClosestNode(

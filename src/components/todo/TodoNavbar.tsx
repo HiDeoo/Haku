@@ -27,14 +27,15 @@ const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, focusTodoNode, todoId
   const navbarDisabled = disabled || isLoading
 
   const getTodoAtoms = useAtomCallback(
-    useCallback(
-      (get) => ({
+    useCallback((get) => {
+      const { root, ...mutationsWithoutRoot } = get(todoNodeMutationsAtom)
+
+      return {
         children: get(todoNodeChildrenAtom),
-        mutations: get(todoNodeMutationsAtom),
+        mutations: mutationsWithoutRoot,
         nodes: get(todoNodeNodesAtom),
-      }),
-      []
-    )
+      }
+    }, [])
   )
 
   const handleMutationSettled = useCallback(
