@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 ### 🐞 Bug Fixes
 
 - Update inbox shortcut to `Control + i` to prevent conflicts with the note editor.
+- Ensure new content is automatically focused after creating a new note or todo.
 
 ## v0.1.4
 

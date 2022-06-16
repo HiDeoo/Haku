@@ -1,4 +1,4 @@
-import { Close, Content, Overlay, Portal, Root, Title, Trigger } from '@radix-ui/react-dialog'
+import { Close, Content, DialogContentImplProps, Overlay, Portal, Root, Title, Trigger } from '@radix-ui/react-dialog'
 import { RiCloseLine } from 'react-icons/ri'
 
 import Button from 'components/form/Button'
@@ -19,6 +19,7 @@ const Modal: ModalComponent = ({
   className,
   contentClassName,
   disabled,
+  onCloseAutoFocus,
   onOpenChange,
   opened,
   role,
@@ -45,6 +46,7 @@ const Modal: ModalComponent = ({
             onEscapeKeyDown={handleClose}
             onInteractOutside={handleClose}
             onPointerDownOutside={handleClose}
+            onCloseAutoFocus={onCloseAutoFocus}
           >
             <Flex
               as="header"
@@ -95,6 +97,7 @@ export interface ModalProps {
   className?: string
   contentClassName?: string
   disabled?: boolean
+  onCloseAutoFocus?: DialogContentImplProps['onCloseAutoFocus']
   onOpenChange: (opened: boolean) => void
   opened: boolean
   role?: React.HtmlHTMLAttributes<HTMLElement>['role']
