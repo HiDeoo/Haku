@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 - Ensure new content is automatically focused after creating a new note or todo.
 - Improve editor code block accessibility when using the `Tab` key.
 - Fix focus restoration when using the inbox.
+- Fix an issue preventing to save a todo after only moving a root todo node.
 
 ## v0.1.4
 
