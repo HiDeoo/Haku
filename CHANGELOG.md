@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+### 💄 UI
+
+- Reduce note editor title sizes.
+
 ### 🐞 Bug Fixes
 
 - Update inbox shortcut to `Control + i` to prevent conflicts with the note editor.
