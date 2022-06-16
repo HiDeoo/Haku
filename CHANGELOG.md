@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 - Update inbox shortcut to `Control + i` to prevent conflicts with the note editor.
 - Ensure new content is automatically focused after creating a new note or todo.
 - Improve editor code block accessibility when using the `Tab` key.
+- Fix focus restoration when using the inbox.
 
 ## v0.1.4
 
