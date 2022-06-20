@@ -58,6 +58,10 @@
 
   hr {
     @apply border-t-zinc-600;
+
+    &:global(.ProseMirror-selectednode) {
+      @apply border-t-blue-400;
+    }
   }
 
   blockquote {

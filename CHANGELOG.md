@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 ### 🐞 Bug Fixes
 
 - Properly display unknown editor code block languages as `Unknown`.
+- Fix missing editor highlight when selecting a separator.
 
 ## v0.1.5
 
