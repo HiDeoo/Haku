@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## Unreleased
+
+### 🚀 Features
+
+- Quotes in the editor can be highlighted by using bold text on the first line.
+
 ## v0.1.5
 
 ### 💄 UI
