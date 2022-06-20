@@ -11,6 +11,7 @@ import NetworkAgent from 'components/app/NetworkAgent'
 import Route from 'components/app/Route'
 import Title from 'components/app/Title'
 import Layout from 'components/ui/Layout'
+import { useFileHistory } from 'hooks/useFileHistory'
 import usePwa from 'hooks/usePwa'
 import { getTRPCConfiguration } from 'libs/trpc'
 import { type AppRouter } from 'server/routers'
@@ -19,6 +20,7 @@ const Toaster = dynamic(import('components/ui/Toaster'))
 
 function Haku({ Component, pageProps: { session, ...pageProps } }: AppPropsWithLayout) {
   usePwa()
+  useFileHistory()
 
   const sidebar = Component.sidebar ?? true
 

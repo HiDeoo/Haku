@@ -1,13 +1,15 @@
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 import { RiBookletLine, RiTodoLine } from 'react-icons/ri'
 
+import { fileHistoryAtom } from 'atoms/fileHistory'
 import { navigationPaletteOpenedAtom } from 'atoms/palette'
 import Palette, { type PaletteItem } from 'components/palette/Palette'
 import { ContentType, getContentType } from 'hooks/useContentType'
 import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
-import { type FileData } from 'libs/db/file'
+import { unshiftFromIndex } from 'libs/array'
+import { type FilesData, type FileData } from 'libs/db/file'
 import { trpc } from 'libs/trpc'
 
 const NavigationPalette: React.FC = () => {
@@ -16,6 +18,26 @@ const NavigationPalette: React.FC = () => {
   const [opened, setOpened] = useAtom(navigationPaletteOpenedAtom)
 
   const { data, isLoading } = trpc.useQuery(['file.list'], { enabled: opened })
+
+  const fileHistory = useAtomValue(fileHistoryAtom)
+
+  const files: FilesData = useMemo(() => {
+    if (!data) {
+      return []
+    }
+
+    let orderedData = [...data]
+
+    for (const [i, id] of [...fileHistory].reverse().entries()) {
+      const index = orderedData.findIndex((file) => file.id === id)
+
+      if (i !== fileHistory.length - 1) {
+        orderedData = unshiftFromIndex(orderedData, index)
+      }
+    }
+
+    return orderedData
+  }, [data, fileHistory])
 
   useGlobalShortcuts(
     useMemo(
@@ -47,9 +69,9 @@ const NavigationPalette: React.FC = () => {
 
   return (
     <Palette<Navigation>
+      items={files}
       opened={opened}
       enterKeyHint="go"
-      items={data ?? []}
       onPick={handlePick}
       isLoading={isLoading}
       itemToIcon={itemToIcon}
