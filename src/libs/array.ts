@@ -14,6 +14,10 @@ export function removeAtIndex<TData>(array: TData[], index: number): TData[] {
   return [...array.slice(0, index), ...array.slice(index + 1)]
 }
 
+export function unshiftFromIndex<TData>(array: TData[], index: number): TData[] {
+  return [...array.slice(index, index + 1), ...array.slice(0, index), ...array.slice(index + 1)]
+}
+
 export function groupByKey<
   TIndex extends PropertyKey,
   TKey extends TIndex,

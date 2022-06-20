@@ -2,7 +2,7 @@ import { ContentType } from 'constants/contentType'
 import { SEARCH_RESULT_LIMIT } from 'constants/search'
 import { prisma } from 'libs/db'
 
-type FilesData = FileData[]
+export type FilesData = FileData[]
 export interface FileData {
   id: string
   name: string
