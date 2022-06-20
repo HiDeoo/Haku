@@ -9,6 +9,10 @@ All notable changes to this project will be documented in this file.
 - Quotes in the editor can be highlighted by using bold text on the first line.
 - Add support for editor code block language aliases (e.g. `ts` -> `TypeScript`).
 
+### 🐞 Bug Fixes
+
+- Properly display unknown editor code block languages as `Unknown`.
+
 ## v0.1.5
 
 ### 💄 UI

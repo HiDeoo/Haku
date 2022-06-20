@@ -100,16 +100,20 @@ export function getLowlight() {
 
 export function getLanguageName(id: string | null) {
   if (!id) {
-    return ''
+    return 'Unknown'
   }
 
   const alias = languageAliases[id]
 
   if (alias) {
-    return languages[alias]?.name ?? id
+    const aliasee = languages[alias]?.name
+
+    if (aliasee) {
+      return aliasee
+    }
   }
 
-  return languages[id]?.name ?? id
+  return languages[id]?.name ?? 'Unknown'
 }
 
 export function getToc(editor: Editor) {
