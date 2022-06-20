@@ -19,7 +19,7 @@ import useLocalShortcuts from 'hooks/useLocalShortcuts'
 import useNavigationPrompt from 'hooks/useNavigationPrompt'
 import { useNetworkStatus } from 'hooks/useNetworkStatus'
 import useRouteChange from 'hooks/useRouteChange'
-import { TodoContext, todoNodeContentRefs } from 'hooks/useTodoNode'
+import { TodoContext } from 'hooks/useTodoNode'
 import useTodoQuery from 'hooks/useTodoQuery'
 import { type TodoMetadata } from 'libs/db/todo'
 import { type TodoNodeData } from 'libs/db/todoNodes'
@@ -58,9 +58,9 @@ const Todo: React.FC<TodoProps> = ({ id }) => {
 
   useEffect(() => {
     return () => {
-      todoNodeContentRefs.clear()
+      todoNodeItems.clear()
     }
-  }, [])
+  }, [todoNodeItems])
 
   useRouteChange(() => {
     resetTodoAtoms()
@@ -132,16 +132,14 @@ const Todo: React.FC<TodoProps> = ({ id }) => {
           </Shimmer>
         ) : (
           <>
-            <TodoContext.Provider value={todoNodeContentRefs}>
-              <Flex
-                fullHeight
-                fullWidth
-                direction="col"
-                className="overflow-y-auto supports-max:pb-[max(0px,env(safe-area-inset-bottom))]"
-              >
-                <TodoNodeChildren onFocusTodoNode={setTodoFocus} setTodoNodeItemRef={setTodoNodeItemRef} />
-              </Flex>
-            </TodoContext.Provider>
+            <Flex
+              fullHeight
+              fullWidth
+              direction="col"
+              className="overflow-y-auto supports-max:pb-[max(0px,env(safe-area-inset-bottom))]"
+            >
+              <TodoNodeChildren onFocusTodoNode={setTodoFocus} setTodoNodeItemRef={setTodoNodeItemRef} />
+            </Flex>
             <EditorImageModal />
           </>
         )}
