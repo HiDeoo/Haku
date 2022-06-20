@@ -14,7 +14,7 @@ const EditorCodeBlock: React.FC<NodeViewProps> = ({ editor, extension, node, upd
   const languageSelect = useRef<HTMLButtonElement>(null)
   const copySelect = useRef<HTMLButtonElement>(null)
 
-  const languages = extension.options.lowlight.listLanguages()
+  const languages = extension.options.lowlight.listLanguagesWithoutAliases()
 
   function handleLanguageChange(language: string) {
     updateAttributes({ language })

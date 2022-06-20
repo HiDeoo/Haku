@@ -44,6 +44,25 @@ const languages: Languages = {
   zsh: { fn: bash, name: 'Zsh' },
 }
 
+const languageAliases: LanguageAliases = {
+  console: 'shell',
+  docker: 'dockerfile',
+  golang: 'go',
+  ini: 'toml',
+  js: 'javascript',
+  jsx: 'javascript',
+  md: 'markdown',
+  patch: 'diff',
+  postgres: 'pgsql',
+  postgresql: 'pgsql',
+  sh: 'bash',
+  text: 'plaintext',
+  ts: 'typescript',
+  tsx: 'typescript',
+  txt: 'plaintext',
+  yml: 'yaml',
+}
+
 export function getLowlight() {
   if (isNotEmpty(lowlight.listLanguages())) {
     return lowlight
@@ -57,15 +76,44 @@ export function getLowlight() {
     }
   }
 
+  const registedLanguages = lowlight.listLanguages()
+
+  for (const id in languageAliases) {
+    const alias = languageAliases[id]
+
+    if (alias) {
+      lowlight.registerAlias(alias, id)
+    }
+  }
+
+  // By default, `lowlight.listLanguages()` does not return registered aliases so we need to monkey-patch it to do so.
+  lowlight.listLanguages = () => {
+    return [...registedLanguages, ...Object.keys(languageAliases)]
+  }
+
+  lowlight.listLanguagesWithoutAliases = () => {
+    return registedLanguages
+  }
+
   return lowlight
 }
 
 export function getLanguageName(id: string | null) {
   if (!id) {
-    return ''
+    return 'Unknown'
   }
 
-  return languages[id]?.name ?? id
+  const alias = languageAliases[id]
+
+  if (alias) {
+    const aliasee = languages[alias]?.name
+
+    if (aliasee) {
+      return aliasee
+    }
+  }
+
+  return languages[id]?.name ?? 'Unknown'
 }
 
 export function getToc(editor: Editor) {
@@ -161,3 +209,4 @@ export const ShiftEnter = Extension.create<{ callback: () => void }>({
 export type ToC = { id: string; level: number; name: string; pos: number }[]
 
 type Languages = Record<string, { fn: LanguageFn; name: string }>
+type LanguageAliases = Record<string, keyof Languages>
