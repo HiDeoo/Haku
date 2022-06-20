@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### 🚀 Features
 
 - Quotes in the editor can be highlighted by using bold text on the first line.
+- Add support for editor code block language aliases (e.g. `ts` -> `TypeScript`).
 
 ## v0.1.5
 
