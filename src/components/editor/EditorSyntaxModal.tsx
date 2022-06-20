@@ -211,6 +211,16 @@ const EditorSyntaxModal: React.FC = () => {
         <EditorSyntaxOutput type="block">
           <blockquote>I said an amazing joke.</blockquote>
         </EditorSyntaxOutput>
+        To highlight a quote, use bold text on the first line:
+        <EditorSyntaxCode type="block" code="> **Note**" />
+        <EditorSyntaxOutput type="block">
+          <blockquote>
+            <p>
+              <strong>Note</strong>
+            </p>
+            This is an important note.
+          </blockquote>
+        </EditorSyntaxOutput>
       </EditorSyntaxSection>
     </Modal>
   )
@@ -240,7 +250,9 @@ const EditorSyntaxCode: React.FC<EditorSyntaxCodeProps> = ({ code, type = 'inlin
 const EditorSyntaxOutput: React.FC<EditorSyntaxOutputProps> = ({ children, type = 'inline' }) => {
   const outputClasses = clst(
     styles.editor,
-    type === 'inline' ? 'inline-block px-[0.2rem] py-px' : 'rounded bg-zinc-700/50 my-4 px-2 py-1.5'
+    type === 'inline'
+      ? 'inline-block px-[0.2rem] py-px'
+      : 'rounded bg-zinc-700/50 my-4 px-2 py-1.5 [&>blockquote>p]:mt-0'
   )
 
   return <div className={outputClasses}>{children}</div>
