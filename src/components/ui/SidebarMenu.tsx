@@ -17,7 +17,7 @@ import {
 
 import { sidebarCollapsedAtom, toggleSidebarCollapsedAtom } from 'atoms/collapsible'
 import { deferrefPromptEventAtom } from 'atoms/pwa'
-import { setShortcutModalOpenedAtom } from 'atoms/togglable'
+import { shortcutModalOpenedAtom } from 'atoms/togglable'
 import ContentModal from 'components/content/ContentModal'
 import ContentTypeSwitch from 'components/content/ContentTypeSwitch'
 import FolderModal from 'components/folder/FolderModal'
@@ -42,7 +42,7 @@ const SidebarMenu: React.FC = () => {
   const deferrefPromptEvent = useAtomValue(deferrefPromptEventAtom)
   const resetDeferrefPromptEvent = useResetAtom(deferrefPromptEventAtom)
 
-  const setShortcutModalOpened = useSetAtom(setShortcutModalOpenedAtom)
+  const setShortcutModalOpened = useSetAtom(shortcutModalOpenedAtom)
 
   function handleKeyboardShortcutsClick() {
     setShortcutModalOpened(true)

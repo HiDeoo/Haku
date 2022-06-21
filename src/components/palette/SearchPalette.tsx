@@ -3,8 +3,8 @@ import { useRouter } from 'next/router'
 import { useMemo, useRef, useState } from 'react'
 import { RiBookletLine, RiInboxFill, RiSearchLine, RiTodoLine } from 'react-icons/ri'
 
-import { searchPaletteOpenedAtom } from 'atoms/palette'
-import { setInboxDrawerOpenedAtom } from 'atoms/togglable'
+import { searchPaletteOpenedAtom } from 'atoms/togglable'
+import { inboxDrawerOpenedAtom } from 'atoms/togglable'
 import IconButton from 'components/form/IconButton'
 import Palette, { type PaletteItem } from 'components/palette/Palette'
 import { ContentType } from 'constants/contentType'
@@ -26,7 +26,7 @@ const SearchPalette: React.FC = () => {
 
   const { data, fetchNextPage, fetchStatus, hasNextPage, isFetchingNextPage } = useSearchQuery(opened, debouncedQuery)
 
-  const setInboxDrawerOpened = useSetAtom(setInboxDrawerOpenedAtom)
+  const setInboxDrawerOpened = useSetAtom(inboxDrawerOpenedAtom)
 
   useGlobalShortcuts(
     useMemo(

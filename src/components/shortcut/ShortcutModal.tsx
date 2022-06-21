@@ -1,14 +1,13 @@
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtom } from 'jotai'
 import { useMemo } from 'react'
 
-import { setShortcutModalOpenedAtom, shortcutModalAtom } from 'atoms/togglable'
+import { shortcutModalOpenedAtom } from 'atoms/togglable'
 import ShortcutList from 'components/shortcut/ShortcutList'
 import Modal from 'components/ui/Modal'
 import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
 
 const ShortcutModal: React.FC = () => {
-  const opened = useAtomValue(shortcutModalAtom)
-  const setOpened = useSetAtom(setShortcutModalOpenedAtom)
+  const [opened, setOpened] = useAtom(shortcutModalOpenedAtom)
 
   useGlobalShortcuts(
     useMemo(

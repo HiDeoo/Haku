@@ -15,12 +15,12 @@ import {
 } from 'react-icons/ri'
 
 import { toggleSidebarCollapsedAtom } from 'atoms/collapsible'
-import { commandPaletteOpenedAtom, navigationPaletteOpenedAtom, searchPaletteOpenedAtom } from 'atoms/palette'
+import { commandPaletteOpenedAtom, navigationPaletteOpenedAtom, searchPaletteOpenedAtom } from 'atoms/togglable'
 import {
+  inboxDrawerOpenedAtom,
   setContentModalOpenedAtom,
   setFolderModalOpenedAtom,
-  setInboxDrawerOpenedAtom,
-  setShortcutModalOpenedAtom,
+  shortcutModalOpenedAtom,
 } from 'atoms/togglable'
 import Palette, { type PaletteItem } from 'components/palette/Palette'
 import { type IconProps } from 'components/ui/Icon'
@@ -46,9 +46,9 @@ const CommandPalette: React.FC = () => {
 
   const setContentModalOpened = useSetAtom(setContentModalOpenedAtom)
   const setFolderModalOpened = useSetAtom(setFolderModalOpenedAtom)
-  const setShortcutModalOpened = useSetAtom(setShortcutModalOpenedAtom)
+  const setShortcutModalOpened = useSetAtom(shortcutModalOpenedAtom)
 
-  const setInboxDrawerOpened = useSetAtom(setInboxDrawerOpenedAtom)
+  const setInboxDrawerOpened = useSetAtom(inboxDrawerOpenedAtom)
 
   const toggleSidebarCollapsed = useSetAtom(toggleSidebarCollapsedAtom)
 

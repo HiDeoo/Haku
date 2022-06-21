@@ -1,4 +1,4 @@
-import { atom, type PrimitiveAtom, type WritableAtom } from 'jotai'
+import { atom, type WritableAtom } from 'jotai'
 
 import { onlineAtom } from 'atoms/network'
 import { type FolderData } from 'libs/db/folder'
@@ -9,10 +9,15 @@ import { type A11yImageParams } from 'libs/image'
 export const [folderModalAtom, setFolderModalOpenedAtom] = createMutationModalAtom<FolderData>()
 export const [contentModalAtom, setContentModalOpenedAtom] = createMutationModalAtom<NoteMetadata | TodoMetadata>()
 
-export const [shortcutModalAtom, setShortcutModalOpenedAtom] = createTogglableAtom()
-export const [inboxDrawerAtom, setInboxDrawerOpenedAtom] = createTogglableAtom()
-
 export const editorImageModalAtom = atom<EditorImageModal>({ opened: false })
+
+export const shortcutModalOpenedAtom = atom(false)
+
+export const inboxDrawerOpenedAtom = atom(false)
+
+export const commandPaletteOpenedAtom = atom(false)
+export const navigationPaletteOpenedAtom = atom(false)
+export const searchPaletteOpenedAtom = atom(false)
 
 function createMutationModalAtom<TData>(): [
   WritableAtom<MutationModal<TData>, MutationModal<TData>>,
@@ -28,16 +33,6 @@ function createMutationModalAtom<TData>(): [
     const online = get(onlineAtom)
 
     return set(modalAtom, { ...get(modalAtom), action: 'insert', data: undefined, opened: !online ? false : opened })
-  })
-
-  return [modalAtom, setModalOpenedAtom]
-}
-
-function createTogglableAtom(): [PrimitiveAtom<boolean>, WritableAtom<null, boolean>] {
-  const modalAtom = atom<boolean>(false)
-
-  const setModalOpenedAtom: WritableAtom<null, boolean> = atom(null, (_get, set, opened: boolean) => {
-    return set(modalAtom, opened)
   })
 
   return [modalAtom, setModalOpenedAtom]
