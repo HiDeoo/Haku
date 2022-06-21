@@ -10,7 +10,6 @@ const menuMaxHeightInPixels = 210
 const ControlMenu = <TItem,>({
   className,
   container,
-  disableAnimation,
   getItemProps,
   highlightedIndex,
   isOpen,
@@ -48,10 +47,7 @@ const ControlMenu = <TItem,>({
 
   const containerClasses = clst('absolute top-full inset-x-0 mt-0.5 outline-none', className)
   const menuClasses = clst(
-    'rounded-md bg-zinc-700 shadow-sm shadow-zinc-900/50 overflow-auto origin-top',
-    {
-      'animate-control-menu': !disableAnimation,
-    },
+    'animate-control-menu rounded-md bg-zinc-700 shadow-sm shadow-zinc-900/50 overflow-auto origin-top',
     menuClassName
   )
 
@@ -97,7 +93,6 @@ export default ControlMenu
 export interface ControlMenuProps<TItem> {
   className?: string
   container: RefObject<HTMLDivElement>
-  disableAnimation?: boolean
   getItemProps: UseSelectPropGetters<TItem>['getItemProps']
   highlightedIndex: UseSelectState<TItem>['highlightedIndex']
   isOpen: UseSelectState<TItem>['isOpen']
