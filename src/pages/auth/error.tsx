@@ -8,16 +8,16 @@ import Flex from 'components/ui/Flex'
 import { getAuthErrorMesssage } from 'libs/auth'
 
 const Error: Page = () => {
-  const { pathname, push, query } = useRouter()
+  const { pathname, query, replace } = useRouter()
 
   useEffect(() => {
     // Being redirected to `/api/auth/error` without any specific error message (for example during development when
     // shutting down the server with the webpage still opened) would lead to the query string param `error` being the
     // `undefined` string. We can safely remove it.
     if (query.error === 'undefined') {
-      push(pathname)
+      replace(pathname, undefined, { shallow: true })
     }
-  }, [pathname, push, query.error])
+  }, [pathname, query.error, replace])
 
   return (
     <Flex direction="col" alignItems="center">
