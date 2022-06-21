@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 
 - Properly display unknown editor code block languages as `Unknown`.
 - Fix missing editor highlight when selecting a separator.
+- Fix content update issue on slow connections.
 
 ## v0.1.5
 
