@@ -1,4 +1,5 @@
 import { useSetAtom } from 'jotai'
+import { useEffect } from 'react'
 
 import { contentAvailableOfflineAtom } from 'atoms/network'
 import { SW_CACHES } from 'constants/sw'
@@ -9,6 +10,14 @@ import { isNetworkError, trpc } from 'libs/trpc'
 
 export default function useTodoQuery(id: TodoMetadata['id'], options: UseTodoQueryOptions) {
   const setContentAvailableOffline = useSetAtom(contentAvailableOfflineAtom)
+
+  const { cancelQuery } = trpc.useContext()
+
+  useEffect(() => {
+    if (!options.enabled) {
+      cancelQuery(['todo.node.byId'])
+    }
+  }, [cancelQuery, options.enabled])
 
   return trpc.useQuery(['todo.node.byId', { id }], {
     ...options,

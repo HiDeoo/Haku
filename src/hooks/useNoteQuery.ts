@@ -1,4 +1,5 @@
 import { useSetAtom } from 'jotai'
+import { useEffect } from 'react'
 
 import { contentAvailableOfflineAtom } from 'atoms/network'
 import { SW_CACHES } from 'constants/sw'
@@ -8,6 +9,14 @@ import { isNetworkError, trpc } from 'libs/trpc'
 
 export default function useNoteQuery(id: NoteData['id'], options: UseNoteQueryOptions) {
   const setContentAvailableOffline = useSetAtom(contentAvailableOfflineAtom)
+
+  const { cancelQuery } = trpc.useContext()
+
+  useEffect(() => {
+    if (!options.enabled) {
+      cancelQuery(['todo.node.byId'])
+    }
+  }, [cancelQuery, options.enabled])
 
   return trpc.useQuery(['note.byId', { id }], {
     ...options,
