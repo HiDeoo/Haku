@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { registerGlobalShortcutsAtom, unregisterGlobalShortcutsAtom } from 'atoms/shortcuts'
 import { getShortcutMap, isShortcutEvent, type Shortcut } from 'libs/shortcut'
@@ -19,22 +19,19 @@ export default function useGlobalShortcuts(shortcuts: Shortcut[]) {
     }
   }, [registerGlobalShortcuts, shortcuts, unregisterGlobalShortcuts])
 
-  const handleKeyDown = useCallback(
-    (event: KeyboardEvent) => {
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
       for (const shortcut of Object.values(shortcutMap)) {
         if (shortcut.onKeyDown && isShortcutEvent(event, shortcut)) {
           shortcut.onKeyDown(event)
         }
       }
-    },
-    [shortcutMap]
-  )
+    }
 
-  useEffect(() => {
     document.addEventListener('keydown', handleKeyDown, true)
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown, true)
     }
-  }, [handleKeyDown])
+  }, [shortcutMap])
 }
