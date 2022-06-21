@@ -1,4 +1,4 @@
-import { Content, Item, Root, Trigger } from '@radix-ui/react-dropdown-menu'
+import { Content, Item, Portal, Root, Trigger } from '@radix-ui/react-dropdown-menu'
 import { Children, cloneElement, forwardRef, isValidElement } from 'react'
 
 import Button, { type ButtonProps } from 'components/form/Button'
@@ -174,16 +174,18 @@ const InspectorIconMenu: React.FC<InspectorIconButtonMenuProps> = ({
           pressedClassName={pressedButtonClasses}
         />
       </Trigger>
-      <Content
-        loop
-        sideOffset={collapsed ? 7 : 0}
-        side={collapsed ? 'left' : 'bottom'}
-        onCloseAutoFocus={handleIconMenuCloseAutoFocus}
-      >
-        <Flex direction="col" className="mt-[theme(spacing[0.5])] rounded-md bg-zinc-700 shadow-sm shadow-black/50">
-          {children}
-        </Flex>
-      </Content>
+      <Portal>
+        <Content
+          loop
+          sideOffset={collapsed ? 7 : 0}
+          side={collapsed ? 'left' : 'bottom'}
+          onCloseAutoFocus={handleIconMenuCloseAutoFocus}
+        >
+          <Flex direction="col" className="mt-[theme(spacing[0.5])] rounded-md bg-zinc-700 shadow-sm shadow-black/50">
+            {children}
+          </Flex>
+        </Content>
+      </Portal>
     </Root>
   )
 }
@@ -200,7 +202,7 @@ const InspectorIconMenuItem: React.FC<InspectorIconMenuItemProps> = ({ icon, onC
       <InspectorIconButton
         icon={icon}
         onClick={onClick}
-        className="focus-visible:ring-inset focus-visible:ring-offset-0"
+        className="[&[data-highlighted]]:ring-inset [&[data-highlighted]]:ring-offset-0"
       />
     </Item>
   )
