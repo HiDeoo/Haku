@@ -199,7 +199,11 @@ function uploadImagesToEditor(
     }
 
     const id = cuid()
-    const node = editor.view.state.schema.nodes[tiptapNodeName].create({ id, pending: true, pendingName: image.name })
+    const node = editor.view.state.schema.nodes[tiptapNodeName]?.create({ id, pending: true, pendingName: image.name })
+
+    if (!node) {
+      continue
+    }
 
     editor.view.dispatch(
       pos
