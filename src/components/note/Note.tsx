@@ -28,8 +28,6 @@ const Note: React.FC<NoteProps> = ({ id }) => {
   const [linkModalOpened, setLinkModalOpened] = useState(false)
   const [editorState, setEditorState] = useState<NoteEditorState>({ pristine: true })
 
-  const idle = useIdle()
-
   useNavigationPrompt(!editorState.pristine)
 
   const { data, isLoading } = useNoteQuery(id, { enabled: editorState.pristine })
@@ -78,6 +76,14 @@ const Note: React.FC<NoteProps> = ({ id }) => {
     )
   }, [editor, id, mutate, offline])
 
+  useIdle(
+    useCallback(() => {
+      if (!editorState.pristine) {
+        save()
+      }
+    }, [editorState.pristine, save])
+  )
+
   useGlobalShortcuts(
     useMemo(
       () => [
@@ -123,12 +129,6 @@ const Note: React.FC<NoteProps> = ({ id }) => {
       handleNewContent({ editor })
     }
   }, [data, editor, handleNewContent])
-
-  useEffect(() => {
-    if (idle && !editorState.pristine) {
-      save()
-    }
-  }, [editorState.pristine, idle, save])
 
   const isOfflineWithoutData = offline && isLoading && !data
   const disabled = isLoading || isSaving || !editor?.isEditable || isOfflineWithoutData

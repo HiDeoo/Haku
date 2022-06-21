@@ -6,7 +6,7 @@ import { contentModalAtom, folderModalAtom } from 'atoms/togglable'
 
 const activityEvents: (keyof WindowEventMap)[] = ['keydown', 'mousedown', 'mousemove', 'resize', 'touchstart', 'wheel']
 
-export default function useIdle(durationInSeconds = 10) {
+export default function useIdle(idleHandler: () => void, durationInSeconds = 10) {
   const [idle, setIdle] = useState(false)
 
   const enabled = useRef(true)
@@ -74,5 +74,9 @@ export default function useIdle(durationInSeconds = 10) {
     }
   }, [folderModalOpened, contentModalOpened])
 
-  return idle
+  useEffect(() => {
+    if (idle) {
+      idleHandler()
+    }
+  }, [idle, idleHandler])
 }
