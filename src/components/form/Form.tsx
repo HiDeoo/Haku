@@ -1,5 +1,4 @@
 import { TRPCClientError } from '@trpc/react'
-import { useEffect, useState } from 'react'
 
 import Callout from 'components/form/Callout'
 
@@ -15,25 +14,7 @@ const Form: React.FC<FormProps> = ({ children, className, error, errorMessage, o
 export default Form
 
 const FormError: React.FC<Omit<FormProps, 'onSubmit' | 'children'>> = ({ error, errorMessage }) => {
-  const [message, setMessage] = useState<string | null>(null)
-
-  useEffect(() => {
-    function getErrorMessage() {
-      let msg = errorMessage ?? 'Something went wrong!'
-
-      if (error instanceof TRPCClientError) {
-        msg = error.message
-      }
-
-      setMessage(msg)
-    }
-
-    getErrorMessage()
-  }, [error, errorMessage])
-
-  if (!message) {
-    return null
-  }
+  const message = error instanceof TRPCClientError ? error.message : errorMessage ?? 'Something went wrong!'
 
   return <Callout intent="error" message={message} />
 }

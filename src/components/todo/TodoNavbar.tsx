@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai'
 import { useAtomCallback, useResetAtom } from 'jotai/utils'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { todoEditorStateAtom } from 'atoms/todo'
 import { todoNodeChildrenAtom, todoNodeMutationsAtom, todoNodeNodesAtom } from 'atoms/todoNode'
@@ -21,8 +21,6 @@ const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, focusTodoNode, todoId
   const resetMutations = useResetAtom(todoNodeMutationsAtom)
 
   const { isLoading, mutate } = trpc.useMutation(['todo.node.update'])
-
-  const idle = useIdle()
 
   const navbarDisabled = disabled || isLoading
 
@@ -109,11 +107,13 @@ const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, focusTodoNode, todoId
     )
   )
 
-  useEffect(() => {
-    if (idle && !editorState.pristine) {
-      save()
-    }
-  }, [editorState.pristine, idle, save])
+  useIdle(
+    useCallback(() => {
+      if (!editorState.pristine) {
+        save()
+      }
+    }, [editorState.pristine, save])
+  )
 
   return (
     <Navbar disabled={navbarDisabled} title={todoName}>

@@ -45,7 +45,6 @@ const Combobox = <TItem, TFormFields extends FieldValues>({
   const [isPending, startTransition] = useTransition()
 
   const [filteredItems, setFilteredItems] = useState(items)
-  const [disableMenuAnimation, setDisableMenuAnimation] = useState(false)
 
   const renderItem = useCallback(
     (item: TItem | null): string => {
@@ -96,38 +95,18 @@ const Combobox = <TItem, TFormFields extends FieldValues>({
   )
 
   useEffect(() => {
-    setFilteredItems(items)
-  }, [items])
-
-  useEffect(() => {
     selectItem(defaultItem)
   }, [defaultItem, selectItem])
-
-  useEffect(() => {
-    let animationFrame: ReturnType<typeof requestAnimationFrame>
-
-    if (disableMenuAnimation) {
-      animationFrame = requestAnimationFrame(() => {
-        setDisableMenuAnimation(false)
-      })
-    }
-
-    return () => {
-      if (animationFrame) {
-        cancelAnimationFrame(animationFrame)
-      }
-    }
-  }, [disableMenuAnimation])
 
   function stateReducer(state: UseComboboxState<TItem>, { type, changes }: UseComboboxStateChangeOptions<TItem>) {
     switch (type) {
       case useCombobox.stateChangeTypes.InputChange: {
-        const needle = changes.inputValue?.toLowerCase() ?? ''
-        const results = changes.inputValue
-          ? fuzzaldrin.filter(searchableItems, needle, { key: 'str' }).map((result) => result.item)
-          : items
-
         startTransition(() => {
+          const needle = changes.inputValue?.toLowerCase() ?? ''
+          const results = changes.inputValue
+            ? fuzzaldrin.filter(searchableItems, needle, { key: 'str' }).map((result) => result.item)
+            : items
+
           setFilteredItems(results)
         })
 
@@ -140,7 +119,6 @@ const Combobox = <TItem, TFormFields extends FieldValues>({
           return changes
         }
 
-        setDisableMenuAnimation(true)
         onChange(state.selectedItem)
 
         return {
@@ -222,7 +200,6 @@ const Combobox = <TItem, TFormFields extends FieldValues>({
         isOpen={!isPending && isOpen}
         highlightedIndex={highlightedIndex}
         itemToInnerHtml={renderFilteredItem}
-        disableAnimation={disableMenuAnimation}
       />
     </div>
   )
