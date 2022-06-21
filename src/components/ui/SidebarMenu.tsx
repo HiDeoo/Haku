@@ -1,4 +1,4 @@
-import { Arrow, Content, Item, Root, Trigger } from '@radix-ui/react-dropdown-menu'
+import { Arrow, Content, Item, Portal, Root, Trigger } from '@radix-ui/react-dropdown-menu'
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useResetAtom } from 'jotai/utils'
 import { useRouter } from 'next/router'
@@ -87,45 +87,47 @@ const SidebarMenu: React.FC = () => {
         <Trigger asChild>
           <IconButton icon={RiMore2Fill} tooltip="More" className="last-of-type:mr-0.5" />
         </Trigger>
-        <Content
-          loop
-          side={sidebarCollapsed ? 'right' : 'top'}
-          className="animate-tooltip text-[0.84rem] leading-[1.2rem]"
-        >
-          <Arrow className="fill-zinc-700" width={16} height={8} offset={sidebarCollapsed ? 7 : 0} />
-          <Flex direction="col" className="rounded-md bg-zinc-700 p-1.5 shadow shadow-black/75">
-            <Item asChild>
-              <SidebarMenuItem label="Logout" icon={RiLogoutCircleRLine} onClick={logout} />
-            </Item>
-            <Item asChild>
-              <SidebarMenuItem label="Report Bug" icon={RiBugLine} onClick={openGitHubIssuePage} />
-            </Item>
-            <Item asChild>
-              <SidebarMenuItem label="Import Data" icon={RiInboxArchiveLine} onClick={handleImportDataClick} />
-            </Item>
-            <Item asChild>
-              <SidebarMenuItem
-                label="Keyboard Shortcuts"
-                icon={RiKeyboardFill}
-                onClick={handleKeyboardShortcutsClick}
-              />
-            </Item>
-            {isApplePlatform ? (
+        <Portal>
+          <Content
+            loop
+            side={sidebarCollapsed ? 'right' : 'top'}
+            className="animate-tooltip z-40 text-[0.84rem] leading-[1.2rem]"
+          >
+            <Arrow className="fill-zinc-700" width={16} height={8} offset={sidebarCollapsed ? 7 : 0} />
+            <Flex direction="col" className="rounded-md bg-zinc-700 p-1.5 shadow shadow-black/75">
+              <Item asChild>
+                <SidebarMenuItem label="Logout" icon={RiLogoutCircleRLine} onClick={logout} />
+              </Item>
+              <Item asChild>
+                <SidebarMenuItem label="Report Bug" icon={RiBugLine} onClick={openGitHubIssuePage} />
+              </Item>
+              <Item asChild>
+                <SidebarMenuItem label="Import Data" icon={RiInboxArchiveLine} onClick={handleImportDataClick} />
+              </Item>
               <Item asChild>
                 <SidebarMenuItem
-                  label="Get Apple Shortcut"
-                  icon={BsFillLayersFill}
-                  onClick={handleSidebarMenuInstallShortcutClick}
+                  label="Keyboard Shortcuts"
+                  icon={RiKeyboardFill}
+                  onClick={handleKeyboardShortcutsClick}
                 />
               </Item>
-            ) : null}
-            {deferrefPromptEvent ? (
-              <Item asChild>
-                <SidebarMenuItem label="Install App" icon={RiInstallLine} onClick={handleInstallAppClick} />
-              </Item>
-            ) : null}
-          </Flex>
-        </Content>
+              {isApplePlatform ? (
+                <Item asChild>
+                  <SidebarMenuItem
+                    label="Get Apple Shortcut"
+                    icon={BsFillLayersFill}
+                    onClick={handleSidebarMenuInstallShortcutClick}
+                  />
+                </Item>
+              ) : null}
+              {deferrefPromptEvent ? (
+                <Item asChild>
+                  <SidebarMenuItem label="Install App" icon={RiInstallLine} onClick={handleInstallAppClick} />
+                </Item>
+              ) : null}
+            </Flex>
+          </Content>
+        </Portal>
       </Root>
     </Flex>
   )
@@ -140,7 +142,7 @@ function handleSidebarMenuInstallShortcutClick() {
 const sidebarMenuItemClasses = clst(
   'mx-0 flex items-center justify-start gap-2.5 bg-zinc-700 text-left shadow-none px-2 py-1 rounded font-medium',
   'hover:bg-blue-600 hover:text-zinc-100',
-  'focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:bg-blue-600'
+  '[&[data-highlighted]]:ring-0 [&[data-highlighted]]:ring-offset-0 [&[data-highlighted]]:bg-blue-600'
 )
 
 const SidebarMenuItem = forwardRef<HTMLButtonElement, SidebarMenuItemProps>(

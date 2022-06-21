@@ -22,7 +22,7 @@ export function useInboxEntryMutation() {
 
       const oldInboxEntries = getQueryData(['inbox.list'])
 
-      setQueryData(['inbox.list'], (prevInboxEntries) => [
+      setQueryData(['inbox.list'], (prevInboxEntries: InboxEntriesData) => [
         { ...newInboxEntry, createdAt: new Date(), id: cuid() },
         ...(prevInboxEntries ?? []),
       ])
@@ -51,7 +51,7 @@ export function useInboxEntryMutation() {
 
       setQueryData(
         ['inbox.list'],
-        (prevInboxEntries) => prevInboxEntries?.filter((entry) => entry.id !== newInboxEntry.id) ?? []
+        (prevInboxEntries: InboxEntriesData) => prevInboxEntries?.filter((entry) => entry.id !== newInboxEntry.id) ?? []
       )
 
       return { oldInboxEntries }

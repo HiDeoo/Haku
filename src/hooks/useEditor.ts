@@ -126,7 +126,7 @@ function getExtensions(
               'Alt-Enter': () => {
                 const { $from } = this.editor.view.state.selection
 
-                const linkMark = this.editor.view.state.schema.marks.link.isInSet($from.marks())
+                const linkMark = this.editor.view.state.schema.marks.link?.isInSet($from.marks())
 
                 if (!linkMark?.attrs?.href) {
                   return false
