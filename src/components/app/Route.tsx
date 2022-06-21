@@ -1,4 +1,4 @@
-import { useAtom } from 'jotai'
+import { useUpdateAtom } from 'jotai/utils'
 import { signIn, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
@@ -13,7 +13,7 @@ const Route: React.FC<RouteProps> = ({ children }) => {
   const { push, query, route } = useRouter()
   const { status } = useSession()
 
-  const [contentType, setContentType] = useAtom(contentTypeAtom)
+  const setContentType = useUpdateAtom(contentTypeAtom)
 
   const isAuthenticated = status === 'authenticated'
   const isSecureRoute = !unsecureRoutes.has(route)
@@ -31,18 +31,16 @@ const Route: React.FC<RouteProps> = ({ children }) => {
   }, [callbackUrl, isAuthenticated, isSecureRoute, push, status])
 
   useEffect(() => {
-    let currentContentType: ContentType | undefined = undefined
+    const currentContentType = route.startsWith('/notes')
+      ? ContentType.NOTE
+      : route.startsWith('/todos')
+      ? ContentType.TODO
+      : undefined
 
-    if (route.startsWith('/notes')) {
-      currentContentType = ContentType.NOTE
-    } else if (route.startsWith('/todos')) {
-      currentContentType = ContentType.TODO
-    }
-
-    if (currentContentType && contentType !== currentContentType) {
+    if (currentContentType) {
       setContentType(currentContentType)
     }
-  }, [contentType, route, setContentType])
+  }, [route, setContentType])
 
   if (status !== 'loading' && ((isAuthenticated && isSecureRoute) || (!isAuthenticated && !isSecureRoute))) {
     return <>{children}</>
