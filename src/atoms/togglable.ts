@@ -9,11 +9,11 @@ import { type A11yImageParams } from 'libs/image'
 export const [folderModalAtom, setFolderModalOpenedAtom] = createMutationModalAtom<FolderData>()
 export const [contentModalAtom, setContentModalOpenedAtom] = createMutationModalAtom<NoteMetadata | TodoMetadata>()
 
+export const shortcutModalOpenedAtom = atom(false)
 export const editorImageModalAtom = atom<EditorImageModal>({ opened: false })
 
-export const shortcutModalOpenedAtom = atom(false)
-
 export const inboxDrawerOpenedAtom = atom(false)
+export const searchDrawerAtom = atom<SearchDrawer>({ opened: true, query: '' })
 
 export const commandPaletteOpenedAtom = atom(false)
 export const navigationPaletteOpenedAtom = atom(false)
@@ -46,4 +46,9 @@ interface MutationModal<TData> {
 
 interface EditorImageModal extends Partial<A11yImageParams> {
   opened: boolean
+}
+
+interface SearchDrawer {
+  opened: boolean
+  query: string
 }

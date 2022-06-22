@@ -29,26 +29,24 @@ const InboxForm: React.FC = () => {
 
   return (
     <Drawer.Form error={error} onSubmit={handleFormSubmit}>
-      <div className="flex gap-2.5">
-        <TextInput
-          autoFocus
-          type="text"
-          enterKeyHint="done"
-          readOnly={isLoading}
-          aria-label="New inbox entry"
-          placeholder="Add new inbox entry"
-          errorMessage={errors.text?.message}
-          {...register('text', { required: 'required' })}
-        />
-        <IconButton
-          primary
-          type="submit"
-          className="px-2"
-          icon={RiAddLine}
-          loading={isLoading}
-          disabled={isLoading || offline}
-        />
-      </div>
+      <TextInput
+        autoFocus
+        type="text"
+        enterKeyHint="done"
+        readOnly={isLoading}
+        aria-label="New inbox entry"
+        placeholder="Add new inbox entry"
+        errorMessage={errors.text?.message}
+        {...register('text', { required: 'required' })}
+      />
+      <IconButton
+        primary
+        type="submit"
+        className="px-2"
+        icon={RiAddLine}
+        loading={isLoading}
+        disabled={isLoading || offline}
+      />
     </Drawer.Form>
   )
 }

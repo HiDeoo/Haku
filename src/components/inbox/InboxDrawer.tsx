@@ -13,8 +13,7 @@ import { type InboxEntriesData } from 'libs/db/inbox'
 import { trpc } from 'libs/trpc'
 import clst from 'styles/clst'
 
-const InboxForm = dynamic(import('components/inbox/InboxForm'))
-const InboxList = dynamic(import('components/inbox/InboxList'))
+const Inbox = dynamic(import('components/inbox/Inbox'))
 
 const InboxDrawer: React.FC = () => {
   const { queryClient } = trpc.useContext()
@@ -72,8 +71,7 @@ const InboxDrawer: React.FC = () => {
       className="flex flex-col overflow-hidden"
       trigger={<IconButton icon={RiInboxFill} tooltip="Inbox" className={triggerClasses} />}
     >
-      <InboxForm />
-      <InboxList />
+      <Inbox />
     </Drawer>
   )
 }

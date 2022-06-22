@@ -6,7 +6,7 @@ export const LIST_BUTTON_CLASSES = 'rounded-full bg-transparent hover:bg-zinc-80
 export const LIST_BUTTON_PRESSED_CLASSES = 'bg-zinc-900/75 hover:bg-zinc-900/75'
 
 const itemClasses = clst(
-  'flex items-center justify-between gap-3 px-3 py-3 bg-zinc-700/40',
+  'flex items-center justify-between gap-3 p-3 bg-zinc-700/40',
   'border border-zinc-900 border-b-0 last:border-b first:rounded-t-lg last:rounded-b-lg',
   'focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-inset'
 )
@@ -49,7 +49,7 @@ const ListButton: React.FC<ListButtonProps> = (props) => {
 
 List.Button = ListButton
 
-type ListComponent = React.FC<ListProps> & {
+export type ListComponent = React.FC<ListProps> & {
   Item: typeof ListItem
   Button: typeof ListButton
 }
