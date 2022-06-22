@@ -83,7 +83,7 @@ const FolderModal: React.FC = () => {
             type="text"
             label="Name"
             enterKeyHint="done"
-            disabled={isLoading}
+            readOnly={isLoading}
             placeholder="Recipes"
             defaultValue={folder?.name ?? ''}
             errorMessage={errors.name?.message}

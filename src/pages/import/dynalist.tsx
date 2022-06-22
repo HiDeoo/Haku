@@ -56,7 +56,7 @@ const Dynalist: Page = () => {
             autoFocus
             label="OPML"
             enterKeyHint="done"
-            disabled={isLoading}
+            readOnly={isLoading}
             errorMessage={errors.opml?.message}
             placeholder={`<?xml version="1.0" encoding="utf-8"?>
   <opml version="2.0">

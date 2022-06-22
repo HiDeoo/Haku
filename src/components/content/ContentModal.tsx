@@ -117,7 +117,7 @@ const ContentModal: React.FC = () => {
             type="text"
             label="Name"
             enterKeyHint="done"
-            disabled={isLoading}
+            readOnly={isLoading}
             placeholder="Beef Bourguignon"
             defaultValue={content?.name ?? ''}
             errorMessage={errors.name?.message}
