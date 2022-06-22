@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai'
+import { useAtom } from 'jotai'
 import { useForm } from 'react-hook-form'
 import { RiSearchLine } from 'react-icons/ri'
 
@@ -12,7 +12,7 @@ import { isEmpty } from 'libs/array'
 import { trpc } from 'libs/trpc'
 
 const SearchForm: React.FC = () => {
-  const { query } = useAtomValue(searchDrawerAtom)
+  const [{ query }, setDrawer] = useAtom(searchDrawerAtom)
 
   const {
     register,
@@ -26,7 +26,9 @@ const SearchForm: React.FC = () => {
     enabled: false,
   })
 
-  const handleFormSubmit = handleSubmit(() => {
+  const handleFormSubmit = handleSubmit((data) => {
+    setDrawer((prevDrawer) => ({ ...prevDrawer, query: data.query }))
+
     refetch()
   })
 

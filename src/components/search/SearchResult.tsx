@@ -40,7 +40,6 @@ const SearchResult: React.FC<SearchResultProps> = ({ result }) => {
     }
   }
 
-  // TODO(HiDeoo) query persistence
   // TODO(HiDeoo) Icon
   // TODO(HiDeoo) roving navigation
 
