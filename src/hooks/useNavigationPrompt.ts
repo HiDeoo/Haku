@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
 import { useEffect, useRef } from 'react'
 
-import useRouteChange from './useRouteChange'
+import useRouteChange from 'hooks/useRouteChange'
 
 // https://github.com/vercel/next.js/issues/2476#issuecomment-850030407
 export default function useNavigationPrompt(
