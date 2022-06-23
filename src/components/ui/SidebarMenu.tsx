@@ -24,7 +24,6 @@ import FolderModal from 'components/folder/FolderModal'
 import Button, { type ButtonPropsWithOnClickHandler } from 'components/form/Button'
 import IconButton from 'components/form/IconButton'
 import InboxDrawer from 'components/inbox/InboxDrawer'
-import SearchPalette from 'components/palette/SearchPalette'
 import SearchDrawer from 'components/search/SearchDrawer'
 import ShortcutModal from 'components/shortcut/ShortcutModal'
 import Flex from 'components/ui/Flex'
@@ -78,7 +77,6 @@ const SidebarMenu: React.FC = () => {
       <FolderModal />
       <ShortcutModal />
       <SearchDrawer />
-      <SearchPalette />
       <IconButton
         onPress={toggleSidebarCollapsed}
         icon={sidebarCollapsed ? RiMenuUnfoldLine : RiMenuFoldLine}

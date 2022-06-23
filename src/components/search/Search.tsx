@@ -35,7 +35,7 @@ const Search: React.FC<SearchProps> = ({ queryInputRef }) => {
       }
     }
 
-    queryInput(ref)
+    queryTextInput(ref)
   }
 
   const handleFormSubmit = handleSubmit((data) => {
@@ -46,7 +46,7 @@ const Search: React.FC<SearchProps> = ({ queryInputRef }) => {
 
   const isLoading = fetchStatus === 'fetching'
 
-  const { ref: queryInput, ...queryInputProps } = register('query', {
+  const { ref: queryTextInput, ...queryTextInputProps } = register('query', {
     minLength: { message: `min. ${SEARCH_QUERY_MIN_LENGTH} characters`, value: SEARCH_QUERY_MIN_LENGTH },
     required: 'required',
   })
@@ -58,9 +58,9 @@ const Search: React.FC<SearchProps> = ({ queryInputRef }) => {
           autoFocus
           type="text"
           enterKeyHint="go"
-          {...queryInputProps}
           readOnly={isLoading}
           ref={setQueryInputRef}
+          {...queryTextInputProps}
           aria-label="Search query"
           errorMessage={errors.query?.message}
           placeholder={`Search (min. ${SEARCH_QUERY_MIN_LENGTH} characters)`}

@@ -17,7 +17,6 @@ export const searchDrawerAtom = atom<SearchDrawer>({ opened: false, query: '' })
 
 export const commandPaletteOpenedAtom = atom(false)
 export const navigationPaletteOpenedAtom = atom(false)
-export const searchPaletteOpenedAtom = atom(false)
 
 function createMutationModalAtom<TData>(): [
   WritableAtom<MutationModal<TData>, MutationModal<TData>>,
