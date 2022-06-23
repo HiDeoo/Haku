@@ -40,9 +40,6 @@ const SearchResult: React.FC<SearchResultProps> = ({ result }) => {
     }
   }
 
-  // TODO(HiDeoo) Icon
-  // TODO(HiDeoo) roving navigation
-
   return (
     <Drawer.List.Item className="p-0 hover:bg-blue-600 hover:text-zinc-100">
       {(itemProps) => {
