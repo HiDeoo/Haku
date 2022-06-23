@@ -1,5 +1,7 @@
 import { Link as Roving, Root } from '@radix-ui/react-toolbar'
+import { type BaseEvent } from '@react-types/shared'
 import { useAtom } from 'jotai'
+import { useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { RiSearchLine } from 'react-icons/ri'
 
@@ -13,6 +15,8 @@ import { isEmpty } from 'libs/array'
 import { trpc } from 'libs/trpc'
 
 const Search: React.FC<SearchProps> = ({ queryInputRef }) => {
+  const resultsContainer = useRef<HTMLDivElement>(null)
+
   const [{ data: search }, setDrawer] = useAtom(searchDrawerAtom)
 
   const {
@@ -45,6 +49,20 @@ const Search: React.FC<SearchProps> = ({ queryInputRef }) => {
     refetch()
   })
 
+  function handleQueryKeyDown(event: BaseEvent<React.KeyboardEvent<HTMLInputElement>>) {
+    event.continuePropagation()
+
+    if (event.key !== 'ArrowDown' || !event.metaKey) {
+      return
+    }
+
+    const firstResult = resultsContainer.current?.firstChild
+
+    if (firstResult instanceof HTMLDivElement) {
+      firstResult.focus()
+    }
+  }
+
   const isLoading = fetchStatus === 'fetching'
 
   const { ref: queryTextInput, ...queryTextInputProps } = register('query', {
@@ -64,6 +82,7 @@ const Search: React.FC<SearchProps> = ({ queryInputRef }) => {
           ref={setQueryInputRef}
           {...queryTextInputProps}
           aria-label="Search query"
+          onKeyDown={handleQueryKeyDown}
           errorMessage={errors.query?.message}
           placeholder={`Search (min. ${SEARCH_QUERY_MIN_LENGTH} characters)`}
         />
@@ -81,7 +100,7 @@ const Search: React.FC<SearchProps> = ({ queryInputRef }) => {
           <Drawer.Nis text="No matching results." />
         ) : null
       ) : (
-        <Root orientation="vertical" asChild>
+        <Root orientation="vertical" asChild ref={resultsContainer}>
           <Drawer.List>
             {data?.map((result) => (
               <Roving asChild key={result.id}>

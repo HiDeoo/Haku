@@ -20,6 +20,7 @@ specifiers:
   '@react-aria/textfield': 3.6.1
   '@react-aria/utils': 3.13.1
   '@react-types/button': 3.5.1
+  '@react-types/shared': 3.13.1
   '@swc/core': 1.2.204
   '@testing-library/react': 13.3.0
   '@tiptap/core': 2.0.0-beta.180
@@ -162,6 +163,7 @@ devDependencies:
   '@jcoreio/wait-for-postgres': 2.0.0
   '@next/bundle-analyzer': 12.1.6
   '@react-types/button': 3.5.1_react@18.2.0
+  '@react-types/shared': 3.13.1_react@18.2.0
   '@swc/core': 1.2.204
   '@testing-library/react': 13.3.0_biqbaboplfbrettd7655fr4n2y
   '@types/fuzzaldrin-plus': 0.6.2
