@@ -11,7 +11,7 @@ import { SEARCH_QUERY_MIN_LENGTH } from 'constants/search'
 import { isEmpty } from 'libs/array'
 import { trpc } from 'libs/trpc'
 
-const SearchForm: React.FC = () => {
+const Search: React.FC<SearchProps> = ({ queryInputRef }) => {
   const [{ query }, setDrawer] = useAtom(searchDrawerAtom)
 
   const {
@@ -26,6 +26,18 @@ const SearchForm: React.FC = () => {
     enabled: false,
   })
 
+  function setQueryInputRef(ref: HTMLInputElement | null) {
+    if (queryInputRef) {
+      if (typeof queryInputRef === 'function') {
+        queryInputRef(ref)
+      } else {
+        queryInputRef.current = ref
+      }
+    }
+
+    queryInput(ref)
+  }
+
   const handleFormSubmit = handleSubmit((data) => {
     setDrawer((prevDrawer) => ({ ...prevDrawer, query: data.query }))
 
@@ -34,6 +46,11 @@ const SearchForm: React.FC = () => {
 
   const isLoading = fetchStatus === 'fetching'
 
+  const { ref: queryInput, ...queryInputProps } = register('query', {
+    minLength: { message: `min. ${SEARCH_QUERY_MIN_LENGTH} characters`, value: SEARCH_QUERY_MIN_LENGTH },
+    required: 'required',
+  })
+
   return (
     <>
       <Drawer.Form onSubmit={handleFormSubmit} role="search">
@@ -41,14 +58,12 @@ const SearchForm: React.FC = () => {
           autoFocus
           type="text"
           enterKeyHint="go"
+          {...queryInputProps}
           readOnly={isLoading}
+          ref={setQueryInputRef}
           aria-label="Search query"
           errorMessage={errors.query?.message}
           placeholder={`Search (min. ${SEARCH_QUERY_MIN_LENGTH} characters)`}
-          {...register('query', {
-            minLength: { message: `min. ${SEARCH_QUERY_MIN_LENGTH} characters`, value: SEARCH_QUERY_MIN_LENGTH },
-            required: 'required',
-          })}
         />
         <IconButton
           primary
@@ -74,7 +89,11 @@ const SearchForm: React.FC = () => {
   )
 }
 
-export default SearchForm
+export default Search
+
+interface SearchProps {
+  queryInputRef?: React.ForwardedRef<HTMLInputElement>
+}
 
 type FormFields = {
   query: string
