@@ -13,14 +13,14 @@ import { isEmpty } from 'libs/array'
 import { trpc } from 'libs/trpc'
 
 const Search: React.FC<SearchProps> = ({ queryInputRef }) => {
-  const [{ query }, setDrawer] = useAtom(searchDrawerAtom)
+  const [{ data: search }, setDrawer] = useAtom(searchDrawerAtom)
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     watch,
-  } = useForm<FormFields>({ defaultValues: { query }, shouldUnregister: false })
+  } = useForm<FormFields>({ defaultValues: { query: search?.query ?? '' }, shouldUnregister: false })
   const queryInputValue = watch('query')
 
   const { data, fetchStatus, refetch } = trpc.useQuery(['search', { q: queryInputValue }], {

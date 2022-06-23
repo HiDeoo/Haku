@@ -1,10 +1,10 @@
-import { useAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import dynamic from 'next/dynamic'
 import { useEffect, useMemo, useState } from 'react'
 import { RiInboxFill } from 'react-icons/ri'
 import { QueryObserver } from 'react-query'
 
-import { inboxDrawerOpenedAtom } from 'atoms/togglable'
+import { inboxDrawerAtom, setInboxDrawerOpenedAtom } from 'atoms/togglable'
 import IconButton from 'components/form/IconButton'
 import Drawer from 'components/ui/Drawer'
 import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
@@ -35,7 +35,8 @@ const InboxDrawer: React.FC = () => {
     }
   }, [queryClient])
 
-  const [opened, setOpened] = useAtom(inboxDrawerOpenedAtom)
+  const { opened } = useAtomValue(inboxDrawerAtom)
+  const setOpened = useSetAtom(setInboxDrawerOpenedAtom)
 
   useGlobalShortcuts(
     useMemo(

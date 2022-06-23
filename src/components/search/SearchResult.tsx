@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import { forwardRef } from 'react'
 import { RiBookletLine, RiInboxFill, RiTodoLine } from 'react-icons/ri'
 
-import { inboxDrawerOpenedAtom, searchDrawerAtom } from 'atoms/togglable'
+import { setInboxDrawerOpenedAtom, setSearchDrawerOpenedAtom } from 'atoms/togglable'
 import Drawer from 'components/ui/Drawer'
 import Icon from 'components/ui/Icon'
 import { ContentType, getContentType } from 'hooks/useContentType'
@@ -19,8 +19,8 @@ const excerptClasses = clst(
 const SearchResult = forwardRef<HTMLDivElement, SearchResultProps>(({ result, ...props }, forwardedRef) => {
   const { push } = useRouter()
 
-  const setSearchDrawer = useSetAtom(searchDrawerAtom)
-  const setInboxDrawerOpened = useSetAtom(inboxDrawerOpenedAtom)
+  const setSearchDrawerOpened = useSetAtom(setSearchDrawerOpenedAtom)
+  const setInboxDrawerOpened = useSetAtom(setInboxDrawerOpenedAtom)
 
   function handleClick() {
     openResult()
@@ -37,11 +37,11 @@ const SearchResult = forwardRef<HTMLDivElement, SearchResultProps>(({ result, ..
   }
 
   function openResult() {
-    setSearchDrawer((prevDrawer) => ({ ...prevDrawer, opened: false }))
-
     if (result.type === 'INBOX') {
       setInboxDrawerOpened(true)
     } else {
+      setSearchDrawerOpened(false)
+
       const { urlPath } = getContentType(result.type)
 
       push(`${urlPath}/${result.id}/${result.slug}`)

@@ -15,11 +15,11 @@ import {
 } from 'react-icons/ri'
 
 import { toggleSidebarCollapsedAtom } from 'atoms/collapsible'
-import { commandPaletteOpenedAtom, navigationPaletteOpenedAtom, searchDrawerAtom } from 'atoms/togglable'
+import { commandPaletteOpenedAtom, navigationPaletteOpenedAtom, setSearchDrawerOpenedAtom } from 'atoms/togglable'
 import {
-  inboxDrawerOpenedAtom,
   setContentModalOpenedAtom,
   setFolderModalOpenedAtom,
+  setInboxDrawerOpenedAtom,
   shortcutModalOpenedAtom,
 } from 'atoms/togglable'
 import Palette, { type PaletteItem } from 'components/palette/Palette'
@@ -37,7 +37,7 @@ const CommandPalette: React.FC = () => {
   const [opened, setOpened] = useAtom(commandPaletteOpenedAtom)
 
   const setNavigationPaletteOpened = useSetAtom(navigationPaletteOpenedAtom)
-  const setSearchDrawerOpened = useSetAtom(searchDrawerAtom)
+  const setSearchDrawerOpened = useSetAtom(setSearchDrawerOpenedAtom)
 
   const { cType, type } = useContentType()
   const isBrowsingNotes = type === ContentType.NOTE
@@ -48,7 +48,7 @@ const CommandPalette: React.FC = () => {
   const setFolderModalOpened = useSetAtom(setFolderModalOpenedAtom)
   const setShortcutModalOpened = useSetAtom(shortcutModalOpenedAtom)
 
-  const setInboxDrawerOpened = useSetAtom(inboxDrawerOpenedAtom)
+  const setInboxDrawerOpened = useSetAtom(setInboxDrawerOpenedAtom)
 
   const toggleSidebarCollapsed = useSetAtom(toggleSidebarCollapsedAtom)
 
@@ -92,7 +92,7 @@ const CommandPalette: React.FC = () => {
         name: 'Search in Notes and Todos',
         icon: RiSearchLine,
         action: () => {
-          setSearchDrawerOpened((prevDrawer) => ({ ...prevDrawer, opened: true }))
+          setSearchDrawerOpened(true)
         },
       },
       {

@@ -1,4 +1,4 @@
-import { atom, type WritableAtom } from 'jotai'
+import { atom, type WritableAtom, PrimitiveAtom } from 'jotai'
 
 import { onlineAtom } from 'atoms/network'
 import { type FolderData } from 'libs/db/folder'
@@ -12,8 +12,8 @@ export const [contentModalAtom, setContentModalOpenedAtom] = createMutationModal
 export const shortcutModalOpenedAtom = atom(false)
 export const editorImageModalAtom = atom<EditorImageModal>({ opened: false })
 
-export const inboxDrawerOpenedAtom = atom(false)
-export const searchDrawerAtom = atom<SearchDrawer>({ opened: false, query: '' })
+export const [inboxDrawerAtom, setInboxDrawerOpenedAtom] = createDrawerAtom()
+export const [searchDrawerAtom, setSearchDrawerOpenedAtom] = createDrawerAtom<{ query: string }>()
 
 export const commandPaletteOpenedAtom = atom(false)
 export const navigationPaletteOpenedAtom = atom(false)
@@ -28,13 +28,37 @@ function createMutationModalAtom<TData>(): [
     opened: false,
   })
 
-  const setModalOpenedAtom: WritableAtom<null, boolean> = atom(null, (get, set, opened: boolean) => {
+  const setModalOpenedAtom = atom(null, (get, set, opened: boolean) => {
     const online = get(onlineAtom)
 
     return set(modalAtom, { ...get(modalAtom), action: 'insert', data: undefined, opened: !online ? false : opened })
   })
 
   return [modalAtom, setModalOpenedAtom]
+}
+
+function createDrawerAtom<TData>(): [PrimitiveAtom<Drawer<TData>>, WritableAtom<null, boolean>] {
+  const drawerAtom = atom<Drawer<TData>>({
+    data: undefined,
+    opened: false,
+  })
+
+  const setDrawerOpenedAtom = atom(null, (get, set, opened: boolean) => {
+    const { opened: inboxDrawerOpened, ...inboxDrawer } = get(inboxDrawerAtom)
+    const { opened: searchDrawerOpened, ...searchDrawer } = get(searchDrawerAtom)
+
+    if (inboxDrawerOpened) {
+      set(inboxDrawerAtom, { ...inboxDrawer, opened: false })
+    }
+
+    if (searchDrawerOpened) {
+      set(searchDrawerAtom, { ...searchDrawer, opened: false })
+    }
+
+    return set(drawerAtom, { ...get(drawerAtom), opened })
+  })
+
+  return [drawerAtom, setDrawerOpenedAtom]
 }
 
 interface MutationModal<TData> {
@@ -47,7 +71,7 @@ interface EditorImageModal extends Partial<A11yImageParams> {
   opened: boolean
 }
 
-interface SearchDrawer {
+interface Drawer<TData> {
+  data: TData | undefined
   opened: boolean
-  query: string
 }
