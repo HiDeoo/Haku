@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker'
 
-import { SEARCH_QUERY_MIN_LENGTH, SEARCH_RESULT_LIMIT } from 'constants/search'
+import { SEARCH_QUERY_MIN_LENGTH } from 'constants/search'
 import { type SearchResultsData } from 'libs/db/file'
 import { getTestUser, testApiRoute } from 'tests/api'
 import { createTestInboxEntry, createTestNote, createTestTodo, createTestTodoNode } from 'tests/api/db'
@@ -441,57 +441,6 @@ describe('search', () => {
       expect(res[1]?.id).toBe(todo_5_id)
       expect(res[2]?.id).toBe(note_1_id)
       expect(res[3]?.id).toBe(inbox_entry_1_id)
-    }))
-
-  test('should return at most `SEARCH_RESULT_LIMIT` results per page', () =>
-    testApiRoute(async ({ caller }) => {
-      // 2 pages: `SEARCH_RESULT_LIMIT` + 1
-      const names = Array.from(
-        { length: SEARCH_RESULT_LIMIT + 1 },
-        (_, index) => `amazing name ${'a'.repeat(index + 1)}`
-      )
-
-      for (const name of names) {
-        await createTestNote({ name })
-      }
-
-      const res = await caller.query('search', { q: 'amazing' })
-
-      expect(res.length).toBe(SEARCH_RESULT_LIMIT)
-
-      expect(res[0]?.name).toBe(names[0])
-      expect(res.at(-1)?.name).toBe(names[24])
-    }))
-
-  test('should return paginated results', async () =>
-    testApiRoute(async ({ caller }) => {
-      // 3 pages: `SEARCH_RESULT_LIMIT` + `SEARCH_RESULT_LIMIT` + 2
-      const names = Array.from({ length: 52 }, (_, index) => `amazing name ${'a'.repeat(index + 1)}`)
-
-      for (const name of names) {
-        await createTestNote({ name })
-      }
-
-      let res = await caller.query('search', { q: 'amazing' })
-
-      expect(res.length).toBe(SEARCH_RESULT_LIMIT)
-
-      expect(res[0]?.name).toBe(names[0])
-      expect(res[24]?.name).toBe(names[SEARCH_RESULT_LIMIT - 1])
-
-      res = await caller.query('search', { q: 'amazing', cursor: 1 })
-
-      expect(res.length).toBe(SEARCH_RESULT_LIMIT)
-
-      expect(res[0]?.name).toBe(names[SEARCH_RESULT_LIMIT])
-      expect(res[24]?.name).toBe(names[SEARCH_RESULT_LIMIT * 2 - 1])
-
-      res = await caller.query('search', { q: 'amazing', cursor: 2 })
-
-      expect(res.length).toBe(2)
-
-      expect(res[0]?.name).toBe(names[50])
-      expect(res[1]?.name).toBe(names[51])
     }))
 
   test('should return valid excerpts', () =>

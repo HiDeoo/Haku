@@ -8,11 +8,10 @@ export const searchRouter = createRouter()
   .middleware(withAuth)
   .query('search', {
     input: z.object({
-      cursor: z.number().optional(),
       q: z.string().min(SEARCH_QUERY_MIN_LENGTH),
     }),
     async resolve({ ctx, input }) {
-      const results = await searchFiles(ctx.user.id, input.q, input.cursor)
+      const results = await searchFiles(ctx.user.id, input.q)
 
       return results
     },

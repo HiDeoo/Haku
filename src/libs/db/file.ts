@@ -1,5 +1,4 @@
 import { ContentType } from 'constants/contentType'
-import { SEARCH_RESULT_LIMIT } from 'constants/search'
 import { prisma } from 'libs/db'
 
 export type FilesData = FileData[]
@@ -43,9 +42,7 @@ ORDER BY
   "name" ASC`
 }
 
-export function searchFiles(userId: UserId, query: string, page?: number): Promise<SearchResultsData> {
-  const offset = (page ?? 0) * SEARCH_RESULT_LIMIT
-
+export function searchFiles(userId: UserId, query: string): Promise<SearchResultsData> {
   return prisma.$queryRaw<SearchResultsData>`
 WITH search AS (
   SELECT websearch_to_tsquery('simple', ${query}) AS query
@@ -129,8 +126,6 @@ FROM
       "name" ASC NULLS LAST,
       "type" ASC,
       "id" ASC
-    LIMIT ${SEARCH_RESULT_LIMIT}
-    OFFSET ${offset}
   ) AS results,
   search`
 }
