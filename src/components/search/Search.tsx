@@ -40,7 +40,7 @@ const Search: React.FC<SearchProps> = ({ queryInputRef }) => {
   }
 
   const handleFormSubmit = handleSubmit((data) => {
-    setDrawer((prevDrawer) => ({ ...prevDrawer, query: data.query }))
+    setDrawer((prevDrawer) => ({ ...prevDrawer, data: { query: data.query } }))
 
     refetch()
   })
