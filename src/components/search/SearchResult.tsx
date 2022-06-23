@@ -1,5 +1,6 @@
 import { useSetAtom } from 'jotai'
 import { useRouter } from 'next/router'
+import { forwardRef } from 'react'
 import { RiBookletLine, RiInboxFill, RiTodoLine } from 'react-icons/ri'
 
 import { inboxDrawerOpenedAtom, searchDrawerAtom } from 'atoms/togglable'
@@ -15,7 +16,7 @@ const excerptClasses = clst(
   '[&>strong]:text-blue-400 [&>strong]:font-semibold group-hover:[&>strong]:text-blue-200'
 )
 
-const SearchResult: React.FC<SearchResultProps> = ({ result }) => {
+const SearchResult = forwardRef<HTMLDivElement, SearchResultProps>(({ result, ...props }, forwardedRef) => {
   const { push } = useRouter()
 
   const setSearchDrawer = useSetAtom(searchDrawerAtom)
@@ -27,7 +28,11 @@ const SearchResult: React.FC<SearchResultProps> = ({ result }) => {
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+
       openResult()
+    } else {
+      props.onKeyDown?.(event)
     }
   }
 
@@ -50,14 +55,15 @@ const SearchResult: React.FC<SearchResultProps> = ({ result }) => {
   return (
     <Drawer.List.Item className="p-0 hover:bg-blue-600 hover:text-zinc-100">
       {(itemProps) => {
-        const { className, ...props } = itemProps
+        const { className, ...linkProps } = itemProps
         const linkCkasses = clst(className, 'group flex flex-col px-3 py-2 items-start gap-1')
 
         return (
           <div
             {...props}
-            tabIndex={0}
             role="button"
+            {...linkProps}
+            ref={forwardedRef}
             onClick={handleClick}
             className={linkCkasses}
             onKeyDown={handleKeyDown}
@@ -74,10 +80,13 @@ const SearchResult: React.FC<SearchResultProps> = ({ result }) => {
       }}
     </Drawer.List.Item>
   )
-}
+})
+
+SearchResult.displayName = 'SearchResult'
 
 export default SearchResult
 
 interface SearchResultProps {
+  onKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void
   result: SearchResultData
 }

@@ -1,3 +1,4 @@
+import { Link as Roving, Root } from '@radix-ui/react-toolbar'
 import { useAtom } from 'jotai'
 import { useForm } from 'react-hook-form'
 import { RiSearchLine } from 'react-icons/ri'
@@ -80,11 +81,15 @@ const Search: React.FC<SearchProps> = ({ queryInputRef }) => {
           <Drawer.Nis text="No matching results." />
         ) : null
       ) : (
-        <Drawer.List>
-          {data?.map((result) => (
-            <SearchResult key={result.id} result={result} />
-          ))}
-        </Drawer.List>
+        <Root orientation="vertical" asChild>
+          <Drawer.List>
+            {data?.map((result) => (
+              <Roving asChild key={result.id}>
+                <SearchResult result={result} />
+              </Roving>
+            ))}
+          </Drawer.List>
+        </Root>
       )}
     </>
   )

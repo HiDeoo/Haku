@@ -1,3 +1,5 @@
+import { forwardRef } from 'react'
+
 import IconButton, { type IconButtonProps } from 'components/form/IconButton'
 import Shimmer from 'components/ui/Shimmer'
 import clst from 'styles/clst'
@@ -12,11 +14,11 @@ const itemClasses = clst(
 )
 const shimmerClasses = clst(itemClasses, 'min-h-[2.8125rem] block')
 
-const List: ListComponent = ({ children, className, isLoading, shimmerClassNames, title }) => {
+const List = forwardRef(({ children, className, isLoading, shimmerClassNames, title, ...props }, forwardedRef) => {
   return (
     <div className={className}>
       {title ? <h1 className="mb-1.5 ml-0.5 truncate text-lg">{title}</h1> : null}
-      <div>
+      <div ref={forwardedRef} {...props}>
         {isLoading && shimmerClassNames
           ? Array.from({ length: shimmerClassNames.length }).map((_, index) => (
               <Shimmer key={`shimmer-${index}`} className={shimmerClasses}>
@@ -27,7 +29,9 @@ const List: ListComponent = ({ children, className, isLoading, shimmerClassNames
       </div>
     </div>
   )
-}
+}) as ListComponent
+
+List.displayName = 'List'
 
 export default List
 
@@ -49,7 +53,7 @@ const ListButton: React.FC<ListButtonProps> = (props) => {
 
 List.Button = ListButton
 
-export type ListComponent = React.FC<ListProps> & {
+export type ListComponent = React.ForwardRefExoticComponent<ListProps & React.RefAttributes<HTMLDivElement>> & {
   Item: typeof ListItem
   Button: typeof ListButton
 }

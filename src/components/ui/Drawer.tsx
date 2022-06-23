@@ -1,4 +1,5 @@
 import { Close, Content, Overlay, Portal, Root, Title, Trigger } from '@radix-ui/react-dialog'
+import { forwardRef } from 'react'
 import { RiCloseLine } from 'react-icons/ri'
 
 import Form, { type FormProps } from 'components/form/Form'
@@ -85,9 +86,11 @@ const DrawerNis: React.FC<DrawerNisProps> = ({ text }) => {
 
 Drawer.Nis = DrawerNis
 
-const DrawerList: ListComponent = (props) => {
-  return <List {...props} shimmerClassNames={LIST_SHIMMER_CLASSES} className={listClasses} />
-}
+const DrawerList = forwardRef((props, forwardedRef) => {
+  return <List {...props} shimmerClassNames={LIST_SHIMMER_CLASSES} className={listClasses} ref={forwardedRef} />
+}) as ListComponent
+
+DrawerList.displayName = 'DrawerList'
 
 DrawerList.Button = List.Button
 
