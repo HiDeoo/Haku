@@ -1,4 +1,4 @@
-import { ContentType } from 'constants/contentType'
+import { SearchableContentType } from 'constants/contentType'
 import { SEARCH_QUERY_MIN_LENGTH } from 'constants/search'
 import { searchFiles } from 'libs/db/file'
 import { z } from 'libs/validation'
@@ -11,9 +11,9 @@ export const searchRouter = createRouter()
     input: z.object({
       q: z.string().min(SEARCH_QUERY_MIN_LENGTH),
       types: z.object({
-        [ContentType.NOTE]: z.boolean(),
-        [ContentType.TODO]: z.boolean(),
-        INBOX: z.boolean(),
+        [SearchableContentType.INBOX]: z.boolean(),
+        [SearchableContentType.NOTE]: z.boolean(),
+        [SearchableContentType.TODO]: z.boolean(),
       }),
     }),
     async resolve({ ctx, input }) {

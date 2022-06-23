@@ -1,16 +1,16 @@
 import { faker } from '@faker-js/faker'
 
-import { ContentType } from 'constants/contentType'
+import { SearchableContentType } from 'constants/contentType'
 import { API_ERROR_SEARCH_REQUIRES_AT_LEAST_ONE_TYPE } from 'constants/error'
 import { SEARCH_QUERY_MIN_LENGTH } from 'constants/search'
-import { type SearchFilesTypes, type SearchResultsData } from 'libs/db/file'
+import { type SearchContentType, type SearchResultsData } from 'libs/db/file'
 import { getTestUser, testApiRoute } from 'tests/api'
 import { createTestInboxEntry, createTestNote, createTestTodo, createTestTodoNode } from 'tests/api/db'
 
-const allSearchFilesTypes: SearchFilesTypes = {
-  [ContentType.NOTE]: true,
-  [ContentType.TODO]: true,
-  INBOX: true,
+const allSearchFilesTypes: SearchContentType = {
+  [SearchableContentType.INBOX]: true,
+  [SearchableContentType.NOTE]: true,
+  [SearchableContentType.TODO]: true,
 }
 
 const mixedSearchFilesTypes = [
@@ -20,27 +20,51 @@ const mixedSearchFilesTypes = [
   },
   {
     label: 'only note',
-    searchFilesTypes: { [ContentType.NOTE]: true, [ContentType.TODO]: false, INBOX: false },
+    searchFilesTypes: {
+      [SearchableContentType.INBOX]: false,
+      [SearchableContentType.NOTE]: true,
+      [SearchableContentType.TODO]: false,
+    },
   },
   {
     label: 'only todo',
-    searchFilesTypes: { [ContentType.NOTE]: false, [ContentType.TODO]: true, INBOX: false },
+    searchFilesTypes: {
+      [SearchableContentType.INBOX]: false,
+      [SearchableContentType.NOTE]: false,
+      [SearchableContentType.TODO]: true,
+    },
   },
   {
     label: 'only inbox',
-    searchFilesTypes: { [ContentType.NOTE]: false, [ContentType.TODO]: false, INBOX: true },
+    searchFilesTypes: {
+      [SearchableContentType.INBOX]: true,
+      [SearchableContentType.NOTE]: false,
+      [SearchableContentType.TODO]: false,
+    },
   },
   {
     label: 'only note & todo',
-    searchFilesTypes: { [ContentType.NOTE]: true, [ContentType.TODO]: true, INBOX: false },
+    searchFilesTypes: {
+      [SearchableContentType.INBOX]: false,
+      [SearchableContentType.NOTE]: true,
+      [SearchableContentType.TODO]: true,
+    },
   },
   {
     label: 'only note & inbox',
-    searchFilesTypes: { [ContentType.NOTE]: true, [ContentType.TODO]: false, INBOX: true },
+    searchFilesTypes: {
+      [SearchableContentType.INBOX]: true,
+      [SearchableContentType.NOTE]: true,
+      [SearchableContentType.TODO]: false,
+    },
   },
   {
     label: 'only todo & inbox',
-    searchFilesTypes: { [ContentType.NOTE]: false, [ContentType.TODO]: true, INBOX: true },
+    searchFilesTypes: {
+      [SearchableContentType.INBOX]: true,
+      [SearchableContentType.NOTE]: false,
+      [SearchableContentType.TODO]: true,
+    },
   },
 ]
 
@@ -574,9 +598,9 @@ describe('search', () => {
         caller.query('search', {
           q: 'amazing',
           types: {
-            [ContentType.NOTE]: false,
-            [ContentType.TODO]: false,
-            INBOX: false,
+            [SearchableContentType.INBOX]: false,
+            [SearchableContentType.NOTE]: false,
+            [SearchableContentType.TODO]: false,
           },
         })
       ).rejects.toThrow(API_ERROR_SEARCH_REQUIRES_AT_LEAST_ONE_TYPE)

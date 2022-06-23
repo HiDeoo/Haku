@@ -2,7 +2,7 @@ import { Prisma } from '@prisma/client'
 import { type Sql } from '@prisma/client/runtime'
 import { TRPCError } from '@trpc/server'
 
-import { ContentType } from 'constants/contentType'
+import { ContentType, SearchableContentType } from 'constants/contentType'
 import { API_ERROR_SEARCH_REQUIRES_AT_LEAST_ONE_TYPE } from 'constants/error'
 import { isEmpty } from 'libs/array'
 import { prisma } from 'libs/db'
@@ -15,7 +15,11 @@ export interface FileData {
   type: ContentType
 }
 
-type InboxEntrySearchData = Omit<FileData, 'name' | 'slug' | 'type'> & { name: null; slug: null; type: 'INBOX' }
+type InboxEntrySearchData = Omit<FileData, 'name' | 'slug' | 'type'> & {
+  name: null
+  slug: null
+  type: typeof SearchableContentType.INBOX
+}
 
 export type SearchResultData = (FileData | InboxEntrySearchData) & {
   excerpt: string
@@ -48,7 +52,7 @@ ORDER BY
   "name" ASC`
 }
 
-export function searchFiles(userId: UserId, query: string, types: SearchFilesTypes): Promise<SearchResultsData> {
+export function searchFiles(userId: UserId, query: string, types: SearchContentType): Promise<SearchResultsData> {
   const subQueries: Sql[] = []
 
   if (types.NOTE) {
@@ -158,8 +162,8 @@ FROM
   search`
 }
 
-export interface SearchFilesTypes {
-  [ContentType.NOTE]: boolean
-  [ContentType.TODO]: boolean
-  INBOX: boolean
+export interface SearchContentType {
+  [SearchableContentType.INBOX]: boolean
+  [SearchableContentType.NOTE]: boolean
+  [SearchableContentType.TODO]: boolean
 }

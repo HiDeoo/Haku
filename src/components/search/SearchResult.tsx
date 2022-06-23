@@ -6,7 +6,8 @@ import { RiBookletLine, RiInboxFill, RiTodoLine } from 'react-icons/ri'
 import { setInboxDrawerOpenedAtom, setSearchDrawerOpenedAtom } from 'atoms/togglable'
 import Drawer from 'components/ui/Drawer'
 import Icon from 'components/ui/Icon'
-import { ContentType, getContentType } from 'hooks/useContentType'
+import { SearchableContentType } from 'constants/contentType'
+import { getContentType } from 'hooks/useContentType'
 import { type SearchResultData } from 'libs/db/file'
 import { capitalize } from 'libs/string'
 import clst from 'styles/clst'
@@ -21,6 +22,8 @@ const SearchResult = forwardRef<HTMLDivElement, SearchResultProps>(({ result, ..
 
   const setSearchDrawerOpened = useSetAtom(setSearchDrawerOpenedAtom)
   const setInboxDrawerOpened = useSetAtom(setInboxDrawerOpenedAtom)
+
+  const isInboxSearchResult = result.type === SearchableContentType.INBOX
 
   function handleClick() {
     openResult()
@@ -37,7 +40,7 @@ const SearchResult = forwardRef<HTMLDivElement, SearchResultProps>(({ result, ..
   }
 
   function openResult() {
-    if (result.type === 'INBOX') {
+    if (isInboxSearchResult) {
       setInboxDrawerOpened(true)
     } else {
       setSearchDrawerOpened(false)
@@ -48,8 +51,12 @@ const SearchResult = forwardRef<HTMLDivElement, SearchResultProps>(({ result, ..
     }
   }
 
-  const name = result.type === 'INBOX' ? 'Inbox' : result.name
-  const icon = result.type === 'INBOX' ? RiInboxFill : result.type === ContentType.NOTE ? RiBookletLine : RiTodoLine
+  const name = isInboxSearchResult ? 'Inbox' : result.name
+  const icon = isInboxSearchResult
+    ? RiInboxFill
+    : result.type === SearchableContentType.NOTE
+    ? RiBookletLine
+    : RiTodoLine
   const iconLabel = capitalize(result.type)
 
   return (

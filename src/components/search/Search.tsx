@@ -10,7 +10,7 @@ import IconButton from 'components/form/IconButton'
 import TextInput from 'components/form/TextInput'
 import SearchResult from 'components/search/SearchResult'
 import Drawer from 'components/ui/Drawer'
-import { ContentType } from 'constants/contentType'
+import { SearchableContentType } from 'constants/contentType'
 import { SEARCH_QUERY_MIN_LENGTH } from 'constants/search'
 import { isEmpty } from 'libs/array'
 import { trpc } from 'libs/trpc'
@@ -29,7 +29,17 @@ const Search: React.FC<SearchProps> = ({ queryInputRef }) => {
   const queryInputValue = watch('query')
 
   const { data, fetchStatus, refetch } = trpc.useQuery(
-    ['search', { q: queryInputValue, types: { [ContentType.NOTE]: true, [ContentType.TODO]: true, INBOX: true } }],
+    [
+      'search',
+      {
+        q: queryInputValue,
+        types: {
+          [SearchableContentType.INBOX]: true,
+          [SearchableContentType.NOTE]: true,
+          [SearchableContentType.TODO]: true,
+        },
+      },
+    ],
     {
       enabled: false,
     }
