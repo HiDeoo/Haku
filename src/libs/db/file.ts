@@ -1,4 +1,10 @@
+import { Prisma } from '@prisma/client'
+import { type Sql } from '@prisma/client/runtime'
+import { TRPCError } from '@trpc/server'
+
 import { ContentType } from 'constants/contentType'
+import { API_ERROR_SEARCH_REQUIRES_AT_LEAST_ONE_TYPE } from 'constants/error'
+import { isEmpty } from 'libs/array'
 import { prisma } from 'libs/db'
 
 export type FilesData = FileData[]
@@ -42,47 +48,32 @@ ORDER BY
   "name" ASC`
 }
 
-export function searchFiles(userId: UserId, query: string): Promise<SearchResultsData> {
-  return prisma.$queryRaw<SearchResultsData>`
-WITH search AS (
-  SELECT websearch_to_tsquery('simple', ${query}) AS query
-)
+export function searchFiles(userId: UserId, query: string, types: SearchFilesTypes): Promise<SearchResultsData> {
+  const subQueries: Sql[] = []
+
+  if (types.NOTE) {
+    subQueries.push(Prisma.sql`
 SELECT
-  results.id,
-  results.name,
-  results.slug,
-  results.type,
-  ts_headline('simple', results."content", search."query", 'StartSel=<strong>, StopSel=</strong>') AS "excerpt"
+  note."id",
+  note."name",
+  note."slug",
+  note."text" AS "content",
+  ${ContentType.NOTE} AS "type",
+  ts_rank(note."searchVector", search."query") AS "rank"
+FROM
+  "Note" note,
+  search
+WHERE
+  note."userId" = ${userId}
+  AND note."searchVector" @@ search."query"`)
+  }
+
+  if (types.TODO) {
+    subQueries.push(Prisma.sql`
+SELECT
+  *
 FROM
   (
-    SELECT
-      inboxEntry."id",
-      NULL AS "name",
-      NULL AS "slug",
-      inboxEntry."text" AS "content",
-      'INBOX' AS "type",
-      ts_rank(inboxEntry."searchVector", search."query") AS "rank"
-    FROM
-      "InboxEntry" inboxEntry,
-      search
-    WHERE
-      inboxEntry."userId" = ${userId}
-      AND inboxEntry."searchVector" @@ search."query"
-    UNION
-    SELECT
-      note."id",
-      note."name",
-      note."slug",
-      note."text" AS "content",
-      ${ContentType.NOTE} AS "type",
-      ts_rank(note."searchVector", search."query") AS "rank"
-    FROM
-      "Note" note,
-      search
-    WHERE
-      note."userId" = ${userId}
-      AND note."searchVector" @@ search."query"
-    UNION
     SELECT DISTINCT ON (todoAndTodoNode."id")
       *
     FROM
@@ -121,6 +112,43 @@ FROM
         ORDER BY
           "rank" DESC
       ) AS todoAndTodoNode
+  ) AS todoAndTodoNodes`)
+  }
+
+  if (types.INBOX) {
+    subQueries.push(Prisma.sql`
+SELECT
+  inboxEntry."id",
+  NULL AS "name",
+  NULL AS "slug",
+  inboxEntry."text" AS "content",
+  'INBOX' AS "type",
+  ts_rank(inboxEntry."searchVector", search."query") AS "rank"
+FROM
+  "InboxEntry" inboxEntry,
+  search
+WHERE
+  inboxEntry."userId" = ${userId}
+  AND inboxEntry."searchVector" @@ search."query"`)
+  }
+
+  if (isEmpty(subQueries)) {
+    throw new TRPCError({ code: 'BAD_REQUEST', message: API_ERROR_SEARCH_REQUIRES_AT_LEAST_ONE_TYPE })
+  }
+
+  return prisma.$queryRaw<SearchResultsData>`
+WITH search AS (
+  SELECT websearch_to_tsquery('simple', ${query}) AS query
+)
+SELECT
+  results.id,
+  results.name,
+  results.slug,
+  results.type,
+  ts_headline('simple', results."content", search."query", 'StartSel=<strong>, StopSel=</strong>') AS "excerpt"
+FROM
+  (
+    ${Prisma.join(subQueries, ' UNION ')}
     ORDER BY
       "rank" DESC,
       "name" ASC NULLS LAST,
@@ -128,4 +156,10 @@ FROM
       "id" ASC
   ) AS results,
   search`
+}
+
+export interface SearchFilesTypes {
+  [ContentType.NOTE]: boolean
+  [ContentType.TODO]: boolean
+  INBOX: boolean
 }
