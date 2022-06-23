@@ -13,7 +13,7 @@ export const shortcutModalOpenedAtom = atom(false)
 export const editorImageModalAtom = atom<EditorImageModal>({ opened: false })
 
 export const inboxDrawerOpenedAtom = atom(false)
-export const searchDrawerAtom = atom<SearchDrawer>({ opened: true, query: '' })
+export const searchDrawerAtom = atom<SearchDrawer>({ opened: false, query: '' })
 
 export const commandPaletteOpenedAtom = atom(false)
 export const navigationPaletteOpenedAtom = atom(false)
