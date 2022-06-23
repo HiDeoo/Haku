@@ -1,10 +1,13 @@
 import { useSetAtom } from 'jotai'
 import { useRouter } from 'next/router'
+import { RiBookletLine, RiInboxFill, RiTodoLine } from 'react-icons/ri'
 
 import { inboxDrawerOpenedAtom, searchDrawerAtom } from 'atoms/togglable'
 import Drawer from 'components/ui/Drawer'
-import { getContentType } from 'hooks/useContentType'
+import Icon from 'components/ui/Icon'
+import { ContentType, getContentType } from 'hooks/useContentType'
 import { type SearchResultData } from 'libs/db/file'
+import { capitalize } from 'libs/string'
 import clst from 'styles/clst'
 
 const excerptClasses = clst(
@@ -40,6 +43,10 @@ const SearchResult: React.FC<SearchResultProps> = ({ result }) => {
     }
   }
 
+  const name = result.type === 'INBOX' ? 'Inbox' : result.name
+  const icon = result.type === 'INBOX' ? RiInboxFill : result.type === ContentType.NOTE ? RiBookletLine : RiTodoLine
+  const iconLabel = capitalize(result.type)
+
   return (
     <Drawer.List.Item className="p-0 hover:bg-blue-600 hover:text-zinc-100">
       {(itemProps) => {
@@ -55,7 +62,10 @@ const SearchResult: React.FC<SearchResultProps> = ({ result }) => {
             className={linkCkasses}
             onKeyDown={handleKeyDown}
           >
-            <div className="w-full truncate">{result.type === 'INBOX' ? 'Inbox' : result.name}</div>
+            <div className="flex w-full items-center gap-1.5">
+              <Icon icon={icon} label={iconLabel} className="shrink-0 opacity-70" />
+              <div className="truncate">{name}</div>
+            </div>
             {result.excerpt && (
               <div dangerouslySetInnerHTML={{ __html: result.excerpt }} className={excerptClasses}></div>
             )}
