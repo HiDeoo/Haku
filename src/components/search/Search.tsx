@@ -20,9 +20,9 @@ const Search: React.FC<SearchProps> = ({ queryInputRef }) => {
     formState: { errors },
     watch,
   } = useForm<FormFields>({ defaultValues: { query }, shouldUnregister: false })
-  const sanitizedQuery = watch('query').trim()
+  const queryInputValue = watch('query')
 
-  const { data, fetchStatus, refetch } = trpc.useQuery(['search', { q: sanitizedQuery }], {
+  const { data, fetchStatus, refetch } = trpc.useQuery(['search', { q: queryInputValue }], {
     enabled: false,
   })
 
@@ -49,6 +49,7 @@ const Search: React.FC<SearchProps> = ({ queryInputRef }) => {
   const { ref: queryTextInput, ...queryTextInputProps } = register('query', {
     minLength: { message: `min. ${SEARCH_QUERY_MIN_LENGTH} characters`, value: SEARCH_QUERY_MIN_LENGTH },
     required: 'required',
+    setValueAs: (value) => value.trim(),
   })
 
   return (
@@ -74,7 +75,7 @@ const Search: React.FC<SearchProps> = ({ queryInputRef }) => {
           disabled={isLoading}
         />
       </Drawer.Form>
-      {data && isEmpty(data) && sanitizedQuery.length >= SEARCH_QUERY_MIN_LENGTH ? (
+      {data && isEmpty(data) && queryInputValue.length >= SEARCH_QUERY_MIN_LENGTH ? (
         !isLoading ? (
           <Drawer.Nis text="No matching results." />
         ) : null
