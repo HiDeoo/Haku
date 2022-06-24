@@ -29,6 +29,10 @@ const SearchDrawer: React.FC = () => {
             setDrawerOpened(true)
 
             queryInput.current?.focus()
+
+            requestAnimationFrame(() => {
+              queryInput.current?.select()
+            })
           },
         },
       ],
