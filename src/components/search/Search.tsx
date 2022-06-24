@@ -2,15 +2,14 @@ import { Link as Roving, Root } from '@radix-ui/react-toolbar'
 import { type BaseEvent } from '@react-types/shared'
 import { useAtom } from 'jotai'
 import { useRef } from 'react'
-import { useForm } from 'react-hook-form'
+import { FormProvider, useForm } from 'react-hook-form'
 import { RiSearchLine } from 'react-icons/ri'
 
-import { searchDrawerAtom } from 'atoms/togglable'
+import { searchDrawerAtom, type SearchDrawerData } from 'atoms/togglable'
 import IconButton from 'components/form/IconButton'
-import TextInput from 'components/form/TextInput'
+import SearchInput from 'components/search/SearchInput'
 import SearchResult from 'components/search/SearchResult'
 import Drawer from 'components/ui/Drawer'
-import { SearchableContentType } from 'constants/contentType'
 import { SEARCH_QUERY_MIN_LENGTH } from 'constants/search'
 import { isEmpty } from 'libs/array'
 import { trpc } from 'libs/trpc'
@@ -20,30 +19,12 @@ const Search: React.FC<SearchProps> = ({ queryInputRef }) => {
 
   const [{ data: search }, setDrawer] = useAtom(searchDrawerAtom)
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    watch,
-  } = useForm<FormFields>({ defaultValues: { query: search?.query ?? '' }, shouldUnregister: false })
-  const queryInputValue = watch('query')
+  const form = useForm<FormFields>({ defaultValues: search, shouldUnregister: false })
+  const searchQueryData = form.watch()
 
-  const { data, fetchStatus, refetch } = trpc.useQuery(
-    [
-      'search',
-      {
-        q: queryInputValue,
-        types: {
-          [SearchableContentType.INBOX]: true,
-          [SearchableContentType.NOTE]: true,
-          [SearchableContentType.TODO]: true,
-        },
-      },
-    ],
-    {
-      enabled: false,
-    }
-  )
+  const { data, fetchStatus, refetch } = trpc.useQuery(['search', searchQueryData], {
+    enabled: false,
+  })
 
   function setQueryInputRef(ref: HTMLInputElement | null) {
     if (queryInputRef) {
@@ -57,8 +38,8 @@ const Search: React.FC<SearchProps> = ({ queryInputRef }) => {
     queryTextInput(ref)
   }
 
-  const handleFormSubmit = handleSubmit((data) => {
-    setDrawer((prevDrawer) => ({ ...prevDrawer, data: { query: data.query } }))
+  const handleFormSubmit = form.handleSubmit((data) => {
+    setDrawer((prevDrawer) => ({ ...prevDrawer, data }))
 
     refetch()
   })
@@ -79,7 +60,7 @@ const Search: React.FC<SearchProps> = ({ queryInputRef }) => {
 
   const isLoading = fetchStatus === 'fetching'
 
-  const { ref: queryTextInput, ...queryTextInputProps } = register('query', {
+  const { ref: queryTextInput, ...queryTextInputProps } = form.register('q', {
     minLength: { message: `min. ${SEARCH_QUERY_MIN_LENGTH} characters`, value: SEARCH_QUERY_MIN_LENGTH },
     required: 'required',
     setValueAs: (value) => value.trim(),
@@ -87,29 +68,32 @@ const Search: React.FC<SearchProps> = ({ queryInputRef }) => {
 
   return (
     <>
-      <Drawer.Form onSubmit={handleFormSubmit} role="search">
-        <TextInput
-          autoFocus
-          type="text"
-          enterKeyHint="go"
-          readOnly={isLoading}
-          ref={setQueryInputRef}
-          {...queryTextInputProps}
-          aria-label="Search query"
-          onKeyDown={handleQueryKeyDown}
-          errorMessage={errors.query?.message}
-          placeholder={`Search (min. ${SEARCH_QUERY_MIN_LENGTH} characters)`}
-        />
-        <IconButton
-          primary
-          type="submit"
-          className="px-2"
-          loading={isLoading}
-          icon={RiSearchLine}
-          disabled={isLoading}
-        />
-      </Drawer.Form>
-      {data && isEmpty(data) && queryInputValue.length >= SEARCH_QUERY_MIN_LENGTH ? (
+      <FormProvider {...form}>
+        <Drawer.Form onSubmit={handleFormSubmit} role="search">
+          <SearchInput
+            autoFocus
+            type="text"
+            enterKeyHint="go"
+            readOnly={isLoading}
+            ref={setQueryInputRef}
+            {...queryTextInputProps}
+            aria-label="Search query"
+            onKeyDown={handleQueryKeyDown}
+            errorMessage={form.formState.errors.q?.message}
+            placeholder={`Search (min. ${SEARCH_QUERY_MIN_LENGTH} characters)`}
+          />
+          <IconButton
+            primary
+            type="submit"
+            className="px-2"
+            tooltip="Search"
+            loading={isLoading}
+            icon={RiSearchLine}
+            disabled={isLoading}
+          />
+        </Drawer.Form>
+      </FormProvider>
+      {data && isEmpty(data) && searchQueryData.q.length >= SEARCH_QUERY_MIN_LENGTH ? (
         !isLoading ? (
           <Drawer.Nis text="No matching results." />
         ) : null
@@ -134,6 +118,4 @@ interface SearchProps {
   queryInputRef?: React.ForwardedRef<HTMLInputElement>
 }
 
-type FormFields = {
-  query: string
-}
+type FormFields = SearchDrawerData
