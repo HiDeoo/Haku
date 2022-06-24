@@ -114,7 +114,7 @@ const Search: React.FC<SearchProps> = ({ queryInputRef }) => {
           <Drawer.Nis text="No matching results." />
         ) : null
       ) : (
-        <Root orientation="vertical" asChild ref={resultsContainer}>
+        <Root orientation="vertical" asChild ref={resultsContainer} role="navigation">
           <Drawer.List>
             {data?.map((result) => (
               <Roving asChild key={result.id}>
