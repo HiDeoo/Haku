@@ -143,9 +143,7 @@ const PalettePicker = <TItem extends PaletteItem>({
             const itemStr = itemToString(item)
             const itemIcon = itemToIcon ? itemToIcon(item) : undefined
             const isHighlighted = highlightedIndex === index
-            const menuItemClasses = clst(baseMenuItemClasses, 'flex gap-3 items-center', {
-              'bg-blue-600': isHighlighted,
-            })
+            const menuItemClasses = clst(baseMenuItemClasses, 'flex gap-3 items-center', isHighlighted && 'bg-blue-600')
 
             return (
               <li {...getItemProps({ className: menuItemClasses, item, index })} key={`${itemStr}-${index}`}>

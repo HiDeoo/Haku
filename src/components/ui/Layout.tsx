@@ -21,9 +21,7 @@ const Layout: React.FC<LayoutProps> = ({ children, sidebar }) => {
           'supports-max:pl-[max(0px,env(safe-area-inset-left))]',
           ' supports-max:pr-[max(0px,env(safe-area-inset-right))]',
         ],
-    {
-      'border-l border-l-zinc-600/30': sidebar && !sidebarCollapsed,
-    }
+    sidebar && !sidebarCollapsed && 'border-l border-l-zinc-600/30'
   )
 
   return (

@@ -14,7 +14,7 @@ const TodoNodeChildren: React.FC<TodoNodeChildrenProps> = ({
 }) => {
   const children = useTodoNodeChildren(id)
 
-  const childrenClasses = clst({ 'border-l border-zinc-700': level > 0 })
+  const childrenClasses = clst(level > 0 && 'border-l border-zinc-700')
 
   return (
     <div className={childrenClasses} style={{ marginLeft: level * TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS }}>

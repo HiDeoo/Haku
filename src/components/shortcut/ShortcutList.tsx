@@ -68,9 +68,7 @@ const ShortcutKeybinding: React.FC<ShortcutKeybindingProps> = ({ keybinding }) =
         const kbdClasses = clst(
           'block rounded bg-zinc-600 px-1.5 text-xs leading-[unset] shadow shadow-zinc-900 min-w-[1.4rem] text-center',
           'group-hover:bg-zinc-500',
-          {
-            'text-base': prettyPrintedKey.length === 1 && !/[\d.?A-z]/i.test(prettyPrintedKey),
-          }
+          prettyPrintedKey.length === 1 && !/[\d.?A-z]/i.test(prettyPrintedKey) && 'text-base'
         )
 
         return (

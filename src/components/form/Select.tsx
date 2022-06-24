@@ -59,9 +59,10 @@ const Select = <TItem,>(
 
   const containerClasses = clst('relative', className)
   const triggerClasses = clst('w-full', triggerClassName)
-  const triggerIconClasses = clst('shrink-0 motion-safe:transition-transform motion-safe:duration-200', {
-    'rotate-180': isOpen,
-  })
+  const triggerIconClasses = clst(
+    'shrink-0 motion-safe:transition-transform motion-safe:duration-200',
+    isOpen && 'rotate-180'
+  )
 
   return (
     <div className={containerClasses} ref={container} contentEditable={false}>
