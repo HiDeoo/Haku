@@ -39,3 +39,5 @@ export const API_ERROR_IMAGE_REFERENCE_DOES_NOT_EXIST = 'The reference specified
 export const API_ERROR_INBOX_ENTRY_DOES_NOT_EXIST = 'The inbox entry specified does not exist.'
 
 export const API_ERROR_IMPORT_DYNALIST_INVALID_OPML = 'Unable to parse Dynalist OPML data.'
+
+export const API_ERROR_SEARCH_REQUIRES_AT_LEAST_ONE_TYPE = 'A search requires at least one type.'

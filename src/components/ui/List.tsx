@@ -1,3 +1,5 @@
+import { forwardRef } from 'react'
+
 import IconButton, { type IconButtonProps } from 'components/form/IconButton'
 import Shimmer from 'components/ui/Shimmer'
 import clst from 'styles/clst'
@@ -6,17 +8,17 @@ export const LIST_BUTTON_CLASSES = 'rounded-full bg-transparent hover:bg-zinc-80
 export const LIST_BUTTON_PRESSED_CLASSES = 'bg-zinc-900/75 hover:bg-zinc-900/75'
 
 const itemClasses = clst(
-  'flex items-center justify-between gap-3 px-3 py-3 bg-zinc-700/40',
+  'flex items-center justify-between gap-3 p-3 bg-zinc-700/40',
   'border border-zinc-900 border-b-0 last:border-b first:rounded-t-lg last:rounded-b-lg',
   'focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-inset'
 )
 const shimmerClasses = clst(itemClasses, 'min-h-[2.8125rem] block')
 
-const List: ListComponent = ({ children, className, isLoading, shimmerClassNames, title }) => {
+const List = forwardRef(({ children, className, isLoading, shimmerClassNames, title, ...props }, forwardedRef) => {
   return (
     <div className={className}>
       {title ? <h1 className="mb-1.5 ml-0.5 truncate text-lg">{title}</h1> : null}
-      <div>
+      <div ref={forwardedRef} {...props}>
         {isLoading && shimmerClassNames
           ? Array.from({ length: shimmerClassNames.length }).map((_, index) => (
               <Shimmer key={`shimmer-${index}`} className={shimmerClasses}>
@@ -27,7 +29,9 @@ const List: ListComponent = ({ children, className, isLoading, shimmerClassNames
       </div>
     </div>
   )
-}
+}) as ListComponent
+
+List.displayName = 'List'
 
 export default List
 
@@ -49,7 +53,7 @@ const ListButton: React.FC<ListButtonProps> = (props) => {
 
 List.Button = ListButton
 
-type ListComponent = React.FC<ListProps> & {
+export type ListComponent = React.ForwardRefExoticComponent<ListProps & React.RefAttributes<HTMLDivElement>> & {
   Item: typeof ListItem
   Button: typeof ListButton
 }

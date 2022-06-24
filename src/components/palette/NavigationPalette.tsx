@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 import { RiBookletLine, RiTodoLine } from 'react-icons/ri'
 
 import { fileHistoryAtom } from 'atoms/fileHistory'
-import { navigationPaletteOpenedAtom } from 'atoms/palette'
+import { navigationPaletteOpenedAtom } from 'atoms/togglable'
 import Palette, { type PaletteItem } from 'components/palette/Palette'
 import { ContentType, getContentType } from 'hooks/useContentType'
 import useGlobalShortcuts from 'hooks/useGlobalShortcuts'

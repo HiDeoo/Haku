@@ -175,7 +175,7 @@ const Combobox = <TItem, TFormFields extends FieldValues>({
           {...inputProps}
           className="mr-1.5"
           spellCheck={false}
-          disabled={isDisabled()}
+          readOnly={isDisabled()}
           value={getInputValue()}
           enterKeyHint={enterKeyHint}
           errorMessage={errorMessage}

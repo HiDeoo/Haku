@@ -19,7 +19,7 @@ import xml from 'highlight.js/lib/languages/xml'
 import yaml from 'highlight.js/lib/languages/yaml'
 import { lowlight } from 'lowlight/lib/core'
 
-import { isNotEmpty } from './array'
+import { isNotEmpty } from 'libs/array'
 
 export { CloudinaryTiptapNode as Cloudinary } from 'libs/cloudinaryTiptapNode'
 

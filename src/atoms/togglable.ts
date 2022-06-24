@@ -1,6 +1,8 @@
-import { atom, type PrimitiveAtom, type WritableAtom } from 'jotai'
+import { atom, type WritableAtom, PrimitiveAtom } from 'jotai'
 
 import { onlineAtom } from 'atoms/network'
+import { SearchableContentType } from 'constants/contentType'
+import { type SearchContentType } from 'libs/db/file'
 import { type FolderData } from 'libs/db/folder'
 import { type NoteMetadata } from 'libs/db/note'
 import { type TodoMetadata } from 'libs/db/todo'
@@ -9,10 +11,21 @@ import { type A11yImageParams } from 'libs/image'
 export const [folderModalAtom, setFolderModalOpenedAtom] = createMutationModalAtom<FolderData>()
 export const [contentModalAtom, setContentModalOpenedAtom] = createMutationModalAtom<NoteMetadata | TodoMetadata>()
 
-export const [shortcutModalAtom, setShortcutModalOpenedAtom] = createTogglableAtom()
-export const [inboxDrawerAtom, setInboxDrawerOpenedAtom] = createTogglableAtom()
-
+export const shortcutModalOpenedAtom = atom(false)
 export const editorImageModalAtom = atom<EditorImageModal>({ opened: false })
+
+export const [inboxDrawerAtom, setInboxDrawerOpenedAtom] = createDrawerAtom(undefined)
+export const [searchDrawerAtom, setSearchDrawerOpenedAtom] = createDrawerAtom<SearchDrawerData>({
+  q: '',
+  types: {
+    [SearchableContentType.INBOX]: true,
+    [SearchableContentType.NOTE]: true,
+    [SearchableContentType.TODO]: true,
+  },
+})
+
+export const commandPaletteOpenedAtom = atom(false)
+export const navigationPaletteOpenedAtom = atom(false)
 
 function createMutationModalAtom<TData>(): [
   WritableAtom<MutationModal<TData>, MutationModal<TData>>,
@@ -24,7 +37,7 @@ function createMutationModalAtom<TData>(): [
     opened: false,
   })
 
-  const setModalOpenedAtom: WritableAtom<null, boolean> = atom(null, (get, set, opened: boolean) => {
+  const setModalOpenedAtom = atom(null, (get, set, opened: boolean) => {
     const online = get(onlineAtom)
 
     return set(modalAtom, { ...get(modalAtom), action: 'insert', data: undefined, opened: !online ? false : opened })
@@ -33,14 +46,28 @@ function createMutationModalAtom<TData>(): [
   return [modalAtom, setModalOpenedAtom]
 }
 
-function createTogglableAtom(): [PrimitiveAtom<boolean>, WritableAtom<null, boolean>] {
-  const modalAtom = atom<boolean>(false)
-
-  const setModalOpenedAtom: WritableAtom<null, boolean> = atom(null, (_get, set, opened: boolean) => {
-    return set(modalAtom, opened)
+function createDrawerAtom<TData>(initialData: TData): [PrimitiveAtom<Drawer<TData>>, WritableAtom<null, boolean>] {
+  const drawerAtom = atom<Drawer<TData>>({
+    data: initialData,
+    opened: false,
   })
 
-  return [modalAtom, setModalOpenedAtom]
+  const setDrawerOpenedAtom = atom(null, (get, set, opened: boolean) => {
+    const { opened: inboxDrawerOpened, ...inboxDrawer } = get(inboxDrawerAtom)
+    const { opened: searchDrawerOpened, ...searchDrawer } = get(searchDrawerAtom)
+
+    if (inboxDrawerOpened) {
+      set(inboxDrawerAtom, { ...inboxDrawer, opened: false })
+    }
+
+    if (searchDrawerOpened) {
+      set(searchDrawerAtom, { ...searchDrawer, opened: false })
+    }
+
+    return set(drawerAtom, { ...get(drawerAtom), opened })
+  })
+
+  return [drawerAtom, setDrawerOpenedAtom]
 }
 
 interface MutationModal<TData> {
@@ -51,4 +78,14 @@ interface MutationModal<TData> {
 
 interface EditorImageModal extends Partial<A11yImageParams> {
   opened: boolean
+}
+
+interface Drawer<TData> {
+  data: TData
+  opened: boolean
+}
+
+export interface SearchDrawerData {
+  q: string
+  types: SearchContentType
 }

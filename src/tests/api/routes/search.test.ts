@@ -1,14 +1,77 @@
 import { faker } from '@faker-js/faker'
 
-import { SEARCH_QUERY_MIN_LENGTH, SEARCH_RESULT_LIMIT } from 'constants/search'
-import { type SearchResultsData } from 'libs/db/file'
+import { SearchableContentType } from 'constants/contentType'
+import { API_ERROR_SEARCH_REQUIRES_AT_LEAST_ONE_TYPE } from 'constants/error'
+import { SEARCH_QUERY_MIN_LENGTH } from 'constants/search'
+import { type SearchContentType, type SearchResultsData } from 'libs/db/file'
 import { getTestUser, testApiRoute } from 'tests/api'
 import { createTestInboxEntry, createTestNote, createTestTodo, createTestTodoNode } from 'tests/api/db'
+
+const allSearchFilesTypes: SearchContentType = {
+  [SearchableContentType.INBOX]: true,
+  [SearchableContentType.NOTE]: true,
+  [SearchableContentType.TODO]: true,
+}
+
+const mixedSearchFilesTypes = [
+  {
+    label: 'note, todo & inbox',
+    searchFilesTypes: allSearchFilesTypes,
+  },
+  {
+    label: 'only note',
+    searchFilesTypes: {
+      [SearchableContentType.INBOX]: false,
+      [SearchableContentType.NOTE]: true,
+      [SearchableContentType.TODO]: false,
+    },
+  },
+  {
+    label: 'only todo',
+    searchFilesTypes: {
+      [SearchableContentType.INBOX]: false,
+      [SearchableContentType.NOTE]: false,
+      [SearchableContentType.TODO]: true,
+    },
+  },
+  {
+    label: 'only inbox',
+    searchFilesTypes: {
+      [SearchableContentType.INBOX]: true,
+      [SearchableContentType.NOTE]: false,
+      [SearchableContentType.TODO]: false,
+    },
+  },
+  {
+    label: 'only note & todo',
+    searchFilesTypes: {
+      [SearchableContentType.INBOX]: false,
+      [SearchableContentType.NOTE]: true,
+      [SearchableContentType.TODO]: true,
+    },
+  },
+  {
+    label: 'only note & inbox',
+    searchFilesTypes: {
+      [SearchableContentType.INBOX]: true,
+      [SearchableContentType.NOTE]: true,
+      [SearchableContentType.TODO]: false,
+    },
+  },
+  {
+    label: 'only todo & inbox',
+    searchFilesTypes: {
+      [SearchableContentType.INBOX]: true,
+      [SearchableContentType.NOTE]: false,
+      [SearchableContentType.TODO]: true,
+    },
+  },
+]
 
 describe('search', () => {
   test(`should require a search query of at least ${SEARCH_QUERY_MIN_LENGTH} characters long`, () =>
     testApiRoute(async ({ caller }) => {
-      await expect(() => caller.query('search', { q: 'ab' })).rejects.toThrow()
+      await expect(() => caller.query('search', { q: 'ab', types: allSearchFilesTypes })).rejects.toThrow()
     }))
 
   test('should return an empty list of result', () =>
@@ -16,7 +79,7 @@ describe('search', () => {
       await createTestNote()
       await createTestTodo()
 
-      const res = await caller.query('search', { q: 'amazing' })
+      const res = await caller.query('search', { q: 'amazing', types: allSearchFilesTypes })
 
       expect(res.length).toBe(0)
     }))
@@ -25,7 +88,7 @@ describe('search', () => {
     testApiRoute(async ({ caller }) => {
       const { id } = await createTestInboxEntry({ text: 'amazing text' })
 
-      const res = await caller.query('search', { q: 'amazing' })
+      const res = await caller.query('search', { q: 'amazing', types: allSearchFilesTypes })
 
       expect(res.length).toBe(1)
 
@@ -37,7 +100,7 @@ describe('search', () => {
     testApiRoute(async ({ caller }) => {
       const { id } = await createTestNote({ name: 'amazing name' })
 
-      const res = await caller.query('search', { q: 'amazing' })
+      const res = await caller.query('search', { q: 'amazing', types: allSearchFilesTypes })
 
       expect(res.length).toBe(1)
 
@@ -48,7 +111,7 @@ describe('search', () => {
     testApiRoute(async ({ caller }) => {
       const { id } = await createTestNote({ data: 'amazing text' })
 
-      const res = await caller.query('search', { q: 'amazing' })
+      const res = await caller.query('search', { q: 'amazing', types: allSearchFilesTypes })
 
       expect(res.length).toBe(1)
 
@@ -59,7 +122,7 @@ describe('search', () => {
     testApiRoute(async ({ caller }) => {
       const { id } = await createTestTodo({ name: 'amazing name' })
 
-      const res = await caller.query('search', { q: 'amazing' })
+      const res = await caller.query('search', { q: 'amazing', types: allSearchFilesTypes })
 
       expect(res.length).toBe(1)
 
@@ -71,7 +134,7 @@ describe('search', () => {
       const { id } = await createTestTodo()
       await createTestTodoNode({ todoId: id, content: 'amazing content' })
 
-      const res = await caller.query('search', { q: 'amazing' })
+      const res = await caller.query('search', { q: 'amazing', types: allSearchFilesTypes })
 
       expect(res.length).toBe(1)
 
@@ -83,7 +146,7 @@ describe('search', () => {
       const { id } = await createTestTodo()
       await createTestTodoNode({ todoId: id, noteText: 'amazing text' })
 
-      const res = await caller.query('search', { q: 'amazing' })
+      const res = await caller.query('search', { q: 'amazing', types: allSearchFilesTypes })
 
       expect(res.length).toBe(1)
 
@@ -94,7 +157,7 @@ describe('search', () => {
     testApiRoute(async ({ caller }) => {
       const { id } = await createTestNote({ name: 'amazing name', data: 'amazing content' })
 
-      const res = await caller.query('search', { q: 'amazing' })
+      const res = await caller.query('search', { q: 'amazing', types: allSearchFilesTypes })
 
       expect(res.length).toBe(1)
 
@@ -108,7 +171,7 @@ describe('search', () => {
       await createTestTodoNode({ todoId: id })
       await createTestTodoNode({ todoId: id, noteText: 'amazing text' })
 
-      const res = await caller.query('search', { q: 'amazing' })
+      const res = await caller.query('search', { q: 'amazing', types: allSearchFilesTypes })
 
       expect(res.length).toBe(1)
 
@@ -128,7 +191,7 @@ describe('search', () => {
       const { id: inbox_entry_0_id } = await createTestInboxEntry({ text: 'amazing text' })
       await createTestInboxEntry({ text: 'amazing name', userId: userId1 })
 
-      const res = await caller.query('search', { q: 'amazing' })
+      const res = await caller.query('search', { q: 'amazing', types: allSearchFilesTypes })
 
       expect(res.length).toBe(3)
 
@@ -156,7 +219,7 @@ describe('search', () => {
       const { id: inbox_entry_0_id } = await createTestInboxEntry({ text: 'amazing text' })
       await createTestInboxEntry()
 
-      const res = await caller.query('search', { q: 'amazing' })
+      const res = await caller.query('search', { q: 'amazing', types: allSearchFilesTypes })
 
       expect(res.length).toBe(6)
 
@@ -180,7 +243,7 @@ describe('search', () => {
 
       const { id: inbox_entry_0_id } = await createTestInboxEntry({ text: 'amazing text' })
 
-      const res = await caller.query('search', { q: 'amazing' })
+      const res = await caller.query('search', { q: 'amazing', types: allSearchFilesTypes })
 
       expect(res.length).toBe(5)
 
@@ -206,7 +269,7 @@ describe('search', () => {
 
       const { id: inbox_entry_0_id } = await createTestInboxEntry({ text: 'amazing text' })
 
-      const res = await caller.query('search', { q: 'amazing' })
+      const res = await caller.query('search', { q: 'amazing', types: allSearchFilesTypes })
 
       expect(res.length).toBe(6)
 
@@ -230,7 +293,7 @@ describe('search', () => {
 
       const { id: inbox_entry_0_id } = await createTestInboxEntry({ text: 'amazing text' })
 
-      const res = await caller.query('search', { q: 'amazing' })
+      const res = await caller.query('search', { q: 'amazing', types: allSearchFilesTypes })
 
       expect(res.length).toBe(5)
 
@@ -252,7 +315,7 @@ describe('search', () => {
 
       const { id: inbox_entry_0_id } = await createTestInboxEntry({ text: 'AMaziNG text' })
 
-      const res = await caller.query('search', { q: 'amazing' })
+      const res = await caller.query('search', { q: 'amazing', types: allSearchFilesTypes })
 
       expect(res.length).toBe(4)
 
@@ -273,7 +336,7 @@ describe('search', () => {
 
       const { id: inbox_entry_0_id } = await createTestInboxEntry({ text: 'Amazing text' })
 
-      const res = await caller.query('search', { q: 'AMAZING' })
+      const res = await caller.query('search', { q: 'AMAZING', types: allSearchFilesTypes })
 
       expect(res.length).toBe(4)
 
@@ -309,7 +372,7 @@ describe('search', () => {
       await createTestInboxEntry({ text: 'name' })
       const { id: inbox_entry_3_id } = await createTestInboxEntry({ text: 'amazing name' })
 
-      const res = await caller.query('search', { q: 'amazing name' })
+      const res = await caller.query('search', { q: 'amazing name', types: allSearchFilesTypes })
 
       expect(res.length).toBe(8)
 
@@ -349,7 +412,7 @@ describe('search', () => {
       await createTestInboxEntry({ text: 'name' })
       const { id: inbox_entry_3_id } = await createTestInboxEntry({ text: 'amazing name' })
 
-      const res = await caller.query('search', { q: '"amazing name"' })
+      const res = await caller.query('search', { q: '"amazing name"', types: allSearchFilesTypes })
 
       expect(res.length).toBe(4)
 
@@ -385,7 +448,7 @@ describe('search', () => {
       const { id: inbox_entry_2_id } = await createTestInboxEntry({ text: 'name' })
       const { id: inbox_entry_3_id } = await createTestInboxEntry({ text: 'amazing name' })
 
-      const res = await caller.query('search', { q: 'amazing OR name' })
+      const res = await caller.query('search', { q: 'amazing OR name', types: allSearchFilesTypes })
 
       expect(res.length).toBe(16)
 
@@ -433,7 +496,7 @@ describe('search', () => {
       await createTestInboxEntry({ text: 'name' })
       await createTestInboxEntry({ text: 'amazing name' })
 
-      const res = await caller.query('search', { q: 'amazing -name' })
+      const res = await caller.query('search', { q: 'amazing -name', types: allSearchFilesTypes })
 
       expect(res.length).toBe(4)
 
@@ -441,57 +504,6 @@ describe('search', () => {
       expect(res[1]?.id).toBe(todo_5_id)
       expect(res[2]?.id).toBe(note_1_id)
       expect(res[3]?.id).toBe(inbox_entry_1_id)
-    }))
-
-  test('should return at most `SEARCH_RESULT_LIMIT` results per page', () =>
-    testApiRoute(async ({ caller }) => {
-      // 2 pages: `SEARCH_RESULT_LIMIT` + 1
-      const names = Array.from(
-        { length: SEARCH_RESULT_LIMIT + 1 },
-        (_, index) => `amazing name ${'a'.repeat(index + 1)}`
-      )
-
-      for (const name of names) {
-        await createTestNote({ name })
-      }
-
-      const res = await caller.query('search', { q: 'amazing' })
-
-      expect(res.length).toBe(SEARCH_RESULT_LIMIT)
-
-      expect(res[0]?.name).toBe(names[0])
-      expect(res.at(-1)?.name).toBe(names[24])
-    }))
-
-  test('should return paginated results', async () =>
-    testApiRoute(async ({ caller }) => {
-      // 3 pages: `SEARCH_RESULT_LIMIT` + `SEARCH_RESULT_LIMIT` + 2
-      const names = Array.from({ length: 52 }, (_, index) => `amazing name ${'a'.repeat(index + 1)}`)
-
-      for (const name of names) {
-        await createTestNote({ name })
-      }
-
-      let res = await caller.query('search', { q: 'amazing' })
-
-      expect(res.length).toBe(SEARCH_RESULT_LIMIT)
-
-      expect(res[0]?.name).toBe(names[0])
-      expect(res[24]?.name).toBe(names[SEARCH_RESULT_LIMIT - 1])
-
-      res = await caller.query('search', { q: 'amazing', cursor: 1 })
-
-      expect(res.length).toBe(SEARCH_RESULT_LIMIT)
-
-      expect(res[0]?.name).toBe(names[SEARCH_RESULT_LIMIT])
-      expect(res[24]?.name).toBe(names[SEARCH_RESULT_LIMIT * 2 - 1])
-
-      res = await caller.query('search', { q: 'amazing', cursor: 2 })
-
-      expect(res.length).toBe(2)
-
-      expect(res[0]?.name).toBe(names[50])
-      expect(res[1]?.name).toBe(names[51])
     }))
 
   test('should return valid excerpts', () =>
@@ -511,7 +523,7 @@ describe('search', () => {
 
       const { id: inbox_entry_0_id } = await createTestInboxEntry({ text: highlightedContent })
 
-      const res = await caller.query('search', { q: 'amazing' })
+      const res = await caller.query('search', { q: 'amazing', types: allSearchFilesTypes })
 
       expect(res.length).toBe(6)
 
@@ -545,7 +557,7 @@ describe('search', () => {
     testApiRoute(async ({ caller }) => {
       const { id } = await createTestNote({ data: 'amazing super name' })
 
-      const res = await caller.query('search', { q: 'amazing name' })
+      const res = await caller.query('search', { q: 'amazing name', types: allSearchFilesTypes })
 
       expect(res.length).toBe(1)
 
@@ -559,7 +571,7 @@ describe('search', () => {
       await createTestTodo({ name: 'amazing name' })
       await createTestInboxEntry({ text: 'amazing name' })
 
-      const res = await caller.query('search', { q: 'amazing' })
+      const res = await caller.query('search', { q: 'amazing', types: allSearchFilesTypes })
 
       expect(res.length).toBe(3)
 
@@ -572,13 +584,47 @@ describe('search', () => {
     testApiRoute(async ({ caller }) => {
       await createTestInboxEntry({ text: 'amazing name' })
 
-      const res = await caller.query('search', { q: 'amazing' })
+      const res = await caller.query('search', { q: 'amazing', types: allSearchFilesTypes })
 
       expect(res.length).toBe(1)
 
       expect(res[0]?.name).toBeNull()
       expect(res[0]?.slug).toBeNull()
     }))
+
+  test('should require at least 1 file type', () =>
+    testApiRoute(async ({ caller }) => {
+      await expect(() =>
+        caller.query('search', {
+          q: 'amazing',
+          types: {
+            [SearchableContentType.INBOX]: false,
+            [SearchableContentType.NOTE]: false,
+            [SearchableContentType.TODO]: false,
+          },
+        })
+      ).rejects.toThrow(API_ERROR_SEARCH_REQUIRES_AT_LEAST_ONE_TYPE)
+    }))
+
+  test.each(mixedSearchFilesTypes)('should return $label entries', ({ searchFilesTypes }) =>
+    testApiRoute(async ({ caller }) => {
+      await createTestNote({ name: 'amazing name' })
+      await createTestTodo({ name: 'amazing name' })
+      await createTestInboxEntry({ text: 'amazing text' })
+
+      const expectedSearchFileTypes = Object.entries(searchFilesTypes)
+        .filter(([, value]) => value === true)
+        .map(([key]) => key)
+
+      const res = await caller.query('search', { q: 'amazing', types: searchFilesTypes })
+
+      expect(res.length).toBe(expectedSearchFileTypes.length)
+
+      for (const result of res) {
+        expect(expectedSearchFileTypes.includes(result.type)).toBe(true)
+      }
+    })
+  )
 })
 
 function getExcerptHighlightCount(excerpt?: SearchResultsData[number]['excerpt']) {

@@ -15,12 +15,12 @@ import {
 } from 'react-icons/ri'
 
 import { toggleSidebarCollapsedAtom } from 'atoms/collapsible'
-import { commandPaletteOpenedAtom, navigationPaletteOpenedAtom, searchPaletteOpenedAtom } from 'atoms/palette'
+import { commandPaletteOpenedAtom, navigationPaletteOpenedAtom, setSearchDrawerOpenedAtom } from 'atoms/togglable'
 import {
   setContentModalOpenedAtom,
   setFolderModalOpenedAtom,
   setInboxDrawerOpenedAtom,
-  setShortcutModalOpenedAtom,
+  shortcutModalOpenedAtom,
 } from 'atoms/togglable'
 import Palette, { type PaletteItem } from 'components/palette/Palette'
 import { type IconProps } from 'components/ui/Icon'
@@ -37,7 +37,7 @@ const CommandPalette: React.FC = () => {
   const [opened, setOpened] = useAtom(commandPaletteOpenedAtom)
 
   const setNavigationPaletteOpened = useSetAtom(navigationPaletteOpenedAtom)
-  const setSearchPaletteOpened = useSetAtom(searchPaletteOpenedAtom)
+  const setSearchDrawerOpened = useSetAtom(setSearchDrawerOpenedAtom)
 
   const { cType, type } = useContentType()
   const isBrowsingNotes = type === ContentType.NOTE
@@ -46,7 +46,7 @@ const CommandPalette: React.FC = () => {
 
   const setContentModalOpened = useSetAtom(setContentModalOpenedAtom)
   const setFolderModalOpened = useSetAtom(setFolderModalOpenedAtom)
-  const setShortcutModalOpened = useSetAtom(setShortcutModalOpenedAtom)
+  const setShortcutModalOpened = useSetAtom(shortcutModalOpenedAtom)
 
   const setInboxDrawerOpened = useSetAtom(setInboxDrawerOpenedAtom)
 
@@ -92,7 +92,7 @@ const CommandPalette: React.FC = () => {
         name: 'Search in Notes and Todos',
         icon: RiSearchLine,
         action: () => {
-          setSearchPaletteOpened(true)
+          setSearchDrawerOpened(true)
         },
       },
       {
@@ -147,7 +147,7 @@ const CommandPalette: React.FC = () => {
       setFolderModalOpened,
       setInboxDrawerOpened,
       setNavigationPaletteOpened,
-      setSearchPaletteOpened,
+      setSearchDrawerOpened,
       setShortcutModalOpened,
       toggleSidebarCollapsed,
     ]

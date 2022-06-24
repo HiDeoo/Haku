@@ -17,14 +17,14 @@ import {
 
 import { sidebarCollapsedAtom, toggleSidebarCollapsedAtom } from 'atoms/collapsible'
 import { deferrefPromptEventAtom } from 'atoms/pwa'
-import { setShortcutModalOpenedAtom } from 'atoms/togglable'
+import { shortcutModalOpenedAtom } from 'atoms/togglable'
 import ContentModal from 'components/content/ContentModal'
 import ContentTypeSwitch from 'components/content/ContentTypeSwitch'
 import FolderModal from 'components/folder/FolderModal'
 import Button, { type ButtonPropsWithOnClickHandler } from 'components/form/Button'
 import IconButton from 'components/form/IconButton'
 import InboxDrawer from 'components/inbox/InboxDrawer'
-import SearchPalette from 'components/palette/SearchPalette'
+import SearchDrawer from 'components/search/SearchDrawer'
 import ShortcutModal from 'components/shortcut/ShortcutModal'
 import Flex from 'components/ui/Flex'
 import Icon, { type IconProps } from 'components/ui/Icon'
@@ -42,7 +42,7 @@ const SidebarMenu: React.FC = () => {
   const deferrefPromptEvent = useAtomValue(deferrefPromptEventAtom)
   const resetDeferrefPromptEvent = useResetAtom(deferrefPromptEventAtom)
 
-  const setShortcutModalOpened = useSetAtom(setShortcutModalOpenedAtom)
+  const setShortcutModalOpened = useSetAtom(shortcutModalOpenedAtom)
 
   function handleKeyboardShortcutsClick() {
     setShortcutModalOpened(true)
@@ -76,7 +76,7 @@ const SidebarMenu: React.FC = () => {
       <ContentModal />
       <FolderModal />
       <ShortcutModal />
-      <SearchPalette />
+      <SearchDrawer />
       <IconButton
         onPress={toggleSidebarCollapsed}
         icon={sidebarCollapsed ? RiMenuUnfoldLine : RiMenuFoldLine}

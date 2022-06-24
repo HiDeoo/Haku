@@ -1,5 +1,6 @@
 import { type AriaTextFieldOptions, useTextField } from '@react-aria/textfield'
 import { useObjectRef } from '@react-aria/utils'
+import { type BaseEvent } from '@react-types/shared'
 import { forwardRef } from 'react'
 import { type ChangeHandler, type UseFormRegisterReturn } from 'react-hook-form'
 
@@ -57,7 +58,7 @@ TextInput.displayName = 'TextInput'
 
 export default TextInput
 
-interface TextInputProps extends Partial<Omit<UseFormRegisterReturn, 'ref' | 'onBlur' | 'onChange'>> {
+export interface TextInputProps extends Partial<Omit<UseFormRegisterReturn, 'ref' | 'onBlur' | 'onChange'>> {
   'aria-label'?: React.InputHTMLAttributes<HTMLInputElement>['aria-label']
   autoComplete?: React.InputHTMLAttributes<HTMLInputElement>['autoComplete']
   autoFocus?: React.InputHTMLAttributes<HTMLInputElement>['autoFocus']
@@ -71,7 +72,7 @@ interface TextInputProps extends Partial<Omit<UseFormRegisterReturn, 'ref' | 'on
   label?: string
   onBlur: AriaTextFieldOptions<'input'>['onBlur']
   onChange: ChangeHandler | React.ChangeEventHandler<HTMLInputElement>
-  onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>
+  onKeyDown?: (event: BaseEvent<React.KeyboardEvent<HTMLInputElement>>) => void
   onPaste?: React.ClipboardEventHandler<HTMLInputElement>
   placeholder: string
   readOnly?: React.InputHTMLAttributes<HTMLInputElement>['readOnly']

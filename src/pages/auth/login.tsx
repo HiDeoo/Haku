@@ -26,7 +26,7 @@ const Login: Page = () => {
     setFocus,
   } = useForm<FormFields>()
 
-  const magicCodeInput = useRef<MagicCodeInputHandle | null>(null)
+  const magicCodeInput = useRef<MagicCodeInputHandle>(null)
 
   const [state, dispatch] = useReducer(stateReducer, initialState)
 
