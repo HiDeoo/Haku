@@ -42,6 +42,7 @@ const InboxForm: React.FC = () => {
       <IconButton
         primary
         type="submit"
+        tooltip="Add"
         className="px-2"
         icon={RiAddLine}
         loading={isLoading}
