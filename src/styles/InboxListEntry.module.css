@@ -1,4 +1,0 @@
-.entry a {
-  @apply cursor-pointer text-blue-200 underline underline-offset-1 hover:no-underline;
-  @apply focus-visible:no-underline focus-visible:outline focus-visible:outline-blue-200;
-}
