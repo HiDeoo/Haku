@@ -15,9 +15,7 @@ const Toaster: React.FC = () => {
     'supports-max:right-[max(0px,env(safe-area-inset-right))]',
     'overflow-y-auto overflow-x-hidden',
     'focus:outline-none',
-    {
-      'focus-visible:ring-2 focus-visible:ring-blue-600': isNotEmpty(toasts),
-    }
+    isNotEmpty(toasts) && 'focus-visible:ring-2 focus-visible:ring-blue-600'
   )
 
   return (

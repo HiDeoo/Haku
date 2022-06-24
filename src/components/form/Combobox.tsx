@@ -162,7 +162,7 @@ const Combobox = <TItem, TFormFields extends FieldValues>({
     return loading ? 'Loading…' : inputProps.value
   }
 
-  const triggerIconClasses = clst('motion-safe:transition-transform motion-safe:duration-200', { 'rotate-180': isOpen })
+  const triggerIconClasses = clst('motion-safe:transition-transform motion-safe:duration-200', isOpen && 'rotate-180')
 
   return (
     <div className="relative mb-3" ref={container}>

@@ -16,7 +16,7 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
       'bg-zinc-600 rounded-md placeholder:text-zinc-100/40 disabled:cursor-not-allowed appearance-none',
       'focus:outline-none focus:ring-2 focus:ring-offset-zinc-800 focus:ring-offset-2',
       props.errorMessage ? 'focus:ring-red-400' : 'focus:ring-blue-600',
-      { 'opacity-50': props.disabled || props.readOnly },
+      (props.disabled || props.readOnly) && 'opacity-50',
       className
     )
 

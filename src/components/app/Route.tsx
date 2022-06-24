@@ -1,4 +1,4 @@
-import { useUpdateAtom } from 'jotai/utils'
+import { useSetAtom } from 'jotai'
 import { signIn, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
@@ -13,7 +13,7 @@ const Route: React.FC<RouteProps> = ({ children }) => {
   const { push, query, route } = useRouter()
   const { status } = useSession()
 
-  const setContentType = useUpdateAtom(contentTypeAtom)
+  const setContentType = useSetAtom(contentTypeAtom)
 
   const isAuthenticated = status === 'authenticated'
   const isSecureRoute = !unsecureRoutes.has(route)

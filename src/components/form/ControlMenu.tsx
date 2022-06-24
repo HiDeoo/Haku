@@ -62,9 +62,10 @@ const ControlMenu = <TItem,>({
           {items.map((item, index) => {
             const isHighlighted = highlightedIndex === index
 
-            const menuItemClasses = clst('px-3 py-1.5 cursor-pointer text-ellipsis overflow-hidden', {
-              'bg-blue-600': isHighlighted,
-            })
+            const menuItemClasses = clst(
+              'px-3 py-1.5 cursor-pointer text-ellipsis overflow-hidden',
+              isHighlighted && 'bg-blue-600'
+            )
 
             return (
               <li

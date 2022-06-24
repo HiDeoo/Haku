@@ -8,7 +8,6 @@ import { useInboxEntryMutation } from 'hooks/useInboxEntryMutation'
 import { useNetworkStatus } from 'hooks/useNetworkStatus'
 import { InboxEntryData } from 'libs/db/inbox'
 import clst from 'styles/clst'
-import styles from 'styles/InboxListEntry.module.css'
 
 const InboxListEntry: React.FC<InboxListEntryProps> = ({ entry }) => {
   const { offline } = useNetworkStatus()
@@ -19,7 +18,12 @@ const InboxListEntry: React.FC<InboxListEntryProps> = ({ entry }) => {
     mutateDelete({ id: entry.id })
   }
 
-  const textClasses = clst(styles.entry, 'min-w-0 break-words')
+  const textClasses = clst(
+    'min-w-0 break-words',
+    '[&>a]:text-blue-200 [&>a]:underline hover:[&>a]:no-underline [&>a]:rounded',
+    'focus-visible:[&>a]:outline-none focus-visible:[&>a]:no-underline focus-visible:[&>a]:ring-2',
+    'focus-visible:[&>a]:ring-blue-600 focus-visible:[&>a]:ring-offset-zinc-800 focus-visible:[&>a]:ring-offset-2'
+  )
 
   return (
     <Drawer.List.Item>

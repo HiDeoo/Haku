@@ -38,14 +38,10 @@ export default Navbar
 const NavbarButton: React.FC<NavbarButtonProps> = ({ pinged, ...props }) => {
   const buttonClasses = clst(
     'min-w-[65px] mx-0 py-1 bg-zinc-700 hover:bg-zinc-600 shadow-none',
-    {
-      'bg-blue-600 hover:bg-blue-500': props.primary,
-    },
+    props.primary && 'bg-blue-600 hover:bg-blue-500',
     pinged && ['relative', buttonPingClasses]
   )
-  const pressedButtonClasses = clst('bg-zinc-500 hover:bg-zinc-500', {
-    'bg-blue-400 hover:bg-blue-400': props.primary,
-  })
+  const pressedButtonClasses = clst('bg-zinc-500 hover:bg-zinc-500', props.primary && 'bg-blue-400 hover:bg-blue-400')
 
   return <Button {...props} className={buttonClasses} pressedClassName={pressedButtonClasses} />
 }

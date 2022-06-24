@@ -2,7 +2,6 @@ import { IoExtensionPuzzleOutline } from 'react-icons/io5'
 
 import Icon from 'components/ui/Icon'
 import clst from 'styles/clst'
-import styles from 'styles/Puzzle.module.css'
 
 const Puzzle: React.FC<PuzzleProps> = ({ layout }) => {
   const puzzleClasses = 'h-20 w-20 text-blue-600'
@@ -16,7 +15,7 @@ const Puzzle: React.FC<PuzzleProps> = ({ layout }) => {
     'absolute',
     layout === 'broken'
       ? 'top-[5.25rem] left-[4.75rem] rotate-[20deg] text-red-400/80'
-      : ['top-[3.25rem] left-[3.25rem] text-zinc-400', styles.brokenPuzzle]
+      : 'top-[3.25rem] left-[3.25rem] text-zinc-400 [&>path]:[stroke-dasharray:25_50] [&>path]:[stroke-width:20]'
   )
 
   return (
