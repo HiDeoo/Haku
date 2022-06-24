@@ -6,6 +6,11 @@ All notable changes to this project will be documented in this file.
 
 ### 🚀 Features
 
+- Search improvements:
+  - The search UI is now a drawer and no longer a palette.
+  - Add options to only include one or multiple types of results (notes, todos and inbox entries).
+  - The search query & options are persisted during a session.
+  - Search results can be focused with the `Meta + ↓` shortcut and navigation between them is possible using the arrow keys.
 - Navigation palette entries are now sorted by recent activity.
 - Quotes in the editor can be highlighted by using bold text on the first line.
 - Add support for editor code block language aliases (e.g. `ts` -> `TypeScript`).
