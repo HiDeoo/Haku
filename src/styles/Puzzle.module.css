@@ -1,6 +1,0 @@
-.brokenPuzzle {
-  & path {
-    stroke-dasharray: 25 50;
-    stroke-width: 20;
-  }
-}
