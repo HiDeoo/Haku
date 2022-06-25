@@ -15,6 +15,10 @@ All notable changes to this project will be documented in this file.
 - Quotes in the editor can be highlighted by using bold text at the start of the quote.
 - Add support for editor code block language aliases (e.g. `ts` -> `TypeScript`).
 
+### 💄 UI
+
+- Tweak PWA icon to have a more native macOS / iOS look and feel.
+
 ### 🐞 Bug Fixes
 
 - Properly display unknown editor code block languages as `Unknown`.
