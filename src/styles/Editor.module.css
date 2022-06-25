@@ -68,11 +68,11 @@
     @apply border-l-[3px] border-l-zinc-600 pl-3 italic;
 
     & > p:first-child > strong {
-      @apply flex not-italic text-blue-300;
+      @apply relative ml-5 mr-0.5 not-italic text-blue-300;
 
       &::before {
         @apply bg-[url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ij48cGF0aCBmaWxsPSJub25lIiBkPSJNMCAwaDI0djI0SDB6Ii8+PHBhdGggZmlsbD0iIzkzYzVmZCIgZD0iTTEyIDIyQzYuNDc3IDIyIDIgMTcuNTIzIDIgMTJTNi40NzcgMiAxMiAyczEwIDQuNDc3IDEwIDEwLTQuNDc3IDEwLTEwIDEwem0wLTJhOCA4IDAgMSAwIDAtMTYgOCA4IDAgMCAwIDAgMTZ6TTExIDdoMnYyaC0yVjd6bTAgNGgydjZoLTJ2LTZ6Ii8+PC9zdmc+Cg==)];
-        @apply mr-[5px] mt-[2px] w-[1.2rem] bg-[length:1rem_1rem] bg-no-repeat content-[''];
+        @apply absolute right-full top-0 mr-1.5 h-[1rem] w-[1rem] bg-[length:1rem_1rem] bg-no-repeat content-[''];
       }
     }
   }
