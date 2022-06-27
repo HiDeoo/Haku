@@ -4,11 +4,11 @@ import { Root as VisuallyHidden } from '@radix-ui/react-visually-hidden'
 import PalettePicker from 'components/palette/PalettePicker'
 import { type IconProps } from 'components/ui/Icon'
 import { MODAL_CONTENT_CLASSES, MODAL_OVERLAY_CLASSES } from 'components/ui/Modal'
-import { useRestoreFocus } from 'hooks/useRestoreFocus'
+import useFocusRestoration from 'hooks/useFocusRestoration'
 import clst from 'styles/clst'
 
 const Palette = <TItem extends PaletteItem>({ title, ...props }: PaletteProps<TItem>) => {
-  useRestoreFocus(props.opened)
+  useFocusRestoration(props.opened)
 
   const overlayClasses = clst(MODAL_OVERLAY_CLASSES, 'pt-0 md:pt-0')
 

@@ -7,7 +7,7 @@ import IconButton from 'components/form/IconButton'
 import Flex from 'components/ui/Flex'
 import List, { type ListComponent } from 'components/ui/List'
 import { LIST_SHIMMER_CLASSES } from 'constants/shimmer'
-import { useRestoreFocus } from 'hooks/useRestoreFocus'
+import useFocusRestoration from 'hooks/useFocusRestoration'
 import clst from 'styles/clst'
 
 const contentClasses = clst(
@@ -29,7 +29,7 @@ const listClasses = clst(
 )
 
 const Drawer: DrawerComponent = ({ children, className, onOpenChange, opened, title, trigger }) => {
-  useRestoreFocus(opened)
+  useFocusRestoration(opened)
 
   const childrenClasses = clst('grow overflow-y-auto', className)
 
