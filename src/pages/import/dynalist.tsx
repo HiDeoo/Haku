@@ -78,6 +78,6 @@ Dynalist.sidebar = true
 
 export default Dynalist
 
-type FormFields = {
+interface FormFields {
   opml: string
 }

@@ -141,7 +141,7 @@ export const ContentModal: React.FC = () => {
   )
 }
 
-type FormFields = {
+interface FormFields {
   name: string
   folder: NestedValue<FolderData>
 }

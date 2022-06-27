@@ -52,6 +52,6 @@ export const InboxForm: React.FC = () => {
   )
 }
 
-type FormFields = {
+interface FormFields {
   text: string
 }

@@ -172,7 +172,7 @@ type Action =
   | { type: 'waitingCode' }
   | { type: 'validatingCode' }
 
-type FormFields = {
+interface FormFields {
   code: string
   email: string
 }
