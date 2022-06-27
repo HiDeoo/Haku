@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
 import Title from 'components/app/Title'
 import EditorImageModal from 'components/editor/EditorImageModal'
@@ -12,6 +12,7 @@ import { type SyncStatus } from 'components/ui/SyncReport'
 import { NOTE_SHIMMER_CLASSES } from 'constants/shimmer'
 import { EDITOR_SHORTCUTS } from 'constants/shortcut'
 import { EditorContent, EditorEvents, useEditor } from 'hooks/useEditor'
+import { FocusRestorationContext } from 'hooks/useFocusRestoration'
 import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
 import useIdle from 'hooks/useIdle'
 import useLocalShortcuts from 'hooks/useLocalShortcuts'
@@ -24,6 +25,8 @@ import { trpc } from 'libs/trpc'
 
 const Note: React.FC<NoteProps> = ({ id }) => {
   const { offline } = useNetworkStatus()
+
+  const focusRestoration = useContext(FocusRestorationContext)
 
   const [linkModalOpened, setLinkModalOpened] = useState(false)
   const [editorState, setEditorState] = useState<NoteEditorState>({ pristine: true })
@@ -44,6 +47,12 @@ const Note: React.FC<NoteProps> = ({ id }) => {
     className: 'h-full p-3 min-w-0',
     contentId: id,
     extensions: [ReplaceContent, HeadingWithId],
+    onCreate({ editor }) {
+      focusRestoration.noteEditor = editor
+    },
+    onDestroy() {
+      focusRestoration.noteEditor = undefined
+    },
     onUpdate: updateToc,
     setLinkModalOpened,
   })
