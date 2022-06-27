@@ -1,7 +1,7 @@
-import InboxForm from 'components/inbox/InboxForm'
-import InboxList from 'components/inbox/InboxList'
+import { InboxForm } from 'components/inbox/InboxForm'
+import { InboxList } from 'components/inbox/InboxList'
 
-const Inbox: React.FC = () => {
+export const Inbox: React.FC<InboxProps> = () => {
   return (
     <>
       <InboxForm />
@@ -10,4 +10,4 @@ const Inbox: React.FC = () => {
   )
 }
 
-export default Inbox
+export type InboxProps = Record<string, never>

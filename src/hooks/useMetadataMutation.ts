@@ -1,12 +1,12 @@
 import { useRouter } from 'next/router'
 import { useCallback } from 'react'
 
-import useContentId from 'hooks/useContentId'
+import { useContentId } from 'hooks/useContentId'
 import { getContentTreeQueryPath } from 'hooks/useContentTreeQuery'
-import useContentType, { ContentType } from 'hooks/useContentType'
+import { ContentType, useContentType } from 'hooks/useContentType'
 import { trpc } from 'libs/trpc'
 
-export default function useMetadataMutation() {
+export function useMetadataMutation() {
   const { push } = useRouter()
   const { contentId } = useContentId()
   const { type, urlPath } = useContentType()

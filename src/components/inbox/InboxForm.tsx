@@ -1,13 +1,13 @@
 import { useForm } from 'react-hook-form'
 import { RiAddLine } from 'react-icons/ri'
 
-import IconButton from 'components/form/IconButton'
-import TextInput from 'components/form/TextInput'
-import Drawer from 'components/ui/Drawer'
+import { IconButton } from 'components/form/IconButton'
+import { TextInput } from 'components/form/TextInput'
+import { Drawer } from 'components/ui/Drawer'
 import { useInboxEntryMutation } from 'hooks/useInboxEntryMutation'
 import { useNetworkStatus } from 'hooks/useNetworkStatus'
 
-const InboxForm: React.FC = () => {
+export const InboxForm: React.FC = () => {
   const { offline } = useNetworkStatus()
 
   const {
@@ -51,8 +51,6 @@ const InboxForm: React.FC = () => {
     </Drawer.Form>
   )
 }
-
-export default InboxForm
 
 type FormFields = {
   text: string

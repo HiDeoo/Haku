@@ -1,8 +1,8 @@
 import { useRouter } from 'next/router'
 import { useEffect, useRef, useState } from 'react'
 
-import Callout from 'components/form/Callout'
-import Spinner from 'components/ui/Spinner'
+import { Callout } from 'components/form/Callout'
+import { Spinner } from 'components/ui/Spinner'
 import { useInboxEntryMutation } from 'hooks/useInboxEntryMutation'
 
 const Inbox: Page = () => {

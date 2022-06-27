@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 
 import { onlineAtom } from 'atoms/network'
 
-const NetworkAgent: React.FC = () => {
+export const NetworkAgent: React.FC = () => {
   const setOnline = useSetAtom(onlineAtom)
 
   useEffect(() => {
@@ -24,5 +24,3 @@ const NetworkAgent: React.FC = () => {
 
   return null
 }
-
-export default NetworkAgent

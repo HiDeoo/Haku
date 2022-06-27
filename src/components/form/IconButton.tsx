@@ -1,11 +1,11 @@
 import { forwardRef } from 'react'
 
-import Button, { type ButtonPropsWithOnClickHandler, type ButtonProps } from 'components/form/Button'
-import Icon, { type IconProps } from 'components/ui/Icon'
-import Tooltip from 'components/ui/Tooltip'
-import clst from 'styles/clst'
+import { Button, type ButtonPropsWithOnClickHandler, type ButtonProps } from 'components/form/Button'
+import { Icon, type IconProps } from 'components/ui/Icon'
+import { Tooltip } from 'components/ui/Tooltip'
+import { clst } from 'styles/clst'
 
-const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
+export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
   ({ className, icon, iconClassName, pressedClassName, tooltip, ...props }, forwardedRef) => {
     const buttonClasses = clst(
       !props.primary && 'bg-inherit hover:bg-zinc-700/75 hover:text-blue-600 disabled:bg-inherit disabled:text-inherit',
@@ -32,8 +32,6 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
 )
 
 IconButton.displayName = 'IconButton'
-
-export default IconButton
 
 export interface IconButtonProps
   extends Omit<ButtonProps, 'children'>,

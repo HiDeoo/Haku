@@ -6,15 +6,15 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { RiSearchLine } from 'react-icons/ri'
 
 import { searchDrawerAtom, type SearchDrawerData } from 'atoms/togglable'
-import IconButton from 'components/form/IconButton'
-import SearchInput from 'components/search/SearchInput'
-import SearchResult from 'components/search/SearchResult'
-import Drawer from 'components/ui/Drawer'
+import { IconButton } from 'components/form/IconButton'
+import { SearchInput } from 'components/search/SearchInput'
+import { SearchResult } from 'components/search/SearchResult'
+import { Drawer } from 'components/ui/Drawer'
 import { SEARCH_QUERY_MIN_LENGTH } from 'constants/search'
 import { isEmpty } from 'libs/array'
 import { trpc } from 'libs/trpc'
 
-const Search: React.FC<SearchProps> = ({ queryInputRef }) => {
+export const Search: React.FC<SearchProps> = ({ queryInputRef }) => {
   const resultsContainer = useRef<HTMLDivElement>(null)
 
   const [{ data: search }, setDrawer] = useAtom(searchDrawerAtom)
@@ -112,9 +112,7 @@ const Search: React.FC<SearchProps> = ({ queryInputRef }) => {
   )
 }
 
-export default Search
-
-interface SearchProps {
+export interface SearchProps {
   queryInputRef?: React.ForwardedRef<HTMLInputElement>
 }
 

@@ -7,17 +7,17 @@ import {
 import fuzzaldrin from 'fuzzaldrin-plus'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import TextInput from 'components/form/TextInput'
+import { TextInput } from 'components/form/TextInput'
 import { type PaletteItem, type PaletteProps } from 'components/palette/Palette'
-import Icon from 'components/ui/Icon'
-import Spinner from 'components/ui/Spinner'
+import { Icon } from 'components/ui/Icon'
+import { Spinner } from 'components/ui/Spinner'
 import { isEmpty } from 'libs/array'
 import { getShortcutMap, isShortcutEvent } from 'libs/shortcut'
-import clst from 'styles/clst'
+import { clst } from 'styles/clst'
 
 const shortcutMap = getShortcutMap([{ keybinding: 'Escape' }])
 
-const PalettePicker = <TItem extends PaletteItem>({
+export const PalettePicker = <TItem extends PaletteItem>({
   enterKeyHint,
   isLoading,
   items,
@@ -169,7 +169,5 @@ const PalettePicker = <TItem extends PaletteItem>({
     </>
   )
 }
-
-export default PalettePicker
 
 type PalettePickerProps<TItem> = Omit<PaletteProps<TItem>, 'title'>

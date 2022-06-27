@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react'
 
-import Button from 'components/form/Button'
-import Modal, { type ModalProps } from 'components/ui/Modal'
-import clst from 'styles/clst'
+import { Button } from 'components/form/Button'
+import { Modal, type ModalProps } from 'components/ui/Modal'
+import { clst } from 'styles/clst'
 
-const Alert: React.FC<AlertProps> = ({
+export const Alert: React.FC<AlertProps> = ({
   cancelText = 'Cancel',
   children,
   confirmText = 'Confirm',
@@ -64,8 +64,6 @@ const Alert: React.FC<AlertProps> = ({
     </Modal>
   )
 }
-
-export default Alert
 
 interface AlertProps {
   cancelText?: string

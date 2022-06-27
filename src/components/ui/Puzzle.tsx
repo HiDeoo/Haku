@@ -1,9 +1,9 @@
 import { IoExtensionPuzzleOutline } from 'react-icons/io5'
 
-import Icon from 'components/ui/Icon'
-import clst from 'styles/clst'
+import { Icon } from 'components/ui/Icon'
+import { clst } from 'styles/clst'
 
-const Puzzle: React.FC<PuzzleProps> = ({ layout }) => {
+export const Puzzle: React.FC<PuzzleProps> = ({ layout }) => {
   const puzzleClasses = 'h-20 w-20 text-blue-600'
 
   const topLeftPuzzleClasses = clst(puzzleClasses, 'z-10 absolute top-0 left-0')
@@ -27,8 +27,6 @@ const Puzzle: React.FC<PuzzleProps> = ({ layout }) => {
     </div>
   )
 }
-
-export default Puzzle
 
 export interface PuzzleProps {
   layout: 'broken' | 'incomplete'

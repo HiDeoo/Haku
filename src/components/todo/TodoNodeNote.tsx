@@ -2,7 +2,7 @@ import { TodoNodeStatus } from '@prisma/client'
 import { forwardRef, useCallback, useImperativeHandle } from 'react'
 
 import { type AtomParamsNoteUpdate } from 'atoms/todoNode'
-import useContentId from 'hooks/useContentId'
+import { useContentId } from 'hooks/useContentId'
 import { EditorContent, EditorEvents, useEditor } from 'hooks/useEditor'
 import { type TodoNodeDataWithParentId } from 'libs/db/todoNodes'
 import { ShiftEnter } from 'libs/editor'

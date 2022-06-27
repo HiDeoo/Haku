@@ -4,12 +4,12 @@ import { useCallback, useRef } from 'react'
 import { RiCloseLine } from 'react-icons/ri'
 
 import { removeToastAtom, type WarmToast } from 'atoms/toast'
-import Button from 'components/form/Button'
-import IconButton from 'components/form/IconButton'
-import Icon from 'components/ui/Icon'
+import { Button } from 'components/form/Button'
+import { IconButton } from 'components/form/IconButton'
+import { Icon } from 'components/ui/Icon'
 import styles from 'styles/Toast.module.css'
 
-const Toast: React.FC<ToastProps> = ({ toast }) => {
+export const Toast: React.FC<ToastProps> = ({ toast }) => {
   const toastRoot = useRef<HTMLLIElement>(null)
 
   const removeToast = useSetAtom(removeToastAtom)
@@ -65,8 +65,6 @@ const Toast: React.FC<ToastProps> = ({ toast }) => {
     </Root>
   )
 }
-
-export default Toast
 
 interface ToastProps {
   toast: WarmToast

@@ -18,16 +18,16 @@ import {
 } from 'react-hook-form'
 import { RiArrowDownSLine } from 'react-icons/ri'
 
-import Button from 'components/form/Button'
-import ControlMenu from 'components/form/ControlMenu'
-import Label from 'components/form/Label'
-import TextInput from 'components/form/TextInput'
+import { Button } from 'components/form/Button'
+import { ControlMenu } from 'components/form/ControlMenu'
+import { Label } from 'components/form/Label'
+import { TextInput } from 'components/form/TextInput'
 import Flex from 'components/ui/Flex'
-import Icon from 'components/ui/Icon'
-import Spinner from 'components/ui/Spinner'
-import clst from 'styles/clst'
+import { Icon } from 'components/ui/Icon'
+import { Spinner } from 'components/ui/Spinner'
+import { clst } from 'styles/clst'
 
-const Combobox = <TItem, TFormFields extends FieldValues>({
+export const Combobox = <TItem, TFormFields extends FieldValues>({
   control,
   defaultItem,
   disabled,
@@ -204,8 +204,6 @@ const Combobox = <TItem, TFormFields extends FieldValues>({
     </div>
   )
 }
-
-export default Combobox
 
 interface ComboboxProps<TItem, TFormFields extends FieldValues> {
   control: Control<TFormFields>

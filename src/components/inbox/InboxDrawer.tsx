@@ -1,21 +1,22 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import dynamic from 'next/dynamic'
-import { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { RiInboxFill } from 'react-icons/ri'
 import { QueryObserver } from 'react-query'
 
 import { inboxDrawerAtom, setInboxDrawerOpenedAtom } from 'atoms/togglable'
-import IconButton from 'components/form/IconButton'
-import Drawer from 'components/ui/Drawer'
-import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
+import { IconButton } from 'components/form/IconButton'
+import { type InboxProps } from 'components/inbox/Inbox'
+import { Drawer } from 'components/ui/Drawer'
+import { useGlobalShortcuts } from 'hooks/useGlobalShortcuts'
 import { isNotEmpty } from 'libs/array'
 import { type InboxEntriesData } from 'libs/db/inbox'
 import { trpc } from 'libs/trpc'
-import clst from 'styles/clst'
+import { clst } from 'styles/clst'
 
-const Inbox = dynamic(import('components/inbox/Inbox'))
+const Inbox = dynamic<InboxProps>(import('components/inbox/Inbox').then((module) => module.Inbox))
 
-const InboxDrawer: React.FC = () => {
+export const InboxDrawer: React.FC = () => {
   const { queryClient } = trpc.useContext()
 
   const [showInboxIndicator, setShowInboxIndicator] = useState(false)
@@ -76,5 +77,3 @@ const InboxDrawer: React.FC = () => {
     </Drawer>
   )
 }
-
-export default InboxDrawer

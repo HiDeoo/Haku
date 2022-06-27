@@ -4,12 +4,12 @@ import { useRouter } from 'next/router'
 import { RiBookletLine, RiTodoLine } from 'react-icons/ri'
 
 import { sidebarCollapsedAtom } from 'atoms/collapsible'
-import Icon from 'components/ui/Icon'
-import Tooltip from 'components/ui/Tooltip'
-import useContentType, { ContentType, getContentType } from 'hooks/useContentType'
-import clst from 'styles/clst'
+import { Icon } from 'components/ui/Icon'
+import { Tooltip } from 'components/ui/Tooltip'
+import { ContentType, getContentType, useContentType } from 'hooks/useContentType'
+import { clst } from 'styles/clst'
 
-const ContentTypeSwitch: React.FC = () => {
+export const ContentTypeSwitch: React.FC = () => {
   const { push } = useRouter()
   const { type } = useContentType()
 
@@ -63,5 +63,3 @@ const ContentTypeSwitch: React.FC = () => {
     </>
   )
 }
-
-export default ContentTypeSwitch

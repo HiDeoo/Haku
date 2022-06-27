@@ -30,19 +30,19 @@ import {
 } from 'react-icons/ri'
 
 import { noteInspectorCollapsedAtom, sidebarCollapsedAtom, toggleNoteInspectorCollapsedAtom } from 'atoms/collapsible'
-import EditorSyntaxModal from 'components/editor/EditorSyntaxModal'
-import FileButton from 'components/form/FileButton'
-import IconButton from 'components/form/IconButton'
+import { EditorSyntaxModal } from 'components/editor/EditorSyntaxModal'
+import { FileButton } from 'components/form/FileButton'
+import { IconButton } from 'components/form/IconButton'
 import { type NoteEditorState } from 'components/note/Note'
 import Flex from 'components/ui/Flex'
-import FloatingButton from 'components/ui/FloatingButton'
-import Icon from 'components/ui/Icon'
-import Inspector from 'components/ui/Inspector'
+import { FloatingButton } from 'components/ui/FloatingButton'
+import { Icon } from 'components/ui/Icon'
+import { Inspector } from 'components/ui/Inspector'
 import { IMAGE_SUPPORTED_TYPES } from 'constants/image'
 import { isNotEmpty } from 'libs/array'
-import clst from 'styles/clst'
+import { clst } from 'styles/clst'
 
-const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorState, setLinkModalOpened }) => {
+export const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorState, setLinkModalOpened }) => {
   const collapsed = useAtomValue(noteInspectorCollapsedAtom)
   const toggleCollapsed = useSetAtom(toggleNoteInspectorCollapsedAtom)
 
@@ -290,8 +290,6 @@ const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorS
     </>
   )
 }
-
-export default NoteInspector
 
 const TocEntry: React.FC<TocEntryProps> = ({ editor, entry }) => {
   function handleClick() {

@@ -5,7 +5,7 @@ import { isFocusable } from 'libs/html'
 
 export const FocusRestorationContext = createContext<{ noteEditor: Editor | undefined }>({ noteEditor: undefined })
 
-export default function useFocusRestoration(enabled?: boolean) {
+export function useFocusRestoration(enabled?: boolean) {
   const { noteEditor } = useContext(FocusRestorationContext)
 
   const originalFocusedElement = useRef<HTMLElement>()

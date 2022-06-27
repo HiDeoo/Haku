@@ -7,7 +7,7 @@ import { rest } from 'msw'
 import { IMAGE_DEFAULT_FORMAT } from 'constants/image'
 import { CLOUDINARY_BASE_API_URL, CLOUDINARY_BASE_DELIVERY_URL } from 'libs/cloudinary'
 
-const handlers = [
+export const cloudinaryHandlers = [
   rest.post(`${CLOUDINARY_BASE_API_URL}/${process.env.CLOUDINARY_CLOUD_NAME}/*`, async (req, res, ctx) => {
     const formData = await multipartParser.parse({
       body: req.body,
@@ -69,5 +69,3 @@ const handlers = [
     )
   }),
 ]
-
-export default handlers

@@ -1,7 +1,7 @@
-import useDelay from 'hooks/useDelay'
-import clst from 'styles/clst'
+import { useDelay } from 'hooks/useDelay'
+import { clst } from 'styles/clst'
 
-const Spinner: React.FC<SpinnerProps> = ({ className, color, delay }) => {
+export const Spinner: React.FC<SpinnerProps> = ({ className, color, delay }) => {
   const pastDelay = useDelay(delay)
 
   // Avoid a flash of the spinner if a component / route loads really quickly (<250ms).
@@ -24,8 +24,6 @@ const Spinner: React.FC<SpinnerProps> = ({ className, color, delay }) => {
     </svg>
   )
 }
-
-export default Spinner
 
 interface SpinnerProps {
   className?: string

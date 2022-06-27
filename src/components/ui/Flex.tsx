@@ -1,6 +1,6 @@
 import { forwardRef, useMemo } from 'react'
 
-import clst from 'styles/clst'
+import { clst } from 'styles/clst'
 
 const Flex = <TElement extends React.ElementType = 'div'>(
   {

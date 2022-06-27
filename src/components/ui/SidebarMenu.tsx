@@ -18,22 +18,22 @@ import {
 import { sidebarCollapsedAtom, toggleSidebarCollapsedAtom } from 'atoms/collapsible'
 import { deferrefPromptEventAtom } from 'atoms/pwa'
 import { shortcutModalOpenedAtom } from 'atoms/togglable'
-import ContentModal from 'components/content/ContentModal'
-import ContentTypeSwitch from 'components/content/ContentTypeSwitch'
-import FolderModal from 'components/folder/FolderModal'
-import Button, { type ButtonPropsWithOnClickHandler } from 'components/form/Button'
-import IconButton from 'components/form/IconButton'
-import InboxDrawer from 'components/inbox/InboxDrawer'
-import SearchDrawer from 'components/search/SearchDrawer'
-import ShortcutModal from 'components/shortcut/ShortcutModal'
+import { ContentModal } from 'components/content/ContentModal'
+import { ContentTypeSwitch } from 'components/content/ContentTypeSwitch'
+import { FolderModal } from 'components/folder/FolderModal'
+import { Button, type ButtonPropsWithOnClickHandler } from 'components/form/Button'
+import { IconButton } from 'components/form/IconButton'
+import { InboxDrawer } from 'components/inbox/InboxDrawer'
+import { SearchDrawer } from 'components/search/SearchDrawer'
+import { ShortcutModal } from 'components/shortcut/ShortcutModal'
 import Flex from 'components/ui/Flex'
-import Icon, { type IconProps } from 'components/ui/Icon'
+import { Icon, type IconProps } from 'components/ui/Icon'
 import { logout } from 'libs/auth'
 import { openGitHubIssuePage } from 'libs/github'
 import { isApplePlatform } from 'libs/html'
-import clst from 'styles/clst'
+import { clst } from 'styles/clst'
 
-const SidebarMenu: React.FC = () => {
+export const SidebarMenu: React.FC = () => {
   const { push } = useRouter()
 
   const sidebarCollapsed = useAtomValue(sidebarCollapsedAtom)
@@ -132,8 +132,6 @@ const SidebarMenu: React.FC = () => {
     </Flex>
   )
 }
-
-export default SidebarMenu
 
 function handleSidebarMenuInstallShortcutClick() {
   window.open(process.env.NEXT_PUBLIC_INBOX_APPLE_SHORTCUT_LINK)

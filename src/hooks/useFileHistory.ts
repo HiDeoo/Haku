@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 
 import { fileHistoryAtom } from 'atoms/fileHistory'
-import useRouteChange from 'hooks/useRouteChange'
+import { useRouteChange } from 'hooks/useRouteChange'
 
 const fileRegExp = /^\/(?:notes|todos)\/(?<id>c[\dA-Za-z]+)\/?/
 

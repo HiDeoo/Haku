@@ -1,10 +1,10 @@
 import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { type FieldPath, useController, type Control, type FieldValues } from 'react-hook-form'
 
-import Label from 'components/form/Label'
-import TextInput from 'components/form/TextInput'
+import { Label } from 'components/form/Label'
+import { TextInput } from 'components/form/TextInput'
 import { AUTH_TOKEN_LENGTH } from 'constants/auth'
-import clst from 'styles/clst'
+import { clst } from 'styles/clst'
 
 const MagicCodeInput = <TFormFields extends FieldValues>(
   { control, disabled, errorMessage, length = AUTH_TOKEN_LENGTH, name }: MagicCodeInputProps<TFormFields>,

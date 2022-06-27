@@ -1,10 +1,10 @@
 import { Children, cloneElement, isValidElement } from 'react'
 
-import Button, { ButtonProps } from 'components/form/Button'
+import { Button, type ButtonProps } from 'components/form/Button'
 import Flex from 'components/ui/Flex'
-import Icon, { IconProps } from 'components/ui/Icon'
-import Tooltip from 'components/ui/Tooltip'
-import clst from 'styles/clst'
+import { Icon, type IconProps } from 'components/ui/Icon'
+import { Tooltip } from 'components/ui/Tooltip'
+import { clst } from 'styles/clst'
 
 const navbarClasses = clst(
   'py-2 px-2.5 supports-max:pr-[calc(theme(spacing[2.5])+max(0px,env(safe-area-inset-right)))]',
@@ -18,7 +18,7 @@ const buttonPingClasses = clst(
   'after:bg-blue-300'
 )
 
-const Navbar: NavbarComponent = ({ children, disabled, title }) => {
+export const Navbar: NavbarComponent = ({ children, disabled, title }) => {
   return (
     <Flex alignItems="center" className={navbarClasses}>
       {title && title.length > 0 && <div className="grow truncate font-semibold text-zinc-50">{title}</div>}
@@ -32,8 +32,6 @@ const Navbar: NavbarComponent = ({ children, disabled, title }) => {
     </Flex>
   )
 }
-
-export default Navbar
 
 const NavbarButton: React.FC<NavbarButtonProps> = ({ pinged, ...props }) => {
   const buttonClasses = clst(

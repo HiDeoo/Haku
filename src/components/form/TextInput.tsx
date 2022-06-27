@@ -4,10 +4,10 @@ import { type BaseEvent } from '@react-types/shared'
 import { forwardRef } from 'react'
 import { type ChangeHandler, type UseFormRegisterReturn } from 'react-hook-form'
 
-import Label from 'components/form/Label'
-import clst from 'styles/clst'
+import { Label } from 'components/form/Label'
+import { clst } from 'styles/clst'
 
-const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
+export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
   ({ className, defaultValue, onChange, type = 'text', ...props }, forwardedRef) => {
     const ref = useObjectRef(forwardedRef)
     const { labelProps, inputProps, errorMessageProps } = useTextField(props, ref)
@@ -55,8 +55,6 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
 )
 
 TextInput.displayName = 'TextInput'
-
-export default TextInput
 
 export interface TextInputProps extends Partial<Omit<UseFormRegisterReturn, 'ref' | 'onBlur' | 'onChange'>> {
   'aria-label'?: React.InputHTMLAttributes<HTMLInputElement>['aria-label']

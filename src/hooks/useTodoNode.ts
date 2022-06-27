@@ -30,7 +30,7 @@ function isLoadingSyncStatusSelector(syncStatus: TodoSyncStatus) {
   return syncStatus.isLoading
 }
 
-export default function useTodoNode(id: TodoNodeData['id']) {
+export function useTodoNode(id: TodoNodeData['id']) {
   const getNodeById = useCallback(
     <TData>(nodesMap: Record<TodoNodeData['id'], TData>, nodeId = id) => nodesMap[nodeId],
     [id]

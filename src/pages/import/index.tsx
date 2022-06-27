@@ -3,10 +3,10 @@ import Link from 'next/link'
 import { RiArrowRightSLine } from 'react-icons/ri'
 
 import { sidebarCollapsedAtom } from 'atoms/collapsible'
-import Icon from 'components/ui/Icon'
-import List from 'components/ui/List'
-import Safe from 'components/ui/Safe'
-import clst from 'styles/clst'
+import { Icon } from 'components/ui/Icon'
+import { List } from 'components/ui/List'
+import { Safe } from 'components/ui/Safe'
+import { clst } from 'styles/clst'
 
 const sources = ['Dynalist']
 

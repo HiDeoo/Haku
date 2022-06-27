@@ -4,15 +4,15 @@ import { RiFileTextLine, RiFolderLine } from 'react-icons/ri'
 
 import { sidebarCollapsedAtom } from 'atoms/collapsible'
 import { contentModalAtom, folderModalAtom, setContentModalOpenedAtom } from 'atoms/togglable'
-import ContentTreeNode from 'components/content/ContentTreeNode'
-import Button from 'components/form/Button'
-import ContextMenu from 'components/ui/ContextMenu'
+import { ContentTreeNode } from 'components/content/ContentTreeNode'
+import { Button } from 'components/form/Button'
+import { ContextMenu } from 'components/ui/ContextMenu'
 import Flex from 'components/ui/Flex'
-import Shimmer from 'components/ui/Shimmer'
+import { Shimmer } from 'components/ui/Shimmer'
 import { CONTENT_TREE_SHIMMER_DEPTHS } from 'constants/shimmer'
-import useContentId from 'hooks/useContentId'
-import useContentTreeQuery from 'hooks/useContentTreeQuery'
-import useContentType, { type UseContentTypeReturnValue } from 'hooks/useContentType'
+import { useContentId } from 'hooks/useContentId'
+import { useContentTreeQuery } from 'hooks/useContentTreeQuery'
+import { useContentType, type UseContentTypeReturnValue } from 'hooks/useContentType'
 import { useNetworkStatus } from 'hooks/useNetworkStatus'
 import { isEmpty } from 'libs/array'
 import { type FolderData } from 'libs/db/folder'
@@ -26,7 +26,7 @@ const supportsMaxCss = typeof window === 'object' && window.CSS.supports('paddin
 
 const nisClasses = 'gap-6 p-3 text-center supports-max:pl-[calc(theme(spacing.3)+max(0px,env(safe-area-inset-left)))]'
 
-const ContentTree: React.FC = () => {
+export const ContentTree: React.FC = () => {
   const contentType = useContentType()
 
   if (!contentType.type) {
@@ -99,8 +99,6 @@ const ContentTree: React.FC = () => {
     </Root>
   )
 }
-
-export default ContentTree
 
 const ShimmerNode: React.FC<ShimmerNodeProps> = ({ depth, ...props }) => {
   return <Shimmer.Line style={getNodeStyle(depth, false)} {...props} />

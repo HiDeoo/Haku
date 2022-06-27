@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
-export default function useRouteChange(callback: (url: string) => void) {
+export function useRouteChange(callback: (url: string) => void) {
   const { asPath, events } = useRouter()
 
   useEffect(() => {

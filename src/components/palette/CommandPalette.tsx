@@ -22,14 +22,14 @@ import {
   setInboxDrawerOpenedAtom,
   shortcutModalOpenedAtom,
 } from 'atoms/togglable'
-import Palette, { type PaletteItem } from 'components/palette/Palette'
+import { Palette, type PaletteItem } from 'components/palette/Palette'
 import { type IconProps } from 'components/ui/Icon'
-import useContentType, { ContentType, getContentType } from 'hooks/useContentType'
-import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
+import { ContentType, getContentType, useContentType } from 'hooks/useContentType'
+import { useGlobalShortcuts } from 'hooks/useGlobalShortcuts'
 import { useNetworkStatus } from 'hooks/useNetworkStatus'
 import { logout } from 'libs/auth'
 
-const CommandPalette: React.FC = () => {
+export const CommandPalette: React.FC = () => {
   const { offline } = useNetworkStatus()
 
   const { push } = useRouter()
@@ -183,8 +183,6 @@ const CommandPalette: React.FC = () => {
     />
   )
 }
-
-export default CommandPalette
 
 interface Command extends PaletteItem {
   action: () => void

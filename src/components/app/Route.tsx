@@ -4,12 +4,12 @@ import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
 import { contentTypeAtom } from 'atoms/contentType'
-import Spinner from 'components/ui/Spinner'
+import { Spinner } from 'components/ui/Spinner'
 import { ContentType } from 'constants/contentType'
 
 const unsecureRoutes = new Set(['/auth/error', '/auth/login', '/auth/verify'])
 
-const Route: React.FC<RouteProps> = ({ children }) => {
+export const Route: React.FC<RouteProps> = ({ children }) => {
   const { push, query, route } = useRouter()
   const { status } = useSession()
 
@@ -48,8 +48,6 @@ const Route: React.FC<RouteProps> = ({ children }) => {
 
   return <Spinner delay className="h-10 w-10" />
 }
-
-export default Route
 
 interface RouteProps {
   children: React.ReactNode

@@ -2,11 +2,11 @@ import { Provider, Viewport } from '@radix-ui/react-toast'
 import { useAtomValue } from 'jotai'
 
 import { toastsAtom } from 'atoms/toast'
-import Toast from 'components/ui/Toast'
+import { Toast } from 'components/ui/Toast'
 import { isNotEmpty } from 'libs/array'
-import clst from 'styles/clst'
+import { clst } from 'styles/clst'
 
-const Toaster: React.FC = () => {
+export const Toaster: React.FC<ToasterProps> = () => {
   const toasts = useAtomValue(toastsAtom)
 
   const viewportClasses = clst(
@@ -28,4 +28,4 @@ const Toaster: React.FC = () => {
   )
 }
 
-export default Toaster
+export type ToasterProps = Record<string, never>

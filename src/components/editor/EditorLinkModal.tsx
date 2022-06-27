@@ -2,12 +2,12 @@ import { type Editor } from '@tiptap/react'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 
-import Button from 'components/form/Button'
-import Form from 'components/form/Form'
-import TextInput from 'components/form/TextInput'
-import Modal, { type ModalProps } from 'components/ui/Modal'
+import { Button } from 'components/form/Button'
+import { Form } from 'components/form/Form'
+import { TextInput } from 'components/form/TextInput'
+import { Modal, type ModalProps } from 'components/ui/Modal'
 
-const EditorLinkModal: React.FC<EditorLinkModalProps> = ({ editor, opened, onOpenChange }) => {
+export const EditorLinkModal: React.FC<EditorLinkModalProps> = ({ editor, opened, onOpenChange }) => {
   const {
     register,
     handleSubmit,
@@ -54,8 +54,6 @@ const EditorLinkModal: React.FC<EditorLinkModalProps> = ({ editor, opened, onOpe
     </Modal>
   )
 }
-
-export default EditorLinkModal
 
 interface EditorLinkModalProps extends Pick<ModalProps, 'opened' | 'onOpenChange'> {
   editor: Editor | null

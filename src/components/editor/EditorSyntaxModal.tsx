@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import { RiQuestionMark } from 'react-icons/ri'
 
-import Inspector from 'components/ui/Inspector'
-import Modal from 'components/ui/Modal'
-import Table from 'components/ui/Table'
-import clst from 'styles/clst'
+import { Inspector } from 'components/ui/Inspector'
+import { Modal } from 'components/ui/Modal'
+import { Table } from 'components/ui/Table'
+import { clst } from 'styles/clst'
 import styles from 'styles/Editor.module.css'
 
-const EditorSyntaxModal: React.FC = () => {
+export const EditorSyntaxModal: React.FC = () => {
   const [opened, setOpened] = useState(false)
 
   return (
@@ -225,8 +225,6 @@ const EditorSyntaxModal: React.FC = () => {
     </Modal>
   )
 }
-
-export default EditorSyntaxModal
 
 const EditorSyntaxSection: React.FC<EditorSyntaxSectionProps> = ({ children, title }) => {
   return (

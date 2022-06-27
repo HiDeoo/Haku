@@ -1,11 +1,15 @@
 import dynamic from 'next/dynamic'
 
-import Spinner from 'components/ui/Spinner'
-import useContentId from 'hooks/useContentId'
+import { type NoteProps } from 'components/note/Note'
+import { Spinner } from 'components/ui/Spinner'
+import { useContentId } from 'hooks/useContentId'
 
-const Note = dynamic(import('components/note/Note'), {
-  loading: () => <Spinner delay className="my-auto h-10 w-10 self-center" />,
-})
+const Note = dynamic<NoteProps>(
+  import('components/note/Note').then((module) => module.Note),
+  {
+    loading: () => <Spinner delay className="my-auto h-10 w-10 self-center" />,
+  }
+)
 
 const NotePage: Page = () => {
   const { contentId, isReady } = useContentId()

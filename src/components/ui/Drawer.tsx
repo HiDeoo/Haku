@@ -2,13 +2,13 @@ import { Close, Content, Overlay, Portal, Root, Title, Trigger } from '@radix-ui
 import { forwardRef } from 'react'
 import { RiCloseLine } from 'react-icons/ri'
 
-import Form, { type FormProps } from 'components/form/Form'
-import IconButton from 'components/form/IconButton'
+import { Form, type FormProps } from 'components/form/Form'
+import { IconButton } from 'components/form/IconButton'
 import Flex from 'components/ui/Flex'
-import List, { type ListComponent } from 'components/ui/List'
+import { List, type ListComponent } from 'components/ui/List'
 import { LIST_SHIMMER_CLASSES } from 'constants/shimmer'
-import useFocusRestoration from 'hooks/useFocusRestoration'
-import clst from 'styles/clst'
+import { useFocusRestoration } from 'hooks/useFocusRestoration'
+import { clst } from 'styles/clst'
 
 const contentClasses = clst(
   'animate-drawer-content flex flex-col md:w-[700px] w-full bg-zinc-800 h-full',
@@ -28,7 +28,7 @@ const listClasses = clst(
   'supports-max:pb-[calc(theme(spacing.3)+max(0px,env(safe-area-inset-bottom)))]'
 )
 
-const Drawer: DrawerComponent = ({ children, className, onOpenChange, opened, title, trigger }) => {
+export const Drawer: DrawerComponent = ({ children, className, onOpenChange, opened, title, trigger }) => {
   useFocusRestoration(opened)
 
   const childrenClasses = clst('grow overflow-y-auto', className)
@@ -52,8 +52,6 @@ const Drawer: DrawerComponent = ({ children, className, onOpenChange, opened, ti
     </Root>
   )
 }
-
-export default Drawer
 
 const DrawerForm: React.FC<DrawerFormProps> = ({ children, ...props }) => {
   const formClasses = clst(

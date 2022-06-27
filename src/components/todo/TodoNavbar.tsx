@@ -4,17 +4,17 @@ import { useCallback, useMemo } from 'react'
 
 import { todoEditorStateAtom } from 'atoms/todo'
 import { todoNodeChildrenAtom, todoNodeMutationsAtom, todoNodeNodesAtom } from 'atoms/todoNode'
-import CacheStatus from 'components/ui/CacheStatus'
-import Navbar from 'components/ui/Navbar'
-import NetworkStatus from 'components/ui/NetworkStatus'
-import SyncReport from 'components/ui/SyncReport'
-import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
-import useIdle from 'hooks/useIdle'
+import { CacheStatus } from 'components/ui/CacheStatus'
+import { Navbar } from 'components/ui/Navbar'
+import { NetworkStatus } from 'components/ui/NetworkStatus'
+import { SyncReport } from 'components/ui/SyncReport'
+import { useGlobalShortcuts } from 'hooks/useGlobalShortcuts'
+import { useIdle } from 'hooks/useIdle'
 import { useNetworkStatus } from 'hooks/useNetworkStatus'
 import { type TodoMetadata } from 'libs/db/todo'
 import { type InferMutationInput, trpc } from 'libs/trpc'
 
-const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, focusTodoNode, todoId, todoName }) => {
+export const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, focusTodoNode, todoId, todoName }) => {
   const { offline } = useNetworkStatus()
 
   const [editorState, setEditorState] = useAtom(todoEditorStateAtom)
@@ -133,8 +133,6 @@ const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, focusTodoNode, todoId
     </Navbar>
   )
 }
-
-export default TodoNavbar
 
 interface TodoNavbarProps {
   disabled?: boolean
