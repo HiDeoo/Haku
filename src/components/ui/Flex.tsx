@@ -89,4 +89,4 @@ type FlexProps<TElement extends React.ElementType> = {
   role?: React.HtmlHTMLAttributes<HTMLElement>['role']
   style?: React.HtmlHTMLAttributes<HTMLElement>['style']
   wrap?: true | 'reverse'
-} & { ref?: React.ForwardedRef<HTMLDivElement> }
+}
