@@ -2,10 +2,10 @@ import { useRouter } from 'next/router'
 import { useCallback } from 'react'
 
 import { getContentTreeQueryPath } from 'hooks/useContentTreeQuery'
-import useContentType, { ContentType } from 'hooks/useContentType'
+import { ContentType, useContentType } from 'hooks/useContentType'
 import { trpc } from 'libs/trpc'
 
-export default function useFolderMutation() {
+export function useFolderMutation() {
   const { push } = useRouter()
   const { type, urlPath } = useContentType()
   const { invalidateQueries } = trpc.useContext()

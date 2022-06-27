@@ -7,7 +7,7 @@ import { type NoteData } from 'libs/db/note'
 import { isResourceCached } from 'libs/sw'
 import { isNetworkError, trpc } from 'libs/trpc'
 
-export default function useNoteQuery(id: NoteData['id'], options: UseNoteQueryOptions) {
+export function useNoteQuery(id: NoteData['id'], options: UseNoteQueryOptions) {
   const setContentAvailableOffline = useSetAtom(contentAvailableOfflineAtom)
 
   const { cancelQuery } = trpc.useContext()

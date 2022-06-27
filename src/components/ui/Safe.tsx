@@ -1,12 +1,12 @@
-import Flex from 'components/ui/Flex'
-import clst from 'styles/clst'
+import { Flex } from 'components/ui/Flex'
+import { clst } from 'styles/clst'
 
 const safeClasses = clst(
   'overflow-y-auto overflow-x-hidden',
   'supports-max:pr-[max(0px,env(safe-area-inset-right))] supports-max:pb-[max(0px,env(safe-area-inset-bottom))]'
 )
 
-const Safe: React.FC<SafeProps> = ({ children }) => {
+export const Safe: React.FC<SafeProps> = ({ children }) => {
   return (
     <div className={safeClasses}>
       <Flex direction="col" alignItems="center" className="gap-6 p-6 xs:gap-12 xs:pb-8 md:pt-12">
@@ -15,8 +15,6 @@ const Safe: React.FC<SafeProps> = ({ children }) => {
     </div>
   )
 }
-
-export default Safe
 
 interface SafeProps {
   children: React.ReactNode

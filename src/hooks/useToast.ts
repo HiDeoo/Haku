@@ -2,7 +2,7 @@ import { useSetAtom } from 'jotai'
 
 import { addToastAtom } from 'atoms/toast'
 
-export default function useToast() {
+export function useToast() {
   const addToast = useSetAtom(addToastAtom)
 
   return { addToast }

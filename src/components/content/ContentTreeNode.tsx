@@ -1,17 +1,17 @@
 import Link from 'next/link'
 import { forwardRef } from 'react'
 
-import ContextMenu from 'components/ui/ContextMenu'
-import Flex from 'components/ui/Flex'
-import Icon, { type IconProps } from 'components/ui/Icon'
-import clst from 'styles/clst'
+import { ContextMenu } from 'components/ui/ContextMenu'
+import { Flex } from 'components/ui/Flex'
+import { Icon, type IconProps } from 'components/ui/Icon'
+import { clst } from 'styles/clst'
 
 const nodeClasses = clst(
   'px-3 py-1.5 text-zinc-400',
   'focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-inset'
 )
 
-const ContentTreeNode = forwardRef<HTMLDivElement | HTMLAnchorElement, ContentTreeNodeProps>(
+export const ContentTreeNode = forwardRef<HTMLDivElement | HTMLAnchorElement, ContentTreeNodeProps>(
   ({ children, href, icon, iconLabel, selected, style, text, ...props }, forwardedRef) => {
     const anchorClasses = href
       ? clst(
@@ -66,8 +66,6 @@ const ContentTreeNode = forwardRef<HTMLDivElement | HTMLAnchorElement, ContentTr
 )
 
 ContentTreeNode.displayName = 'ContentTreeNode'
-
-export default ContentTreeNode
 
 interface ContentTreeNodeProps {
   children: React.ReactNode

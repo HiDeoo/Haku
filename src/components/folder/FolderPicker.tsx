@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 import { FieldPath, type Control, type FieldValues } from 'react-hook-form'
 
-import Combobox from 'components/form/Combobox'
+import { Combobox } from 'components/form/Combobox'
 import { ROOT_FOLDER_ID } from 'constants/folder'
-import useContentTreeQuery from 'hooks/useContentTreeQuery'
+import { useContentTreeQuery } from 'hooks/useContentTreeQuery'
 import { isNotEmpty } from 'libs/array'
 import { type FolderData } from 'libs/db/folder'
 import { NoteMetadata } from 'libs/db/note'
@@ -11,7 +11,7 @@ import { isTreeFolder, type TreeFolder } from 'libs/tree'
 
 const rootFolder: FolderWithPath = { id: ROOT_FOLDER_ID, name: '/', parentId: null, path: '' }
 
-const FolderPicker = <TFormFields extends FieldValues>({
+export const FolderPicker = <TFormFields extends FieldValues>({
   control,
   defaultFolderId,
   disabled,
@@ -45,8 +45,6 @@ const FolderPicker = <TFormFields extends FieldValues>({
     />
   )
 }
-
-export default FolderPicker
 
 function getFolderList(
   treeFolders: TreeFolders,

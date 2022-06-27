@@ -1,12 +1,10 @@
 import { Children, cloneElement, isValidElement } from 'react'
 
-import clst from 'styles/clst'
+import { clst } from 'styles/clst'
 
-const Table: TableComponent = ({ children }) => {
+export const Table: TableComponent = ({ children }) => {
   return <table className="w-full table-auto">{children}</table>
 }
-
-export default Table
 
 const TableHead: React.FC<TableBaseProps> = ({ children }) => {
   return (

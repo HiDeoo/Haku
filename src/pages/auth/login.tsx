@@ -4,14 +4,14 @@ import { useRouter } from 'next/router'
 import { useReducer, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
-import Button from 'components/form/Button'
-import Callout from 'components/form/Callout'
-import Form from 'components/form/Form'
-import MagicCodeInput, { type MagicCodeInputHandle } from 'components/form/MagicCodeInput'
-import TextInput from 'components/form/TextInput'
-import Flex from 'components/ui/Flex'
+import { Button } from 'components/form/Button'
+import { Callout } from 'components/form/Callout'
+import { Form } from 'components/form/Form'
+import { MagicCodeInput, type MagicCodeInputHandle } from 'components/form/MagicCodeInput'
+import { TextInput } from 'components/form/TextInput'
+import { Flex } from 'components/ui/Flex'
 import { getAuthErrorMesssage } from 'libs/auth'
-import clst from 'styles/clst'
+import { clst } from 'styles/clst'
 
 const Login: Page = () => {
   const { push, query } = useRouter()
@@ -172,7 +172,7 @@ type Action =
   | { type: 'waitingCode' }
   | { type: 'validatingCode' }
 
-type FormFields = {
+interface FormFields {
   code: string
   email: string
 }

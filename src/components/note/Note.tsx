@@ -1,29 +1,29 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
-import Title from 'components/app/Title'
-import EditorImageModal from 'components/editor/EditorImageModal'
-import EditorLinkModal from 'components/editor/EditorLinkModal'
-import NoteInspector from 'components/note/NoteInspector'
-import NoteNavbar from 'components/note/NoteNavbar'
-import Flex from 'components/ui/Flex'
-import Offline from 'components/ui/Offline'
-import Shimmer from 'components/ui/Shimmer'
+import { Title } from 'components/app/Title'
+import { EditorImageModal } from 'components/editor/EditorImageModal'
+import { EditorLinkModal } from 'components/editor/EditorLinkModal'
+import { NoteInspector } from 'components/note/NoteInspector'
+import { NoteNavbar } from 'components/note/NoteNavbar'
+import { Flex } from 'components/ui/Flex'
+import { Offline } from 'components/ui/Offline'
+import { Shimmer } from 'components/ui/Shimmer'
 import { type SyncStatus } from 'components/ui/SyncReport'
 import { NOTE_SHIMMER_CLASSES } from 'constants/shimmer'
 import { EDITOR_SHORTCUTS } from 'constants/shortcut'
 import { EditorContent, EditorEvents, useEditor } from 'hooks/useEditor'
 import { FocusRestorationContext } from 'hooks/useFocusRestoration'
-import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
-import useIdle from 'hooks/useIdle'
-import useLocalShortcuts from 'hooks/useLocalShortcuts'
-import useNavigationPrompt from 'hooks/useNavigationPrompt'
+import { useGlobalShortcuts } from 'hooks/useGlobalShortcuts'
+import { useIdle } from 'hooks/useIdle'
+import { useLocalShortcuts } from 'hooks/useLocalShortcuts'
+import { useNavigationPrompt } from 'hooks/useNavigationPrompt'
 import { useNetworkStatus } from 'hooks/useNetworkStatus'
-import useNoteQuery from 'hooks/useNoteQuery'
+import { useNoteQuery } from 'hooks/useNoteQuery'
 import { type TodoMetadata } from 'libs/db/todo'
 import { focusNodeWithId, getToc, HeadingWithId, ReplaceContent, type ToC } from 'libs/editor'
 import { trpc } from 'libs/trpc'
 
-const Note: React.FC<NoteProps> = ({ id }) => {
+export const Note: React.FC<NoteProps> = ({ id }) => {
   const { offline } = useNetworkStatus()
 
   const focusRestoration = useContext(FocusRestorationContext)
@@ -174,13 +174,11 @@ const Note: React.FC<NoteProps> = ({ id }) => {
   )
 }
 
-export default Note
-
 export interface NoteEditorState extends SyncStatus {
   pristine: boolean
   toc?: ToC
 }
 
-interface NoteProps {
+export interface NoteProps {
   id: TodoMetadata['id']
 }

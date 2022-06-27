@@ -7,7 +7,7 @@ import { capitalize } from 'libs/string'
 
 export { ContentType } from 'constants/contentType'
 
-export default function useContentType(): UseContentTypeReturnValue {
+export function useContentType(): UseContentTypeReturnValue {
   const contentType = useAtomValue(contentTypeAtom)
 
   return useMemo(() => {

@@ -8,7 +8,7 @@ import { type TodoNodesData } from 'libs/db/todoNodes'
 import { isResourceCached } from 'libs/sw'
 import { isNetworkError, trpc } from 'libs/trpc'
 
-export default function useTodoQuery(id: TodoMetadata['id'], options: UseTodoQueryOptions) {
+export function useTodoQuery(id: TodoMetadata['id'], options: UseTodoQueryOptions) {
   const setContentAvailableOffline = useSetAtom(contentAvailableOfflineAtom)
 
   const { cancelQuery } = trpc.useContext()

@@ -5,7 +5,7 @@ import { useCallback } from 'react'
 import { todoNodeChildrenAtom } from 'atoms/todoNode'
 import { type TodoNodesData, type TodoNodeData } from 'libs/db/todoNodes'
 
-export default function useTodoNodeChildren(id: TodoNodeData['id']) {
+export function useTodoNodeChildren(id: TodoNodeData['id']) {
   return useAtomValue(
     selectAtom(
       todoNodeChildrenAtom,

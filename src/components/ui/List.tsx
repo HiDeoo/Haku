@@ -1,8 +1,8 @@
 import { forwardRef } from 'react'
 
-import IconButton, { type IconButtonProps } from 'components/form/IconButton'
-import Shimmer from 'components/ui/Shimmer'
-import clst from 'styles/clst'
+import { IconButton, type IconButtonProps } from 'components/form/IconButton'
+import { Shimmer } from 'components/ui/Shimmer'
+import { clst } from 'styles/clst'
 
 export const LIST_BUTTON_CLASSES = 'rounded-full bg-transparent hover:bg-zinc-800'
 export const LIST_BUTTON_PRESSED_CLASSES = 'bg-zinc-900/75 hover:bg-zinc-900/75'
@@ -14,26 +14,26 @@ const itemClasses = clst(
 )
 const shimmerClasses = clst(itemClasses, 'min-h-[2.8125rem] block')
 
-const List = forwardRef(({ children, className, isLoading, shimmerClassNames, title, ...props }, forwardedRef) => {
-  return (
-    <div className={className}>
-      {title ? <h1 className="mb-1.5 ml-0.5 truncate text-lg">{title}</h1> : null}
-      <div ref={forwardedRef} {...props}>
-        {isLoading && shimmerClassNames
-          ? Array.from({ length: shimmerClassNames.length }).map((_, index) => (
-              <Shimmer key={`shimmer-${index}`} className={shimmerClasses}>
-                <Shimmer.Line className={shimmerClassNames[index]} />
-              </Shimmer>
-            ))
-          : children}
+export const List = forwardRef(
+  ({ children, className, isLoading, shimmerClassNames, title, ...props }, forwardedRef) => {
+    return (
+      <div className={className}>
+        {title ? <h1 className="mb-1.5 ml-0.5 truncate text-lg">{title}</h1> : null}
+        <div ref={forwardedRef} {...props}>
+          {isLoading && shimmerClassNames
+            ? Array.from({ length: shimmerClassNames.length }).map((_, index) => (
+                <Shimmer key={`shimmer-${index}`} className={shimmerClasses}>
+                  <Shimmer.Line className={shimmerClassNames[index]} />
+                </Shimmer>
+              ))
+            : children}
+        </div>
       </div>
-    </div>
-  )
-}) as ListComponent
+    )
+  }
+) as ListComponent
 
 List.displayName = 'List'
-
-export default List
 
 const ListItem: React.FC<ListItemProps> = ({ children, className }) => {
   const itemsProps = { className: clst(itemClasses, className) }

@@ -6,17 +6,18 @@ import { SessionProvider } from 'next-auth/react'
 import { type AppProps } from 'next/app'
 import dynamic from 'next/dynamic'
 
-import ErrorBoundary from 'components/app/ErrorBoundary'
-import NetworkAgent from 'components/app/NetworkAgent'
-import Route from 'components/app/Route'
-import Title from 'components/app/Title'
-import Layout from 'components/ui/Layout'
+import { ErrorBoundary } from 'components/app/ErrorBoundary'
+import { NetworkAgent } from 'components/app/NetworkAgent'
+import { Route } from 'components/app/Route'
+import { Title } from 'components/app/Title'
+import { Layout } from 'components/ui/Layout'
+import { type ToasterProps } from 'components/ui/Toaster'
 import { useFileHistory } from 'hooks/useFileHistory'
-import usePwa from 'hooks/usePwa'
+import { usePwa } from 'hooks/usePwa'
 import { getTRPCConfiguration } from 'libs/trpc'
 import { type AppRouter } from 'server/routers'
 
-const Toaster = dynamic(import('components/ui/Toaster'))
+const Toaster = dynamic<ToasterProps>(import('components/ui/Toaster').then((module) => module.Toaster))
 
 function Haku({ Component, pageProps: { session, ...pageProps } }: AppPropsWithLayout) {
   usePwa()

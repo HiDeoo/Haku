@@ -1,12 +1,12 @@
 import { type NoteEditorState } from 'components/note/Note'
-import CacheStatus from 'components/ui/CacheStatus'
-import Navbar from 'components/ui/Navbar'
-import NetworkStatus from 'components/ui/NetworkStatus'
-import SyncReport from 'components/ui/SyncReport'
+import { CacheStatus } from 'components/ui/CacheStatus'
+import { Navbar } from 'components/ui/Navbar'
+import { NetworkStatus } from 'components/ui/NetworkStatus'
+import { SyncReport } from 'components/ui/SyncReport'
 import { useNetworkStatus } from 'hooks/useNetworkStatus'
 import { type NoteMetadata } from 'libs/db/note'
 
-const NoteNavbar: React.FC<NoteNavbarProps> = ({ disabled, editorState, isSaving, noteName, save }) => {
+export const NoteNavbar: React.FC<NoteNavbarProps> = ({ disabled, editorState, isSaving, noteName, save }) => {
   const { offline } = useNetworkStatus()
 
   return (
@@ -27,8 +27,6 @@ const NoteNavbar: React.FC<NoteNavbarProps> = ({ disabled, editorState, isSaving
     </Navbar>
   )
 }
-
-export default NoteNavbar
 
 interface NoteNavbarProps {
   disabled?: boolean

@@ -4,21 +4,21 @@ import { useMemo } from 'react'
 import { RiMenu2Line } from 'react-icons/ri'
 
 import { noteInspectorCollapsedAtom, sidebarCollapsedAtom, toggleSidebarCollapsedAtom } from 'atoms/collapsible'
-import ContentTree from 'components/content/ContentTree'
-import CommandPalette from 'components/palette/CommandPalette'
-import NavigationPalette from 'components/palette/NavigationPalette'
-import Flex from 'components/ui/Flex'
-import FloatingButton from 'components/ui/FloatingButton'
-import SidebarMenu from 'components/ui/SidebarMenu'
-import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
-import clst from 'styles/clst'
+import { ContentTree } from 'components/content/ContentTree'
+import { CommandPalette } from 'components/palette/CommandPalette'
+import { NavigationPalette } from 'components/palette/NavigationPalette'
+import { Flex } from 'components/ui/Flex'
+import { FloatingButton } from 'components/ui/FloatingButton'
+import { SidebarMenu } from 'components/ui/SidebarMenu'
+import { useGlobalShortcuts } from 'hooks/useGlobalShortcuts'
+import { clst } from 'styles/clst'
 
 const skipLinksClasses = clst(
   'absolute -top-full left-0 z-[70] rounded-br-lg bg-blue-600 px-3.5 py-2.5 outline-none hover:underline',
   'focus:top-0 focus:border-r-2 focus:border-b-2 focus:border-blue-300'
 )
 
-const Sidebar: React.FC = () => {
+export const Sidebar: React.FC<SidebarProps> = () => {
   const { pathname } = useRouter()
   const isOnNotePage = pathname.startsWith('/notes/')
 
@@ -78,4 +78,4 @@ const Sidebar: React.FC = () => {
   )
 }
 
-export default Sidebar
+export type SidebarProps = Record<string, never>

@@ -1,11 +1,11 @@
 import { forwardRef, useCallback, useRef, useState } from 'react'
 import { RiCheckLine, RiClipboardLine, RiErrorWarningLine } from 'react-icons/ri'
 
-import IconButton, { type IconButtonProps } from 'components/form/IconButton'
-import useToast from 'hooks/useToast'
-import clst from 'styles/clst'
+import { IconButton, type IconButtonProps } from 'components/form/IconButton'
+import { useToast } from 'hooks/useToast'
+import { clst } from 'styles/clst'
 
-const ClipboardCopyButton = forwardRef<HTMLButtonElement, ClipboardCopyButtonProps>(
+export const ClipboardCopyButton = forwardRef<HTMLButtonElement, ClipboardCopyButtonProps>(
   ({ content, ...props }, forwardedRef) => {
     const { addToast } = useToast()
 
@@ -57,8 +57,6 @@ const ClipboardCopyButton = forwardRef<HTMLButtonElement, ClipboardCopyButtonPro
 )
 
 ClipboardCopyButton.displayName = 'ClipboardCopyButton'
-
-export default ClipboardCopyButton
 
 interface ClipboardCopyButtonProps extends Omit<IconButtonProps, 'icon'> {
   content: string

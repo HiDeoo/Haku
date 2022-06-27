@@ -3,12 +3,12 @@ import { useAtomValue } from 'jotai'
 import { Fragment, useMemo } from 'react'
 
 import { globalShortcutsAtom, localShortcutsAtom } from 'atoms/shortcuts'
-import Flex from 'components/ui/Flex'
+import { Flex } from 'components/ui/Flex'
 import { groupByKey } from 'libs/array'
 import { type DescribedShortcut, getKeyAriaLabel, prettyPrintKey, isDescribedShortcut } from 'libs/shortcut'
-import clst from 'styles/clst'
+import { clst } from 'styles/clst'
 
-const ShortcutList: React.FC = () => {
+export const ShortcutList: React.FC = () => {
   const globalShortcuts = useAtomValue(globalShortcutsAtom)
   const localShortcuts = useAtomValue(localShortcutsAtom)
 
@@ -32,8 +32,6 @@ const ShortcutList: React.FC = () => {
     </Flex>
   )
 }
-
-export default ShortcutList
 
 const ShortcutGroup: React.FC<ShortcutGroupProps> = ({ group, shortcuts }) => {
   return (

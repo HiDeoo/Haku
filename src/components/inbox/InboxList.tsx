@@ -1,10 +1,10 @@
-import InboxListEntry from 'components/inbox/InboxListEntry'
-import Drawer from 'components/ui/Drawer'
+import { InboxListEntry } from 'components/inbox/InboxListEntry'
+import { Drawer } from 'components/ui/Drawer'
 import { isEmpty } from 'libs/array'
 import { isNetworkError } from 'libs/trpc'
 import { trpc } from 'libs/trpc'
 
-const InboxList: React.FC = () => {
+export const InboxList: React.FC = () => {
   const { data, isLoading } = trpc.useQuery(['inbox.list'], { useErrorBoundary: isNetworkError })
 
   if (!isLoading && isEmpty(data)) {
@@ -19,5 +19,3 @@ const InboxList: React.FC = () => {
     </Drawer.List>
   )
 }
-
-export default InboxList

@@ -1,11 +1,11 @@
 import { MdAirplanemodeInactive } from 'react-icons/md'
 import { RiFlightTakeoffLine } from 'react-icons/ri'
 
-import Navbar from 'components/ui/Navbar'
-import useContentType from 'hooks/useContentType'
+import { Navbar } from 'components/ui/Navbar'
+import { useContentType } from 'hooks/useContentType'
 import { useOfflineCache } from 'hooks/useOfflineCache'
 
-const CacheStatus: React.FC = () => {
+export const CacheStatus: React.FC = () => {
   const { cType } = useContentType()
   const { availableOffline, ready } = useOfflineCache()
 
@@ -19,5 +19,3 @@ const CacheStatus: React.FC = () => {
 
   return <Navbar.Icon tooltip={tooltip} iconLabel={iconLabel} icon={icon} />
 }
-
-export default CacheStatus

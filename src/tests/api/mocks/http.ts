@@ -1,6 +1,6 @@
 import { setupServer } from 'msw/node'
 
-import cloudinaryHandlers from 'tests/api/mocks/cloudinary'
+import { cloudinaryHandlers } from 'tests/api/mocks/cloudinary'
 
 export { rest } from 'msw'
 

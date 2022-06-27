@@ -1,8 +1,8 @@
 import { Children, cloneElement, isValidElement } from 'react'
 
-import Flex from 'components/ui/Flex'
-import useDelay from 'hooks/useDelay'
-import clst from 'styles/clst'
+import { Flex } from 'components/ui/Flex'
+import { useDelay } from 'hooks/useDelay'
+import { clst } from 'styles/clst'
 
 const shimmerChildrenOpacityMap: Record<number, string> = {
   0: 'opacity-100',
@@ -17,7 +17,7 @@ const shimmerChildrenOpacityMap: Record<number, string> = {
   9: 'opacity-40',
 }
 
-const Shimmer: ShimmerComponent = ({ children, className }) => {
+export const Shimmer: ShimmerComponent = ({ children, className }) => {
   const pastDelay = useDelay()
 
   const shimmerClasses = clst('h-full w-full select-none gap-2.5 p-2.5', className)
@@ -51,8 +51,6 @@ const Line: React.FC<LineProps> = ({ className, containerClassName, style }) => 
 }
 
 Shimmer.Line = Line
-
-export default Shimmer
 
 type ShimmerComponent = React.FC<ShimmerProps> & {
   Line: typeof Line

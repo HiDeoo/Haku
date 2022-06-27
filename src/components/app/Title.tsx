@@ -2,7 +2,7 @@ import Head from 'next/head'
 
 import { isPwa, isTouchScreen } from 'libs/html'
 
-const Title: React.FC<TitleProps> = ({ pageTitle }) => {
+export const Title: React.FC<TitleProps> = ({ pageTitle }) => {
   const isOnPwa = isPwa()
   const isOnDesktopPwa = isOnPwa && !isTouchScreen()
 
@@ -16,8 +16,6 @@ const Title: React.FC<TitleProps> = ({ pageTitle }) => {
     </Head>
   )
 }
-
-export default Title
 
 interface TitleProps {
   pageTitle?: string

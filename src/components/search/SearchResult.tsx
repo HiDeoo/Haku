@@ -4,20 +4,20 @@ import { forwardRef } from 'react'
 import { RiBookletLine, RiInboxFill, RiTodoLine } from 'react-icons/ri'
 
 import { setInboxDrawerOpenedAtom, setSearchDrawerOpenedAtom } from 'atoms/togglable'
-import Drawer from 'components/ui/Drawer'
-import Icon from 'components/ui/Icon'
+import { Drawer } from 'components/ui/Drawer'
+import { Icon } from 'components/ui/Icon'
 import { SearchableContentType } from 'constants/contentType'
 import { getContentType } from 'hooks/useContentType'
 import { type SearchResultData } from 'libs/db/file'
 import { capitalize } from 'libs/string'
-import clst from 'styles/clst'
+import { clst } from 'styles/clst'
 
 const excerptClasses = clst(
   'w-full truncate text-sm italic text-zinc-400 group-hover:text-zinc-200',
   '[&>strong]:text-blue-400 [&>strong]:font-semibold group-hover:[&>strong]:text-blue-200'
 )
 
-const SearchResult = forwardRef<HTMLDivElement, SearchResultProps>(({ result, ...props }, forwardedRef) => {
+export const SearchResult = forwardRef<HTMLDivElement, SearchResultProps>(({ result, ...props }, forwardedRef) => {
   const { push } = useRouter()
 
   const setSearchDrawerOpened = useSetAtom(setSearchDrawerOpenedAtom)
@@ -90,8 +90,6 @@ const SearchResult = forwardRef<HTMLDivElement, SearchResultProps>(({ result, ..
 })
 
 SearchResult.displayName = 'SearchResult'
-
-export default SearchResult
 
 interface SearchResultProps {
   onKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void

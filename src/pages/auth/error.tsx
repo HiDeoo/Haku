@@ -2,9 +2,9 @@ import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
-import Button from 'components/form/Button'
-import Callout from 'components/form/Callout'
-import Flex from 'components/ui/Flex'
+import { Button } from 'components/form/Button'
+import { Callout } from 'components/form/Callout'
+import { Flex } from 'components/ui/Flex'
 import { getAuthErrorMesssage } from 'libs/auth'
 
 const Error: Page = () => {

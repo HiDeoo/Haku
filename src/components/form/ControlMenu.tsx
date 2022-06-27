@@ -2,12 +2,12 @@ import { Presence } from '@radix-ui/react-presence'
 import { type UseSelectPropGetters, type UseSelectState } from 'downshift'
 import { RefObject, useEffect, useState } from 'react'
 
-import clst from 'styles/clst'
+import { clst } from 'styles/clst'
 
 const menuWindowBottomOffsetInPixels = 20
 const menuMaxHeightInPixels = 210
 
-const ControlMenu = <TItem,>({
+export const ControlMenu = <TItem,>({
   className,
   container,
   getItemProps,
@@ -88,8 +88,6 @@ const ControlMenu = <TItem,>({
     </div>
   )
 }
-
-export default ControlMenu
 
 export interface ControlMenuProps<TItem> {
   className?: string

@@ -1,15 +1,15 @@
 import { type NodeViewProps, NodeViewContent, NodeViewWrapper } from '@tiptap/react'
 import { useEffect, useRef } from 'react'
 
-import ClipboardCopyButton from 'components/form/ClipboardCopyButton'
-import Select from 'components/form/Select'
+import { ClipboardCopyButton } from 'components/form/ClipboardCopyButton'
+import { Select } from 'components/form/Select'
 import { CODE_BLOCK_DEFAULT_LANGUAGE } from 'constants/editor'
 import { getLanguageName } from 'libs/editor'
 
 const triggerClases =
   'shadow-none bg-zinc-700 hover:bg-zinc-600 px-2 py-1 text-xs rounded min-w-0 w-28 rounded-b-none z-10'
 
-const EditorCodeBlock: React.FC<NodeViewProps> = ({ editor, extension, node, updateAttributes }) => {
+export const EditorCodeBlock: React.FC<NodeViewProps> = ({ editor, extension, node, updateAttributes }) => {
   const wrapper = useRef<HTMLDivElement>()
   const languageSelect = useRef<HTMLButtonElement>(null)
   const copySelect = useRef<HTMLButtonElement>(null)
@@ -53,9 +53,9 @@ const EditorCodeBlock: React.FC<NodeViewProps> = ({ editor, extension, node, upd
   return (
     <NodeViewWrapper className="code-block relative" ref={wrapper}>
       <Select
-        ref={languageSelect}
         tabIndex={-1}
         items={languages}
+        ref={languageSelect}
         itemToString={getLanguageName}
         onChange={handleLanguageChange}
         triggerClassName={triggerClases}
@@ -77,5 +77,3 @@ const EditorCodeBlock: React.FC<NodeViewProps> = ({ editor, extension, node, upd
     </NodeViewWrapper>
   )
 }
-
-export default EditorCodeBlock

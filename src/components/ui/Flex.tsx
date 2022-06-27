@@ -1,8 +1,8 @@
 import { forwardRef, useMemo } from 'react'
 
-import clst from 'styles/clst'
+import { clst } from 'styles/clst'
 
-const Flex = <TElement extends React.ElementType = 'div'>(
+const FlexComponent = <TElement extends React.ElementType = 'div'>(
   {
     alignItems,
     as,
@@ -18,7 +18,7 @@ const Flex = <TElement extends React.ElementType = 'div'>(
   }: FlexProps<TElement>,
   forwardedRef: React.ForwardedRef<HTMLDivElement>
 ) => {
-  const Element = as || 'div'
+  const Element = as ?? 'div'
 
   const elementClasses = useMemo(
     () =>
@@ -71,9 +71,9 @@ const Flex = <TElement extends React.ElementType = 'div'>(
   )
 }
 
-export default forwardRef(Flex) as <TElement extends React.ElementType = 'div'>(
-  props: FlexProps<TElement>
-) => ReturnType<typeof Flex>
+export const Flex = forwardRef(FlexComponent) as <TElement extends React.ElementType = 'div'>(
+  props: FlexProps<TElement> & { ref?: React.ForwardedRef<HTMLDivElement> }
+) => ReturnType<typeof FlexComponent>
 
 type FlexProps<TElement extends React.ElementType> = {
   alignItems?: 'start' | 'end' | 'center' | 'baseline' | 'stretch'
@@ -89,4 +89,4 @@ type FlexProps<TElement extends React.ElementType> = {
   role?: React.HtmlHTMLAttributes<HTMLElement>['role']
   style?: React.HtmlHTMLAttributes<HTMLElement>['style']
   wrap?: true | 'reverse'
-} & { ref?: React.ForwardedRef<HTMLDivElement> }
+}

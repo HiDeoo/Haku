@@ -2,11 +2,11 @@ import { useAtom } from 'jotai'
 import { useMemo } from 'react'
 
 import { shortcutModalOpenedAtom } from 'atoms/togglable'
-import ShortcutList from 'components/shortcut/ShortcutList'
-import Modal from 'components/ui/Modal'
-import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
+import { ShortcutList } from 'components/shortcut/ShortcutList'
+import { Modal } from 'components/ui/Modal'
+import { useGlobalShortcuts } from 'hooks/useGlobalShortcuts'
 
-const ShortcutModal: React.FC = () => {
+export const ShortcutModal: React.FC = () => {
   const [opened, setOpened] = useAtom(shortcutModalOpenedAtom)
 
   useGlobalShortcuts(
@@ -32,5 +32,3 @@ const ShortcutModal: React.FC = () => {
     </Modal>
   )
 }
-
-export default ShortcutModal

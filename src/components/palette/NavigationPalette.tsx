@@ -5,14 +5,14 @@ import { RiBookletLine, RiTodoLine } from 'react-icons/ri'
 
 import { fileHistoryAtom } from 'atoms/fileHistory'
 import { navigationPaletteOpenedAtom } from 'atoms/togglable'
-import Palette, { type PaletteItem } from 'components/palette/Palette'
+import { Palette, type PaletteItem } from 'components/palette/Palette'
 import { ContentType, getContentType } from 'hooks/useContentType'
-import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
+import { useGlobalShortcuts } from 'hooks/useGlobalShortcuts'
 import { unshiftFromIndex } from 'libs/array'
 import { type FilesData, type FileData } from 'libs/db/file'
 import { trpc } from 'libs/trpc'
 
-const NavigationPalette: React.FC = () => {
+export const NavigationPalette: React.FC = () => {
   const { push } = useRouter()
 
   const [opened, setOpened] = useAtom(navigationPaletteOpenedAtom)
@@ -82,8 +82,6 @@ const NavigationPalette: React.FC = () => {
     />
   )
 }
-
-export default NavigationPalette
 
 function itemToString(item: FileData | null) {
   return item?.name ?? ''

@@ -1,10 +1,10 @@
 import { RiCloudOffLine } from 'react-icons/ri'
 
-import Callout from 'components/form/Callout'
-import Flex from 'components/ui/Flex'
-import useContentType from 'hooks/useContentType'
+import { Callout } from 'components/form/Callout'
+import { Flex } from 'components/ui/Flex'
+import { useContentType } from 'hooks/useContentType'
 
-const Offline: React.FC = () => {
+export const Offline: React.FC = () => {
   const { lcType } = useContentType()
 
   return (
@@ -25,5 +25,3 @@ const Offline: React.FC = () => {
     </Flex>
   )
 }
-
-export default Offline

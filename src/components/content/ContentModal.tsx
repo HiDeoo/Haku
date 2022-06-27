@@ -4,21 +4,21 @@ import { type NestedValue, useForm } from 'react-hook-form'
 import { RiErrorWarningLine, RiFileAddLine } from 'react-icons/ri'
 
 import { contentModalAtom, setContentModalOpenedAtom } from 'atoms/togglable'
-import FolderPicker from 'components/folder/FolderPicker'
-import Button from 'components/form/Button'
-import Form from 'components/form/Form'
-import IconButton from 'components/form/IconButton'
-import TextInput from 'components/form/TextInput'
-import Alert from 'components/ui/Alert'
-import Modal from 'components/ui/Modal'
+import { FolderPicker } from 'components/folder/FolderPicker'
+import { Button } from 'components/form/Button'
+import { Form } from 'components/form/Form'
+import { IconButton } from 'components/form/IconButton'
+import { TextInput } from 'components/form/TextInput'
+import { Alert } from 'components/ui/Alert'
+import { Modal } from 'components/ui/Modal'
 import { ROOT_FOLDER_ID } from 'constants/folder'
-import useContentType from 'hooks/useContentType'
-import useMetadataMutation from 'hooks/useMetadataMutation'
+import { useContentType } from 'hooks/useContentType'
+import { useMetadataMutation } from 'hooks/useMetadataMutation'
 import { useNetworkStatus } from 'hooks/useNetworkStatus'
-import useToast from 'hooks/useToast'
+import { useToast } from 'hooks/useToast'
 import { type FolderData } from 'libs/db/folder'
 
-const ContentModal: React.FC = () => {
+export const ContentModal: React.FC = () => {
   const { offline } = useNetworkStatus()
 
   const { cType, lcType } = useContentType()
@@ -141,9 +141,7 @@ const ContentModal: React.FC = () => {
   )
 }
 
-export default ContentModal
-
-type FormFields = {
+interface FormFields {
   name: string
   folder: NestedValue<FolderData>
 }

@@ -1,6 +1,6 @@
 import { cloneElement, isValidElement, useId, useRef } from 'react'
 
-const FileButton: React.FC<FileButtonProps> = ({ accept, disabled, multiple, onChange, trigger }) => {
+export const FileButton: React.FC<FileButtonProps> = ({ accept, disabled, multiple, onChange, trigger }) => {
   const idPrefix = useId()
   const triggerId = `${idPrefix}-file-button`
 
@@ -30,8 +30,6 @@ const FileButton: React.FC<FileButtonProps> = ({ accept, disabled, multiple, onC
     </>
   )
 }
-
-export default FileButton
 
 interface FileButtonProps {
   accept?: string[]

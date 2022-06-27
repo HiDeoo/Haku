@@ -3,12 +3,10 @@ import { type MiddlewareFunction } from '@trpc/server/dist/declarations/src/inte
 
 import { type Context } from 'server/context'
 
-const withAdmin: MiddlewareFunction<Context, Context, Record<string, unknown>> = async ({ ctx, next }) => {
+export const withAdmin: MiddlewareFunction<Context, Context, Record<string, unknown>> = async ({ ctx, next }) => {
   if (!ctx.isAdmin) {
     throw new TRPCError({ code: 'UNAUTHORIZED' })
   }
 
   return next()
 }
-
-export default withAdmin

@@ -1,11 +1,11 @@
 import { forwardRef } from 'react'
 import { RiCheckLine, RiErrorWarningLine } from 'react-icons/ri'
 
-import Flex from 'components/ui/Flex'
-import Icon, { IconProps } from 'components/ui/Icon'
-import clst from 'styles/clst'
+import { Flex } from 'components/ui/Flex'
+import { Icon, type IconProps } from 'components/ui/Icon'
+import { clst } from 'styles/clst'
 
-const Callout = forwardRef<HTMLDivElement, CalloutProps>(
+export const Callout = forwardRef<HTMLDivElement, CalloutProps>(
   ({ className, icon, iconLabel, intent, message, title, ...props }, forwardedRef) => {
     const isNeutral = intent === 'neutral'
     const isSuccess = intent === 'success'
@@ -55,8 +55,6 @@ const Callout = forwardRef<HTMLDivElement, CalloutProps>(
 )
 
 Callout.displayName = 'Callout'
-
-export default Callout
 
 interface CalloutProps {
   className?: string

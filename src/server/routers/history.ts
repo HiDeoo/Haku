@@ -1,6 +1,6 @@
 import { getHistory } from 'libs/db/history'
 import { createRouter } from 'server'
-import withAuth from 'server/middlewares/withAuth'
+import { withAuth } from 'server/middlewares/withAuth'
 
 export const historyRouter = createRouter()
   .middleware(withAuth)

@@ -4,7 +4,7 @@ import { type Session } from 'next-auth'
 
 import { type Context } from 'server/context'
 
-const withAuth: MiddlewareFunction<
+export const withAuth: MiddlewareFunction<
   Context,
   Omit<Context, 'user'> & { user: Session['user'] },
   Record<string, unknown>
@@ -20,5 +20,3 @@ const withAuth: MiddlewareFunction<
     },
   })
 }
-
-export default withAuth

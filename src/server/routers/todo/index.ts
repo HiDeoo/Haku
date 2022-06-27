@@ -2,7 +2,7 @@ import { addTodo, removeTodo, updateTodo } from 'libs/db/todo'
 import { getTodoTree } from 'libs/db/tree'
 import { z, zAtLeastOneOf, zId } from 'libs/validation'
 import { createRouter } from 'server'
-import withAuth from 'server/middlewares/withAuth'
+import { withAuth } from 'server/middlewares/withAuth'
 import { todoNodeRouter } from 'server/routers/todo/node'
 
 export const todoRouter = createRouter()

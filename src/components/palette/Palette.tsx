@@ -1,13 +1,13 @@
 import { Content, Overlay, Portal, Root, Title } from '@radix-ui/react-dialog'
 import { Root as VisuallyHidden } from '@radix-ui/react-visually-hidden'
 
-import PalettePicker from 'components/palette/PalettePicker'
+import { PalettePicker } from 'components/palette/PalettePicker'
 import { type IconProps } from 'components/ui/Icon'
 import { MODAL_CONTENT_CLASSES, MODAL_OVERLAY_CLASSES } from 'components/ui/Modal'
-import useFocusRestoration from 'hooks/useFocusRestoration'
-import clst from 'styles/clst'
+import { useFocusRestoration } from 'hooks/useFocusRestoration'
+import { clst } from 'styles/clst'
 
-const Palette = <TItem extends PaletteItem>({ title, ...props }: PaletteProps<TItem>) => {
+export const Palette = <TItem extends PaletteItem>({ title, ...props }: PaletteProps<TItem>) => {
   useFocusRestoration(props.opened)
 
   const overlayClasses = clst(MODAL_OVERLAY_CLASSES, 'pt-0 md:pt-0')
@@ -32,8 +32,6 @@ const Palette = <TItem extends PaletteItem>({ title, ...props }: PaletteProps<TI
     </Root>
   )
 }
-
-export default Palette
 
 export interface PaletteProps<TItem extends PaletteItem> {
   enterKeyHint?: React.InputHTMLAttributes<HTMLInputElement>['enterKeyHint']

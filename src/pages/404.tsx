@@ -1,9 +1,9 @@
 import { useRouter } from 'next/router'
 
-import Button from 'components/form/Button'
-import Callout from 'components/form/Callout'
-import Flex from 'components/ui/Flex'
-import Puzzle from 'components/ui/Puzzle'
+import { Button } from 'components/form/Button'
+import { Callout } from 'components/form/Callout'
+import { Flex } from 'components/ui/Flex'
+import { Puzzle } from 'components/ui/Puzzle'
 
 const PageNotFound: Page = () => {
   const { push } = useRouter()

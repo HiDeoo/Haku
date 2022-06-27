@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
-import useContentType from 'hooks/useContentType'
+import { useContentType } from 'hooks/useContentType'
 
 const Home: Page = () => {
   const { replace } = useRouter()

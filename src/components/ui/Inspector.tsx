@@ -1,11 +1,11 @@
 import { Content, Item, Portal, Root, Trigger } from '@radix-ui/react-dropdown-menu'
 import { Children, cloneElement, forwardRef, isValidElement } from 'react'
 
-import Button, { type ButtonProps } from 'components/form/Button'
-import IconButton, { type IconButtonProps } from 'components/form/IconButton'
-import Flex from 'components/ui/Flex'
+import { Button, type ButtonProps } from 'components/form/Button'
+import { IconButton, type IconButtonProps } from 'components/form/IconButton'
+import { Flex } from 'components/ui/Flex'
 import { type IconProps } from 'components/ui/Icon'
-import clst from 'styles/clst'
+import { clst } from 'styles/clst'
 
 const controlClasses = clst(
   'border-t border-zinc-600/40 px-2 py-2 shadow-[0_-1px_1px_0_theme(colors.black)]',
@@ -13,7 +13,7 @@ const controlClasses = clst(
   'supports-max:pb-[calc(theme(spacing.2)+max(0px,env(safe-area-inset-bottom)))]'
 )
 
-const Inspector: InspectorComponent = ({ children, collapsed, controls, disabled }) => {
+export const Inspector: InspectorComponent = ({ children, collapsed, controls, disabled }) => {
   const inspectorClasses = clst(
     'shrink-0 border-l border-zinc-600/50 bg-zinc-900',
     'motion-safe:transition-[width,opacity] motion-safe:duration-150 motion-safe:ease-in-out',
@@ -50,8 +50,6 @@ const Inspector: InspectorComponent = ({ children, collapsed, controls, disabled
     </Flex>
   )
 }
-
-export default Inspector
 
 const InspectorSection: React.FC<InspectorSectionProps> = ({
   children,

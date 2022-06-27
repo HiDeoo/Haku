@@ -1,7 +1,7 @@
 import { addInboxEntry, getInboxEntries, removeInboxEntry } from 'libs/db/inbox'
 import { z, zId } from 'libs/validation'
 import { createRouter } from 'server'
-import withAuth from 'server/middlewares/withAuth'
+import { withAuth } from 'server/middlewares/withAuth'
 
 export const inboxRouter = createRouter()
   .middleware(withAuth)

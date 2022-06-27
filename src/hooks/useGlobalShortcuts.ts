@@ -5,7 +5,7 @@ import { registerGlobalShortcutsAtom, unregisterGlobalShortcutsAtom } from 'atom
 import { getShortcutMap, isShortcutEvent, type Shortcut } from 'libs/shortcut'
 
 // The shortcuts must be memoized using `useMemo` to avoid infinitely re-registering them.
-export default function useGlobalShortcuts(shortcuts: Shortcut[]) {
+export function useGlobalShortcuts(shortcuts: Shortcut[]) {
   const registerGlobalShortcuts = useSetAtom(registerGlobalShortcutsAtom)
   const unregisterGlobalShortcuts = useSetAtom(unregisterGlobalShortcutsAtom)
 

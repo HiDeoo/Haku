@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-export default function useDelay(enabled = true, delayInMs = 250): boolean {
+export function useDelay(enabled = true, delayInMs = 250): boolean {
   const [pastDelay, setPastDelay] = useState(false)
 
   useEffect(() => {

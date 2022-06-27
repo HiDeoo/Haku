@@ -9,12 +9,12 @@ import {
 } from '@radix-ui/react-context-menu'
 import { forwardRef } from 'react'
 
-import clst from 'styles/clst'
+import { clst } from 'styles/clst'
 
 const itemClasses = 'block w-full text-left [&[data-highlighted]]:outline-none px-2 py-1 rounded select-none'
 const contentClasses = 'min-w-[theme(spacing.32)] overflow-hidden rounded-md bg-zinc-700 p-1.5 shadow shadow-black/75'
 
-const ContextMenu: ContextMenuComponent = ({ children, trigger }) => {
+export const ContextMenu: ContextMenuComponent = ({ children, trigger }) => {
   return (
     <Root>
       <Trigger asChild>{trigger}</Trigger>
@@ -55,8 +55,6 @@ const Separator: React.FC = () => {
 }
 
 ContextMenu.Separator = Separator
-
-export default ContextMenu
 
 type ContextMenuComponent = React.FC<ContextMenuProps> & {
   Item: typeof Item

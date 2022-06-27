@@ -3,7 +3,7 @@ import { uploadToCloudinary } from 'libs/cloudinary'
 import { getBytesFromMegaBytes } from 'libs/math'
 import { validateBase64Image, z, zId } from 'libs/validation'
 import { createRouter } from 'server'
-import withAuth from 'server/middlewares/withAuth'
+import { withAuth } from 'server/middlewares/withAuth'
 
 export const imageRouter = createRouter()
   .middleware(withAuth)

@@ -3,11 +3,11 @@ import { useEffect } from 'react'
 import { RiRefreshLine } from 'react-icons/ri'
 
 import { deferrefPromptEventAtom } from 'atoms/pwa'
-import useInterval from 'hooks/useInterval'
-import useToast from 'hooks/useToast'
+import { useInterval } from 'hooks/useInterval'
+import { useToast } from 'hooks/useToast'
 import { checkServiceWorkerUpdate, registerServiceWorker, sendServiceWorkerMessage } from 'libs/sw'
 
-export default function usePwa() {
+export function usePwa() {
   const { addToast } = useToast()
   const setDeferrefPromptEventAtom = useSetAtom(deferrefPromptEventAtom)
 

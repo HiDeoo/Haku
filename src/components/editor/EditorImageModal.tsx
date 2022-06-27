@@ -2,10 +2,10 @@ import { useAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { editorImageModalAtom } from 'atoms/togglable'
-import Modal from 'components/ui/Modal'
+import { Modal } from 'components/ui/Modal'
 import { getA11yImageReactAttributes } from 'libs/image'
 
-const EditorImageModal: React.FC = () => {
+export const EditorImageModal: React.FC = () => {
   const [{ opened, srcSet, ...image }, setModal] = useAtom(editorImageModalAtom)
 
   const handleOpenChange = useCallback(() => {
@@ -26,5 +26,3 @@ const EditorImageModal: React.FC = () => {
     </Modal>
   )
 }
-
-export default EditorImageModal

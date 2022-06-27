@@ -2,12 +2,13 @@ import { useAtomValue } from 'jotai'
 import dynamic from 'next/dynamic'
 
 import { sidebarCollapsedAtom } from 'atoms/collapsible'
-import Flex from 'components/ui/Flex'
-import clst from 'styles/clst'
+import { Flex } from 'components/ui/Flex'
+import { type SidebarProps } from 'components/ui/Sidebar'
+import { clst } from 'styles/clst'
 
-const Sidebar = dynamic(import('components/ui/Sidebar'))
+const Sidebar = dynamic<SidebarProps>(import('components/ui/Sidebar').then((module) => module.Sidebar))
 
-const Layout: React.FC<LayoutProps> = ({ children, sidebar }) => {
+export const Layout: React.FC<LayoutProps> = ({ children, sidebar }) => {
   const sidebarCollapsed = useAtomValue(sidebarCollapsedAtom)
 
   const justifyCenter = sidebar ? undefined : 'center'
@@ -41,8 +42,6 @@ const Layout: React.FC<LayoutProps> = ({ children, sidebar }) => {
     </Flex>
   )
 }
-
-export default Layout
 
 interface LayoutProps {
   children: React.ReactNode

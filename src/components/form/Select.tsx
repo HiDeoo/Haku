@@ -3,14 +3,14 @@ import { useCallback, useRef } from 'react'
 import { forwardRef } from 'react'
 import { RiArrowDownSLine } from 'react-icons/ri'
 
-import Button, { ButtonProps } from 'components/form/Button'
-import ControlMenu, { type ControlMenuProps } from 'components/form/ControlMenu'
-import Label from 'components/form/Label'
-import Flex from 'components/ui/Flex'
-import Icon from 'components/ui/Icon'
-import clst from 'styles/clst'
+import { Button, type ButtonProps } from 'components/form/Button'
+import { ControlMenu, type ControlMenuProps } from 'components/form/ControlMenu'
+import { Label } from 'components/form/Label'
+import { Flex } from 'components/ui/Flex'
+import { Icon } from 'components/ui/Icon'
+import { clst } from 'styles/clst'
 
-const Select = <TItem,>(
+const SelectComponent = <TItem,>(
   {
     className,
     defaultItem,
@@ -98,9 +98,9 @@ const Select = <TItem,>(
   )
 }
 
-export default forwardRef(Select) as <TItem>(
+export const Select = forwardRef(SelectComponent) as <TItem>(
   props: SelectProps<TItem> & { ref?: React.ForwardedRef<HTMLButtonElement> }
-) => ReturnType<typeof Select>
+) => ReturnType<typeof SelectComponent>
 
 interface SelectProps<TItem> {
   className?: string

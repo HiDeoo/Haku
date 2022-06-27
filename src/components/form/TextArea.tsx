@@ -3,10 +3,10 @@ import { useObjectRef } from '@react-aria/utils'
 import { forwardRef } from 'react'
 import { type ChangeHandler, type UseFormRegisterReturn } from 'react-hook-form'
 
-import Label from 'components/form/Label'
-import clst from 'styles/clst'
+import { Label } from 'components/form/Label'
+import { clst } from 'styles/clst'
 
-const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
+export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
   ({ className, onChange, rows, ...props }, forwardedRef) => {
     const ref = useObjectRef(forwardedRef)
     const { labelProps, inputProps, errorMessageProps } = useTextField<'textarea'>(props, ref)
@@ -53,8 +53,6 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
 )
 
 TextArea.displayName = 'TextArea'
-
-export default TextArea
 
 interface TextAreaProps extends Partial<Omit<UseFormRegisterReturn, 'ref' | 'onBlur' | 'onChange'>> {
   autoFocus?: React.TextareaHTMLAttributes<HTMLTextAreaElement>['autoFocus']

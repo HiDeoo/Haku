@@ -1,10 +1,10 @@
 import { useRouter } from 'next/router'
 import { useEffect, useRef } from 'react'
 
-import useRouteChange from 'hooks/useRouteChange'
+import { useRouteChange } from 'hooks/useRouteChange'
 
 // https://github.com/vercel/next.js/issues/2476#issuecomment-850030407
-export default function useNavigationPrompt(
+export function useNavigationPrompt(
   enabled: boolean,
   message = 'Are you sure that you want to leave this page with unsaved changes?'
 ) {

@@ -4,19 +4,19 @@ import { type NestedValue, useForm } from 'react-hook-form'
 import { RiFolderAddLine } from 'react-icons/ri'
 
 import { folderModalAtom, setFolderModalOpenedAtom } from 'atoms/togglable'
-import FolderPicker from 'components/folder/FolderPicker'
-import Button from 'components/form/Button'
-import Form from 'components/form/Form'
-import IconButton from 'components/form/IconButton'
-import TextInput from 'components/form/TextInput'
-import Alert from 'components/ui/Alert'
-import Modal from 'components/ui/Modal'
+import { FolderPicker } from 'components/folder/FolderPicker'
+import { Button } from 'components/form/Button'
+import { Form } from 'components/form/Form'
+import { IconButton } from 'components/form/IconButton'
+import { TextInput } from 'components/form/TextInput'
+import { Alert } from 'components/ui/Alert'
+import { Modal } from 'components/ui/Modal'
 import { ROOT_FOLDER_ID } from 'constants/folder'
-import useFolderMutation from 'hooks/useFolderMutation'
+import { useFolderMutation } from 'hooks/useFolderMutation'
 import { useNetworkStatus } from 'hooks/useNetworkStatus'
 import { type FolderData } from 'libs/db/folder'
 
-const FolderModal: React.FC = () => {
+export const FolderModal: React.FC = () => {
   const { offline } = useNetworkStatus()
 
   const {
@@ -108,9 +108,7 @@ const FolderModal: React.FC = () => {
   )
 }
 
-export default FolderModal
-
-type FormFields = {
+interface FormFields {
   name: string
   parentFolder: NestedValue<FolderData>
 }

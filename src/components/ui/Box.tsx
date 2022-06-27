@@ -1,6 +1,6 @@
-import Flex from 'components/ui/Flex'
+import { Flex } from 'components/ui/Flex'
 
-const Box: BoxComponent = ({ children, details, title }) => {
+export const Box: BoxComponent = ({ children, details, title }) => {
   return (
     <div className="w-full md:w-96">
       {title ? <h1 className="mb-1.5 ml-0.5 truncate text-lg">{title}</h1> : null}
@@ -19,8 +19,6 @@ const Footer: React.FC<FooterProps> = ({ children }) => {
 }
 
 Box.Footer = Footer
-
-export default Box
 
 type BoxComponent = React.FC<BoxProps> & {
   Footer: typeof Footer

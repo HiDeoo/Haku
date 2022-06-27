@@ -3,11 +3,11 @@ import { mergeProps, useObjectRef } from '@react-aria/utils'
 import { type AriaButtonProps } from '@react-types/button'
 import { forwardRef } from 'react'
 
-import Flex from 'components/ui/Flex'
-import Spinner from 'components/ui/Spinner'
-import clst from 'styles/clst'
+import { Flex } from 'components/ui/Flex'
+import { Spinner } from 'components/ui/Spinner'
+import { clst } from 'styles/clst'
 
-const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ children, className, disabled, loading, onPress, pressedClassName, primary, ...props }, forwardedRef) => {
     let sanitizedProps = props
 
@@ -69,8 +69,6 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 )
 
 Button.displayName = 'Button'
-
-export default Button
 
 function isButtonPropsWithOnClickHandler(props: ButtonProps): props is ButtonPropsWithOnClickHandler {
   return typeof (props as ButtonPropsWithOnClickHandler).onClick !== 'undefined'

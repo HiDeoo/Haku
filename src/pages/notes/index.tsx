@@ -1,5 +1,5 @@
-import ContentHistory from 'components/content/ContentHistory'
-import Safe from 'components/ui/Safe'
+import { ContentHistory } from 'components/content/ContentHistory'
+import { Safe } from 'components/ui/Safe'
 import { ContentType } from 'constants/contentType'
 
 const Notes: Page = () => {

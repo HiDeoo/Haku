@@ -4,15 +4,15 @@ import { useController, useFormContext } from 'react-hook-form'
 import { RiBookletLine, RiInboxFill, RiTodoLine } from 'react-icons/ri'
 
 import { type SearchDrawerData } from 'atoms/togglable'
-import TextInput, { type TextInputProps } from 'components/form/TextInput'
-import Icon from 'components/ui/Icon'
-import Tooltip from 'components/ui/Tooltip'
+import { TextInput, type TextInputProps } from 'components/form/TextInput'
+import { Icon } from 'components/ui/Icon'
+import { Tooltip } from 'components/ui/Tooltip'
 import { SearchableContentType } from 'constants/contentType'
 import { getContentType } from 'hooks/useContentType'
 import { capitalize } from 'libs/string'
-import clst from 'styles/clst'
+import { clst } from 'styles/clst'
 
-const SearchInput = forwardRef<HTMLInputElement, TextInputProps>((props, forwardedRef) => {
+export const SearchInput = forwardRef<HTMLInputElement, TextInputProps>((props, forwardedRef) => {
   return (
     <div className="relative w-full">
       <TextInput {...props} ref={forwardedRef} className="pr-[6.5rem]" />
@@ -26,8 +26,6 @@ const SearchInput = forwardRef<HTMLInputElement, TextInputProps>((props, forward
 })
 
 SearchInput.displayName = 'SearchInput'
-
-export default SearchInput
 
 const SearchInputCheckbox: React.FC<SearchInputCheckboxProps> = ({ contentType }) => {
   const { control, formState, getValues } = useFormContext<SearchDrawerData>()

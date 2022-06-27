@@ -4,13 +4,14 @@ import { useCallback, useMemo, useRef } from 'react'
 import { RiSearchLine } from 'react-icons/ri'
 
 import { searchDrawerAtom, setSearchDrawerOpenedAtom } from 'atoms/togglable'
-import IconButton from 'components/form/IconButton'
-import Drawer from 'components/ui/Drawer'
-import useGlobalShortcuts from 'hooks/useGlobalShortcuts'
+import { IconButton } from 'components/form/IconButton'
+import { type SearchProps } from 'components/search/Search'
+import { Drawer } from 'components/ui/Drawer'
+import { useGlobalShortcuts } from 'hooks/useGlobalShortcuts'
 
-const Search = dynamic(import('components/search/Search'))
+const Search = dynamic<SearchProps>(import('components/search/Search').then((module) => module.Search))
 
-const SearchDrawer: React.FC = () => {
+export const SearchDrawer: React.FC = () => {
   const queryInput = useRef<HTMLInputElement>(null)
 
   const { opened } = useAtomValue(searchDrawerAtom)
@@ -56,5 +57,3 @@ const SearchDrawer: React.FC = () => {
     </Drawer>
   )
 }
-
-export default SearchDrawer

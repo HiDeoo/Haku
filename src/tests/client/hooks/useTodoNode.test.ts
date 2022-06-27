@@ -8,7 +8,7 @@ import { useAtom } from 'jotai'
 import { useAtomValue, useSetAtom } from 'jotai'
 
 import { todoNodeChildrenAtom, todoNodeMutationsAtom, todoNodeNodesAtom } from 'atoms/todoNode'
-import useTodoNode from 'hooks/useTodoNode'
+import { useTodoNode } from 'hooks/useTodoNode'
 import {
   type TodoNodeDataWithParentId,
   type TodoNodeChildrenMapWithRoot,
