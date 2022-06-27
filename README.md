@@ -9,10 +9,10 @@
   </p>
   <p>
     <a href="public/images/screenshots/wide-note.png" title="Screenshot of a note in Haku">
-      <img alt="Screenshot of a note in Haku" src="public/images/screenshots/wide-note.png" width="448" />
+      <img alt="Screenshot of a note in Haku" src="public/images/screenshots/wide-note.png" width="384" />
     </a>
     <a href="public/images/screenshots/wide-todo.png" title="Screenshot of a to-do Haku">
-      <img alt="Screenshot of a to-do Haku" src="public/images/screenshots/wide-todo.png" width="448" />
+      <img alt="Screenshot of a to-do Haku" src="public/images/screenshots/wide-todo.png" width="384" />
     </a>
   </p>
   <p>
