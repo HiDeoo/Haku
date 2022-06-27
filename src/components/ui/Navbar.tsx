@@ -1,7 +1,7 @@
 import { Children, cloneElement, isValidElement } from 'react'
 
 import { Button, type ButtonProps } from 'components/form/Button'
-import Flex from 'components/ui/Flex'
+import { Flex } from 'components/ui/Flex'
 import { Icon, type IconProps } from 'components/ui/Icon'
 import { Tooltip } from 'components/ui/Tooltip'
 import { clst } from 'styles/clst'

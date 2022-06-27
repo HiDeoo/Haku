@@ -1,7 +1,7 @@
 import { RiCloudOffLine } from 'react-icons/ri'
 
 import { Callout } from 'components/form/Callout'
-import Flex from 'components/ui/Flex'
+import { Flex } from 'components/ui/Flex'
 import { useContentType } from 'hooks/useContentType'
 
 export const Offline: React.FC = () => {

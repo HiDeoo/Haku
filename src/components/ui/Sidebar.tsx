@@ -7,7 +7,7 @@ import { noteInspectorCollapsedAtom, sidebarCollapsedAtom, toggleSidebarCollapse
 import { ContentTree } from 'components/content/ContentTree'
 import { CommandPalette } from 'components/palette/CommandPalette'
 import { NavigationPalette } from 'components/palette/NavigationPalette'
-import Flex from 'components/ui/Flex'
+import { Flex } from 'components/ui/Flex'
 import { FloatingButton } from 'components/ui/FloatingButton'
 import { SidebarMenu } from 'components/ui/SidebarMenu'
 import { useGlobalShortcuts } from 'hooks/useGlobalShortcuts'

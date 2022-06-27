@@ -1,7 +1,7 @@
 import { forwardRef } from 'react'
 import { RiCheckLine, RiErrorWarningLine } from 'react-icons/ri'
 
-import Flex from 'components/ui/Flex'
+import { Flex } from 'components/ui/Flex'
 import { Icon, type IconProps } from 'components/ui/Icon'
 import { clst } from 'styles/clst'
 

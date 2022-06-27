@@ -1,7 +1,7 @@
 import { getTodoNodes, updateTodoNodes } from 'libs/db/todoNodes'
 import { z, zId, zTodoNodeStatus } from 'libs/validation'
 import { createRouter } from 'server'
-import withAuth from 'server/middlewares/withAuth'
+import { withAuth } from 'server/middlewares/withAuth'
 
 const mutationMapSchema = z.record(
   z.object({

@@ -4,7 +4,7 @@ import { RiCloseLine } from 'react-icons/ri'
 
 import { Form, type FormProps } from 'components/form/Form'
 import { IconButton } from 'components/form/IconButton'
-import Flex from 'components/ui/Flex'
+import { Flex } from 'components/ui/Flex'
 import { List, type ListComponent } from 'components/ui/List'
 import { LIST_SHIMMER_CLASSES } from 'constants/shimmer'
 import { useFocusRestoration } from 'hooks/useFocusRestoration'
@@ -106,7 +106,7 @@ function handleCloseAutoFocus(event: Event) {
 
 type DrawerComponent = React.FC<DrawerProps> & {
   Form: typeof DrawerForm
-  List: typeof DrawerList
+  List: ListComponent
   Nis: typeof DrawerNis
 }
 

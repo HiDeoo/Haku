@@ -1,6 +1,6 @@
 import { Children, cloneElement, isValidElement } from 'react'
 
-import Flex from 'components/ui/Flex'
+import { Flex } from 'components/ui/Flex'
 import { useDelay } from 'hooks/useDelay'
 import { clst } from 'styles/clst'
 

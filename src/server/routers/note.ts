@@ -2,7 +2,7 @@ import { addNote, getNote, removeNote, updateNote } from 'libs/db/note'
 import { getNoteTree } from 'libs/db/tree'
 import { z, zAtLeastOneOf, zId } from 'libs/validation'
 import { createRouter } from 'server'
-import withAuth from 'server/middlewares/withAuth'
+import { withAuth } from 'server/middlewares/withAuth'
 
 export const noteRouter = createRouter()
   .middleware(withAuth)

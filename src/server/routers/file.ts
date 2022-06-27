@@ -1,6 +1,6 @@
 import { getFiles } from 'libs/db/file'
 import { createRouter } from 'server'
-import withAuth from 'server/middlewares/withAuth'
+import { withAuth } from 'server/middlewares/withAuth'
 
 export const fileRouter = createRouter()
   .middleware(withAuth)

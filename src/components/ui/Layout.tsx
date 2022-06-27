@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import dynamic from 'next/dynamic'
 
 import { sidebarCollapsedAtom } from 'atoms/collapsible'
-import Flex from 'components/ui/Flex'
+import { Flex } from 'components/ui/Flex'
 import { type SidebarProps } from 'components/ui/Sidebar'
 import { clst } from 'styles/clst'
 

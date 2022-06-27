@@ -1,4 +1,4 @@
-import Flex from 'components/ui/Flex'
+import { Flex } from 'components/ui/Flex'
 
 export const Box: BoxComponent = ({ children, details, title }) => {
   return (

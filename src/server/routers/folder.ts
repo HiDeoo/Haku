@@ -1,7 +1,7 @@
 import { addFolder, removeFolder, updateFolder } from 'libs/db/folder'
 import { z, zAtLeastOneOf, zFolderType, zId } from 'libs/validation'
 import { createRouter } from 'server'
-import withAuth from 'server/middlewares/withAuth'
+import { withAuth } from 'server/middlewares/withAuth'
 
 export const folderRouter = createRouter()
   .middleware(withAuth)

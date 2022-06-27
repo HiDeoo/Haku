@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 
 import { Button } from 'components/form/Button'
 import { Callout } from 'components/form/Callout'
-import Flex from 'components/ui/Flex'
+import { Flex } from 'components/ui/Flex'
 import { getAuthErrorMesssage } from 'libs/auth'
 
 const Error: Page = () => {

@@ -3,7 +3,7 @@ import { RiCloseLine } from 'react-icons/ri'
 
 import { Button } from 'components/form/Button'
 import { IconButton } from 'components/form/IconButton'
-import Flex from 'components/ui/Flex'
+import { Flex } from 'components/ui/Flex'
 import { clst } from 'styles/clst'
 
 export const MODAL_CONTENT_CLASSES = clst(

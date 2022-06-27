@@ -1,4 +1,4 @@
-import Flex from 'components/ui/Flex'
+import { Flex } from 'components/ui/Flex'
 import { clst } from 'styles/clst'
 
 const safeClasses = clst(

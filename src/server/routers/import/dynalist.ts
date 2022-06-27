@@ -3,7 +3,7 @@ import { updateTodoNodes } from 'libs/db/todoNodes'
 import { getTodoFromDynalistOpml } from 'libs/dynalist'
 import { z } from 'libs/validation'
 import { createRouter } from 'server'
-import withAuth from 'server/middlewares/withAuth'
+import { withAuth } from 'server/middlewares/withAuth'
 
 export const importDynalistRouter = createRouter()
   .middleware(withAuth)

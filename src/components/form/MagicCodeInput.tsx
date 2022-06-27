@@ -6,7 +6,7 @@ import { TextInput } from 'components/form/TextInput'
 import { AUTH_TOKEN_LENGTH } from 'constants/auth'
 import { clst } from 'styles/clst'
 
-const MagicCodeInput = <TFormFields extends FieldValues>(
+const MagicCodeInputComponent = <TFormFields extends FieldValues>(
   { control, disabled, errorMessage, length = AUTH_TOKEN_LENGTH, name }: MagicCodeInputProps<TFormFields>,
   forwardedRef: React.ForwardedRef<MagicCodeInputHandle>
 ) => {
@@ -146,9 +146,9 @@ const MagicCodeInput = <TFormFields extends FieldValues>(
   )
 }
 
-export default forwardRef(MagicCodeInput) as <TFormFields extends FieldValues>(
-  props: MagicCodeInputProps<TFormFields>
-) => ReturnType<typeof MagicCodeInput>
+export const MagicCodeInput = forwardRef(MagicCodeInputComponent) as <TFormFields extends FieldValues>(
+  props: MagicCodeInputProps<TFormFields> & { ref?: React.ForwardedRef<MagicCodeInputHandle> }
+) => ReturnType<typeof MagicCodeInputComponent>
 
 const MagicCodeDigitInput: React.FC<MagicCodeDigitInputProps> = ({
   disabled,
@@ -221,7 +221,7 @@ type MagicCodeInputProps<TFormFields extends FieldValues> = {
   errorMessage?: string
   length?: number
   name: FieldPath<TFormFields>
-} & { ref?: React.ForwardedRef<MagicCodeInputHandle> }
+}
 
 interface MagicCodeDigitInputProps {
   disabled?: boolean

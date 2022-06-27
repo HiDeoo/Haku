@@ -3,7 +3,7 @@ import { ErrorBoundary as Boundary, type FallbackProps } from 'react-error-bound
 
 import { Button } from 'components/form/Button'
 import { Callout } from 'components/form/Callout'
-import Flex from 'components/ui/Flex'
+import { Flex } from 'components/ui/Flex'
 import { type PuzzleProps } from 'components/ui/Puzzle'
 import { openGitHubErrorReport } from 'libs/github'
 

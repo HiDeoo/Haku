@@ -7,7 +7,7 @@ import { contentModalAtom, folderModalAtom, setContentModalOpenedAtom } from 'at
 import { ContentTreeNode } from 'components/content/ContentTreeNode'
 import { Button } from 'components/form/Button'
 import { ContextMenu } from 'components/ui/ContextMenu'
-import Flex from 'components/ui/Flex'
+import { Flex } from 'components/ui/Flex'
 import { Shimmer } from 'components/ui/Shimmer'
 import { CONTENT_TREE_SHIMMER_DEPTHS } from 'constants/shimmer'
 import { useContentId } from 'hooks/useContentId'

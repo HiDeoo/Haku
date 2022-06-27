@@ -3,7 +3,7 @@ import { mergeProps, useObjectRef } from '@react-aria/utils'
 import { type AriaButtonProps } from '@react-types/button'
 import { forwardRef } from 'react'
 
-import Flex from 'components/ui/Flex'
+import { Flex } from 'components/ui/Flex'
 import { Spinner } from 'components/ui/Spinner'
 import { clst } from 'styles/clst'
 

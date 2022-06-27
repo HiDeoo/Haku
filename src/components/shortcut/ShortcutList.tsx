@@ -3,7 +3,7 @@ import { useAtomValue } from 'jotai'
 import { Fragment, useMemo } from 'react'
 
 import { globalShortcutsAtom, localShortcutsAtom } from 'atoms/shortcuts'
-import Flex from 'components/ui/Flex'
+import { Flex } from 'components/ui/Flex'
 import { groupByKey } from 'libs/array'
 import { type DescribedShortcut, getKeyAriaLabel, prettyPrintKey, isDescribedShortcut } from 'libs/shortcut'
 import { clst } from 'styles/clst'

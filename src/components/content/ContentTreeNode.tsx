@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { forwardRef } from 'react'
 
 import { ContextMenu } from 'components/ui/ContextMenu'
-import Flex from 'components/ui/Flex'
+import { Flex } from 'components/ui/Flex'
 import { Icon, type IconProps } from 'components/ui/Icon'
 import { clst } from 'styles/clst'
 
