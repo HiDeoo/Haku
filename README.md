@@ -83,4 +83,4 @@ I am currently hosting a private instance of the application for my own use and 
 
 Licensed under the MIT License, Copyright © HiDeoo.
 
-See [LICENSE](https://github.com/HiDeoo/Haku/blob/main/LICENSE.md) for more information.
+See [LICENSE](https://github.com/HiDeoo/Haku/blob/main/LICENSE) for more information.
