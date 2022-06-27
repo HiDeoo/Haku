@@ -30,7 +30,7 @@
     <a href="https://github.com/HiDeoo/Haku/actions/workflows/integration.yml">
       <img alt="Integration Status" src="https://github.com/HiDeoo/Haku/actions/workflows/integration.yml/badge.svg" />
     </a>
-    <a href="https://github.com/HiDeoo/Haku/blob/main/LICENSE.md">
+    <a href="https://github.com/HiDeoo/Haku/blob/main/LICENSE">
       <img alt="License" src="https://badgen.net/github/license/HiDeoo/Haku" />
     </a>
   </p>
