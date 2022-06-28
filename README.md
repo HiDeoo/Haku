@@ -52,6 +52,7 @@ The note taking part of the application is inspired by [OneNote](https://www.one
 - Available as a web application or Progressive Web App that can be installed on desktop and mobile devices.
 - Content-focused with hideable sidebars.
 - Full text search.
+- Quick method to share content to the application from any device collected in an Inbox.
 - Passwordless authentication.
 - Offline support (read-only at the moment).
 - Allow-list of authorized users.
@@ -78,6 +79,7 @@ Haku is still in development as I plan to add more features when I get the time.
 - [tRPC](https://trpc.io) for end-to-end typesafe APIs.
 - [Cloudinary](https://cloudinary.com) for image uploads.
 - [EmailJS](https://www.emailjs.com) for sending authentication emails.
+- [Custom Apple Shortcut](https://support.apple.com/en-gb/guide/shortcuts/welcome/ios) to quickly share content to the application inbox (should be replaced by the native [Web Share Target API](https://w3c.github.io/web-share-target) once supported on more devices).
 
 I am currently hosting a private instance of the application for my own use and don't plan to open it to the public at this time.
 
