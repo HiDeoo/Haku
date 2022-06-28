@@ -40,9 +40,9 @@
 
 I write lots of notes and to-do lists on a daily basis. I tested a lot of different services and applications over the years to accomplish this but I never managed to find a solution that fits all my needs.
 
-My most recent setup was composed of [OneNote](https://www.onenote.com) for notes and [Dynalist](https://dynalist.io) for to-do lists but I was still not satisfied with the result for various reasons, the most important ones being the lack of Markdown syntax and code highlighting in OneNote conjugated with the fact that every other text copy would fail on macOS for no reason, and the absence of a web version of Dynalist to open a to-do list on any device while I was on the go.
+My most recent setup was composed of [OneNote](https://www.onenote.com) for notes and [Dynalist](https://dynalist.io) for to-do lists but I was still not satisfied with the result for various reasons, the most important ones being the lack of Markdown syntax and code highlighting in OneNote conjugated with the fact that every other text copy would fail on macOS for no reasons, and the absence of a web version of Dynalist to open a to-do list on any device while I was on the go.
 
-Haku - _**to compose, invent, put in order, arrange in Hawaiian**_ - is a **very opinionated** web application to consolidate in one place all my notes and to-do lists.
+Haku - _**to compose, invent, put in order, arrange in Hawaiian**_ - is a **very opinionated** web application to consolidate in one place all my notes and to-do lists. There are no date related features because when I need to deal with appointments, reminders, etc. I just use a calendar.
 
 The note taking part of the application is inspired by [OneNote](https://www.onenote.com) and [Obsidian](https://obsidian.md) while the to-do lists take inspiration from [Dynalist](https://dynalist.io) and [Todo+](https://marketplace.visualstudio.com/items?itemName=fabiospampinato.vscode-todo-plus).
 
@@ -67,6 +67,8 @@ The note taking part of the application is inspired by [OneNote](https://www.one
   - Every to-do item can be marked as completed or cancelled.
   - Missed to-do items are highlighted.
   - Nested to-do items can be collapsed.
+
+Haku is still in development as I plan to add more features when I get the time.
 
 ## Architecture
 
