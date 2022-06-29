@@ -1,7 +1,7 @@
 import crypto from 'crypto'
 
 import { PrismaAdapter } from '@next-auth/prisma-adapter'
-import NextAuth, { type CallbacksOptions } from 'next-auth'
+import NextAuth, { type NextAuthOptions, type CallbacksOptions } from 'next-auth'
 import { type EmailConfig } from 'next-auth/providers'
 
 import { AUTH_TOKEN_LENGTH, AUTH_TOKEN_MAX_AGE_IN_MINUTES } from 'constants/auth'
@@ -9,7 +9,7 @@ import { prisma } from 'libs/db'
 import { getAllowedEmailByEmail } from 'libs/db/emailAllowList'
 import { sendLoginEmail } from 'libs/email'
 
-const auth = NextAuth({
+export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   callbacks: { session: getSession, signIn: canLogin },
   pages: {
@@ -18,9 +18,9 @@ const auth = NextAuth({
   },
   providers: [EmailApiProvider({ sendVerificationRequest })],
   secret: process.env.NEXTAUTH_SECRET,
-})
+}
 
-export default auth
+export default NextAuth(authOptions)
 
 function EmailApiProvider(options: EmailApiProviderUserOptions): EmailConfig {
   return {
