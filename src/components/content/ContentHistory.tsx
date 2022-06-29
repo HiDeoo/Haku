@@ -61,11 +61,9 @@ const ContentHistorySection: React.FC<ContentHistorySectionProps> = ({ entries, 
               const linkCkasses = clst(className, 'hover:bg-blue-600 hover:text-zinc-100')
 
               return (
-                <Link href={`${urlPath}/${entry.id}/${entry.slug}`} prefetch={false}>
-                  <a {...props} className={linkCkasses}>
-                    <span className="grow truncate">{entry.name}</span>
-                    <Icon icon={RiArrowRightSLine} className={iconClasses} aria-hidden />
-                  </a>
+                <Link {...props} href={`${urlPath}/${entry.id}/${entry.slug}`} prefetch={false} className={linkCkasses}>
+                  <span className="grow truncate">{entry.name}</span>
+                  <Icon icon={RiArrowRightSLine} className={iconClasses} aria-hidden />
                 </Link>
               )
             }}
