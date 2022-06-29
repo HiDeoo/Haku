@@ -33,16 +33,16 @@ export const ContentTreeNode = forwardRef<HTMLDivElement | HTMLAnchorElement, Co
         trigger={
           href ? (
             <Flex alignItems="center" role="treeitem">
-              <Link href={href} prefetch={false}>
-                <a
-                  {...props}
-                  style={style}
-                  className={anchorClasses}
-                  aria-current={selected ? 'page' : undefined}
-                  ref={forwardedRef as React.ForwardedRef<HTMLAnchorElement>}
-                >
-                  {content}
-                </a>
+              <Link
+                {...props}
+                href={href}
+                style={style}
+                prefetch={false}
+                className={anchorClasses}
+                aria-current={selected ? 'page' : undefined}
+                ref={forwardedRef as React.ForwardedRef<HTMLAnchorElement>}
+              >
+                {content}
               </Link>
             </Flex>
           ) : (

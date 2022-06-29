@@ -25,11 +25,9 @@ const Import: Page = () => {
               const linkCkasses = clst(className, 'hover:bg-blue-600 hover:text-zinc-100')
 
               return (
-                <Link href={`/import/${source.toLowerCase()}`} prefetch={false}>
-                  <a {...props} className={linkCkasses}>
-                    <span className="grow truncate">{source}</span>
-                    <Icon icon={RiArrowRightSLine} className={iconClasses} aria-hidden />
-                  </a>
+                <Link {...props} href={`/import/${source.toLowerCase()}`} prefetch={false} className={linkCkasses}>
+                  <span className="grow truncate">{source}</span>
+                  <Icon icon={RiArrowRightSLine} className={iconClasses} aria-hidden />
                 </Link>
               )
             }}
