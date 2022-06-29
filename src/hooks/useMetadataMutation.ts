@@ -4,14 +4,16 @@ import { useCallback } from 'react'
 import { useContentId } from 'hooks/useContentId'
 import { getContentTreeQueryPath } from 'hooks/useContentTreeQuery'
 import { ContentType, useContentType } from 'hooks/useContentType'
+import { type NoteData } from 'libs/db/note'
+import { type TodoNodesData } from 'libs/db/todoNodes'
 import { trpc } from 'libs/trpc'
 
 export function useMetadataMutation() {
-  const { push } = useRouter()
+  const { push, replace } = useRouter()
   const { contentId } = useContentId()
   const { type, urlPath } = useContentType()
 
-  const { invalidateQueries } = trpc.useContext()
+  const { invalidateQueries, setQueryData } = trpc.useContext()
 
   const {
     error: errorAdd,
@@ -40,7 +42,7 @@ export function useMetadataMutation() {
       invalidateQueries(['history'])
 
       if (variables.id === contentId) {
-        push(urlPath)
+        replace(urlPath, undefined, { shallow: true })
       }
     },
   })
@@ -57,7 +59,19 @@ export function useMetadataMutation() {
       invalidateQueries(['history'])
 
       if (variables.id === contentId) {
-        push(`${urlPath}/${newMetadata.id}/${newMetadata.slug}`)
+        if (type === ContentType.NOTE) {
+          setQueryData(['note.byId', { id: variables.id }], (prevNote: NoteData) => ({
+            ...prevNote,
+            name: newMetadata.name,
+          }))
+        } else {
+          setQueryData(['todo.node.byId', { id: variables.id }], (prevTodoNodes: TodoNodesData) => ({
+            ...prevTodoNodes,
+            name: newMetadata.name,
+          }))
+        }
+
+        replace(`${urlPath}/${newMetadata.id}/${newMetadata.slug}`, undefined, { shallow: true })
       }
     },
   })
