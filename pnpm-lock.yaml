@@ -83,7 +83,7 @@ specifiers:
   react: 18.2.0
   react-dom: 18.2.0
   react-error-boundary: 3.1.4
-  react-hook-form: 7.32.2
+  react-hook-form: 7.33.0
   react-icons: 4.4.0
   react-linkify-it: 1.0.7
   react-query: 4.0.0-beta.23
@@ -148,7 +148,7 @@ dependencies:
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-error-boundary: 3.1.4_react@18.2.0
-  react-hook-form: 7.32.2_react@18.2.0
+  react-hook-form: 7.33.0_react@18.2.0
   react-icons: 4.4.0_react@18.2.0
   react-linkify-it: 1.0.7_react@18.2.0
   react-query: 4.0.0-beta.23_biqbaboplfbrettd7655fr4n2y
@@ -6477,8 +6477,8 @@ packages:
       react: 18.2.0
     dev: false
 
-  /react-hook-form/7.32.2_react@18.2.0:
-    resolution: {integrity: sha512-F1A6n762xaRhvtQH5SkQQhMr19cCkHZYesTcKJJeNmrphiZp/cYFTIzC05FnQry0SspM54oPJ9tXFXlzya8VNQ==}
+  /react-hook-form/7.33.0_react@18.2.0:
+    resolution: {integrity: sha512-h8XoeUHQs1Snx1s/sSvM+eVTSKkWQt8TcrbL+3/Rt5gugxpy4ueL5ZZkubffyNpUyyTz0qM0kwOi2c+JgGTjLA==}
     engines: {node: '>=12.22.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18

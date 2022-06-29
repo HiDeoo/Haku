@@ -1,6 +1,6 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect } from 'react'
-import { type NestedValue, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { RiFolderAddLine } from 'react-icons/ri'
 
 import { folderModalAtom, setFolderModalOpenedAtom } from 'atoms/togglable'
@@ -110,5 +110,5 @@ export const FolderModal: React.FC = () => {
 
 interface FormFields {
   name: string
-  parentFolder: NestedValue<FolderData>
+  parentFolder: FolderData
 }

@@ -11,7 +11,6 @@ import {
   useController,
   type FieldValues,
   type FieldPath,
-  type UnpackNestedValue,
   type PathValue,
   type Path,
   type ValidateResult,
@@ -62,7 +61,7 @@ export const Combobox = <TItem, TFormFields extends FieldValues>({
   } = useController<TFormFields>({
     control,
     // https://github.com/react-hook-form/react-hook-form/issues/2978#issuecomment-1001992272
-    defaultValue: defaultItem as UnpackNestedValue<PathValue<TFormFields, Path<TFormFields>>>,
+    defaultValue: defaultItem as PathValue<TFormFields, Path<TFormFields>>,
     name,
     rules: { validate },
   })
