@@ -7,7 +7,7 @@ import { ContentType, useContentType } from 'hooks/useContentType'
 import { trpc } from 'libs/trpc'
 
 export function useMetadataMutation() {
-  const { push } = useRouter()
+  const { push, replace } = useRouter()
   const { contentId } = useContentId()
   const { type, urlPath } = useContentType()
 
@@ -40,7 +40,7 @@ export function useMetadataMutation() {
       invalidateQueries(['history'])
 
       if (variables.id === contentId) {
-        push(urlPath)
+        replace(urlPath, undefined, { shallow: true })
       }
     },
   })
@@ -57,7 +57,7 @@ export function useMetadataMutation() {
       invalidateQueries(['history'])
 
       if (variables.id === contentId) {
-        push(`${urlPath}/${newMetadata.id}/${newMetadata.slug}`)
+        replace(`${urlPath}/${newMetadata.id}/${newMetadata.slug}`, undefined, { shallow: true })
       }
     },
   })
