@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## Unreleased
+
+### 🐞 Bug Fixes
+
+- Fix stale name update issue after renaming the current note or to-do.
+
 ## v0.2.0
 
 ### 🚀 Features
