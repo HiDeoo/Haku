@@ -1,7 +1,7 @@
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-import { type Browser, chromium, BrowserContext } from 'playwright'
+import { type Browser, chromium, type BrowserContext } from 'playwright'
 
 const appUrl = 'http://localhost:3000'
 

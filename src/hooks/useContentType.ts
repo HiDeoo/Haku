@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { contentTypeAtom } from 'atoms/contentType'
-import { ContentType } from 'constants/contentType'
+import { type ContentType } from 'constants/contentType'
 import { capitalize } from 'libs/string'
 
 export { ContentType } from 'constants/contentType'

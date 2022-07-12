@@ -75,7 +75,7 @@ export const Flex = forwardRef(FlexComponent) as <TElement extends React.Element
   props: FlexProps<TElement> & { ref?: React.ForwardedRef<HTMLDivElement> }
 ) => ReturnType<typeof FlexComponent>
 
-type FlexProps<TElement extends React.ElementType> = {
+interface FlexProps<TElement extends React.ElementType> {
   alignItems?: 'start' | 'end' | 'center' | 'baseline' | 'stretch'
   as?: TElement
   children: React.ReactNode

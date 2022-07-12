@@ -1,4 +1,13 @@
-import { Close, Content, DialogContentImplProps, Overlay, Portal, Root, Title, Trigger } from '@radix-ui/react-dialog'
+import {
+  Close,
+  Content,
+  type DialogContentImplProps,
+  Overlay,
+  Portal,
+  Root,
+  Title,
+  Trigger,
+} from '@radix-ui/react-dialog'
 import { RiCloseLine } from 'react-icons/ri'
 
 import { Button } from 'components/form/Button'

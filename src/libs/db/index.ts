@@ -1,11 +1,13 @@
 import { PrismaClient } from '@prisma/client'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime'
 import { TRPCError } from '@trpc/server'
-import { TRPC_ERROR_CODE_KEY } from '@trpc/server/rpc'
+import { type TRPC_ERROR_CODE_KEY } from '@trpc/server/rpc'
 
 import { API_ERROR_UNKNOWN } from 'constants/error'
 
 declare global {
+  // https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-4.html#type-checking-for-globalthis
+  // eslint-disable-next-line no-var -- adding as a member of globalThis
   var prisma: PrismaClient | undefined
 }
 

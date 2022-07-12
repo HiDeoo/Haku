@@ -1,6 +1,6 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import dynamic from 'next/dynamic'
-import React, { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { RiInboxFill } from 'react-icons/ri'
 import { QueryObserver } from 'react-query'
 

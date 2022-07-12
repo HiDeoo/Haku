@@ -139,7 +139,7 @@ async function getImageData(file: CloudinaryFile, name: string): Promise<ImageDa
 
   const res = await fetch(getCloudinarySignedUrl(file, placeholderTransforms))
   const buffer = Buffer.from(await res.arrayBuffer())
-  const placeholder = 'data:' + res.headers.get('Content-Type') + ';base64,' + buffer.toString('base64')
+  const placeholder = `data:${res.headers.get('Content-Type')};base64,${buffer.toString('base64')}`
 
   const original = getCloudinarySignedUrl(file, isJpegExtension(file.format) ? ['fl_progressive'] : [])
 

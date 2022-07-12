@@ -6,7 +6,7 @@ declare global {
 
   // https://github.com/GoogleChrome/workbox/issues/2974#issuecomment-963219535
   interface FetchEvent {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- see above issue.
     readonly preloadResponse?: Promise<any>
   }
 }

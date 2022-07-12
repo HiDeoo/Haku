@@ -1,4 +1,4 @@
-import { ButtonProps } from 'components/form/Button'
+import { type ButtonProps } from 'components/form/Button'
 import { IconButton } from 'components/form/IconButton'
 import { type IconProps } from 'components/ui/Icon'
 import { clst } from 'styles/clst'

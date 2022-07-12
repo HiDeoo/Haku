@@ -9,9 +9,8 @@ import { ContentType } from 'constants/contentType'
 import { LIST_SHIMMER_CLASSES } from 'constants/shimmer'
 import { getContentType } from 'hooks/useContentType'
 import { isEmpty } from 'libs/array'
-import { HistoryData } from 'libs/db/history'
-import { isNetworkError } from 'libs/trpc'
-import { trpc } from 'libs/trpc'
+import { type HistoryData } from 'libs/db/history'
+import { isNetworkError, trpc } from 'libs/trpc'
 import { clst } from 'styles/clst'
 
 export const ContentHistory: React.FC<ContentHistoryProps> = ({ focusedType }) => {

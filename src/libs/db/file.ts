@@ -2,7 +2,7 @@ import { Prisma } from '@prisma/client'
 import { type Sql } from '@prisma/client/runtime'
 import { TRPCError } from '@trpc/server'
 
-import { ContentType, SearchableContentType } from 'constants/contentType'
+import { ContentType, type SearchableContentType } from 'constants/contentType'
 import { API_ERROR_SEARCH_REQUIRES_AT_LEAST_ONE_TYPE } from 'constants/error'
 import { isEmpty } from 'libs/array'
 import { prisma } from 'libs/db'

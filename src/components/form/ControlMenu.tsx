@@ -1,6 +1,6 @@
 import { Presence } from '@radix-ui/react-presence'
 import { type UseSelectPropGetters, type UseSelectState } from 'downshift'
-import { RefObject, useEffect, useState } from 'react'
+import { type RefObject, useEffect, useState } from 'react'
 
 import { clst } from 'styles/clst'
 

@@ -6,7 +6,7 @@ import { Drawer } from 'components/ui/Drawer'
 import { LIST_BUTTON_CLASSES, LIST_BUTTON_PRESSED_CLASSES } from 'components/ui/List'
 import { useInboxEntryMutation } from 'hooks/useInboxEntryMutation'
 import { useNetworkStatus } from 'hooks/useNetworkStatus'
-import { InboxEntryData } from 'libs/db/inbox'
+import { type InboxEntryData } from 'libs/db/inbox'
 import { clst } from 'styles/clst'
 
 export const InboxListEntry: React.FC<InboxListEntryProps> = ({ entry }) => {

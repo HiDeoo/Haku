@@ -3,7 +3,7 @@ import cuid from 'cuid'
 import { forwardRef, memo, useCallback, useContext, useImperativeHandle, useRef, useState } from 'react'
 import { useEditable } from 'use-editable'
 
-import { AtomParamsWithDirection } from 'atoms/todoNode'
+import { type AtomParamsWithDirection } from 'atoms/todoNode'
 import { TodoNodeChildren, type TodoNodeChildrenProps } from 'components/todo/TodoNodeChildren'
 import { TodoNodeHandle } from 'components/todo/TodoNodeHandle'
 import { TodoNodeNote, type TodoNodeNoteHandle } from 'components/todo/TodoNodeNote'
@@ -344,6 +344,7 @@ export const TodoNodeItem = memo(
                 hasChildren={isNotEmpty(children)}
               />
               <div className="w-full">
+                {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions -- tabbing is used to indent */}
                 <div
                   ref={contentEditable}
                   className={contentClasses}

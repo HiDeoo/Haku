@@ -2,7 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
 import { registerLocalShortcutsAtom, unregisterLocalShortcutsAtom } from 'atoms/shortcuts'
-import { getShortcutMap, Keybinding, type Shortcut } from 'libs/shortcut'
+import { getShortcutMap, type Keybinding, type Shortcut } from 'libs/shortcut'
 
 export function useLocalShortcuts<TKeybinding extends Keybinding>(shortcuts: readonly Shortcut<TKeybinding>[]) {
   const registerLocalShortcuts = useSetAtom(registerLocalShortcutsAtom)

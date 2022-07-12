@@ -1,4 +1,4 @@
-import { atom, type WritableAtom, PrimitiveAtom } from 'jotai'
+import { atom, type WritableAtom, type PrimitiveAtom } from 'jotai'
 
 import { onlineAtom } from 'atoms/network'
 import { SearchableContentType } from 'constants/contentType'

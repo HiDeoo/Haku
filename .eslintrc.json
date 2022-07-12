@@ -1,46 +1,8 @@
 {
-  "ignorePatterns": ["public/sw.js", "public/sw-config.js"],
-  "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:unicorn/recommended",
-    "next/core-web-vitals",
-    "prettier"
-  ],
-  "parserOptions": {
-    "warnOnUnsupportedTypeScriptVersion": false
-  },
+  "extends": ["@hideoo", "plugin:@next/next/core-web-vitals"],
   "rules": {
-    "import/order": [
-      "warn",
-      { "newlines-between": "always", "alphabetize": { "order": "asc", "caseInsensitive": true } }
-    ],
-    "no-unused-vars": "off",
-    "no-var": "off",
-    "@typescript-eslint/no-unused-vars": ["warn", { "ignoreRestSiblings": true }],
     "@next/next/no-img-element": "off",
-    "no-constant-binary-expression": "error",
-    "unicorn/no-null": "off",
-    "unicorn/no-process-exit": "off",
-    "unicorn/no-useless-undefined": "off",
-    "unicorn/prefer-node-protocol": "off",
-    "unicorn/prevent-abbreviations": "off",
-    "unicorn/no-array-callback-reference": "off",
-    "unicorn/filename-case": ["error", { "cases": { "camelCase": true, "kebabCase": true, "pascalCase": true } }]
-  },
-  "overrides": [
-    {
-      "files": "*.js",
-      "rules": {
-        "@typescript-eslint/no-var-requires": "off",
-        "unicorn/prefer-module": "off"
-      }
-    },
-    {
-      "files": ["globalSetup.ts", "globalTeardown.ts"],
-      "rules": {
-        "unicorn/prefer-module": "off"
-      }
-    }
-  ]
+
+    "unicorn/prefer-node-protocol": "off"
+  }
 }
