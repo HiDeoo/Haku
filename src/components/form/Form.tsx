@@ -22,6 +22,6 @@ export interface FormProps {
   className?: string
   error?: unknown
   errorMessage?: string
-  onSubmit: NonNullable<React.DOMAttributes<HTMLFormElement>['onSubmit']>
-  role?: React.HtmlHTMLAttributes<HTMLFormElement>['role']
+  onSubmit: NonNullable<React.ComponentPropsWithoutRef<'form'>['onSubmit']>
+  role?: React.ComponentPropsWithoutRef<'form'>['role']
 }

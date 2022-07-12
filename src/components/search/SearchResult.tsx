@@ -93,6 +93,6 @@ export const SearchResult = forwardRef<HTMLDivElement, SearchResultProps>(({ res
 SearchResult.displayName = 'SearchResult'
 
 interface SearchResultProps {
-  onKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void
+  onKeyDown?: React.KeyboardEventHandler<HTMLDivElement>
   result: SearchResultData
 }

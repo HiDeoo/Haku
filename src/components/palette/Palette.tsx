@@ -34,7 +34,7 @@ export const Palette = <TItem extends PaletteItem>({ title, ...props }: PaletteP
 }
 
 export interface PaletteProps<TItem extends PaletteItem> {
-  enterKeyHint?: React.InputHTMLAttributes<HTMLInputElement>['enterKeyHint']
+  enterKeyHint?: React.ComponentPropsWithoutRef<'input'>['enterKeyHint']
   isLoading?: boolean
   items: TItem[]
   itemToIcon?: (item: TItem | null) => IconProps['icon'] | null

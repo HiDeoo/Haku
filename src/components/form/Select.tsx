@@ -98,7 +98,7 @@ const SelectComponent = <TItem,>(
 }
 
 export const Select = forwardRef(SelectComponent) as <TItem>(
-  props: SelectProps<TItem> & { ref?: React.ForwardedRef<HTMLButtonElement> }
+  props: SelectProps<TItem> & React.RefAttributes<HTMLButtonElement>
 ) => ReturnType<typeof SelectComponent>
 
 interface SelectProps<TItem> {
@@ -109,7 +109,7 @@ interface SelectProps<TItem> {
   itemToString?: (item: TItem | null) => string
   label?: string
   menuClassName?: ControlMenuProps<TItem>['menuClassName']
-  onButtonKeyDown?: (event: React.KeyboardEvent<HTMLButtonElement>) => void
+  onButtonKeyDown?: React.KeyboardEventHandler<HTMLButtonElement>
   onChange: (item: TItem) => void
   tabIndex?: ButtonProps['tabIndex']
   triggerClassName?: string

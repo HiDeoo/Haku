@@ -72,10 +72,10 @@ const FlexComponent = <TElement extends React.ElementType = 'div'>(
 }
 
 export const Flex = forwardRef(FlexComponent) as <TElement extends React.ElementType = 'div'>(
-  props: FlexProps<TElement> & { ref?: React.ForwardedRef<HTMLDivElement> }
+  props: FlexProps<TElement> & React.RefAttributes<HTMLDivElement>
 ) => ReturnType<typeof FlexComponent>
 
-interface FlexProps<TElement extends React.ElementType> {
+export interface FlexProps<TElement extends React.ElementType = 'div'> {
   alignItems?: 'start' | 'end' | 'center' | 'baseline' | 'stretch'
   as?: TElement
   children: React.ReactNode
@@ -85,8 +85,8 @@ interface FlexProps<TElement extends React.ElementType> {
   fullHeight?: boolean
   fullWidth?: boolean
   justifyContent?: 'start' | 'end' | 'center' | 'between' | 'around' | 'evenly'
-  id?: React.HtmlHTMLAttributes<HTMLElement>['id']
-  role?: React.HtmlHTMLAttributes<HTMLElement>['role']
-  style?: React.HtmlHTMLAttributes<HTMLElement>['style']
+  id?: React.ComponentPropsWithoutRef<'div'>['id']
+  role?: React.ComponentPropsWithoutRef<'div'>['role']
+  style?: React.ComponentPropsWithoutRef<'div'>['style']
   wrap?: true | 'reverse'
 }

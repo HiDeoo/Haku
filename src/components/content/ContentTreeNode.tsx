@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { forwardRef } from 'react'
 
 import { ContextMenu } from 'components/ui/ContextMenu'
-import { Flex } from 'components/ui/Flex'
+import { Flex, type FlexProps } from 'components/ui/Flex'
 import { Icon, type IconProps } from 'components/ui/Icon'
 import { clst } from 'styles/clst'
 
@@ -11,8 +11,11 @@ const nodeClasses = clst(
   'focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-inset'
 )
 
-export const ContentTreeNode = forwardRef<HTMLDivElement | HTMLAnchorElement, ContentTreeNodeProps>(
-  ({ children, href, icon, iconLabel, selected, style, text, ...props }, forwardedRef) => {
+export const ContentTreeNode = forwardRef(
+  (
+    { children, href, icon, iconLabel, selected, style, text, ...props }: ContentTreeNodeProps,
+    forwardedRef: AnchorOrDivRef
+  ) => {
     const anchorClasses = href
       ? clst(
           'flex w-full items-center',
@@ -28,35 +31,37 @@ export const ContentTreeNode = forwardRef<HTMLDivElement | HTMLAnchorElement, Co
       </>
     )
 
+    const hrefAndRef = { href, ref: forwardedRef }
+
     return (
       <ContextMenu
         trigger={
-          href ? (
+          isContent(hrefAndRef) ? (
             <Flex alignItems="center" role="treeitem">
               <Link
                 {...props}
-                href={href}
                 style={style}
                 prefetch={false}
+                ref={hrefAndRef.ref}
+                href={hrefAndRef.href}
                 className={anchorClasses}
                 aria-current={selected ? 'page' : undefined}
-                ref={forwardedRef as React.ForwardedRef<HTMLAnchorElement>}
               >
                 {content}
               </Link>
             </Flex>
-          ) : (
+          ) : isFolder(hrefAndRef) ? (
             <Flex
               {...props}
               role="group"
               style={style}
               alignItems="center"
+              ref={hrefAndRef.ref}
               className={nodeClasses}
-              ref={forwardedRef as React.ForwardedRef<HTMLDivElement>}
             >
               {content}
             </Flex>
-          )
+          ) : null
         }
       >
         {children}
@@ -67,6 +72,14 @@ export const ContentTreeNode = forwardRef<HTMLDivElement | HTMLAnchorElement, Co
 
 ContentTreeNode.displayName = 'ContentTreeNode'
 
+function isContent(hrefAndRef: HrefAndRef): hrefAndRef is { href: string; ref: React.ForwardedRef<HTMLAnchorElement> } {
+  return typeof hrefAndRef.href === 'string'
+}
+
+function isFolder(hrefAndRef: HrefAndRef): hrefAndRef is { ref: React.ForwardedRef<HTMLDivElement> } {
+  return typeof hrefAndRef.href === 'undefined'
+}
+
 interface ContentTreeNodeProps {
   children: React.ReactNode
   href?: string
@@ -74,6 +87,13 @@ interface ContentTreeNodeProps {
   iconLabel: IconProps['label']
   link?: boolean
   selected?: boolean
-  style?: React.HtmlHTMLAttributes<HTMLElement>['style']
+  style?: FlexProps<'a' | 'div'>['style']
   text: string
 }
+
+interface HrefAndRef {
+  href?: string
+  ref: AnchorOrDivRef
+}
+
+type AnchorOrDivRef = React.ForwardedRef<HTMLAnchorElement> | React.ForwardedRef<HTMLDivElement>

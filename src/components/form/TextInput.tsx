@@ -57,24 +57,24 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
 TextInput.displayName = 'TextInput'
 
 export interface TextInputProps extends Partial<Omit<UseFormRegisterReturn, 'ref' | 'onBlur' | 'onChange'>> {
-  'aria-label'?: React.InputHTMLAttributes<HTMLInputElement>['aria-label']
-  autoComplete?: React.InputHTMLAttributes<HTMLInputElement>['autoComplete']
-  autoFocus?: React.InputHTMLAttributes<HTMLInputElement>['autoFocus']
+  'aria-label'?: React.ComponentPropsWithoutRef<'input'>['aria-label']
+  autoComplete?: React.ComponentPropsWithoutRef<'input'>['autoComplete']
+  autoFocus?: React.ComponentPropsWithoutRef<'input'>['autoFocus']
   className?: string
-  defaultValue?: React.InputHTMLAttributes<HTMLInputElement>['defaultValue']
+  defaultValue?: React.ComponentPropsWithoutRef<'input'>['defaultValue']
   disabled?: boolean
-  enterKeyHint?: React.InputHTMLAttributes<HTMLInputElement>['enterKeyHint']
+  enterKeyHint?: React.ComponentPropsWithoutRef<'input'>['enterKeyHint']
   errorMessage?: string
-  id?: React.InputHTMLAttributes<HTMLInputElement>['id']
-  inputMode?: React.InputHTMLAttributes<HTMLInputElement>['inputMode']
+  id?: React.ComponentPropsWithoutRef<'input'>['id']
+  inputMode?: React.ComponentPropsWithoutRef<'input'>['inputMode']
   label?: string
   onBlur: AriaTextFieldOptions<'input'>['onBlur']
   onChange: ChangeHandler | React.ChangeEventHandler<HTMLInputElement>
   onKeyDown?: (event: BaseEvent<React.KeyboardEvent<HTMLInputElement>>) => void
   onPaste?: React.ClipboardEventHandler<HTMLInputElement>
   placeholder: string
-  readOnly?: React.InputHTMLAttributes<HTMLInputElement>['readOnly']
-  spellCheck?: React.InputHTMLAttributes<HTMLInputElement>['spellCheck']
+  readOnly?: React.ComponentPropsWithoutRef<'input'>['readOnly']
+  spellCheck?: React.ComponentPropsWithoutRef<'input'>['spellCheck']
   type?: 'text' | 'email' | 'url'
   value?: string
 }

@@ -3,7 +3,7 @@ import { Children, cloneElement, forwardRef, isValidElement } from 'react'
 
 import { Button, type ButtonProps } from 'components/form/Button'
 import { IconButton, type IconButtonProps } from 'components/form/IconButton'
-import { Flex } from 'components/ui/Flex'
+import { Flex, type FlexProps } from 'components/ui/Flex'
 import { type IconProps } from 'components/ui/Icon'
 import { clst } from 'styles/clst'
 
@@ -220,7 +220,7 @@ interface InspectorSectionProps extends Collapsible {
   children: React.ReactNode
   className?: string
   disabled?: boolean
-  role?: React.HtmlHTMLAttributes<HTMLElement>['role']
+  role?: FlexProps['role']
   sectionClassName?: string
   title?: string
   titleClassName?: string

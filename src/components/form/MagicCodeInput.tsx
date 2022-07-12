@@ -147,7 +147,7 @@ const MagicCodeInputComponent = <TFormFields extends FieldValues>(
 }
 
 export const MagicCodeInput = forwardRef(MagicCodeInputComponent) as <TFormFields extends FieldValues>(
-  props: MagicCodeInputProps<TFormFields> & { ref?: React.ForwardedRef<MagicCodeInputHandle> }
+  props: MagicCodeInputProps<TFormFields> & React.RefAttributes<MagicCodeInputHandle>
 ) => ReturnType<typeof MagicCodeInputComponent>
 
 const MagicCodeDigitInput: React.FC<MagicCodeDigitInputProps> = ({

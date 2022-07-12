@@ -7,7 +7,7 @@ import { contentModalAtom, folderModalAtom, setContentModalOpenedAtom } from 'at
 import { ContentTreeNode } from 'components/content/ContentTreeNode'
 import { Button } from 'components/form/Button'
 import { ContextMenu } from 'components/ui/ContextMenu'
-import { Flex } from 'components/ui/Flex'
+import { Flex, type FlexProps } from 'components/ui/Flex'
 import { Shimmer } from 'components/ui/Shimmer'
 import { CONTENT_TREE_SHIMMER_DEPTHS } from 'constants/shimmer'
 import { useContentId } from 'hooks/useContentId'
@@ -184,10 +184,7 @@ function getNodeKey(item: FolderType | DataType): string {
   return `${isTreeFolder(item) ? 'folder' : 'content'}-${item.id}`
 }
 
-function getNodeStyle(
-  depth: number,
-  includeDefaultPadding = true
-): NonNullable<React.HtmlHTMLAttributes<HTMLElement>['style']> {
+function getNodeStyle(depth: number, includeDefaultPadding = true): NonNullable<NodeProps['style']> {
   return {
     paddingLeft: `calc((${includeDefaultPadding ? '0.75rem + ' : ''}${depthOffset} * ${depth})${
       supportsMaxCss ? ' + max(0px, env(safe-area-inset-left))' : ''
@@ -204,7 +201,7 @@ interface NodeProps {
   depth?: number
   offline: boolean
   selectedId?: string
-  style?: React.HtmlHTMLAttributes<HTMLElement>['style']
+  style?: FlexProps<'a' | 'div'>['style']
 }
 
 interface FolderProps extends NodeProps {

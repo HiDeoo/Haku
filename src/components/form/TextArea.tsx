@@ -55,15 +55,15 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
 TextArea.displayName = 'TextArea'
 
 interface TextAreaProps extends Partial<Omit<UseFormRegisterReturn, 'ref' | 'onBlur' | 'onChange'>> {
-  autoFocus?: React.TextareaHTMLAttributes<HTMLTextAreaElement>['autoFocus']
+  autoFocus?: React.ComponentPropsWithoutRef<'textarea'>['autoFocus']
   className?: string
   disabled?: boolean
-  enterKeyHint?: React.TextareaHTMLAttributes<HTMLTextAreaElement>['enterKeyHint']
+  enterKeyHint?: React.ComponentPropsWithoutRef<'textarea'>['enterKeyHint']
   errorMessage?: string
   label?: string
   onChange: ChangeHandler | React.ChangeEventHandler<HTMLTextAreaElement>
   placeholder: string
-  readOnly?: React.TextareaHTMLAttributes<HTMLTextAreaElement>['readOnly']
-  rows?: React.TextareaHTMLAttributes<HTMLTextAreaElement>['rows']
-  spellCheck?: React.TextareaHTMLAttributes<HTMLTextAreaElement>['spellCheck']
+  readOnly?: React.ComponentPropsWithoutRef<'textarea'>['readOnly']
+  rows?: React.ComponentPropsWithoutRef<'textarea'>['rows']
+  spellCheck?: React.ComponentPropsWithoutRef<'textarea'>['spellCheck']
 }
