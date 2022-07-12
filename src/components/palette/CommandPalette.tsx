@@ -15,11 +15,13 @@ import {
 } from 'react-icons/ri'
 
 import { toggleSidebarCollapsedAtom } from 'atoms/collapsible'
-import { commandPaletteOpenedAtom, navigationPaletteOpenedAtom, setSearchDrawerOpenedAtom } from 'atoms/togglable'
 import {
+  commandPaletteOpenedAtom,
+  navigationPaletteOpenedAtom,
   setContentModalOpenedAtom,
   setFolderModalOpenedAtom,
   setInboxDrawerOpenedAtom,
+  setSearchDrawerOpenedAtom,
   shortcutModalOpenedAtom,
 } from 'atoms/togglable'
 import { Palette, type PaletteItem } from 'components/palette/Palette'

@@ -1,7 +1,7 @@
-import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
-import Highlight from '@tiptap/extension-highlight'
-import Link from '@tiptap/extension-link'
-import Strike from '@tiptap/extension-strike'
+import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight'
+import { Highlight } from '@tiptap/extension-highlight'
+import { Link } from '@tiptap/extension-link'
+import { Strike } from '@tiptap/extension-strike'
 import {
   type Editor,
   type EditorOptions,
@@ -18,7 +18,7 @@ import { editorImageModalAtom } from 'atoms/togglable'
 import { EditorCodeBlock } from 'components/editor/EditorCodeBlock'
 import { CODE_BLOCK_DEFAULT_LANGUAGE } from 'constants/editor'
 import { useToast } from 'hooks/useToast'
-import { CloudinaryError, type CloudinaryTiptapNodeOptions } from 'libs/cloudinaryTiptapNode'
+import { type CloudinaryError, type CloudinaryTiptapNodeOptions } from 'libs/cloudinaryTiptapNode'
 import { getLowlight, Cloudinary } from 'libs/editor'
 import { type A11yImageParams } from 'libs/image'
 import { trpc } from 'libs/trpc'

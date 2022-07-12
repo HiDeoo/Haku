@@ -1,8 +1,7 @@
 import { InboxListEntry } from 'components/inbox/InboxListEntry'
 import { Drawer } from 'components/ui/Drawer'
 import { isEmpty } from 'libs/array'
-import { isNetworkError } from 'libs/trpc'
-import { trpc } from 'libs/trpc'
+import { isNetworkError, trpc } from 'libs/trpc'
 
 export const InboxList: React.FC = () => {
   const { data, isLoading } = trpc.useQuery(['inbox.list'], { useErrorBoundary: isNetworkError })

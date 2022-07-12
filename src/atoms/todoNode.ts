@@ -4,7 +4,7 @@ import { atomWithReset } from 'jotai/utils'
 
 import { addAtIndex, isEmpty, isNotEmpty, removeAtIndex } from 'libs/array'
 import { type TodoNodeDataWithParentId, type TodoNodeData, type TodoNodesData } from 'libs/db/todoNodes'
-import { CaretDirection } from 'libs/html'
+import { type CaretDirection } from 'libs/html'
 
 export const todoNodeChildrenAtom = atomWithReset<TodoNodesData['children']>({ root: [] })
 

@@ -1,4 +1,4 @@
-import { atom, type PrimitiveAtom, WritableAtom } from 'jotai'
+import { atom, type PrimitiveAtom, type WritableAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
 export const [sidebarCollapsedAtom, toggleSidebarCollapsedAtom] = createCollapsibleAtom('haku.sidebarCollapsed', false)

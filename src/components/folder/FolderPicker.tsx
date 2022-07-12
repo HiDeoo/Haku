@@ -1,12 +1,12 @@
 import { useMemo } from 'react'
-import { FieldPath, type Control, type FieldValues } from 'react-hook-form'
+import { type FieldPath, type Control, type FieldValues } from 'react-hook-form'
 
 import { Combobox } from 'components/form/Combobox'
 import { ROOT_FOLDER_ID } from 'constants/folder'
 import { useContentTreeQuery } from 'hooks/useContentTreeQuery'
 import { isNotEmpty } from 'libs/array'
 import { type FolderData } from 'libs/db/folder'
-import { NoteMetadata } from 'libs/db/note'
+import { type NoteMetadata } from 'libs/db/note'
 import { isTreeFolder, type TreeFolder } from 'libs/tree'
 
 const rootFolder: FolderWithPath = { id: ROOT_FOLDER_ID, name: '/', parentId: null, path: '' }

@@ -1,4 +1,4 @@
-import { atom, PrimitiveAtom, type WritableAtom } from 'jotai'
+import { atom, type PrimitiveAtom, type WritableAtom } from 'jotai'
 
 import { getShortcutMap, type Shortcut, type ShortcutMap } from 'libs/shortcut'
 

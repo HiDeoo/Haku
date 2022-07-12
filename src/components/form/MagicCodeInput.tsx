@@ -215,7 +215,7 @@ const MagicCodeDigitInput: React.FC<MagicCodeDigitInputProps> = ({
   )
 }
 
-type MagicCodeInputProps<TFormFields extends FieldValues> = {
+interface MagicCodeInputProps<TFormFields extends FieldValues> {
   control: Control<TFormFields>
   disabled?: boolean
   errorMessage?: string

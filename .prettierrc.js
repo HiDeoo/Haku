@@ -1,12 +1,10 @@
+const baseConfig = require('@hideoo/prettier-config')
+
 /**
  * @type {import('prettier').Config}
  */
 const customPrettierConfig = {
-  printWidth: 120,
-  semi: false,
-  singleQuote: true,
-  trailingComma: 'es5',
-  arrowParens: 'always',
+  ...baseConfig,
   plugins: [require.resolve('prettier-plugin-tailwindcss')],
 }
 

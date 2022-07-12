@@ -68,6 +68,7 @@ export const SearchResult = forwardRef<HTMLDivElement, SearchResultProps>(({ res
         return (
           <div
             {...props}
+            tabIndex={0}
             role="button"
             {...linkProps}
             ref={forwardedRef}

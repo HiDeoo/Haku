@@ -72,7 +72,7 @@ function sendVerificationRequest({
   token,
 }: Parameters<EmailApiProviderUserOptions['sendVerificationRequest']>[0]) {
   if (process.env.NODE_ENV === 'development' && email.endsWith('@example.com')) {
-    console.info(`Magic code for ${email}: ${token}`)
+    console.warn(`Magic code for ${email}: ${token}`)
 
     return
   }

@@ -1,6 +1,5 @@
-import { useSelect, UseSelectStateChange } from 'downshift'
-import { useCallback, useRef } from 'react'
-import { forwardRef } from 'react'
+import { useSelect, type UseSelectStateChange } from 'downshift'
+import { forwardRef, useCallback, useRef } from 'react'
 import { RiArrowDownSLine } from 'react-icons/ri'
 
 import { Button, type ButtonProps } from 'components/form/Button'

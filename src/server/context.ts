@@ -1,8 +1,8 @@
 import { type IncomingHttpHeaders } from 'http'
 
-import { inferAsyncReturnType } from '@trpc/server'
-import { CreateNextContextOptions } from '@trpc/server/adapters/next'
-import { NextApiResponse, type NextApiRequest } from 'next'
+import { type inferAsyncReturnType } from '@trpc/server'
+import { type CreateNextContextOptions } from '@trpc/server/adapters/next'
+import { type NextApiResponse, type NextApiRequest } from 'next'
 import { unstable_getServerSession } from 'next-auth'
 
 import { authOptions } from 'pages/api/auth/[...nextauth]'
