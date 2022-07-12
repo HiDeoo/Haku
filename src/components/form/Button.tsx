@@ -75,7 +75,7 @@ function isButtonPropsWithOnClickHandler(props: ButtonProps): props is ButtonPro
 }
 
 export interface ButtonProps {
-  'aria-label'?: React.HTMLAttributes<HTMLButtonElement>['aria-label']
+  'aria-label'?: React.ComponentPropsWithoutRef<'button'>['aria-label']
   children?: React.ReactNode
   className?: string
   disabled?: UseButtonProps['isDisabled']
@@ -83,8 +83,8 @@ export interface ButtonProps {
   onPress?: UseButtonProps['onPress']
   pressedClassName?: string
   primary?: boolean
-  tabIndex?: React.HTMLAttributes<HTMLButtonElement>['tabIndex']
-  type?: React.ButtonHTMLAttributes<HTMLButtonElement>['type']
+  tabIndex?: React.ComponentPropsWithoutRef<'button'>['tabIndex']
+  type?: React.ComponentPropsWithoutRef<'button'>['type']
 }
 
 export interface ButtonPropsWithOnClickHandler extends ButtonProps {

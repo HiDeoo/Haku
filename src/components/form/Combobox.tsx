@@ -208,7 +208,7 @@ interface ComboboxProps<TItem, TFormFields extends FieldValues> {
   control: Control<TFormFields>
   defaultItem: TItem
   disabled?: boolean
-  enterKeyHint?: React.InputHTMLAttributes<HTMLInputElement>['enterKeyHint']
+  enterKeyHint?: React.ComponentPropsWithoutRef<'input'>['enterKeyHint']
   errorMessage?: string
   items: TItem[]
   itemToMenuItem?: (item: TItem | null) => string

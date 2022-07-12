@@ -1,6 +1,6 @@
 import { Children, cloneElement, isValidElement } from 'react'
 
-import { Flex } from 'components/ui/Flex'
+import { Flex, type FlexProps } from 'components/ui/Flex'
 import { useDelay } from 'hooks/useDelay'
 import { clst } from 'styles/clst'
 
@@ -64,5 +64,5 @@ interface ShimmerProps {
 interface LineProps {
   className?: string
   containerClassName?: string
-  style?: React.HtmlHTMLAttributes<HTMLElement>['style']
+  style?: FlexProps['style']
 }

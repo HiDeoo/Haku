@@ -107,7 +107,7 @@ export interface ModalProps {
   onCloseAutoFocus?: DialogContentImplProps['onCloseAutoFocus']
   onOpenChange: (opened: boolean) => void
   opened: boolean
-  role?: React.HtmlHTMLAttributes<HTMLElement>['role']
+  role?: React.ComponentPropsWithoutRef<'div'>['role']
   title: string
   trigger?: React.ReactNode
 }

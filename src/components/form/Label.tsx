@@ -17,8 +17,8 @@ export const Label: React.FC<LabelProps> = ({ children, disabled, errorMessage, 
   )
 }
 
-interface LabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
+interface LabelProps extends React.ComponentPropsWithoutRef<'label'> {
   disabled?: boolean
   errorMessage?: string
-  errorMessageProps?: React.HTMLAttributes<HTMLElement>
+  errorMessageProps?: React.ComponentPropsWithoutRef<'span'>
 }
