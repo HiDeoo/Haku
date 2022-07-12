@@ -2,6 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@faker-js/faker': 7.3.0
+  '@hideoo/prettier-config': 0.0.1
   '@jcoreio/wait-for-postgres': 2.0.0
   '@next-auth/prisma-adapter': 1.0.3
   '@next/bundle-analyzer': 12.2.0
@@ -162,6 +163,7 @@ dependencies:
 
 devDependencies:
   '@faker-js/faker': 7.3.0
+  '@hideoo/prettier-config': 0.0.1
   '@jcoreio/wait-for-postgres': 2.0.0
   '@next/bundle-analyzer': 12.2.0
   '@react-types/button': 3.5.1_react@18.2.0
@@ -586,6 +588,10 @@ packages:
   /@faker-js/faker/7.3.0:
     resolution: {integrity: sha512-1W0PZezq2rxlAssoWemi9gFRD8IQxvf0FPL5Km3TOmGHFG7ib0TbFBJ0yC7D/1NsxunjNTK6WjUXV8ao/mKZ5w==}
     engines: {node: '>=14.0.0', npm: '>=6.0.0'}
+    dev: true
+
+  /@hideoo/prettier-config/0.0.1:
+    resolution: {integrity: sha512-+YgIQ4P4iAYmhWHAWpxgnYEHZBjymCG3YFRZHN2zJr5c9z7j0gmzaXgOA5CdxWNmZr+qHY0QrNWCIoZf2B9CKg==}
     dev: true
 
   /@humanwhocodes/config-array/0.9.2:
