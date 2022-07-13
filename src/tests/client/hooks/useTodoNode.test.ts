@@ -149,7 +149,7 @@ describe('useTodoNode', () => {
   })
 
   describe('addNode', () => {
-    test('should add a new todo node at the root if the reference todo node does not have any children', () => {
+    test('should add down a new todo node at the root if the reference todo node does not have any children', () => {
       const { children, nodes } = setFakeTodoNodes([{}])
       const node = getTodoNodeFromIndexes(nodes, children, 0)
 
@@ -161,7 +161,7 @@ describe('useTodoNode', () => {
       const newId = cuid()
 
       act(() => {
-        result.current.addNode({ id: node.id, newId, parentId: node.parentId })
+        result.current.addNode({ direction: 'down', id: node.id, newId, parentId: node.parentId })
       })
 
       expect(todoChildren.current.root.length).toBe(2)
@@ -180,7 +180,39 @@ describe('useTodoNode', () => {
       expect(todoMutations.current[newTodoNodeId]).toBe('insert')
     })
 
-    test('should add a new todo node at the root if the reference todo node has children but is collapsed', () => {
+    test('should add up a new todo node at the root if the reference todo node does not have any children', () => {
+      const { children, nodes } = setFakeTodoNodes([{}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoNodes } = renderHook(() => useAtomValue(todoNodeNodesAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutationsAtom))
+
+      const newId = cuid()
+
+      act(() => {
+        result.current.addNode({ direction: 'up', id: node.id, newId, parentId: node.parentId })
+      })
+
+      expect(todoChildren.current.root.length).toBe(2)
+
+      const newTodoNodeId = todoChildren.current.root[0]
+      assert(newTodoNodeId)
+
+      expect(todoChildren.current[newTodoNodeId]).toEqual([])
+
+      expect(todoNodes.current[newTodoNodeId]).toBeDefined()
+      expect(todoNodes.current[newTodoNodeId]?.id).toBe(newId)
+      expect(todoNodes.current[newTodoNodeId]?.content).toBe('')
+      expect(todoNodes.current[newTodoNodeId]?.parentId).toBeUndefined()
+
+      expect(todoMutations.current[newTodoNodeId]).toBe('insert')
+
+      expect(todoChildren.current.root[1]).toBe(node.id)
+    })
+
+    test('should add down a new todo node at the root if the reference todo node has children but is collapsed', () => {
       const { children, nodes } = setFakeTodoNodes([{ children: [{}], collapsed: true }])
       const node = getTodoNodeFromIndexes(nodes, children, 0)
 
@@ -192,7 +224,7 @@ describe('useTodoNode', () => {
       const newId = cuid()
 
       act(() => {
-        result.current.addNode({ id: node.id, newId, parentId: node.parentId })
+        result.current.addNode({ direction: 'down', id: node.id, newId, parentId: node.parentId })
       })
 
       expect(todoChildren.current.root.length).toBe(2)
@@ -211,7 +243,39 @@ describe('useTodoNode', () => {
       expect(todoMutations.current[newTodoNodeId]).toBe('insert')
     })
 
-    test('should add a new child todo node if the existing reference has children', () => {
+    test('should add up a new todo node at the root if the reference todo node has children but is collapsed', () => {
+      const { children, nodes } = setFakeTodoNodes([{ children: [{}], collapsed: true }])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoNodes } = renderHook(() => useAtom(todoNodeNodesAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutationsAtom))
+
+      const newId = cuid()
+
+      act(() => {
+        result.current.addNode({ direction: 'up', id: node.id, newId, parentId: node.parentId })
+      })
+
+      expect(todoChildren.current.root.length).toBe(2)
+
+      const newTodoNodeId = todoChildren.current.root[0]
+      assert(newTodoNodeId)
+
+      expect(todoChildren.current[newTodoNodeId]).toEqual([])
+
+      expect(todoNodes.current[0][newTodoNodeId]).toBeDefined()
+      expect(todoNodes.current[0][newTodoNodeId]?.id).toBe(newId)
+      expect(todoNodes.current[0][newTodoNodeId]?.content).toBe('')
+      expect(todoNodes.current[0][newTodoNodeId]?.parentId).toBeUndefined()
+
+      expect(todoMutations.current[newTodoNodeId]).toBe('insert')
+
+      expect(todoChildren.current.root[1]).toBe(node.id)
+    })
+
+    test('should add down a new child todo node if the existing reference has children', () => {
       const { children, nodes } = setFakeTodoNodes([{ children: [{}], collapsed: false }])
       const node = getTodoNodeFromIndexes(nodes, children, 0)
       const existingChild = getTodoNodeFromIndexes(nodes, children, 0, 0)
@@ -224,7 +288,7 @@ describe('useTodoNode', () => {
       const newId = cuid()
 
       act(() => {
-        result.current.addNode({ id: node.id, newId, parentId: node.parentId })
+        result.current.addNode({ direction: 'down', id: node.id, newId, parentId: node.parentId })
       })
 
       expect(todoChildren.current.root.length).toBe(1)
@@ -247,7 +311,39 @@ describe('useTodoNode', () => {
       expect(todoMutations.current[node.id]).toBe('update')
     })
 
-    test('should persist the mutation type when adding a new child todo node if the new reference has children', () => {
+    test('should add up a new todo node if the existing reference has children', () => {
+      const { children, nodes } = setFakeTodoNodes([{ children: [{}], collapsed: false }])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoNodes } = renderHook(() => useAtomValue(todoNodeNodesAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutationsAtom))
+
+      const newId = cuid()
+
+      act(() => {
+        result.current.addNode({ direction: 'up', id: node.id, newId, parentId: node.parentId })
+      })
+
+      expect(todoChildren.current.root.length).toBe(2)
+
+      const newTodoNodeId = todoChildren.current.root[0]
+      assert(newTodoNodeId)
+
+      expect(todoChildren.current[newTodoNodeId]).toEqual([])
+
+      expect(todoNodes.current[newTodoNodeId]).toBeDefined()
+      expect(todoNodes.current[newTodoNodeId]?.id).toBe(newId)
+      expect(todoNodes.current[newTodoNodeId]?.content).toBe('')
+      expect(todoNodes.current[newTodoNodeId]?.parentId).toBeUndefined()
+
+      expect(todoMutations.current[newTodoNodeId]).toBe('insert')
+
+      expect(todoChildren.current.root[1]).toBe(node.id)
+    })
+
+    test('should persist the mutation type when adding down a new child todo node if the new reference has children', () => {
       const { children, nodes } = setFakeTodoNodes([{ children: [{}], collapsed: false }])
       const node = getTodoNodeFromIndexes(nodes, children, 0)
       const existingChild = getTodoNodeFromIndexes(nodes, children, 0, 0)
@@ -262,7 +358,7 @@ describe('useTodoNode', () => {
       act(() => {
         todoMutations.current[1]((prevMutations) => ({ ...prevMutations, [node.id]: 'insert' }))
 
-        result.current.addNode({ id: node.id, newId, parentId: node.parentId })
+        result.current.addNode({ direction: 'down', id: node.id, newId, parentId: node.parentId })
       })
 
       expect(todoChildren.current.root.length).toBe(1)
@@ -285,7 +381,7 @@ describe('useTodoNode', () => {
       expect(todoMutations.current[0][node.id]).toBe('insert')
     })
 
-    test('should add a new nested todo node to the nested reference', () => {
+    test('should add down a new nested todo node to the nested reference', () => {
       const { children, nodes } = setFakeTodoNodes([{ children: [{}, {}, {}] }])
       const node = getTodoNodeFromIndexes(nodes, children, 0, 1)
       const parent = getTodoNodeFromIndexes(nodes, children, 0)
@@ -300,7 +396,7 @@ describe('useTodoNode', () => {
       const newId = cuid()
 
       act(() => {
-        result.current.addNode({ id: node.id, newId, parentId: node.parentId })
+        result.current.addNode({ direction: 'down', id: node.id, newId, parentId: node.parentId })
       })
 
       expect(todoChildren.current.root.length).toBe(1)
@@ -314,6 +410,48 @@ describe('useTodoNode', () => {
       expect(todoChildren.current[parent.id]?.[3]).toBe(nextSibbling.id)
 
       const newTodoNodeId = todoChildren.current[parent.id]?.[2]
+      assert(newTodoNodeId)
+
+      expect(todoChildren.current[newTodoNodeId]).toEqual([])
+
+      expect(todoNodes.current[newTodoNodeId]).toBeDefined()
+      expect(todoNodes.current[newTodoNodeId]?.id).toBe(newId)
+      expect(todoNodes.current[newTodoNodeId]?.content).toBe('')
+      expect(todoNodes.current[newTodoNodeId]?.parentId).toBe(parent.id)
+
+      expect(todoMutations.current[newTodoNodeId]).toBe('insert')
+      expect(todoMutations.current[parent.id]).toBe('update')
+    })
+
+    test('should add up a new nested todo node to the nested reference', () => {
+      const { children, nodes } = setFakeTodoNodes([{ children: [{}, {}, {}] }])
+      const node = getTodoNodeFromIndexes(nodes, children, 0, 1)
+      const parent = getTodoNodeFromIndexes(nodes, children, 0)
+      const previousSibbling = getTodoNodeFromIndexes(nodes, children, 0, 0)
+      const nextSibbling = getTodoNodeFromIndexes(nodes, children, 0, 2)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoNodes } = renderHook(() => useAtomValue(todoNodeNodesAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutationsAtom))
+
+      const newId = cuid()
+
+      act(() => {
+        result.current.addNode({ direction: 'up', id: node.id, newId, parentId: node.parentId })
+      })
+
+      expect(todoChildren.current.root.length).toBe(1)
+      expect(todoChildren.current.root[0]).toBe(parent.id)
+
+      expect(todoChildren.current[node.id]?.length).toBe(0)
+
+      expect(todoChildren.current[parent.id]?.length).toBe(4)
+      expect(todoChildren.current[parent.id]?.[0]).toBe(previousSibbling.id)
+      expect(todoChildren.current[parent.id]?.[2]).toBe(node.id)
+      expect(todoChildren.current[parent.id]?.[3]).toBe(nextSibbling.id)
+
+      const newTodoNodeId = todoChildren.current[parent.id]?.[1]
       assert(newTodoNodeId)
 
       expect(todoChildren.current[newTodoNodeId]).toEqual([])
@@ -454,7 +592,7 @@ describe('useTodoNode', () => {
       const newId = cuid()
 
       act(() => {
-        result.current.addNode({ id: node.id, newId, parentId: node.parentId })
+        result.current.addNode({ direction: 'down', id: node.id, newId, parentId: node.parentId })
 
         result.current.deleteNode({ id: newId })
       })
