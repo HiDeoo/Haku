@@ -49,7 +49,7 @@ specifiers:
   clsx: 1.2.1
   cuid: 2.1.8
   docker-compose: 0.23.17
-  dotenv-cli: 5.1.0
+  dotenv-cli: 6.0.0
   downshift: 6.1.7
   eslint: 8.19.0
   execa: 5.1.1
@@ -178,7 +178,7 @@ devDependencies:
   '@types/ua-parser-js': 0.7.36
   autoprefixer: 10.4.7_postcss@8.4.14
   docker-compose: 0.23.17
-  dotenv-cli: 5.1.0
+  dotenv-cli: 6.0.0
   eslint: 8.19.0
   execa: 5.1.1
   husky: 8.0.1
@@ -3609,8 +3609,8 @@ packages:
       webidl-conversions: 7.0.0
     dev: true
 
-  /dotenv-cli/5.1.0:
-    resolution: {integrity: sha512-NoEZAlKo9WVrG0b3i9mBxdD6INdDuGqdgR74t68t8084QcI077/1MnPerRW1odl+9uULhcdnQp2U0pYVppKHOA==}
+  /dotenv-cli/6.0.0:
+    resolution: {integrity: sha512-qXlCOi3UMDhCWFKe0yq5sg3X+pJAz+RQDiFN38AMSbUrnY3uZshSfDJUAge951OS7J9gwLZGfsBlWRSOYz/TRg==}
     hasBin: true
     dependencies:
       cross-spawn: 7.0.3
