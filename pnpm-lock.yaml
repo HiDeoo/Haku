@@ -68,7 +68,7 @@ specifiers:
   markdown-to-txt: 2.0.1
   msw: 0.42.3
   next: 12.2.2
-  next-auth: 4.7.0
+  next-auth: 4.10.0
   opml-to-json: 1.0.1
   playwright: 1.23.0
   postcss: 8.4.14
@@ -99,7 +99,7 @@ specifiers:
   zod: 3.17.3
 
 dependencies:
-  '@next-auth/prisma-adapter': 1.0.3_n4bb4eq3e2c7enxf5qjt7rjuku
+  '@next-auth/prisma-adapter': 1.0.3_zob7yjotprasnemw6nqlbdjhia
   '@prisma/client': 4.0.0_prisma@4.0.0
   '@radix-ui/react-accessible-icon': 0.1.5-rc.41_biqbaboplfbrettd7655fr4n2y
   '@radix-ui/react-checkbox': 0.1.6-rc.41_biqbaboplfbrettd7655fr4n2y
@@ -138,7 +138,7 @@ dependencies:
   lowlight: 2.6.1
   markdown-to-txt: 2.0.1
   next: 12.2.2_biqbaboplfbrettd7655fr4n2y
-  next-auth: 4.7.0_biqbaboplfbrettd7655fr4n2y
+  next-auth: 4.10.0_biqbaboplfbrettd7655fr4n2y
   opml-to-json: 1.0.1
   prosemirror-model: 1.18.1
   prosemirror-state: 1.4.1
@@ -975,14 +975,14 @@ packages:
       - supports-color
     dev: true
 
-  /@next-auth/prisma-adapter/1.0.3_n4bb4eq3e2c7enxf5qjt7rjuku:
+  /@next-auth/prisma-adapter/1.0.3_zob7yjotprasnemw6nqlbdjhia:
     resolution: {integrity: sha512-3Lq1cD3ytKM3EGKJZ4UZvlqshLtlPvYxLeCrUV9ifYwYlq51kmDaHjsIawlp8EbH5pE1UhlsvtlXMery7RghtA==}
     peerDependencies:
       '@prisma/client': '>=2.26.0 || >=3'
       next-auth: ^4.0.1
     dependencies:
       '@prisma/client': 4.0.0_prisma@4.0.0
-      next-auth: 4.7.0_biqbaboplfbrettd7655fr4n2y
+      next-auth: 4.10.0_biqbaboplfbrettd7655fr4n2y
     dev: false
 
   /@next/bundle-analyzer/12.2.2:
@@ -5744,8 +5744,8 @@ packages:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
     dev: true
 
-  /next-auth/4.7.0_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-boXSIzHvCyNq1Jthi24LLnx12iKBsqsMxUKm5qq9alkfhVMeIRUR/wKP0FPSGc1s9WcGXMS3NmKQfADCEb0wow==}
+  /next-auth/4.10.0_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-4CKZbv9VeCaqfDAXyqFThZy05ApbLd0bhXEB+DCq9aD43h6Rkvz0QgM7QOCJXESy0QKJUXHzopkBq+iaGxdc0g==}
     engines: {node: ^12.19.0 || ^14.15.0 || ^16.13.0}
     peerDependencies:
       nodemailer: ^6.6.5

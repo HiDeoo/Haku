@@ -61,7 +61,7 @@
     "lowlight": "2.6.1",
     "markdown-to-txt": "2.0.1",
     "next": "12.2.2",
-    "next-auth": "4.7.0",
+    "next-auth": "4.10.0",
     "opml-to-json": "1.0.1",
     "prosemirror-model": "1.18.1",
     "prosemirror-state": "1.4.1",
