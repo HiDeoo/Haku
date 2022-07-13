@@ -101,10 +101,11 @@ export const TodoNodeItem = memo(
           event.preventDefault()
         }
 
-        if (isShortcutEvent(event, shortcutMap['Enter'])) {
+        if (isShortcutEvent(event, shortcutMap['Enter']) && contentEditable.current) {
+          const caretIndex = getContentEditableCaretIndex(contentEditable.current)
           const newId = cuid()
 
-          addNode({ ...update, newId })
+          addNode({ ...update, direction: caretIndex === 0 && node.content.length > 0 ? 'up' : 'down', newId })
 
           requestAnimationFrame(() => {
             todoNodeItems.get(newId)?.focusContent()

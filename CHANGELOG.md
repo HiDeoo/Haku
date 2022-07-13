@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+### 🚀 Features
+
+- Pressing `Enter` at the beginning of a non-empty todo item will now add a new one above the current one. For other cases, the behavior is unchanged.
+
 ### 🐞 Bug Fixes
 
 - Fix stale name update issue after renaming the current note or to-do.
