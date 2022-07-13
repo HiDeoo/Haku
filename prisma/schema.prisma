@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["improvedQueryRaw", "interactiveTransactions", "extendedIndexes"]
+  previewFeatures = ["interactiveTransactions"]
 }
 
 datasource db {
@@ -83,7 +83,7 @@ model Note {
   folderId String?
   folder   Folder? @relation(fields: [folderId], references: [id], onDelete: Cascade)
 
-  searchVector Unsupported("TSVECTOR")?
+  searchVector Unsupported("TSVECTOR")? @default(dbgenerated("(setweight(to_tsvector('simple'::regconfig, (COALESCE(name, ''::citext))::text), 'A'::\"char\") || setweight(to_tsvector('simple'::regconfig, COALESCE(text, ''::text)), 'B'::\"char\"))"))
 
   @@unique([folderId, userId, name], map: "Note_folderId_userId_name_unique_constraint")
   @@index([searchVector], type: Gin, name: "Note_searchVector_index")
@@ -105,7 +105,7 @@ model Todo {
 
   nodes TodoNode[]
 
-  searchVector Unsupported("TSVECTOR")?
+  searchVector Unsupported("TSVECTOR")? @default(dbgenerated("setweight(to_tsvector('simple'::regconfig, (COALESCE(name, ''::citext))::text), 'A'::\"char\")"))
 
   @@unique([folderId, userId, name], map: "Todo_folderId_userId_name_unique_constraint")
   @@index([searchVector], type: Gin, name: "Todo_searchVector_index")
@@ -124,7 +124,7 @@ model TodoNode {
   todoId String?
   todo   Todo?   @relation(fields: [todoId], references: [id])
 
-  searchVector Unsupported("TSVECTOR")?
+  searchVector Unsupported("TSVECTOR")? @default(dbgenerated("(setweight(to_tsvector('simple'::regconfig, COALESCE(content, ''::text)), 'B'::\"char\") || setweight(to_tsvector('simple'::regconfig, COALESCE(\"noteText\", ''::text)), 'C'::\"char\"))"))
 
   @@index([searchVector], type: Gin, name: "TodoNode_searchVector_index")
 }
@@ -143,7 +143,7 @@ model InboxEntry {
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  searchVector Unsupported("TSVECTOR")?
+  searchVector Unsupported("TSVECTOR")? @default(dbgenerated("setweight(to_tsvector('simple'::regconfig, COALESCE(text, ''::text)), 'A'::\"char\")"))
 
   @@index([searchVector], type: Gin, name: "InboxEntry_searchVector_index")
 }
