@@ -170,4 +170,4 @@ export const PalettePicker = <TItem extends PaletteItem>({
   )
 }
 
-type PalettePickerProps<TItem> = Omit<PaletteProps<TItem>, 'title'>
+type PalettePickerProps<TItem extends PaletteItem> = Omit<PaletteProps<TItem>, 'title'>

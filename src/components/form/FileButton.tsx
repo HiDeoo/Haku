@@ -1,5 +1,7 @@
 import { cloneElement, isValidElement, useId, useRef } from 'react'
 
+import { type ButtonProps } from 'components/form/Button'
+
 export const FileButton = ({ accept, disabled, multiple, onChange, trigger }: FileButtonProps) => {
   const idPrefix = useId()
   const triggerId = `${idPrefix}-file-button`
@@ -36,5 +38,5 @@ interface FileButtonProps {
   disabled?: boolean
   multiple?: boolean
   onChange: React.ChangeEventHandler<HTMLInputElement>
-  trigger: React.ReactNode
+  trigger: React.ReactElement<ButtonProps>
 }

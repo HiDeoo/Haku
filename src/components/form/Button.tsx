@@ -79,6 +79,7 @@ export interface ButtonProps {
   children?: React.ReactNode
   className?: string
   disabled?: UseButtonProps['isDisabled']
+  id?: string
   loading?: boolean
   onPress?: UseButtonProps['onPress']
   pressedClassName?: string
