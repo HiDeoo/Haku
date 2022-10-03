@@ -13,7 +13,7 @@ const controlClasses = clst(
   'supports-max:pb-[calc(theme(spacing.2)+max(0px,env(safe-area-inset-bottom)))]'
 )
 
-export const Inspector: InspectorComponent = ({ children, collapsed, controls, disabled }) => {
+export const Inspector = ({ children, collapsed, controls, disabled }: InspectorProps) => {
   const inspectorClasses = clst(
     'shrink-0 border-l border-zinc-600/50 bg-zinc-900',
     'motion-safe:transition-[width,opacity] motion-safe:duration-150 motion-safe:ease-in-out',
@@ -51,7 +51,7 @@ export const Inspector: InspectorComponent = ({ children, collapsed, controls, d
   )
 }
 
-const InspectorSection: React.FC<InspectorSectionProps> = ({
+const InspectorSection = ({
   children,
   collapsed,
   className,
@@ -60,7 +60,7 @@ const InspectorSection: React.FC<InspectorSectionProps> = ({
   sectionClassName,
   title,
   titleClassName,
-}) => {
+}: InspectorSectionProps) => {
   const sectionClasses = clst(
     'shrink-0 pt-2 pb-3 border-t border-zinc-600/25 first-of-type:border-0 overflow-hidden select-none',
     typeof title === 'undefined' && !collapsed && 'pt-3',
@@ -88,7 +88,7 @@ const InspectorSection: React.FC<InspectorSectionProps> = ({
 
 Inspector.Section = InspectorSection
 
-const InspectorButton: React.FC<ButtonProps & Collapsible> = ({ collapsed, ...props }) => {
+const InspectorButton = ({ collapsed, ...props }: ButtonProps & Collapsible) => {
   const buttonClasses = clst(
     'mx-0 py-1 bg-zinc-700 hover:bg-zinc-600 shadow-none',
     props.primary && 'bg-blue-600 hover:bg-blue-500'
@@ -100,7 +100,7 @@ const InspectorButton: React.FC<ButtonProps & Collapsible> = ({ collapsed, ...pr
 
 Inspector.Button = InspectorButton
 
-const InspectorToggle: React.FC<InspectorToggleProps> = ({ collapsed, onToggle, toggled, ...props }) => {
+const InspectorToggle = ({ collapsed, onToggle, toggled, ...props }: InspectorToggleProps) => {
   const buttonClasses = clst(toggled && 'bg-blue-500 hover:bg-blue-400 border-blue-400')
   const pressedButtonClasses = clst(toggled ? 'bg-blue-300 hover:bg-blue-300' : 'bg-zinc-400 hover:bg-zinc-500')
 
@@ -143,14 +143,7 @@ const InspectorIconButton = forwardRef<HTMLButtonElement, InspectorIconButtonPro
 InspectorIconButton.displayName = 'InspectorIconButton'
 Inspector.IconButton = InspectorIconButton
 
-const InspectorIconMenu: React.FC<InspectorIconButtonMenuProps> = ({
-  children,
-  collapsed,
-  disabled,
-  icon,
-  toggled,
-  tooltip,
-}) => {
+const InspectorIconMenu = ({ children, collapsed, disabled, icon, toggled, tooltip }: InspectorIconButtonMenuProps) => {
   const buttonClasses = clst(toggled && 'bg-blue-500 hover:bg-blue-400 border-blue-400')
   const pressedButtonClasses = clst(toggled && 'bg-blue-300 hover:bg-blue-300')
 
@@ -187,7 +180,7 @@ function handleIconMenuCloseAutoFocus(event: Event) {
   event.preventDefault()
 }
 
-const InspectorIconMenuItem: React.FC<InspectorIconMenuItemProps> = ({ icon, onClick }) => {
+const InspectorIconMenuItem = ({ icon, onClick }: InspectorIconMenuItemProps) => {
   return (
     <Item asChild>
       <InspectorIconButton
@@ -200,15 +193,6 @@ const InspectorIconMenuItem: React.FC<InspectorIconMenuItemProps> = ({ icon, onC
 }
 
 Inspector.IconMenuItem = InspectorIconMenuItem
-
-type InspectorComponent = React.FC<InspectorProps> & {
-  Button: typeof InspectorButton
-  IconButton: typeof InspectorIconButton
-  IconMenu: typeof InspectorIconMenu
-  IconMenuItem: typeof InspectorIconMenuItem
-  Section: typeof InspectorSection
-  Toggle: typeof InspectorToggle
-}
 
 interface InspectorProps extends Collapsible {
   children: React.ReactNode

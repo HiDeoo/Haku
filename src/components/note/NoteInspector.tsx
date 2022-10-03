@@ -42,7 +42,7 @@ import { IMAGE_SUPPORTED_TYPES } from 'constants/image'
 import { isNotEmpty } from 'libs/array'
 import { clst } from 'styles/clst'
 
-export const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, editorState, setLinkModalOpened }) => {
+export const NoteInspector = ({ disabled, editor, editorState, setLinkModalOpened }: NoteInspectorProps) => {
   const collapsed = useAtomValue(noteInspectorCollapsedAtom)
   const toggleCollapsed = useSetAtom(toggleNoteInspectorCollapsedAtom)
 
@@ -291,7 +291,7 @@ export const NoteInspector: React.FC<NoteInspectorProps> = ({ disabled, editor, 
   )
 }
 
-const TocEntry: React.FC<TocEntryProps> = ({ editor, entry }) => {
+const TocEntry = ({ editor, entry }: TocEntryProps) => {
   function handleClick() {
     editor?.chain().setTextSelection(entry.pos).focus().run()
   }

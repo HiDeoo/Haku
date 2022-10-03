@@ -13,7 +13,7 @@ import { type HistoryData } from 'libs/db/history'
 import { isNetworkError, trpc } from 'libs/trpc'
 import { clst } from 'styles/clst'
 
-export const ContentHistory: React.FC<ContentHistoryProps> = ({ focusedType }) => {
+export const ContentHistory = ({ focusedType }: ContentHistoryProps) => {
   const { data, isLoading } = trpc.useQuery(['history'], { useErrorBoundary: isNetworkError })
 
   const isNoteFocusedType = focusedType === ContentType.NOTE
@@ -39,7 +39,7 @@ export const ContentHistory: React.FC<ContentHistoryProps> = ({ focusedType }) =
   )
 }
 
-const ContentHistorySection: React.FC<ContentHistorySectionProps> = ({ entries, isLoading, type }) => {
+const ContentHistorySection = ({ entries, isLoading, type }: ContentHistorySectionProps) => {
   const sidebarCollapsed = useAtomValue(sidebarCollapsedAtom)
 
   if (!isLoading && isEmpty(entries)) {

@@ -33,7 +33,7 @@ import { openGitHubIssuePage } from 'libs/github'
 import { isApplePlatform } from 'libs/html'
 import { clst } from 'styles/clst'
 
-export const SidebarMenu: React.FC = () => {
+export const SidebarMenu = () => {
   const { push } = useRouter()
 
   const sidebarCollapsed = useAtomValue(sidebarCollapsedAtom)

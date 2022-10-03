@@ -18,7 +18,7 @@ const buttonPingClasses = clst(
   'after:bg-blue-300'
 )
 
-export const Navbar: NavbarComponent = ({ children, disabled, title }) => {
+export const Navbar = ({ children, disabled, title }: NavbarProps) => {
   return (
     <Flex alignItems="center" className={navbarClasses}>
       {title && title.length > 0 && <div className="grow truncate font-semibold text-zinc-50">{title}</div>}
@@ -33,7 +33,7 @@ export const Navbar: NavbarComponent = ({ children, disabled, title }) => {
   )
 }
 
-const NavbarButton: React.FC<NavbarButtonProps> = ({ pinged, ...props }) => {
+const NavbarButton = ({ pinged, ...props }: NavbarButtonProps) => {
   const buttonClasses = clst(
     'min-w-[65px] mx-0 py-1 bg-zinc-700 hover:bg-zinc-600 shadow-none',
     props.primary && 'bg-blue-600 hover:bg-blue-500',
@@ -46,7 +46,7 @@ const NavbarButton: React.FC<NavbarButtonProps> = ({ pinged, ...props }) => {
 
 Navbar.Button = NavbarButton
 
-const NavbarIcon: React.FC<NavbarIconProps> = ({ icon, iconLabel, tooltip }) => {
+const NavbarIcon = ({ icon, iconLabel, tooltip }: NavbarIconProps) => {
   return (
     <Tooltip content={tooltip}>
       <Flex fullHeight alignItems="center" className="shrink-0">
@@ -58,17 +58,11 @@ const NavbarIcon: React.FC<NavbarIconProps> = ({ icon, iconLabel, tooltip }) => 
 
 Navbar.Icon = NavbarIcon
 
-const NavbarSpacer: React.FC = () => {
+const NavbarSpacer = () => {
   return <div className="grow" />
 }
 
 Navbar.Spacer = NavbarSpacer
-
-type NavbarComponent = React.FC<NavbarProps> & {
-  Button: typeof NavbarButton
-  Icon: typeof NavbarIcon
-  Spacer: typeof NavbarSpacer
-}
 
 interface NavbarProps {
   children: React.ReactNode

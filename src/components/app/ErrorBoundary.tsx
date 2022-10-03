@@ -9,11 +9,11 @@ import { openGitHubErrorReport } from 'libs/github'
 
 const Puzzle = dynamic<PuzzleProps>(import('components/ui/Puzzle').then((module) => module.Puzzle))
 
-export const ErrorBoundary: React.FC<ErrorBoundaryProps> = ({ children }) => {
+export const ErrorBoundary = ({ children }: ErrorBoundaryProps) => {
   return <Boundary FallbackComponent={Fallback}>{children}</Boundary>
 }
 
-const Fallback: React.FC<FallbackProps> = ({ error, resetErrorBoundary }) => {
+const Fallback = ({ error, resetErrorBoundary }: FallbackProps) => {
   function handleReportAndTryAgainPress() {
     openGitHubErrorReport(error)
 

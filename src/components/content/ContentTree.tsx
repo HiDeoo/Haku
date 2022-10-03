@@ -26,7 +26,7 @@ const supportsMaxCss = typeof window === 'object' && window.CSS.supports('paddin
 
 const nisClasses = 'gap-6 p-3 text-center supports-max:pl-[calc(theme(spacing.3)+max(0px,env(safe-area-inset-left)))]'
 
-export const ContentTree: React.FC = () => {
+export const ContentTree = () => {
   const contentType = useContentType()
 
   if (!contentType.type) {
@@ -100,11 +100,11 @@ export const ContentTree: React.FC = () => {
   )
 }
 
-const ShimmerNode: React.FC<ShimmerNodeProps> = ({ depth, ...props }) => {
+const ShimmerNode = ({ depth, ...props }: ShimmerNodeProps) => {
   return <Shimmer.Line style={getNodeStyle(depth, false)} {...props} />
 }
 
-const Folder: React.FC<FolderProps> = ({ contentType, depth = 1, folder, offline, selectedId, style }) => {
+const Folder = ({ contentType, depth = 1, folder, offline, selectedId, style }: FolderProps) => {
   const setFolderModal = useSetAtom(folderModalAtom)
 
   function handleEditClick() {
@@ -150,7 +150,7 @@ const Folder: React.FC<FolderProps> = ({ contentType, depth = 1, folder, offline
   )
 }
 
-const Content: React.FC<ContentProps> = ({ content, contentType, depth = 0, offline, selectedId }) => {
+const Content = ({ content, contentType, depth = 0, offline, selectedId }: ContentProps) => {
   const setContentModal = useSetAtom(contentModalAtom)
 
   function handleEditClick() {

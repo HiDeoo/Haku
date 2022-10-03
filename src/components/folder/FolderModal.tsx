@@ -16,7 +16,7 @@ import { useFolderMutation } from 'hooks/useFolderMutation'
 import { useNetworkStatus } from 'hooks/useNetworkStatus'
 import { type FolderData } from 'libs/db/folder'
 
-export const FolderModal: React.FC = () => {
+export const FolderModal = () => {
   const { offline } = useNetworkStatus()
 
   const {

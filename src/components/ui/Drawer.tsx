@@ -28,7 +28,7 @@ const listClasses = clst(
   'supports-max:pb-[calc(theme(spacing.3)+max(0px,env(safe-area-inset-bottom)))]'
 )
 
-export const Drawer: DrawerComponent = ({ children, className, onOpenChange, opened, title, trigger }) => {
+export const Drawer = ({ children, className, onOpenChange, opened, title, trigger }: DrawerProps) => {
   useFocusRestoration(opened)
 
   const childrenClasses = clst('grow overflow-y-auto', className)
@@ -53,7 +53,7 @@ export const Drawer: DrawerComponent = ({ children, className, onOpenChange, ope
   )
 }
 
-const DrawerForm: React.FC<DrawerFormProps> = ({ children, ...props }) => {
+const DrawerForm = ({ children, ...props }: DrawerFormProps) => {
   const formClasses = clst(
     'z-10 bg-zinc-900/10 p-3 shadow-[0px_1px_2px_0px_theme(colors.black/50%)]',
     'supports-max:pl-[calc(theme(spacing.3)+max(0px,env(safe-area-inset-left)))]'
@@ -68,7 +68,7 @@ const DrawerForm: React.FC<DrawerFormProps> = ({ children, ...props }) => {
 
 Drawer.Form = DrawerForm
 
-const DrawerNis: React.FC<DrawerNisProps> = ({ text }) => {
+const DrawerNis = ({ text }: DrawerNisProps) => {
   return (
     <Flex
       fullWidth
@@ -102,12 +102,6 @@ Drawer.List = DrawerList
 
 function handleCloseAutoFocus(event: Event) {
   event.preventDefault()
-}
-
-type DrawerComponent = React.FC<DrawerProps> & {
-  Form: typeof DrawerForm
-  List: ListComponent
-  Nis: typeof DrawerNis
 }
 
 interface DrawerProps {

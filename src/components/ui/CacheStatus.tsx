@@ -5,7 +5,7 @@ import { Navbar } from 'components/ui/Navbar'
 import { useContentType } from 'hooks/useContentType'
 import { useOfflineCache } from 'hooks/useOfflineCache'
 
-export const CacheStatus: React.FC = () => {
+export const CacheStatus = () => {
   const { cType } = useContentType()
   const { availableOffline, ready } = useOfflineCache()
 

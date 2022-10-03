@@ -8,7 +8,7 @@ import { clst } from 'styles/clst'
 
 const Sidebar = dynamic<SidebarProps>(import('components/ui/Sidebar').then((module) => module.Sidebar))
 
-export const Layout: React.FC<LayoutProps> = ({ children, sidebar }) => {
+export const Layout = ({ children, sidebar }: LayoutProps) => {
   const sidebarCollapsed = useAtomValue(sidebarCollapsedAtom)
 
   const justifyCenter = sidebar ? undefined : 'center'

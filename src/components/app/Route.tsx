@@ -9,7 +9,7 @@ import { ContentType } from 'constants/contentType'
 
 const unsecureRoutes = new Set(['/auth/error', '/auth/login', '/auth/verify'])
 
-export const Route: React.FC<RouteProps> = ({ children }) => {
+export const Route = ({ children }: RouteProps) => {
   const { push, query, route } = useRouter()
   const { status } = useSession()
 

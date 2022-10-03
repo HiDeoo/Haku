@@ -17,7 +17,7 @@ const shimmerChildrenOpacityMap: Record<number, string> = {
   9: 'opacity-40',
 }
 
-export const Shimmer: ShimmerComponent = ({ children, className }) => {
+export const Shimmer = ({ children, className }: ShimmerProps) => {
   const pastDelay = useDelay()
 
   const shimmerClasses = clst('h-full w-full select-none gap-2.5 p-2.5', className)
@@ -40,7 +40,7 @@ export const Shimmer: ShimmerComponent = ({ children, className }) => {
   )
 }
 
-const Line: React.FC<LineProps> = ({ className, containerClassName, style }) => {
+const Line = ({ className, containerClassName, style }: LineProps) => {
   const lineClasses = clst('bg-zinc-400/10 w-full h-3.5 py-2.5 motion-safe:animate-pulse', className)
 
   return (
@@ -51,10 +51,6 @@ const Line: React.FC<LineProps> = ({ className, containerClassName, style }) => 
 }
 
 Shimmer.Line = Line
-
-type ShimmerComponent = React.FC<ShimmerProps> & {
-  Line: typeof Line
-}
 
 interface ShimmerProps {
   children: React.ReactNode

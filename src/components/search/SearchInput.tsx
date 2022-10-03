@@ -27,7 +27,7 @@ export const SearchInput = forwardRef<HTMLInputElement, TextInputProps>((props, 
 
 SearchInput.displayName = 'SearchInput'
 
-const SearchInputCheckbox: React.FC<SearchInputCheckboxProps> = ({ contentType }) => {
+const SearchInputCheckbox = ({ contentType }: SearchInputCheckboxProps) => {
   const { control, formState, getValues } = useFormContext<SearchDrawerData>()
   const {
     field: { onChange, value, ...fieldProps },

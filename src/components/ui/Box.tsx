@@ -1,6 +1,6 @@
 import { Flex } from 'components/ui/Flex'
 
-export const Box: BoxComponent = ({ children, details, title }) => {
+export const Box = ({ children, details, title }: BoxProps) => {
   return (
     <div className="w-full md:w-96">
       {title ? <h1 className="mb-1.5 ml-0.5 truncate text-lg">{title}</h1> : null}
@@ -10,7 +10,7 @@ export const Box: BoxComponent = ({ children, details, title }) => {
   )
 }
 
-const Footer: React.FC<FooterProps> = ({ children }) => {
+const Footer = ({ children }: FooterProps) => {
   return (
     <Flex justifyContent="end" className="pt-1">
       {children}
@@ -19,10 +19,6 @@ const Footer: React.FC<FooterProps> = ({ children }) => {
 }
 
 Box.Footer = Footer
-
-type BoxComponent = React.FC<BoxProps> & {
-  Footer: typeof Footer
-}
 
 interface BoxProps {
   children: React.ReactNode

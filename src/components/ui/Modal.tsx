@@ -23,7 +23,7 @@ export const MODAL_CONTENT_CLASSES = clst(
 export const MODAL_OVERLAY_CLASSES =
   'animate-modal-overlay fixed inset-0 z-40 flex flex-col overflow-y-auto bg-zinc-900/80 p-4 md:p-10'
 
-export const Modal: ModalComponent = ({
+export const Modal = ({
   children,
   className,
   contentClassName,
@@ -34,7 +34,7 @@ export const Modal: ModalComponent = ({
   role,
   title,
   trigger,
-}) => {
+}: ModalProps) => {
   function handleClose(event: KeyboardEvent | CustomEvent) {
     if (disabled) {
       event.preventDefault()
@@ -82,7 +82,7 @@ export const Modal: ModalComponent = ({
   )
 }
 
-const Footer: React.FC<FooterProps> = ({ children, closeText = 'Close', disabled }) => {
+const Footer = ({ children, closeText = 'Close', disabled }: FooterProps) => {
   return (
     <Flex justifyContent="end" className="pt-4">
       <Close asChild>
@@ -94,10 +94,6 @@ const Footer: React.FC<FooterProps> = ({ children, closeText = 'Close', disabled
 }
 
 Modal.Footer = Footer
-
-type ModalComponent = React.FC<ModalProps> & {
-  Footer: typeof Footer
-}
 
 export interface ModalProps {
   children: React.ReactNode

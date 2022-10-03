@@ -11,7 +11,7 @@ import { useGlobalShortcuts } from 'hooks/useGlobalShortcuts'
 
 const Search = dynamic<SearchProps>(import('components/search/Search').then((module) => module.Search))
 
-export const SearchDrawer: React.FC = () => {
+export const SearchDrawer = () => {
   const queryInput = useRef<HTMLInputElement>(null)
 
   const { opened } = useAtomValue(searchDrawerAtom)

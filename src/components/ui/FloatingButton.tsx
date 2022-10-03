@@ -3,7 +3,7 @@ import { IconButton } from 'components/form/IconButton'
 import { type IconProps } from 'components/ui/Icon'
 import { clst } from 'styles/clst'
 
-export const FloatingButton: React.FC<FloatingButtonProps> = ({ className, icon, onPress, tooltip, visible }) => {
+export const FloatingButton = ({ className, icon, onPress, tooltip, visible }: FloatingButtonProps) => {
   const buttonClasses = clst(
     'fixed z-30 bg-zinc-900 p-2 shadow shadow-zinc-900 hover:bg-zinc-600 hover:text-zinc-100 md:hidden',
     'supports-max:bottom-[calc(theme(spacing.2)+max(0px,env(safe-area-inset-bottom)))]',

@@ -3,7 +3,7 @@ import { RiCloudOffLine } from 'react-icons/ri'
 import { Navbar } from 'components/ui/Navbar'
 import { useNetworkStatus } from 'hooks/useNetworkStatus'
 
-export const NetworkStatus: React.FC = () => {
+export const NetworkStatus = () => {
   const { online } = useNetworkStatus()
 
   if (online) {

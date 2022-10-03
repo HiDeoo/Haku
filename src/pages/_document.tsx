@@ -7,7 +7,7 @@ import { CLOUDINARY_BASE_DELIVERY_URL } from 'libs/cloudinary'
 // iOS launch screen images generated using https://github.com/onderceylan/pwa-asset-generator with bg.png being a
 // 1x1px image filled with the #27272a (bg-zinc-800) color.
 // $ pnpm dlx pwa-asset-generator bg.png --splash-only --background "#27272a" --path "/images/startup" --xhtml
-const Document: React.FC = () => {
+const Document = () => {
   // https://github.com/vercel/next.js/issues/18557#issuecomment-727161142
   const nonce = randomBytes(8).toString('base64')
 

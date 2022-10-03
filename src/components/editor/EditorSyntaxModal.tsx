@@ -7,7 +7,7 @@ import { Table } from 'components/ui/Table'
 import { clst } from 'styles/clst'
 import styles from 'styles/Editor.module.css'
 
-export const EditorSyntaxModal: React.FC = () => {
+export const EditorSyntaxModal = () => {
   const [opened, setOpened] = useState(false)
 
   return (
@@ -225,7 +225,7 @@ export const EditorSyntaxModal: React.FC = () => {
   )
 }
 
-const EditorSyntaxSection: React.FC<EditorSyntaxSectionProps> = ({ children, title }) => {
+const EditorSyntaxSection = ({ children, title }: EditorSyntaxSectionProps) => {
   return (
     <>
       <h3 className="mt-5 mb-3 text-lg font-semibold first:mt-0">{title}</h3>
@@ -234,7 +234,7 @@ const EditorSyntaxSection: React.FC<EditorSyntaxSectionProps> = ({ children, tit
   )
 }
 
-const EditorSyntaxCode: React.FC<EditorSyntaxCodeProps> = ({ code, type = 'inline' }) => {
+const EditorSyntaxCode = ({ code, type = 'inline' }: EditorSyntaxCodeProps) => {
   const isInline = type === 'inline'
 
   const codeClasses = clst('rounded font-sans whitespace-pre-wrap', isInline && 'bg-zinc-600/75 px-[0.2rem] py-px')
@@ -244,7 +244,7 @@ const EditorSyntaxCode: React.FC<EditorSyntaxCodeProps> = ({ code, type = 'inlin
   return isInline ? highlight : <pre className="mt-4 rounded bg-zinc-700/50 px-2 py-1.5">{highlight}</pre>
 }
 
-const EditorSyntaxOutput: React.FC<EditorSyntaxOutputProps> = ({ children, type = 'inline' }) => {
+const EditorSyntaxOutput = ({ children, type = 'inline' }: EditorSyntaxOutputProps) => {
   const outputClasses = clst(
     styles['editor'],
     type === 'inline'

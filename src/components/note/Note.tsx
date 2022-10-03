@@ -23,7 +23,7 @@ import { type TodoMetadata } from 'libs/db/todo'
 import { focusNodeWithId, getToc, HeadingWithId, ReplaceContent, type ToC } from 'libs/editor'
 import { trpc } from 'libs/trpc'
 
-export const Note: React.FC<NoteProps> = ({ id }) => {
+export const Note = ({ id }: NoteProps) => {
   const { offline } = useNetworkStatus()
 
   const focusRestoration = useContext(FocusRestorationContext)

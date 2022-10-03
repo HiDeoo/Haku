@@ -18,7 +18,7 @@ import { useNetworkStatus } from 'hooks/useNetworkStatus'
 import { useToast } from 'hooks/useToast'
 import { type FolderData } from 'libs/db/folder'
 
-export const ContentModal: React.FC = () => {
+export const ContentModal = () => {
   const { offline } = useNetworkStatus()
 
   const { cType, lcType } = useContentType()

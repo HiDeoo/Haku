@@ -9,7 +9,7 @@ import { Tooltip } from 'components/ui/Tooltip'
 import { ContentType, getContentType, useContentType } from 'hooks/useContentType'
 import { clst } from 'styles/clst'
 
-export const ContentTypeSwitch: React.FC = () => {
+export const ContentTypeSwitch = () => {
   const { push } = useRouter()
   const { type } = useContentType()
 

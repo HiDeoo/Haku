@@ -4,7 +4,7 @@ import { Button } from 'components/form/Button'
 import { Modal, type ModalProps } from 'components/ui/Modal'
 import { clst } from 'styles/clst'
 
-export const Alert: React.FC<AlertProps> = ({
+export const Alert = ({
   cancelText = 'Cancel',
   children,
   confirmText = 'Confirm',
@@ -14,7 +14,7 @@ export const Alert: React.FC<AlertProps> = ({
   onOpenChange,
   opened,
   title,
-}) => {
+}: AlertProps) => {
   const confirmButton = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {

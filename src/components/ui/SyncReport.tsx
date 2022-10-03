@@ -1,6 +1,6 @@
 import { clst } from 'styles/clst'
 
-export const SyncReport: React.FC<SyncReportProps> = ({ error, isLoading, lastSync }) => {
+export const SyncReport = ({ error, isLoading, lastSync }: SyncReportProps) => {
   const syncText = lastSync ? (
     <>
       Synced at <time dateTime={lastSync.toLocaleTimeString()}>{lastSync.toLocaleTimeString()}</time>

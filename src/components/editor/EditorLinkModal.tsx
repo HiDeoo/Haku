@@ -7,7 +7,7 @@ import { Form } from 'components/form/Form'
 import { TextInput } from 'components/form/TextInput'
 import { Modal, type ModalProps } from 'components/ui/Modal'
 
-export const EditorLinkModal: React.FC<EditorLinkModalProps> = ({ editor, opened, onOpenChange }) => {
+export const EditorLinkModal = ({ editor, opened, onOpenChange }: EditorLinkModalProps) => {
   const {
     register,
     handleSubmit,
