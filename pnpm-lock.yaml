@@ -2,8 +2,8 @@ lockfileVersion: 5.4
 
 specifiers:
   '@faker-js/faker': 7.3.0
-  '@hideoo/eslint-config': 0.2.3
-  '@hideoo/prettier-config': 0.0.1
+  '@hideoo/eslint-config': 0.9.0
+  '@hideoo/prettier-config': 0.1.1
   '@hideoo/tsconfig': 0.1.0
   '@jcoreio/wait-for-postgres': 2.0.0
   '@next-auth/prisma-adapter': 1.0.3
@@ -161,8 +161,8 @@ dependencies:
 
 devDependencies:
   '@faker-js/faker': 7.3.0
-  '@hideoo/eslint-config': 0.2.3_4x5o4skxv6sl53vpwefgt23khm
-  '@hideoo/prettier-config': 0.0.1
+  '@hideoo/eslint-config': 0.9.0_4x5o4skxv6sl53vpwefgt23khm
+  '@hideoo/prettier-config': 0.1.1
   '@hideoo/tsconfig': 0.1.0
   '@jcoreio/wait-for-postgres': 2.0.0
   '@next/bundle-analyzer': 12.2.2
@@ -581,8 +581,8 @@ packages:
     engines: {node: '>=14.0.0', npm: '>=6.0.0'}
     dev: true
 
-  /@hideoo/eslint-config-base/0.2.3_3nlmamajfh57vijfdubgh6bgeu:
-    resolution: {integrity: sha512-EdEYjNgOjINSL4WsVJX6q68fg555nSp9lR0DkT3EPvH6bdX43nanzdosjTNu3LTsbY6z4yvhXMj7Y+Ylq4lleg==}
+  /@hideoo/eslint-config-base/0.9.0_3nlmamajfh57vijfdubgh6bgeu:
+    resolution: {integrity: sha512-6Dz4qwvfOyi6s1oVMNA3bhXzSS4IVfiotJoPhQiZjFiEKv15TqZ/imkECHpHAjP6/uGsUGH1ui3VcOgeuFqYVw==}
     peerDependencies:
       eslint: '>=8.0.0'
     dependencies:
@@ -598,12 +598,12 @@ packages:
       - supports-color
     dev: true
 
-  /@hideoo/eslint-config-react/0.2.3_4x5o4skxv6sl53vpwefgt23khm:
-    resolution: {integrity: sha512-s6PKwn4Ou1Q/WiH/FSBmMpC4iEu1FTfqxsuUV36PIcPbcqqdg8YP08TY3tEICyUWYSwICRjFRp2nNoPydyEIuw==}
+  /@hideoo/eslint-config-react/0.9.0_4x5o4skxv6sl53vpwefgt23khm:
+    resolution: {integrity: sha512-JWM3Ed3+uQ2nSszgEN1N8qorF3Ovyt3iEq2nRcNkFh20vW62RJMG2ak6DZLAian8L8bvnhaFQjwQBbd/hENnLg==}
     peerDependencies:
       eslint: '>=8.0.0'
     dependencies:
-      '@hideoo/eslint-config-typescript': 0.2.3_4x5o4skxv6sl53vpwefgt23khm
+      '@hideoo/eslint-config-typescript': 0.9.0_4x5o4skxv6sl53vpwefgt23khm
       eslint: 8.19.0
       eslint-plugin-jsx-a11y: 6.6.0_eslint@8.19.0
       eslint-plugin-react: 7.30.1_eslint@8.19.0
@@ -613,13 +613,13 @@ packages:
       - typescript
     dev: true
 
-  /@hideoo/eslint-config-typescript/0.2.3_4x5o4skxv6sl53vpwefgt23khm:
-    resolution: {integrity: sha512-hP/QJDpBDkZnZy+SQaYEncXQ6dVEDsFv5kHG6TH/aXDtxlqPOTRa53c5FF65Wb9+eN/AuG1FYSyr1STQOFd+cQ==}
+  /@hideoo/eslint-config-typescript/0.9.0_4x5o4skxv6sl53vpwefgt23khm:
+    resolution: {integrity: sha512-yTpk22GeA/V1l1xIX9QjvM11iTnll+xDGT3z6/RMF/0T6ALNqLczEsgUr2ah+CLwQ3qxilKNBiTJoQx0hy3Ngg==}
     peerDependencies:
       eslint: '>=8.0.0'
       typescript: '>=4.0.2'
     dependencies:
-      '@hideoo/eslint-config-base': 0.2.3_3nlmamajfh57vijfdubgh6bgeu
+      '@hideoo/eslint-config-base': 0.9.0_3nlmamajfh57vijfdubgh6bgeu
       '@typescript-eslint/eslint-plugin': 5.30.0_ppqciyaexhetens5nxv2w2zeb4
       '@typescript-eslint/parser': 5.30.0_4x5o4skxv6sl53vpwefgt23khm
       eslint: 8.19.0
@@ -631,12 +631,12 @@ packages:
       - supports-color
     dev: true
 
-  /@hideoo/eslint-config/0.2.3_4x5o4skxv6sl53vpwefgt23khm:
-    resolution: {integrity: sha512-PH/reSz78nrRy5StR/UBzpscxsgskVQN5XD09rgz7Hrz+DLcRGi0JzuxrvlaLRE9OrK5sLTd0Ktr4qPq+kOQxA==}
+  /@hideoo/eslint-config/0.9.0_4x5o4skxv6sl53vpwefgt23khm:
+    resolution: {integrity: sha512-mvrCT9QGHRLVSUucY8ToC+prR+9V0aprRNq9WWp7uMuKuuMJHdibUEIvykWpUj1f0fX46kXQa6dNygbvNg2ROA==}
     peerDependencies:
       eslint: '>=8.0.0'
     dependencies:
-      '@hideoo/eslint-config-react': 0.2.3_4x5o4skxv6sl53vpwefgt23khm
+      '@hideoo/eslint-config-react': 0.9.0_4x5o4skxv6sl53vpwefgt23khm
       eslint: 8.19.0
     transitivePeerDependencies:
       - eslint-import-resolver-webpack
@@ -644,8 +644,8 @@ packages:
       - typescript
     dev: true
 
-  /@hideoo/prettier-config/0.0.1:
-    resolution: {integrity: sha512-+YgIQ4P4iAYmhWHAWpxgnYEHZBjymCG3YFRZHN2zJr5c9z7j0gmzaXgOA5CdxWNmZr+qHY0QrNWCIoZf2B9CKg==}
+  /@hideoo/prettier-config/0.1.1:
+    resolution: {integrity: sha512-ACVLh1t7HVfgqWv2U/GfMx+hGNHwvJHhOOukV0kQ4dqhRy1pzxXR3VggBgEHGf0VE4dW63XPV5CjNSSqyx//yw==}
     dev: true
 
   /@hideoo/tsconfig/0.1.0:
