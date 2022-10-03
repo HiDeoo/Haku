@@ -62,7 +62,7 @@ export const EditorCodeBlock: React.FC<NodeViewProps> = ({ editor, extension, no
         onButtonKeyDown={handleSelectKeyDown}
         className="absolute bottom-full right-0"
         triggerPressedClassName="bg-zinc-500 hover:bg-zinc-500"
-        defaultItem={node.attrs.language ?? CODE_BLOCK_DEFAULT_LANGUAGE}
+        defaultItem={node.attrs['language'] ?? CODE_BLOCK_DEFAULT_LANGUAGE}
         menuClassName="rounded text-xs bg-zinc-600 -mt-0.5 rounded-t-none"
       />
       <ClipboardCopyButton

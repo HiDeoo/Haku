@@ -43,7 +43,7 @@ export const EditorLinkModal: React.FC<EditorLinkModalProps> = ({ editor, opened
           {...register('url')}
           placeholder="https://address.com"
           errorMessage={errors.url?.message}
-          defaultValue={editor?.getAttributes('link').href}
+          defaultValue={editor?.getAttributes('link')['href']}
         />
         <Modal.Footer>
           <Button type="submit" primary>

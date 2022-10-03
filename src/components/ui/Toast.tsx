@@ -33,7 +33,7 @@ export const Toast: React.FC<ToastProps> = ({ toast }) => {
     <Root
       ref={toastRoot}
       type={toast.type}
-      className={styles.toast}
+      className={styles['toast']}
       duration={toast.duration}
       onOpenChange={handleToastOpenChange}
     >

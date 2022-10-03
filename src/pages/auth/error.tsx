@@ -14,14 +14,14 @@ const Error: Page = () => {
     // Being redirected to `/api/auth/error` without any specific error message (for example during development when
     // shutting down the server with the webpage still opened) would lead to the query string param `error` being the
     // `undefined` string. We can safely remove it.
-    if (query.error === 'undefined') {
+    if (query['error'] === 'undefined') {
       replace(pathname, undefined, { shallow: true })
     }
-  }, [pathname, query.error, replace])
+  }, [pathname, query['error'], replace])
 
   return (
     <Flex direction="col" alignItems="center">
-      <Callout intent="error" title="Unable to login" message={getAuthErrorMesssage(query.error)} className="mx-4" />
+      <Callout intent="error" title="Unable to login" message={getAuthErrorMesssage(query['error'])} className="mx-4" />
       <div className="mt-3">
         <Button primary onPress={handleTryAgainPress}>
           Try again

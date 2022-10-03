@@ -124,11 +124,11 @@ export function getToc(editor: Editor) {
 
   editor.state.doc.descendants((node, pos) => {
     if (node.type.name === 'heading') {
-      if (!node.attrs.id) {
+      if (!node.attrs['id']) {
         transaction.setNodeMarkup(pos, undefined, { ...node.attrs, id: cuid() })
       }
 
-      toc.push({ id: node.attrs.id, level: node.attrs.level, name: node.textContent, pos })
+      toc.push({ id: node.attrs['id'], level: node.attrs['level'], name: node.textContent, pos })
     }
   })
 
@@ -147,7 +147,7 @@ export function focusNodeWithId(editor: Editor, id: string) {
     return
   }
 
-  const [node] = findChildren(editor.state.doc, (node) => node.attrs.id === domNode.id)
+  const [node] = findChildren(editor.state.doc, (node) => node.attrs['id'] === domNode.id)
 
   if (!node) {
     return

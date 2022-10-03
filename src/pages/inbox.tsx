@@ -8,7 +8,7 @@ import { useInboxEntryMutation } from 'hooks/useInboxEntryMutation'
 const Inbox: Page = () => {
   const { pathname, query, replace } = useRouter()
 
-  const entryText = typeof query.text === 'string' && query.text.length > 0 ? query.text : null
+  const entryText = typeof query['text'] === 'string' && query['text'].length > 0 ? query['text'] : null
 
   const didSubmit = useRef(false)
   const [submitState, setSubmitState] = useState<'pending' | 'success' | 'error'>('pending')
