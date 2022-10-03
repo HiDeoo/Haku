@@ -14,7 +14,7 @@ import { SEARCH_QUERY_MIN_LENGTH } from 'constants/search'
 import { isEmpty } from 'libs/array'
 import { trpc } from 'libs/trpc'
 
-export const Search: React.FC<SearchProps> = ({ queryInputRef }) => {
+export const Search = ({ queryInputRef }: SearchProps) => {
   const resultsContainer = useRef<HTMLDivElement>(null)
 
   const [{ data: search }, setDrawer] = useAtom(searchDrawerAtom)

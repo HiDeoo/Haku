@@ -1,6 +1,6 @@
 import { cloneElement, isValidElement, useId, useRef } from 'react'
 
-export const FileButton: React.FC<FileButtonProps> = ({ accept, disabled, multiple, onChange, trigger }) => {
+export const FileButton = ({ accept, disabled, multiple, onChange, trigger }: FileButtonProps) => {
   const idPrefix = useId()
   const triggerId = `${idPrefix}-file-button`
 

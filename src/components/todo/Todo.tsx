@@ -28,7 +28,7 @@ function pristineStateSelector(state: TodoEditorState) {
   return state.pristine
 }
 
-export const Todo: React.FC<TodoProps> = ({ id }) => {
+export const Todo = ({ id }: TodoProps) => {
   const { offline } = useNetworkStatus()
 
   const didFocusOnMount = useRef<boolean>(false)

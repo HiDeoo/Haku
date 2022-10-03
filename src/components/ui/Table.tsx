@@ -2,11 +2,11 @@ import { Children, cloneElement, isValidElement } from 'react'
 
 import { clst } from 'styles/clst'
 
-export const Table: TableComponent = ({ children }) => {
+export const Table = ({ children }: TableProps) => {
   return <table className="w-full table-auto">{children}</table>
 }
 
-const TableHead: React.FC<TableBaseProps> = ({ children }) => {
+const TableHead = ({ children }: TableProps) => {
   return (
     <thead>
       {Children.map(children, (child) => {
@@ -22,13 +22,13 @@ const TableHead: React.FC<TableBaseProps> = ({ children }) => {
 
 Table.Head = TableHead
 
-const TableBody: React.FC<TableBaseProps> = ({ children }) => {
+const TableBody = ({ children }: TableProps) => {
   return <tbody>{children}</tbody>
 }
 
 Table.Body = TableBody
 
-const TableRow: React.FC<TableRowProps> = ({ children, inTableHead }) => {
+const TableRow = ({ children, inTableHead }: TableRowProps) => {
   const rowClasses = clst('border-b border-zinc-600', !inTableHead && 'last-of-type:border-0')
 
   return (
@@ -46,7 +46,7 @@ const TableRow: React.FC<TableRowProps> = ({ children, inTableHead }) => {
 
 Table.Row = TableRow
 
-const TableCell: React.FC<TableCellProps> = ({ children, className, inTableHead = false }) => {
+const TableCell = ({ children, className, inTableHead = false }: TableCellProps) => {
   const Element = inTableHead ? 'th' : 'td'
 
   const cellClasses = clst('py-2 pr-2 text-left', className)
@@ -56,18 +56,11 @@ const TableCell: React.FC<TableCellProps> = ({ children, className, inTableHead 
 
 Table.Cell = TableCell
 
-type TableComponent = React.FC<TableBaseProps> & {
-  Body: typeof TableBody
-  Cell: typeof TableCell
-  Head: typeof TableHead
-  Row: typeof TableRow
-}
-
-interface TableBaseProps {
+interface TableProps {
   children: React.ReactNode
 }
 
-interface TableRowProps extends TableBaseProps {
+interface TableRowProps extends TableProps {
   inTableHead?: boolean
 }
 

@@ -7,7 +7,7 @@ import { Drawer } from 'components/ui/Drawer'
 import { useInboxEntryMutation } from 'hooks/useInboxEntryMutation'
 import { useNetworkStatus } from 'hooks/useNetworkStatus'
 
-export const InboxForm: React.FC = () => {
+export const InboxForm = () => {
   const { offline } = useNetworkStatus()
 
   const {

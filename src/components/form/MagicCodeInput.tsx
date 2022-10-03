@@ -150,7 +150,7 @@ export const MagicCodeInput = forwardRef(MagicCodeInputComponent) as <TFormField
   props: MagicCodeInputProps<TFormFields> & React.RefAttributes<MagicCodeInputHandle>
 ) => ReturnType<typeof MagicCodeInputComponent>
 
-const MagicCodeDigitInput: React.FC<MagicCodeDigitInputProps> = ({
+const MagicCodeDigitInput = ({
   disabled,
   errorMessage,
   index,
@@ -161,7 +161,7 @@ const MagicCodeDigitInput: React.FC<MagicCodeDigitInputProps> = ({
   onPaste,
   setRef,
   value,
-}) => {
+}: MagicCodeDigitInputProps) => {
   const inputClasses = clst('px-0 text-center', errorMessage ? 'focus:ring-red-400' : 'focus:ring-blue-600')
 
   function setInputRef(ref: HTMLInputElement | null) {

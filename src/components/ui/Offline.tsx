@@ -4,7 +4,7 @@ import { Callout } from 'components/form/Callout'
 import { Flex } from 'components/ui/Flex'
 import { useContentType } from 'hooks/useContentType'
 
-export const Offline: React.FC = () => {
+export const Offline = () => {
   const { lcType } = useContentType()
 
   return (

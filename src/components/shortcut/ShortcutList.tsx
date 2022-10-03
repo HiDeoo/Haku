@@ -8,7 +8,7 @@ import { groupByKey } from 'libs/array'
 import { type DescribedShortcut, getKeyAriaLabel, prettyPrintKey, isDescribedShortcut } from 'libs/shortcut'
 import { clst } from 'styles/clst'
 
-export const ShortcutList: React.FC = () => {
+export const ShortcutList = () => {
   const globalShortcuts = useAtomValue(globalShortcutsAtom)
   const localShortcuts = useAtomValue(localShortcutsAtom)
 
@@ -33,7 +33,7 @@ export const ShortcutList: React.FC = () => {
   )
 }
 
-const ShortcutGroup: React.FC<ShortcutGroupProps> = ({ group, shortcuts }) => {
+const ShortcutGroup = ({ group, shortcuts }: ShortcutGroupProps) => {
   return (
     <div>
       <div className="mb-2.5 px-4">
@@ -55,7 +55,7 @@ const ShortcutGroup: React.FC<ShortcutGroupProps> = ({ group, shortcuts }) => {
   )
 }
 
-const ShortcutKeybinding: React.FC<ShortcutKeybindingProps> = ({ keybinding }) => {
+const ShortcutKeybinding = ({ keybinding }: ShortcutKeybindingProps) => {
   const keys = [...keybinding[0], keybinding[1]]
 
   return (

@@ -6,7 +6,7 @@ import { ShortcutList } from 'components/shortcut/ShortcutList'
 import { Modal } from 'components/ui/Modal'
 import { useGlobalShortcuts } from 'hooks/useGlobalShortcuts'
 
-export const ShortcutModal: React.FC = () => {
+export const ShortcutModal = () => {
   const [opened, setOpened] = useAtom(shortcutModalOpenedAtom)
 
   useGlobalShortcuts(

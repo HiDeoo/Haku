@@ -6,7 +6,7 @@ import { Toast } from 'components/ui/Toast'
 import { isNotEmpty } from 'libs/array'
 import { clst } from 'styles/clst'
 
-export const Toaster: React.FC<ToasterProps> = () => {
+export const Toaster = () => {
   const toasts = useAtomValue(toastsAtom)
 
   const viewportClasses = clst(

@@ -2,7 +2,7 @@ import { Root } from '@radix-ui/react-accessible-icon'
 
 import { clst } from 'styles/clst'
 
-export const Icon: React.FC<IconProps> = ({ 'aria-hidden': ariaHidden, className, icon, label }) => {
+export const Icon = ({ 'aria-hidden': ariaHidden, className, icon, label }: IconProps) => {
   const Component = icon
 
   const iconClasses = clst('h-4 w-4 select-none', className)

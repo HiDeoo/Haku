@@ -35,7 +35,7 @@ export const List = forwardRef(
 
 List.displayName = 'List'
 
-const ListItem: React.FC<ListItemProps> = ({ children, className }) => {
+const ListItem = ({ children, className }: ListItemProps) => {
   const itemsProps = { className: clst(itemClasses, className) }
 
   if (typeof children === 'function') {
@@ -47,7 +47,7 @@ const ListItem: React.FC<ListItemProps> = ({ children, className }) => {
 
 List.Item = ListItem
 
-const ListButton: React.FC<ListButtonProps> = (props) => {
+const ListButton = (props: ListButtonProps) => {
   return <IconButton {...props} className={LIST_BUTTON_CLASSES} pressedClassName={LIST_BUTTON_PRESSED_CLASSES} />
 }
 

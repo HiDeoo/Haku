@@ -31,7 +31,7 @@ import { useGlobalShortcuts } from 'hooks/useGlobalShortcuts'
 import { useNetworkStatus } from 'hooks/useNetworkStatus'
 import { logout } from 'libs/auth'
 
-export const CommandPalette: React.FC = () => {
+export const CommandPalette = () => {
   const { offline } = useNetworkStatus()
 
   const { push } = useRouter()

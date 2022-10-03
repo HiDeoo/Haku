@@ -14,7 +14,7 @@ import { clst } from 'styles/clst'
 const itemClasses = 'block w-full text-left [&[data-highlighted]]:outline-none px-2 py-1 rounded select-none'
 const contentClasses = 'min-w-[theme(spacing.32)] overflow-hidden rounded-md bg-zinc-700 p-1.5 shadow shadow-black/75'
 
-export const ContextMenu: ContextMenuComponent = ({ children, trigger }) => {
+export const ContextMenu = ({ children, trigger }: ContextMenuProps) => {
   return (
     <Root>
       <Trigger asChild>{trigger}</Trigger>
@@ -44,23 +44,17 @@ const Item = forwardRef<HTMLButtonElement, ItemProps>(({ disabled, intent, onCli
 Item.displayName = 'Item'
 ContextMenu.Item = Item
 
-const Label: React.FC<LabelProps> = ({ text }) => {
+const Label = ({ text }: LabelProps) => {
   return <MenuLabel className={itemClasses}>{text}</MenuLabel>
 }
 
 ContextMenu.Label = Label
 
-const Separator: React.FC = () => {
+const Separator = () => {
   return <MenuSeparator className="my-1 h-px bg-blue-50/25" />
 }
 
 ContextMenu.Separator = Separator
-
-type ContextMenuComponent = React.FC<ContextMenuProps> & {
-  Item: typeof Item
-  Label: typeof Label
-  Separator: typeof Separator
-}
 
 interface ContextMenuProps {
   children: React.ReactNode

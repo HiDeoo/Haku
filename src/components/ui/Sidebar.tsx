@@ -18,7 +18,7 @@ const skipLinksClasses = clst(
   'focus:top-0 focus:border-r-2 focus:border-b-2 focus:border-blue-300'
 )
 
-export const Sidebar: React.FC<SidebarProps> = () => {
+export const Sidebar = () => {
   const { pathname } = useRouter()
   const isOnNotePage = pathname.startsWith('/notes/')
 

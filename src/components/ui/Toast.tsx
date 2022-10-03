@@ -9,7 +9,7 @@ import { IconButton } from 'components/form/IconButton'
 import { Icon } from 'components/ui/Icon'
 import styles from 'styles/Toast.module.css'
 
-export const Toast: React.FC<ToastProps> = ({ toast }) => {
+export const Toast = ({ toast }: ToastProps) => {
   const toastRoot = useRef<HTMLLIElement>(null)
 
   const removeToast = useSetAtom(removeToastAtom)

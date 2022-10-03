@@ -9,7 +9,7 @@ import { useNetworkStatus } from 'hooks/useNetworkStatus'
 import { type InboxEntryData } from 'libs/db/inbox'
 import { clst } from 'styles/clst'
 
-export const InboxListEntry: React.FC<InboxListEntryProps> = ({ entry }) => {
+export const InboxListEntry = ({ entry }: InboxListEntryProps) => {
   const { offline } = useNetworkStatus()
 
   const { mutateDelete } = useInboxEntryMutation()

@@ -12,7 +12,7 @@ import { unshiftFromIndex } from 'libs/array'
 import { type FilesData, type FileData } from 'libs/db/file'
 import { trpc } from 'libs/trpc'
 
-export const NavigationPalette: React.FC = () => {
+export const NavigationPalette = () => {
   const { push } = useRouter()
 
   const [opened, setOpened] = useAtom(navigationPaletteOpenedAtom)

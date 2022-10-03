@@ -9,7 +9,7 @@ import { getLanguageName } from 'libs/editor'
 const triggerClases =
   'shadow-none bg-zinc-700 hover:bg-zinc-600 px-2 py-1 text-xs rounded min-w-0 w-28 rounded-b-none z-10'
 
-export const EditorCodeBlock: React.FC<NodeViewProps> = ({ editor, extension, node, updateAttributes }) => {
+export const EditorCodeBlock = ({ editor, extension, node, updateAttributes }: NodeViewProps) => {
   const wrapper = useRef<HTMLDivElement>()
   const languageSelect = useRef<HTMLButtonElement>(null)
   const copySelect = useRef<HTMLButtonElement>(null)

@@ -5,7 +5,7 @@ import { editorImageModalAtom } from 'atoms/togglable'
 import { Modal } from 'components/ui/Modal'
 import { getA11yImageReactAttributes } from 'libs/image'
 
-export const EditorImageModal: React.FC = () => {
+export const EditorImageModal = () => {
   const [{ opened, srcSet, ...image }, setModal] = useAtom(editorImageModalAtom)
 
   const handleOpenChange = useCallback(() => {

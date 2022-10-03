@@ -1,6 +1,6 @@
 import { clst } from 'styles/clst'
 
-export const Label: React.FC<LabelProps> = ({ children, disabled, errorMessage, errorMessageProps, ...props }) => {
+export const Label = ({ children, disabled, errorMessage, errorMessageProps, ...props }: LabelProps) => {
   const containerClasses = clst('mb-1', disabled && 'opacity-50')
 
   return (

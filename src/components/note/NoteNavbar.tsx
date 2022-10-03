@@ -6,7 +6,7 @@ import { SyncReport } from 'components/ui/SyncReport'
 import { useNetworkStatus } from 'hooks/useNetworkStatus'
 import { type NoteMetadata } from 'libs/db/note'
 
-export const NoteNavbar: React.FC<NoteNavbarProps> = ({ disabled, editorState, isSaving, noteName, save }) => {
+export const NoteNavbar = ({ disabled, editorState, isSaving, noteName, save }: NoteNavbarProps) => {
   const { offline } = useNetworkStatus()
 
   return (

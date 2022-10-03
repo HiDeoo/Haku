@@ -1,6 +1,6 @@
 import { Arrow, Content, Portal, Root, Trigger } from '@radix-ui/react-tooltip'
 
-export const Tooltip: React.FC<TooltipProps> = ({ children, content }) => {
+export const Tooltip = ({ children, content }: TooltipProps) => {
   return (
     <Root>
       <Trigger asChild>{children}</Trigger>

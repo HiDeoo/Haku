@@ -14,7 +14,7 @@ import { useNetworkStatus } from 'hooks/useNetworkStatus'
 import { type TodoMetadata } from 'libs/db/todo'
 import { type InferMutationInput, trpc } from 'libs/trpc'
 
-export const TodoNavbar: React.FC<TodoNavbarProps> = ({ disabled, focusTodoNode, todoId, todoName }) => {
+export const TodoNavbar = ({ disabled, focusTodoNode, todoId, todoName }: TodoNavbarProps) => {
   const { offline } = useNetworkStatus()
 
   const [editorState, setEditorState] = useAtom(todoEditorStateAtom)

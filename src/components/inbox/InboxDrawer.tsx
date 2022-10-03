@@ -16,7 +16,7 @@ import { clst } from 'styles/clst'
 
 const Inbox = dynamic<InboxProps>(import('components/inbox/Inbox').then((module) => module.Inbox))
 
-export const InboxDrawer: React.FC = () => {
+export const InboxDrawer = () => {
   const { queryClient } = trpc.useContext()
 
   const [showInboxIndicator, setShowInboxIndicator] = useState(false)

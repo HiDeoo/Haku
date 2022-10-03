@@ -6,8 +6,8 @@ import { useTodoNodeChildren } from 'hooks/useTodoNodeChildren'
 import { type TodoNodeData } from 'libs/db/todoNodes'
 import { clst } from 'styles/clst'
 
-export const TodoNodeChildren: React.FC<TodoNodeChildrenProps> = memo(
-  ({ id = 'root', level = 0, onFocusTodoNode, setTodoNodeItemRef }) => {
+export const TodoNodeChildren = memo(
+  ({ id = 'root', level = 0, onFocusTodoNode, setTodoNodeItemRef }: TodoNodeChildrenProps) => {
     const children = useTodoNodeChildren(id)
 
     const childrenClasses = clst(level > 0 && 'border-l border-zinc-700')
