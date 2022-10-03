@@ -18,7 +18,7 @@ export const Route: React.FC<RouteProps> = ({ children }) => {
   const isAuthenticated = status === 'authenticated'
   const isSecureRoute = !unsecureRoutes.has(route)
 
-  const callbackUrl = typeof query.callbackUrl === 'string' ? query.callbackUrl : undefined
+  const callbackUrl = typeof query['callbackUrl'] === 'string' ? query['callbackUrl'] : undefined
 
   useEffect(() => {
     if (status === 'loading') {

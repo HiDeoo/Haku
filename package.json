@@ -85,6 +85,7 @@
     "@faker-js/faker": "7.3.0",
     "@hideoo/eslint-config": "0.2.3",
     "@hideoo/prettier-config": "0.0.1",
+    "@hideoo/tsconfig": "0.1.0",
     "@jcoreio/wait-for-postgres": "2.0.0",
     "@next/bundle-analyzer": "12.2.2",
     "@next/eslint-plugin-next": "12.2.2",

@@ -12,7 +12,7 @@ import styles from 'styles/TodoNodeItem.module.css'
 export const TodoNodeHandle: React.FC<TodoNodeHandleProps> = memo(
   ({ collapsed, hasChildren, id, status, toggleCollapsed }) => {
     const buttonClasses = clst(
-      styles.handle,
+      styles['handle'],
       'relative m-0 min-w-0 shrink-0 p-0 last-of-type:mr-1 py-1 pr-1',
       'bg-transparent text-zinc-300 shadow-none rounded-none',
       'hover:bg-inherit disabled:opacity-100 disabled:cursor-default disabled:bg-transparent',

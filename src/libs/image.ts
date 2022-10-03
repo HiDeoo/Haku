@@ -38,7 +38,7 @@ export function getA11yImageParams(element: HTMLImageElement): A11yImageParams {
     height: element.getAttribute('height'),
     src: element.getAttribute('src'),
     srcSet: element.getAttribute('srcset'),
-    base64Placeholder: backgroundUrlRegExp.exec(element.getAttribute('style') ?? '')?.groups?.url,
+    base64Placeholder: backgroundUrlRegExp.exec(element.getAttribute('style') ?? '')?.groups?.['url'],
     width: element.getAttribute('width'),
   }
 }

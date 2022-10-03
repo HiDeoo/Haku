@@ -72,23 +72,23 @@ export function CloudinaryTiptapNode(options: CloudinaryTiptapNodeOptions) {
       },
     ],
     renderHTML({ HTMLAttributes }) {
-      if (HTMLAttributes.pending) {
-        return ['div', { class: 'italic text-blue-200' }, `Uploading ${HTMLAttributes.pendingName}…`]
+      if (HTMLAttributes['pending']) {
+        return ['div', { class: 'italic text-blue-200' }, `Uploading ${HTMLAttributes['pendingName']}…`]
       }
 
-      const srcSetElements = Object.entries(HTMLAttributes.data.responsive ?? {}).map(
+      const srcSetElements = Object.entries(HTMLAttributes['data'].responsive ?? {}).map(
         ([width, url]) => `${url} ${width}w`
       )
 
       return [
         'img',
         getA11yImageAttributes({
-          alt: HTMLAttributes.data.name,
-          base64Placeholder: HTMLAttributes.data.placeholder,
-          height: HTMLAttributes.data.height,
-          src: HTMLAttributes.data.original,
+          alt: HTMLAttributes['data'].name,
+          base64Placeholder: HTMLAttributes['data'].placeholder,
+          height: HTMLAttributes['data'].height,
+          src: HTMLAttributes['data'].original,
           srcSet: srcSetElements.join(', '),
-          width: HTMLAttributes.data.width,
+          width: HTMLAttributes['data'].width,
         }),
       ]
     },
@@ -277,7 +277,7 @@ function getCloudinaryNodePositionWithId(editor: Editor, id: string): number | u
   let position: number | undefined
 
   editor.view.state.doc.descendants((node, pos) => {
-    if (node.type.name === tiptapNodeName && node.attrs.id === id) {
+    if (node.type.name === tiptapNodeName && node.attrs['id'] === id) {
       position = pos
 
       return false
@@ -290,7 +290,7 @@ function getCloudinaryNodePositionWithId(editor: Editor, id: string): number | u
 }
 
 export class CloudinaryError extends Error {
-  constructor(public message: string, public details?: string) {
+  constructor(public override message: string, public details?: string) {
     super(message)
 
     Object.setPrototypeOf(this, new.target.prototype)
@@ -332,7 +332,7 @@ class SetAttrsStep extends Step {
     return { stepType: 'setAttrs', pos: this.pos, attrs: this.attrs }
   }
 
-  static fromJSON(_schema: Schema, json: SerializedSetAttrsStep) {
+  static override fromJSON(_schema: Schema, json: SerializedSetAttrsStep) {
     if (typeof json.pos !== 'number' || typeof json.attrs !== 'object') {
       throw new RangeError('Invalid input for SetAttrsStep.fromJSON().')
     }

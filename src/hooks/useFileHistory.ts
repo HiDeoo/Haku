@@ -10,7 +10,7 @@ export function useFileHistory() {
 
   useRouteChange((url) => {
     const match = url.match(fileRegExp)
-    const id = match?.groups?.id
+    const id = match?.groups?.['id']
 
     if (id) {
       addToFileHistory(id)

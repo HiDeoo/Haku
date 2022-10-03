@@ -18,7 +18,7 @@ export const cloudinaryHandlers = [
 
     const [filename, extension] = formData.files[0].filename.split('.')
 
-    const publicId = `${formData.folder}/${cuid()}`
+    const publicId = `${formData['folder']}/${cuid()}`
     const signature = cuid().slice(0, 8)
     const version = cuid()
 
@@ -34,11 +34,11 @@ export const cloudinaryHandlers = [
         bytes: 23_957,
         created_at: new Date(),
         etag: cuid(),
-        folder: formData.folder,
+        folder: formData['folder'],
         format: extension,
         height: 200,
         placeholder: false,
-        public_id: `${formData.folder}/${cuid()}`,
+        public_id: `${formData['folder']}/${cuid()}`,
         resource_type: 'image',
         secure_url: url,
         signature: cuid(),

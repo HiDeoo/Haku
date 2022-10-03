@@ -138,11 +138,11 @@ describe('image', () => {
             expect(formData.files[0]?.contentType).toBe(`image/${extension}`)
             expect(formData.files[0]?.fieldname).toBe('file')
 
-            expect(formData.api_key).toBe(process.env.CLOUDINARY_API_KEY)
-            expect(formData.folder).toBe(getTestUser().userId)
-            expect(formData.type).toBe('private')
-            expect(formData.tags).toBe(id)
-            expect(typeof formData.timestamp).toBe('string')
+            expect(formData['api_key']).toBe(process.env.CLOUDINARY_API_KEY)
+            expect(formData['folder']).toBe(getTestUser().userId)
+            expect(formData['type']).toBe('private')
+            expect(formData['tags']).toBe(id)
+            expect(typeof formData['timestamp']).toBe('string')
           })
         )
 

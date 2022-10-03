@@ -60,7 +60,7 @@ const Login: Page = () => {
     } else {
       dispatch({ type: 'validatingCode' })
 
-      const callbackUrl = typeof query.callbackUrl === 'string' ? query.callbackUrl : undefined
+      const callbackUrl = typeof query['callbackUrl'] === 'string' ? query['callbackUrl'] : undefined
 
       push(
         `/api/auth/callback/email-api?email=${encodeURIComponent(email)}&token=${code}${

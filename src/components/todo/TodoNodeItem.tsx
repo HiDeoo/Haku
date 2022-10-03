@@ -315,13 +315,13 @@ export const TodoNodeItem = memo(
       const isNoteVisible = isNoteFocused || (node.noteText && node.noteText.length > 0)
 
       const containerClasses = clst(
-        styles.container,
-        node.status === TodoNodeStatus.COMPLETED && styles.completed,
-        node.status === TodoNodeStatus.CANCELLED && styles.cancelled
+        styles['container'],
+        node.status === TodoNodeStatus.COMPLETED && styles['completed'],
+        node.status === TodoNodeStatus.CANCELLED && styles['cancelled']
       )
 
       const contentClasses = clst(
-        styles.content,
+        styles['content'],
         'min-h-[theme(spacing.6)] break-words outline-none grow leading-relaxed whitespace-pre-wrap',
         'pr-2 supports-max:pr-[calc(theme(spacing.2)+max(0px,env(safe-area-inset-right)))]',
         {

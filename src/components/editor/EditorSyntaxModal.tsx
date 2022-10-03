@@ -246,7 +246,7 @@ const EditorSyntaxCode: React.FC<EditorSyntaxCodeProps> = ({ code, type = 'inlin
 
 const EditorSyntaxOutput: React.FC<EditorSyntaxOutputProps> = ({ children, type = 'inline' }) => {
   const outputClasses = clst(
-    styles.editor,
+    styles['editor'],
     type === 'inline'
       ? 'inline-block px-[0.2rem] py-px'
       : 'rounded bg-zinc-700/50 my-4 px-2 py-1.5 [&>blockquote>p]:mt-0 only:[&>blockquote>p]:mb-0'

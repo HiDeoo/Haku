@@ -58,7 +58,7 @@ export function useEditor(options: UseEditorOptions, deps?: DependencyList): Edi
   const { className, contentId, extensions, setLinkModalOpened, spellcheck, starterKitOptions, ...editorOptions } =
     options
 
-  const editorClasses = clst(styles.editor, className)
+  const editorClasses = clst(styles['editor'], className)
 
   const handleImageDoubleClick = useCallback(
     (params: A11yImageParams) => {
@@ -126,13 +126,13 @@ function getExtensions(
               'Alt-Enter': () => {
                 const { $from } = this.editor.view.state.selection
 
-                const linkMark = this.editor.view.state.schema.marks.link?.isInSet($from.marks())
+                const linkMark = this.editor.view.state.schema.marks['link']?.isInSet($from.marks())
 
-                if (!linkMark?.attrs?.href) {
+                if (!linkMark?.attrs?.['href']) {
                   return false
                 }
 
-                window.open(linkMark.attrs.href)
+                window.open(linkMark.attrs['href'])
 
                 return true
               },
