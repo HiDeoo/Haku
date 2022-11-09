@@ -2,7 +2,6 @@ import { useSelect, type UseSelectStateChange } from 'downshift'
 import { forwardRef, useCallback, useRef } from 'react'
 import { RiArrowDownSLine } from 'react-icons/ri'
 
-import { Button, type ButtonProps } from 'components/form/Button'
 import { ControlMenu, type ControlMenuProps } from 'components/form/ControlMenu'
 import { Label } from 'components/form/Label'
 import { Flex } from 'components/ui/Flex'
@@ -22,7 +21,6 @@ const SelectComponent = <TItem,>(
     onChange,
     tabIndex,
     triggerClassName,
-    triggerPressedClassName,
   }: SelectProps<TItem>,
   forwardedRef: React.ForwardedRef<HTMLButtonElement>
 ) => {
@@ -41,7 +39,6 @@ const SelectComponent = <TItem,>(
 
   const { getItemProps, getLabelProps, getMenuProps, getToggleButtonProps, highlightedIndex, isOpen, selectedItem } =
     useSelect({
-      circularNavigation: true,
       initialSelectedItem: defaultItem,
       items,
       itemToString: renderItem,
@@ -66,7 +63,7 @@ const SelectComponent = <TItem,>(
   return (
     <div className={containerClasses} ref={container} contentEditable={false}>
       {label ? <Label {...getLabelProps({ disabled })}>{label}</Label> : null}
-      <Button
+      <button
         {...getToggleButtonProps({
           'aria-label': 'Toggle Menu',
           className: triggerClasses,
@@ -75,13 +72,12 @@ const SelectComponent = <TItem,>(
           ref: forwardedRef,
           tabIndex,
         })}
-        pressedClassName={triggerPressedClassName}
       >
         <Flex alignItems="center" justifyContent="between" className="gap-1">
           <div className="truncate">{renderItem(labelItem)}</div>
           <Icon icon={RiArrowDownSLine} className={triggerIconClasses} />
         </Flex>
-      </Button>
+      </button>
       <ControlMenu
         items={items}
         isOpen={isOpen}
@@ -111,7 +107,6 @@ interface SelectProps<TItem> {
   menuClassName?: ControlMenuProps<TItem>['menuClassName']
   onButtonKeyDown?: React.KeyboardEventHandler<HTMLButtonElement>
   onChange: (item: TItem) => void
-  tabIndex?: ButtonProps['tabIndex']
+  tabIndex?: React.HTMLAttributes<HTMLButtonElement>['tabIndex']
   triggerClassName?: string
-  triggerPressedClassName?: string
 }

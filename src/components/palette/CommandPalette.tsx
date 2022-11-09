@@ -101,7 +101,12 @@ export const CommandPalette = () => {
         name: 'Go to Note or Todo',
         icon: RiLink,
         action: () => {
-          setNavigationPaletteOpened(true)
+          // When switching to the navigation palette, we need to wait for the command palette to be closed and the
+          // previous focus to have been restored otherwise the navigation palette will be opened and immediately
+          // unfocused due to the delayed command palette focus restoration.
+          setTimeout(() => {
+            setNavigationPaletteOpened(true)
+          }, 10)
         },
       },
       {
