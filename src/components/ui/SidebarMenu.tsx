@@ -93,7 +93,7 @@ export const SidebarMenu = () => {
             side={sidebarCollapsed ? 'right' : 'top'}
             className="animate-tooltip z-40 text-[0.84rem] leading-[1.2rem]"
           >
-            <Arrow className="fill-zinc-700" width={16} height={8} offset={sidebarCollapsed ? 7 : 0} />
+            <Arrow className="fill-zinc-700" width={16} height={8} />
             <Flex direction="col" className="rounded-md bg-zinc-700 p-1.5 shadow shadow-black/75">
               <Item asChild>
                 <SidebarMenuItem label="Logout" icon={RiLogoutCircleRLine} onClick={logout} />
