@@ -10,7 +10,7 @@ import { CLOUDINARY_BASE_API_URL, CLOUDINARY_BASE_DELIVERY_URL } from 'libs/clou
 export const cloudinaryHandlers = [
   rest.post(`${CLOUDINARY_BASE_API_URL}/${process.env.CLOUDINARY_CLOUD_NAME}/*`, async (req, res, ctx) => {
     const formData = await multipartParser.parse({
-      body: req.body,
+      body: await req.text(),
       headers: { 'Content-Type': req.headers.get('Content-Type') },
     })
 

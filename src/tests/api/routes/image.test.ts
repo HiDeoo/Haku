@@ -129,7 +129,7 @@ describe('image', () => {
         server.use(
           rest.post(uploadUrl, async (req) => {
             const formData = await multipartParser.parse({
-              body: req.body,
+              body: await req.text(),
               headers: { 'Content-Type': req.headers.get('Content-Type') },
             })
 
