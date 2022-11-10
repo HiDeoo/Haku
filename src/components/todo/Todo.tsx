@@ -136,7 +136,7 @@ export const Todo = ({ id }: TodoProps) => {
               fullHeight
               fullWidth
               direction="col"
-              className="overflow-y-auto supports-max:pb-[max(0px,env(safe-area-inset-bottom))]"
+              className="overflow-y-auto pb-[max(0px,env(safe-area-inset-bottom))]"
             >
               <TodoNodeChildren onFocusTodoNode={setTodoFocus} setTodoNodeItemRef={setTodoNodeItemRef} />
             </Flex>

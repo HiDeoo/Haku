@@ -4,20 +4,12 @@
   @apply focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-800;
 
   @media (prefers-reduced-motion: no-preference) {
-    &[data-state='open'] {
-      @apply animate-swipe-in-right;
-    }
-
-    &[data-state='closed'] {
-      @apply animate-swipe-out-right;
-    }
+    @apply data-open:animate-swipe-in-right;
+    @apply data-closed:animate-swipe-out-right;
+    @apply data-cancel:translate-x-0 data-cancel:transition-transform data-cancel:duration-200 data-cancel:ease-in;
 
     &[data-swipe='move'] {
       transform: translateX(var(--radix-toast-swipe-move-x));
-    }
-
-    &[data-swipe='cancel'] {
-      @apply translate-x-0 transition-transform duration-200 ease-in;
     }
 
     &[data-swipe='end'] {

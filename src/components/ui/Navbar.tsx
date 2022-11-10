@@ -7,7 +7,7 @@ import { Tooltip } from 'components/ui/Tooltip'
 import { clst } from 'styles/clst'
 
 const navbarClasses = clst(
-  'py-2 px-2.5 supports-max:pr-[calc(theme(spacing[2.5])+max(0px,env(safe-area-inset-right)))]',
+  'py-2 px-2.5 pr-[calc(theme(spacing[2.5])+max(0px,env(safe-area-inset-right)))]',
   'gap-3 border-b border-zinc-600/50 bg-zinc-900 text-sm'
 )
 

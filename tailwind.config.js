@@ -1,13 +1,20 @@
 const hideScrollbarPlugin = require('tailwind-scrollbar-hide')
 const defaultTheme = require('tailwindcss/defaultTheme')
-const plugin = require('tailwindcss/plugin')
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./src/{components,constants,libs,pages}/**/*.{ts,tsx}', './src/styles/**/*.css'],
   theme: {
+    data: {
+      open: 'state="open"',
+      cancel: 'state="cancel"',
+      closed: 'state="closed"',
+    },
+    plugins: [hideScrollbarPlugin],
     // We cannot extend the default theme to add a smaller breakpoint as they need to be sorted from smallest to largest
-    // in order to work as expected with a min-width breakpoint system
+    // in order to work as expected with a min-width breakpoint system, but the automatic sorting introduced in Tailwind
+    // v3.2 only works if all screens are min-width-based.
+    // https://github.com/tailwindlabs/tailwindcss/pull/9558#issue-1409676649
     screens: {
       xs: '481px',
       ...defaultTheme.screens,
@@ -195,10 +202,4 @@ module.exports = {
       },
     },
   },
-  plugins: [
-    hideScrollbarPlugin,
-    plugin(({ addVariant }) => {
-      addVariant('supports-max', '@supports (padding: max(0px))')
-    }),
-  ],
 }

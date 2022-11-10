@@ -107,6 +107,6 @@ interface SelectProps<TItem> {
   menuClassName?: ControlMenuProps<TItem>['menuClassName']
   onButtonKeyDown?: React.KeyboardEventHandler<HTMLButtonElement>
   onChange: (item: TItem) => void
-  tabIndex?: React.HTMLAttributes<HTMLButtonElement>['tabIndex']
+  tabIndex?: React.ComponentPropsWithoutRef<'button'>['tabIndex']
   triggerClassName?: string
 }

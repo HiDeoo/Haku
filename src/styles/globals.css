@@ -9,75 +9,31 @@
 }
 
 @layer components {
-  .animate-control-menu {
-    @media (prefers-reduced-motion: no-preference) {
-      &[data-state='open'] {
-        @apply animate-slide-in;
-      }
-
-      &[data-state='closed'] {
-        @apply animate-slide-out;
-      }
+  @media (prefers-reduced-motion: no-preference) {
+    .animate-control-menu {
+      @apply data-open:animate-slide-in data-closed:animate-slide-out;
     }
-  }
 
-  .animate-modal-content {
-    @media (prefers-reduced-motion: no-preference) {
-      &[data-state='open'] {
-        @apply animate-bounce-in;
-      }
-
-      &[data-state='closed'] {
-        @apply animate-bounce-out;
-      }
+    .animate-modal-content {
+      @apply data-open:animate-bounce-in data-closed:animate-bounce-out;
     }
-  }
 
-  .animate-drawer-content {
-    @media (prefers-reduced-motion: no-preference) {
-      &[data-state='open'] {
-        @apply animate-swipe-in-left;
-      }
-
-      &[data-state='closed'] {
-        @apply animate-swipe-out-left;
-      }
+    .animate-drawer-content {
+      @apply data-open:animate-swipe-in-left data-closed:animate-swipe-out-left;
     }
-  }
 
-  .animate-palette-content {
-    @media (prefers-reduced-motion: no-preference) {
-      &[data-state='open'] {
-        @apply animate-drop-in;
-      }
-
-      &[data-state='closed'] {
-        @apply animate-drop-out;
-      }
+    .animate-palette-content {
+      @apply data-open:animate-drop-in data-closed:animate-drop-out;
     }
-  }
 
-  .animate-modal-overlay {
-    @media (prefers-reduced-motion: no-preference) {
-      &[data-state='open'] {
-        @apply animate-fade-in;
-      }
-
-      &[data-state='closed'] {
-        @apply animate-fade-out;
-      }
+    .animate-modal-overlay {
+      @apply data-open:animate-fade-in data-closed:animate-fade-out;
     }
-  }
 
-  .animate-tooltip {
-    @media (prefers-reduced-motion: no-preference) {
+    .animate-tooltip {
       transform-origin: var(--radix-tooltip-content-transform-origin);
 
-      @apply animate-scale-in;
-
-      &[data-state='closed'] {
-        @apply animate-scale-out;
-      }
+      @apply animate-scale-in data-closed:animate-scale-out;
     }
   }
 }

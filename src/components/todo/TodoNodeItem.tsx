@@ -323,7 +323,7 @@ export const TodoNodeItem = memo(
       const contentClasses = clst(
         styles['content'],
         'min-h-[theme(spacing.6)] break-words outline-none grow leading-relaxed whitespace-pre-wrap',
-        'pr-2 supports-max:pr-[calc(theme(spacing.2)+max(0px,env(safe-area-inset-right)))]',
+        'pr-2 pr-[calc(theme(spacing.2)+max(0px,env(safe-area-inset-right)))]',
         {
           'cursor-not-allowed': isLoading,
           'line-through text-zinc-400': node.status === TodoNodeStatus.COMPLETED,

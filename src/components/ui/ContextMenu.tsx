@@ -11,7 +11,7 @@ import { forwardRef } from 'react'
 
 import { clst } from 'styles/clst'
 
-const itemClasses = 'block w-full text-left [&[data-highlighted]]:outline-none px-2 py-1 rounded select-none'
+const itemClasses = 'block w-full text-left data-[highlighted]:outline-none px-2 py-1 rounded select-none'
 const contentClasses = 'min-w-[theme(spacing.32)] overflow-hidden rounded-md bg-zinc-700 p-1.5 shadow shadow-black/75'
 
 export const ContextMenu = ({ children, trigger }: ContextMenuProps) => {
@@ -27,8 +27,8 @@ export const ContextMenu = ({ children, trigger }: ContextMenuProps) => {
 
 const Item = forwardRef<HTMLButtonElement, ItemProps>(({ disabled, intent, onClick, text }, forwardedRef) => {
   const buttonClasses = clst(itemClasses, 'font-medium disabled:cursor-not-allowed disabled:opacity-50', {
-    '[&[data-highlighted]]:bg-blue-600': !intent,
-    'text-red-400 [&[data-highlighted]]:bg-red-500 [&[data-highlighted]]:text-red-50': intent === 'error',
+    'data-[highlighted]:bg-blue-600': !intent,
+    'text-red-400 data-[highlighted]:bg-red-500 data-[highlighted]:text-red-50': intent === 'error',
     'disabled:opacity-100 disabled:text-red-400/75': intent === 'error',
   })
 

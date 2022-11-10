@@ -158,7 +158,7 @@ export const Note = ({ id }: NoteProps) => {
         ) : (
           <EditorContent
             editor={editor}
-            className="grid h-full w-full overflow-y-auto supports-max:pb-[max(0px,env(safe-area-inset-bottom))]"
+            className="grid h-full w-full overflow-y-auto pb-[max(0px,env(safe-area-inset-bottom))]"
           />
         )}
         <NoteInspector
