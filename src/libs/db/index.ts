@@ -17,6 +17,9 @@ if (process.env.NODE_ENV !== 'production') {
   global.prisma = prisma
 }
 
+const dbCreateManyErrorRegExp =
+  /^No '\w+' record \(needed to inline the relation on '\w+' record\) was found for a nested createMany on relation '\w+'\.$/
+
 export function handleDbError(error: unknown, options: DbErrorHandlerOptions): never {
   let apiClientErrorMessage: string | undefined
   let apiClientErrorCode: TRPC_ERROR_CODE_KEY | undefined
@@ -38,6 +41,9 @@ export function handleDbError(error: unknown, options: DbErrorHandlerOptions): n
             apiClientErrorCode = 'NOT_FOUND'
           } else if (error.meta.cause === 'Record to update not found.' && options.update) {
             apiClientErrorMessage = options.update
+            apiClientErrorCode = 'NOT_FOUND'
+          } else if (dbCreateManyErrorRegExp.test(error.meta.cause) && options.createMany) {
+            apiClientErrorMessage = options.createMany
             apiClientErrorCode = 'NOT_FOUND'
           }
         }
@@ -64,6 +70,7 @@ function isDbErrorMetaWithCause(meta: unknown): meta is DbErrorMetaWithCause {
 
 // Multi-column constraints should be identified using a string being an underscore separated list of columns.
 interface DbErrorHandlerOptions {
+  createMany?: string
   delete?: string
   unique?: Record<string, string>
   update?: string

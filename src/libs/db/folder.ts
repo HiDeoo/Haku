@@ -121,7 +121,7 @@ async function validateParentFolder(parentId: FolderData['parentId'] | undefined
 }
 
 function getFolderById(id: Folder['id'], userId: UserId): Promise<Folder | null> {
-  return prisma.folder.findFirst({ where: { id, userId } })
+  return prisma.folder.findUnique({ where: { id, userId } })
 }
 
 type UpdateFolderData = Partial<Pick<FolderData, 'name' | 'parentId'>>

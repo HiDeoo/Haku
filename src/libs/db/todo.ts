@@ -1,5 +1,4 @@
-import { FolderType, Prisma, type TodoNode, type Todo } from '@prisma/client'
-import { TRPCError } from '@trpc/server'
+import { FolderType, Prisma, type TodoNode } from '@prisma/client'
 import slug from 'url-slug'
 
 import { API_ERROR_TODO_ALREADY_EXISTS, API_ERROR_TODO_DOES_NOT_EXIST } from 'constants/error'
@@ -76,18 +75,13 @@ export async function getTodosMetadataGroupedByFolder(userId: UserId): Promise<T
 
 export function updateTodo(id: TodoMetadata['id'], userId: UserId, data: UpdateTodoData): Promise<TodoMetadata> {
   return prisma.$transaction(async (prisma) => {
-    const todo = await getTodoById(id, userId)
-
-    if (!todo) {
-      throw new TRPCError({ code: 'NOT_FOUND', message: API_ERROR_TODO_DOES_NOT_EXIST })
-    }
-
     await validateFolder(data.folderId, userId, FolderType.TODO)
 
     try {
       return await prisma.todo.update({
         where: {
           id,
+          userId,
         },
         data: {
           folderId: data.folderId,
@@ -102,27 +96,22 @@ export function updateTodo(id: TodoMetadata['id'], userId: UserId, data: UpdateT
           userId_name: API_ERROR_TODO_ALREADY_EXISTS,
           folderId_userId_name: API_ERROR_TODO_ALREADY_EXISTS,
         },
+        update: API_ERROR_TODO_DOES_NOT_EXIST,
       })
     }
   })
 }
 
-export function removeTodo(id: TodoMetadata['id'], userId: UserId) {
-  return prisma.$transaction(async (prisma) => {
-    const todo = await getTodoById(id, userId)
+export async function removeTodo(id: TodoMetadata['id'], userId: UserId) {
+  await deleteFromCloudinaryByTag(id)
 
-    if (!todo) {
-      throw new TRPCError({ code: 'NOT_FOUND', message: API_ERROR_TODO_DOES_NOT_EXIST })
-    }
-
-    await deleteFromCloudinaryByTag(id)
-
-    return prisma.todo.delete({ where: { id } })
-  })
-}
-
-export function getTodoById(id: Todo['id'], userId: UserId): Promise<Todo | null> {
-  return prisma.todo.findFirst({ where: { id, userId } })
+  try {
+    return await prisma.todo.delete({ where: { id, userId } })
+  } catch (error) {
+    handleDbError(error, {
+      delete: API_ERROR_TODO_DOES_NOT_EXIST,
+    })
+  }
 }
 
 type TodoMetadataGroupedByFolder = Map<TodoMetadata['folderId'], TodoMetadata[]>

@@ -206,12 +206,27 @@ describe('todo.node', () => {
   describe('update', () => {
     test('should not mutate todo nodes not owned by the current user', async () =>
       testApiRoute(async ({ caller }) => {
-        const { id, root } = await createTestTodo({ userId: getTestUser('1').userId })
+        const { id, nodes, root } = await createTestTodo({ userId: getTestUser('1').userId })
 
         const { id: nodeId } = await createTestTodoNode({ todoId: id })
 
         await expect(() =>
           caller.mutation('todo.node.update', { id, children: { root: [...root, nodeId] }, mutations: baseMutation })
+        ).rejects.toThrow(API_ERROR_TODO_DOES_NOT_EXIST)
+
+        const rootNode = nodes[0]
+
+        assert(rootNode)
+
+        await expect(() =>
+          caller.mutation('todo.node.update', {
+            id,
+            children: { root: [...root, nodeId] },
+            mutations: {
+              ...baseMutation,
+              update: { [rootNode.id]: { ...rootNode } },
+            },
+          })
         ).rejects.toThrow(API_ERROR_TODO_DOES_NOT_EXIST)
       }))
 
