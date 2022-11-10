@@ -56,7 +56,7 @@ function getSession({ session, user }: Parameters<CallbacksOptions['session']>[0
 }
 
 async function canLogin({ email, user }: Parameters<CallbacksOptions['signIn']>[0]) {
-  if (email.verificationRequest) {
+  if (email?.verificationRequest) {
     const allowedEmail = await getAllowedEmailByEmail(user.email)
 
     if (!allowedEmail) {
