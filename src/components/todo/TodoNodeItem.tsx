@@ -324,11 +324,9 @@ export const TodoNodeItem = memo(
         styles['content'],
         'min-h-[theme(spacing.6)] break-words outline-none grow leading-relaxed whitespace-pre-wrap',
         'pr-2 pr-[calc(theme(spacing.2)+max(0px,env(safe-area-inset-right)))]',
-        {
-          'cursor-not-allowed': isLoading,
-          'line-through text-zinc-400': node.status === TodoNodeStatus.COMPLETED,
-          'line-through decoration-wavy text-zinc-500': node.status === TodoNodeStatus.CANCELLED,
-        }
+        isLoading && 'cursor-not-allowed',
+        node.status === TodoNodeStatus.COMPLETED && 'line-through text-zinc-400',
+        node.status === TodoNodeStatus.CANCELLED && 'line-through decoration-wavy text-zinc-500'
       )
 
       const levelOffset = level * TODO_NODE_ITEM_LEVEL_OFFSET_IN_PIXELS + 1

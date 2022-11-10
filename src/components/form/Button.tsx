@@ -39,19 +39,17 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     }
 
     const buttonClasses = clst(
-      {
-        'bg-zinc-600 hover:bg-zinc-500 disabled:bg-zinc-600/50': !primary && !isPressed,
-        'bg-blue-600 hover:bg-blue-500 disabled:bg-blue-500/60': primary && !isPressed,
-        'bg-zinc-400': !primary && isPressed,
-        'bg-blue-400': primary && isPressed,
-      },
+      !primary && !isPressed && 'bg-zinc-600 hover:bg-zinc-500 disabled:bg-zinc-600/50',
+      primary && !isPressed && 'bg-blue-600 hover:bg-blue-500 disabled:bg-blue-500/60',
+      !primary && isPressed && 'bg-zinc-400',
+      primary && isPressed && 'bg-blue-400',
       'rounded-md shadow-sm shadow-zinc-900/50 disabled:shadow-none select-none',
       'disabled:cursor-not-allowed disabled:opacity-50',
       'focus:outline-none',
       'focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-zinc-800 focus-visible:ring-offset-2',
       'min-w-[75px] px-3.5 py-1.5 mx-1.5 first-of-type:ml-0 last-of-type:mr-0',
       className,
-      pressedClassName && { [pressedClassName]: isPressed }
+      typeof pressedClassName !== 'undefined' && isPressed && pressedClassName
     )
 
     return (

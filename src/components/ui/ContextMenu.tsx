@@ -26,11 +26,13 @@ export const ContextMenu = ({ children, trigger }: ContextMenuProps) => {
 }
 
 const Item = forwardRef<HTMLButtonElement, ItemProps>(({ disabled, intent, onClick, text }, forwardedRef) => {
-  const buttonClasses = clst(itemClasses, 'font-medium disabled:cursor-not-allowed disabled:opacity-50', {
-    'data-[highlighted]:bg-blue-600': !intent,
-    'text-red-400 data-[highlighted]:bg-red-500 data-[highlighted]:text-red-50': intent === 'error',
-    'disabled:opacity-100 disabled:text-red-400/75': intent === 'error',
-  })
+  const buttonClasses = clst(
+    itemClasses,
+    'font-medium disabled:cursor-not-allowed disabled:opacity-50',
+    !intent && 'data-[highlighted]:bg-blue-600',
+    intent === 'error' && 'text-red-400 data-[highlighted]:bg-red-500 data-[highlighted]:text-red-50',
+    intent === 'error' && 'disabled:opacity-100 disabled:text-red-400/75'
+  )
 
   return (
     <MenuItem asChild disabled={disabled}>

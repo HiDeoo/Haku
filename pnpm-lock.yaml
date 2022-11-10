@@ -48,7 +48,6 @@ specifiers:
   '@types/throttle-debounce': 5.0.0
   '@types/ua-parser-js': 0.7.36
   autoprefixer: 10.4.13
-  clsx: 1.2.1
   cuid: 2.1.8
   docker-compose: 0.23.17
   dotenv-cli: 6.0.0
@@ -129,7 +128,6 @@ dependencies:
   '@trpc/next': 9.25.3_nccy42hlcgktimuh7e7ocb73oa
   '@trpc/react': 9.25.3_gbdixlzru7ewddg4goqktyr6f4
   '@trpc/server': 9.25.3
-  clsx: 1.2.1
   cuid: 2.1.8
   downshift: 7.0.1_react@18.2.0
   file-type: 16.5.3

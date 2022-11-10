@@ -35,14 +35,18 @@ export const ContentTypeSwitch = () => {
     sidebarCollapsed ? 'grid-rows-2' : 'grid-cols-2'
   )
   const nodeClasses = 'motion-safe:transition-[250ms] origin-center z-10'
-  const leftNodeClasses = clst(nodeClasses, 'justify-self-start', {
-    'translate-x-[150%] opacity-0': !sidebarCollapsed && !isBrowsingNotes,
-    'translate-y-[150%] opacity-0': sidebarCollapsed && !isBrowsingNotes,
-  })
-  const rightNodeClasses = clst(nodeClasses, 'justify-self-end', {
-    '-translate-x-[150%] opacity-0': !sidebarCollapsed && isBrowsingNotes,
-    '-translate-y-[150%] opacity-0': sidebarCollapsed && isBrowsingNotes,
-  })
+  const leftNodeClasses = clst(
+    nodeClasses,
+    'justify-self-start',
+    !sidebarCollapsed && !isBrowsingNotes && 'translate-x-[150%] opacity-0',
+    sidebarCollapsed && !isBrowsingNotes && 'translate-y-[150%] opacity-0'
+  )
+  const rightNodeClasses = clst(
+    nodeClasses,
+    'justify-self-end',
+    !sidebarCollapsed && isBrowsingNotes && '-translate-x-[150%] opacity-0',
+    sidebarCollapsed && isBrowsingNotes && '-translate-y-[150%] opacity-0'
+  )
 
   return (
     <>

@@ -50,7 +50,6 @@
     "@trpc/next": "9.25.3",
     "@trpc/react": "9.25.3",
     "@trpc/server": "9.25.3",
-    "clsx": "1.2.1",
     "cuid": "2.1.8",
     "downshift": "7.0.1",
     "file-type": "16.5.3",
