@@ -8,11 +8,12 @@ export const SyncReport = ({ error, isLoading, lastSync }: SyncReportProps) => {
   ) : (
     'Sync issue'
   )
+
   const syncClasses = clst(
     'shrink-0 text-xs italic',
     ((!error && !lastSync) || isLoading) && 'hidden',
     lastSync && 'text-zinc-500',
-    typeof error !== 'undefined' && 'text-red-500 font-semibold'
+    error != null && 'text-red-500 font-semibold'
   )
 
   return (
