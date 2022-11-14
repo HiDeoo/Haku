@@ -126,6 +126,13 @@
     "node": "16.x"
   },
   "packageManager": "pnpm@7.13.0",
+  "pnpm": {
+    "updateConfig": {
+      "ignoreDependencies": [
+        "@types/node"
+      ]
+    }
+  },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
   },
