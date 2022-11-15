@@ -71,7 +71,7 @@ const mixedSearchFilesTypes = [
 describe('search', () => {
   test(`should require a search query of at least ${SEARCH_QUERY_MIN_LENGTH} characters long`, () =>
     testApiRoute(async ({ caller }) => {
-      await expect(() => caller.query('search', { q: 'ab', types: allSearchFilesTypes })).rejects.toThrow()
+      await expect(() => caller.search({ q: 'ab', types: allSearchFilesTypes })).rejects.toThrow()
     }))
 
   test('should return an empty list of result', () =>
@@ -79,7 +79,7 @@ describe('search', () => {
       await createTestNote()
       await createTestTodo()
 
-      const res = await caller.query('search', { q: 'amazing', types: allSearchFilesTypes })
+      const res = await caller.search({ q: 'amazing', types: allSearchFilesTypes })
 
       expect(res.length).toBe(0)
     }))
@@ -88,7 +88,7 @@ describe('search', () => {
     testApiRoute(async ({ caller }) => {
       const { id } = await createTestInboxEntry({ text: 'amazing text' })
 
-      const res = await caller.query('search', { q: 'amazing', types: allSearchFilesTypes })
+      const res = await caller.search({ q: 'amazing', types: allSearchFilesTypes })
 
       expect(res.length).toBe(1)
 
@@ -100,7 +100,7 @@ describe('search', () => {
     testApiRoute(async ({ caller }) => {
       const { id } = await createTestNote({ name: 'amazing name' })
 
-      const res = await caller.query('search', { q: 'amazing', types: allSearchFilesTypes })
+      const res = await caller.search({ q: 'amazing', types: allSearchFilesTypes })
 
       expect(res.length).toBe(1)
 
@@ -111,7 +111,7 @@ describe('search', () => {
     testApiRoute(async ({ caller }) => {
       const { id } = await createTestNote({ data: 'amazing text' })
 
-      const res = await caller.query('search', { q: 'amazing', types: allSearchFilesTypes })
+      const res = await caller.search({ q: 'amazing', types: allSearchFilesTypes })
 
       expect(res.length).toBe(1)
 
@@ -122,7 +122,7 @@ describe('search', () => {
     testApiRoute(async ({ caller }) => {
       const { id } = await createTestTodo({ name: 'amazing name' })
 
-      const res = await caller.query('search', { q: 'amazing', types: allSearchFilesTypes })
+      const res = await caller.search({ q: 'amazing', types: allSearchFilesTypes })
 
       expect(res.length).toBe(1)
 
@@ -134,7 +134,7 @@ describe('search', () => {
       const { id } = await createTestTodo()
       await createTestTodoNode({ todoId: id, content: 'amazing content' })
 
-      const res = await caller.query('search', { q: 'amazing', types: allSearchFilesTypes })
+      const res = await caller.search({ q: 'amazing', types: allSearchFilesTypes })
 
       expect(res.length).toBe(1)
 
@@ -146,7 +146,7 @@ describe('search', () => {
       const { id } = await createTestTodo()
       await createTestTodoNode({ todoId: id, noteText: 'amazing text' })
 
-      const res = await caller.query('search', { q: 'amazing', types: allSearchFilesTypes })
+      const res = await caller.search({ q: 'amazing', types: allSearchFilesTypes })
 
       expect(res.length).toBe(1)
 
@@ -157,7 +157,7 @@ describe('search', () => {
     testApiRoute(async ({ caller }) => {
       const { id } = await createTestNote({ name: 'amazing name', data: 'amazing content' })
 
-      const res = await caller.query('search', { q: 'amazing', types: allSearchFilesTypes })
+      const res = await caller.search({ q: 'amazing', types: allSearchFilesTypes })
 
       expect(res.length).toBe(1)
 
@@ -171,7 +171,7 @@ describe('search', () => {
       await createTestTodoNode({ todoId: id })
       await createTestTodoNode({ todoId: id, noteText: 'amazing text' })
 
-      const res = await caller.query('search', { q: 'amazing', types: allSearchFilesTypes })
+      const res = await caller.search({ q: 'amazing', types: allSearchFilesTypes })
 
       expect(res.length).toBe(1)
 
@@ -191,7 +191,7 @@ describe('search', () => {
       const { id: inbox_entry_0_id } = await createTestInboxEntry({ text: 'amazing text' })
       await createTestInboxEntry({ text: 'amazing name', userId: userId1 })
 
-      const res = await caller.query('search', { q: 'amazing', types: allSearchFilesTypes })
+      const res = await caller.search({ q: 'amazing', types: allSearchFilesTypes })
 
       expect(res.length).toBe(3)
 
@@ -219,7 +219,7 @@ describe('search', () => {
       const { id: inbox_entry_0_id } = await createTestInboxEntry({ text: 'amazing text' })
       await createTestInboxEntry()
 
-      const res = await caller.query('search', { q: 'amazing', types: allSearchFilesTypes })
+      const res = await caller.search({ q: 'amazing', types: allSearchFilesTypes })
 
       expect(res.length).toBe(6)
 
@@ -243,7 +243,7 @@ describe('search', () => {
 
       const { id: inbox_entry_0_id } = await createTestInboxEntry({ text: 'amazing text' })
 
-      const res = await caller.query('search', { q: 'amazing', types: allSearchFilesTypes })
+      const res = await caller.search({ q: 'amazing', types: allSearchFilesTypes })
 
       expect(res.length).toBe(5)
 
@@ -269,7 +269,7 @@ describe('search', () => {
 
       const { id: inbox_entry_0_id } = await createTestInboxEntry({ text: 'amazing text' })
 
-      const res = await caller.query('search', { q: 'amazing', types: allSearchFilesTypes })
+      const res = await caller.search({ q: 'amazing', types: allSearchFilesTypes })
 
       expect(res.length).toBe(6)
 
@@ -293,7 +293,7 @@ describe('search', () => {
 
       const { id: inbox_entry_0_id } = await createTestInboxEntry({ text: 'amazing text' })
 
-      const res = await caller.query('search', { q: 'amazing', types: allSearchFilesTypes })
+      const res = await caller.search({ q: 'amazing', types: allSearchFilesTypes })
 
       expect(res.length).toBe(5)
 
@@ -315,7 +315,7 @@ describe('search', () => {
 
       const { id: inbox_entry_0_id } = await createTestInboxEntry({ text: 'AMaziNG text' })
 
-      const res = await caller.query('search', { q: 'amazing', types: allSearchFilesTypes })
+      const res = await caller.search({ q: 'amazing', types: allSearchFilesTypes })
 
       expect(res.length).toBe(4)
 
@@ -336,7 +336,7 @@ describe('search', () => {
 
       const { id: inbox_entry_0_id } = await createTestInboxEntry({ text: 'Amazing text' })
 
-      const res = await caller.query('search', { q: 'AMAZING', types: allSearchFilesTypes })
+      const res = await caller.search({ q: 'AMAZING', types: allSearchFilesTypes })
 
       expect(res.length).toBe(4)
 
@@ -372,7 +372,7 @@ describe('search', () => {
       await createTestInboxEntry({ text: 'name' })
       const { id: inbox_entry_3_id } = await createTestInboxEntry({ text: 'amazing name' })
 
-      const res = await caller.query('search', { q: 'amazing name', types: allSearchFilesTypes })
+      const res = await caller.search({ q: 'amazing name', types: allSearchFilesTypes })
 
       expect(res.length).toBe(8)
 
@@ -412,7 +412,7 @@ describe('search', () => {
       await createTestInboxEntry({ text: 'name' })
       const { id: inbox_entry_3_id } = await createTestInboxEntry({ text: 'amazing name' })
 
-      const res = await caller.query('search', { q: '"amazing name"', types: allSearchFilesTypes })
+      const res = await caller.search({ q: '"amazing name"', types: allSearchFilesTypes })
 
       expect(res.length).toBe(4)
 
@@ -448,7 +448,7 @@ describe('search', () => {
       const { id: inbox_entry_2_id } = await createTestInboxEntry({ text: 'name' })
       const { id: inbox_entry_3_id } = await createTestInboxEntry({ text: 'amazing name' })
 
-      const res = await caller.query('search', { q: 'amazing OR name', types: allSearchFilesTypes })
+      const res = await caller.search({ q: 'amazing OR name', types: allSearchFilesTypes })
 
       expect(res.length).toBe(16)
 
@@ -496,7 +496,7 @@ describe('search', () => {
       await createTestInboxEntry({ text: 'name' })
       await createTestInboxEntry({ text: 'amazing name' })
 
-      const res = await caller.query('search', { q: 'amazing -name', types: allSearchFilesTypes })
+      const res = await caller.search({ q: 'amazing -name', types: allSearchFilesTypes })
 
       expect(res.length).toBe(4)
 
@@ -523,7 +523,7 @@ describe('search', () => {
 
       const { id: inbox_entry_0_id } = await createTestInboxEntry({ text: highlightedContent })
 
-      const res = await caller.query('search', { q: 'amazing', types: allSearchFilesTypes })
+      const res = await caller.search({ q: 'amazing', types: allSearchFilesTypes })
 
       expect(res.length).toBe(6)
 
@@ -557,7 +557,7 @@ describe('search', () => {
     testApiRoute(async ({ caller }) => {
       const { id } = await createTestNote({ data: 'amazing super name' })
 
-      const res = await caller.query('search', { q: 'amazing name', types: allSearchFilesTypes })
+      const res = await caller.search({ q: 'amazing name', types: allSearchFilesTypes })
 
       expect(res.length).toBe(1)
 
@@ -571,7 +571,7 @@ describe('search', () => {
       await createTestTodo({ name: 'amazing name' })
       await createTestInboxEntry({ text: 'amazing name' })
 
-      const res = await caller.query('search', { q: 'amazing', types: allSearchFilesTypes })
+      const res = await caller.search({ q: 'amazing', types: allSearchFilesTypes })
 
       expect(res.length).toBe(3)
 
@@ -584,7 +584,7 @@ describe('search', () => {
     testApiRoute(async ({ caller }) => {
       await createTestInboxEntry({ text: 'amazing name' })
 
-      const res = await caller.query('search', { q: 'amazing', types: allSearchFilesTypes })
+      const res = await caller.search({ q: 'amazing', types: allSearchFilesTypes })
 
       expect(res.length).toBe(1)
 
@@ -595,7 +595,7 @@ describe('search', () => {
   test('should require at least 1 file type', () =>
     testApiRoute(async ({ caller }) => {
       await expect(() =>
-        caller.query('search', {
+        caller.search({
           q: 'amazing',
           types: {
             [SearchableContentType.INBOX]: false,
@@ -616,7 +616,7 @@ describe('search', () => {
         .filter(([, value]) => value === true)
         .map(([key]) => key)
 
-      const res = await caller.query('search', { q: 'amazing', types: searchFilesTypes })
+      const res = await caller.search({ q: 'amazing', types: searchFilesTypes })
 
       expect(res.length).toBe(expectedSearchFileTypes.length)
 

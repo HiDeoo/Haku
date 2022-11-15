@@ -1,13 +1,10 @@
 import { getFiles } from 'libs/db/file'
-import { createRouter } from 'server'
-import { withAuth } from 'server/middlewares/withAuth'
+import { authProcedure, router } from 'server'
 
-export const fileRouter = createRouter()
-  .middleware(withAuth)
-  .query('list', {
-    async resolve({ ctx }) {
-      const files = await getFiles(ctx.user.id)
+export const fileRouter = router({
+  list: authProcedure.query(async ({ ctx }) => {
+    const files = await getFiles(ctx.user.id)
 
-      return files
-    },
-  })
+    return files
+  }),
+})

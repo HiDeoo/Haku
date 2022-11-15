@@ -34,7 +34,7 @@ export const Note = ({ id }: NoteProps) => {
   useNavigationPrompt(!editorState.pristine)
 
   const { data, isLoading } = useNoteQuery(id, { enabled: editorState.pristine })
-  const { isLoading: isSaving, mutate } = trpc.useMutation(['note.update'])
+  const { isLoading: isSaving, mutate } = trpc.note.update.useMutation()
 
   const updateToc = useCallback(({ editor }: EditorEvents['create'], emitUpdate = true) => {
     const toc = getToc(editor)

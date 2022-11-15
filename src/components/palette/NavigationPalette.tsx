@@ -20,7 +20,7 @@ export const NavigationPalette = () => {
 
   const [opened, setOpened] = useAtom(navigationPaletteOpenedAtom)
 
-  const { data, isLoading } = trpc.useQuery(['file.list'], { enabled: opened })
+  const { data, isLoading } = trpc.file.list.useQuery(undefined, { enabled: opened })
 
   const fileHistory = useAtomValue(fileHistoryAtom)
 

@@ -26,7 +26,7 @@ describe('folder', () => {
         const name = 'folder'
         const type = FolderType.NOTE
 
-        const res = await caller.mutation('folder.add', { name, type })
+        const res = await caller.folder.add({ name, type })
 
         const testFolder = await getTestFolder(res.id)
 
@@ -42,7 +42,7 @@ describe('folder', () => {
         const name = 'folder'
         const type = FolderType.NOTE
 
-        const res = await caller.mutation('folder.add', { name, type, parentId })
+        const res = await caller.folder.add({ name, type, parentId })
 
         const testFolder = await getTestFolder(res.id)
 
@@ -57,7 +57,7 @@ describe('folder', () => {
         const type = FolderType.NOTE
         const parentId = cuid()
 
-        await expect(() => caller.mutation('folder.add', { name, type, parentId })).rejects.toThrow(
+        await expect(() => caller.folder.add({ name, type, parentId })).rejects.toThrow(
           API_ERROR_FOLDER_PARENT_DOES_NOT_EXIST
         )
 
@@ -73,7 +73,7 @@ describe('folder', () => {
         const name = 'folder'
         const type = FolderType.NOTE
 
-        await expect(() => caller.mutation('folder.add', { name, type, parentId })).rejects.toThrow(
+        await expect(() => caller.folder.add({ name, type, parentId })).rejects.toThrow(
           API_ERROR_FOLDER_PARENT_DOES_NOT_EXIST
         )
 
@@ -89,7 +89,7 @@ describe('folder', () => {
         const name = 'folder'
         const type = FolderType.NOTE
 
-        await expect(() => caller.mutation('folder.add', { name, type, parentId })).rejects.toThrow(
+        await expect(() => caller.folder.add({ name, type, parentId })).rejects.toThrow(
           API_ERROR_FOLDER_PARENT_INVALID_TYPE
         )
 
@@ -103,9 +103,7 @@ describe('folder', () => {
         await createTestTodoFolder()
         const { name, type } = await createTestTodoFolder()
 
-        await expect(() => caller.mutation('folder.add', { name, type })).rejects.toThrow(
-          API_ERROR_FOLDER_ALREADY_EXISTS
-        )
+        await expect(() => caller.folder.add({ name, type })).rejects.toThrow(API_ERROR_FOLDER_ALREADY_EXISTS)
 
         const testFolders = await getTestFolders({ name, type })
 
@@ -117,9 +115,7 @@ describe('folder', () => {
         const { id: parentId } = await createTestNoteFolder()
         const { name, type } = await createTestNoteFolder({ parentId })
 
-        await expect(() => caller.mutation('folder.add', { name, type, parentId })).rejects.toThrow(
-          API_ERROR_FOLDER_ALREADY_EXISTS
-        )
+        await expect(() => caller.folder.add({ name, type, parentId })).rejects.toThrow(API_ERROR_FOLDER_ALREADY_EXISTS)
 
         const testFolders = await getTestFolders({ name, type, parentId })
 
@@ -135,7 +131,7 @@ describe('folder', () => {
 
         const newName = 'newName'
 
-        const res = await caller.mutation('folder.update', { id, name: newName })
+        const res = await caller.folder.update({ id, name: newName })
 
         expect(res.name).toBe(newName)
 
@@ -150,9 +146,7 @@ describe('folder', () => {
         const { id, name } = await createTestNoteFolder()
         const { name: newName } = await createTestNoteFolder()
 
-        await expect(() => caller.mutation('folder.update', { id, name: newName })).rejects.toThrow(
-          API_ERROR_FOLDER_ALREADY_EXISTS
-        )
+        await expect(() => caller.folder.update({ id, name: newName })).rejects.toThrow(API_ERROR_FOLDER_ALREADY_EXISTS)
 
         const testFolder = await getTestFolder(id)
 
@@ -164,7 +158,7 @@ describe('folder', () => {
         const { id: newParentId } = await createTestNoteFolder()
         const { id, name } = await createTestNoteFolder()
 
-        const res = await caller.mutation('folder.update', { id, parentId: newParentId })
+        const res = await caller.folder.update({ id, parentId: newParentId })
 
         expect(res.parentId).toBe(newParentId)
 
@@ -180,7 +174,7 @@ describe('folder', () => {
         const { id: parentId } = await createTestNoteFolder()
         const { id, name } = await createTestNoteFolder({ parentId })
 
-        const res = await caller.mutation('folder.update', { id, parentId: null })
+        const res = await caller.folder.update({ id, parentId: null })
 
         expect(res.parentId).toBeNull()
 
@@ -198,7 +192,7 @@ describe('folder', () => {
 
         const { id, parentId } = await createTestNoteFolder({ name: 'folder' })
 
-        await expect(() => caller.mutation('folder.update', { id, parentId: newParentId })).rejects.toThrow(
+        await expect(() => caller.folder.update({ id, parentId: newParentId })).rejects.toThrow(
           API_ERROR_FOLDER_ALREADY_EXISTS
         )
 
@@ -212,7 +206,7 @@ describe('folder', () => {
       testApiRoute(async ({ caller }) => {
         const { id, parentId } = await createTestNoteFolder()
 
-        await expect(() => caller.mutation('folder.update', { id, parentId: cuid() })).rejects.toThrow(
+        await expect(() => caller.folder.update({ id, parentId: cuid() })).rejects.toThrow(
           API_ERROR_FOLDER_PARENT_DOES_NOT_EXIST
         )
 
@@ -227,7 +221,7 @@ describe('folder', () => {
         const { id: newParentId } = await createTestNoteFolder({ userId: getTestUser('1').userId })
         const { id, parentId } = await createTestNoteFolder()
 
-        await expect(() => caller.mutation('folder.update', { id, parentId: newParentId })).rejects.toThrow(
+        await expect(() => caller.folder.update({ id, parentId: newParentId })).rejects.toThrow(
           API_ERROR_FOLDER_PARENT_DOES_NOT_EXIST
         )
 
@@ -242,7 +236,7 @@ describe('folder', () => {
         const { id: newParentId } = await createTestTodoFolder()
         const { id, parentId } = await createTestNoteFolder()
 
-        await expect(() => caller.mutation('folder.update', { id, parentId: newParentId })).rejects.toThrow(
+        await expect(() => caller.folder.update({ id, parentId: newParentId })).rejects.toThrow(
           API_ERROR_FOLDER_PARENT_INVALID_TYPE
         )
 
@@ -259,7 +253,7 @@ describe('folder', () => {
 
         const newName = 'newName'
 
-        const res = await caller.mutation('folder.update', { id, name: newName, parentId: newParentId })
+        const res = await caller.folder.update({ id, name: newName, parentId: newParentId })
 
         expect(res.name).toBe(newName)
         expect(res.parentId).toBe(newParentId)
@@ -275,7 +269,7 @@ describe('folder', () => {
       testApiRoute(async ({ caller }) => {
         const { id, name } = await createTestNoteFolder({ userId: getTestUser('1').userId })
 
-        await expect(() => caller.mutation('folder.update', { id, name: 'newName' })).rejects.toThrow(
+        await expect(() => caller.folder.update({ id, name: 'newName' })).rejects.toThrow(
           API_ERROR_FOLDER_DOES_NOT_EXIST
         )
 
@@ -289,7 +283,7 @@ describe('folder', () => {
       testApiRoute(async ({ caller }) => {
         const newName = 'newName'
 
-        await expect(() => caller.mutation('folder.update', { id: cuid(), name: newName })).rejects.toThrow(
+        await expect(() => caller.folder.update({ id: cuid(), name: newName })).rejects.toThrow(
           API_ERROR_FOLDER_DOES_NOT_EXIST
         )
 
@@ -306,7 +300,7 @@ describe('folder', () => {
       testApiRoute(async ({ caller }) => {
         const { id } = await createTestNoteFolder()
 
-        await caller.mutation('folder.delete', { id })
+        await caller.folder.delete({ id })
 
         const testFolder = await getTestFolder(id)
 
@@ -356,7 +350,7 @@ describe('folder', () => {
         const { id: note_0_id } = await createTestNote()
         const { id: note_1_id } = await createTestNote()
 
-        await caller.mutation('folder.delete', { id: folder_0_id })
+        await caller.folder.delete({ id: folder_0_id })
 
         const remainingFolderIds = [folder_1_id, folder_1_0_id]
         const testFolders = await getTestFolders({ type: FolderType.NOTE })
@@ -402,7 +396,7 @@ describe('folder', () => {
         const { id: todo_0_id } = await createTestTodo()
         const { id: todo_1_id } = await createTestTodo()
 
-        await caller.mutation('folder.delete', { id: folder_0_0_id })
+        await caller.folder.delete({ id: folder_0_0_id })
 
         const remainingFolderIds = [folder_0_id]
         const testFolders = await getTestFolders({ type: FolderType.TODO })
@@ -421,7 +415,7 @@ describe('folder', () => {
       testApiRoute(async ({ caller }) => {
         const { id } = await createTestNoteFolder({ userId: getTestUser('1').userId })
 
-        await expect(() => caller.mutation('folder.delete', { id })).rejects.toThrow(API_ERROR_FOLDER_DOES_NOT_EXIST)
+        await expect(() => caller.folder.delete({ id })).rejects.toThrow(API_ERROR_FOLDER_DOES_NOT_EXIST)
 
         const testFolder = await getTestFolder(id)
 
@@ -432,7 +426,7 @@ describe('folder', () => {
       testApiRoute(async ({ caller }) => {
         const id = cuid()
 
-        await expect(() => caller.mutation('folder.delete', { id })).rejects.toThrow(API_ERROR_FOLDER_DOES_NOT_EXIST)
+        await expect(() => caller.folder.delete({ id })).rejects.toThrow(API_ERROR_FOLDER_DOES_NOT_EXIST)
 
         const testFolder = await getTestFolder(id)
 

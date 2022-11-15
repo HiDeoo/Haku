@@ -51,6 +51,8 @@ export const ContentModal = () => {
     const folderId = folder.id === ROOT_FOLDER_ID ? undefined : folder.id
 
     if (isUpdating) {
+      // @ts-expect-error - tRPC v10 fails to properly infer the options type like v9 for merged updaters with different
+      // input shapes.
       mutateUpdate({ ...data, folderId, id: content.id }, { onSuccess: handleMutationSuccess })
     } else {
       mutateAdd({ ...data, folderId }, { onSuccess: handleMutationSuccess })

@@ -12,7 +12,7 @@ import { useGlobalShortcuts } from 'hooks/useGlobalShortcuts'
 import { useIdle } from 'hooks/useIdle'
 import { useNetworkStatus } from 'hooks/useNetworkStatus'
 import { type TodoMetadata } from 'libs/db/todo'
-import { type InferMutationInput, trpc } from 'libs/trpc'
+import { type RouterInput, trpc } from 'libs/trpc'
 
 export const TodoNavbar = ({ disabled, focusTodoNode, todoId, todoName }: TodoNavbarProps) => {
   const { offline } = useNetworkStatus()
@@ -20,7 +20,7 @@ export const TodoNavbar = ({ disabled, focusTodoNode, todoId, todoName }: TodoNa
   const [editorState, setEditorState] = useAtom(todoEditorStateAtom)
   const resetMutations = useResetAtom(todoNodeMutationsAtom)
 
-  const { isLoading, mutate } = trpc.useMutation(['todo.node.update'])
+  const { isLoading, mutate } = trpc.todo.node.update.useMutation()
 
   const navbarDisabled = disabled || isLoading
 
@@ -56,7 +56,7 @@ export const TodoNavbar = ({ disabled, focusTodoNode, todoId, todoName }: TodoNa
 
     const { children, mutations, nodes } = await getTodoAtoms()
 
-    const mutationData: InferMutationInput<'todo.node.update'> = {
+    const mutationData: RouterInput['todo']['node']['update'] = {
       id: todoId,
       children: { root: children.root },
       mutations: { delete: [], insert: {}, update: {} },

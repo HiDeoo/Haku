@@ -11,23 +11,27 @@ import { isNetworkError, trpc } from 'libs/trpc'
 export function useTodoQuery(id: TodoMetadata['id'], options: UseTodoQueryOptions) {
   const setContentAvailableOffline = useSetAtom(contentAvailableOfflineAtom)
 
-  const { cancelQuery } = trpc.useContext()
+  const utils = trpc.useContext()
+  const cancelTodoNodeById = utils.todo.node.byId.cancel
 
   useEffect(() => {
     if (!options.enabled) {
-      cancelQuery(['todo.node.byId'])
+      cancelTodoNodeById()
     }
-  }, [cancelQuery, options.enabled])
+  }, [cancelTodoNodeById, options.enabled])
 
-  return trpc.useQuery(['todo.node.byId', { id }], {
-    ...options,
-    onSettled: async () => {
-      const isCached = await isResourceCached(SW_CACHES.Api, '/api/trpc/todo.node.byId', { id })
+  return trpc.todo.node.byId.useQuery(
+    { id },
+    {
+      ...options,
+      onSettled: async () => {
+        const isCached = await isResourceCached(SW_CACHES.Api, '/api/trpc/todo.node.byId', { id })
 
-      setContentAvailableOffline(isCached)
-    },
-    useErrorBoundary: isNetworkError,
-  })
+        setContentAvailableOffline(isCached)
+      },
+      useErrorBoundary: isNetworkError,
+    }
+  )
 }
 
 interface UseTodoQueryOptions {

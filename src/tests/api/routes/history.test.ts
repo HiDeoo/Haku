@@ -8,7 +8,7 @@ import { createTestNote, createTestTodo } from 'tests/api/db'
 describe('history', () => {
   test('should return an empty history', () =>
     testApiRoute(async ({ caller }) => {
-      const res = await caller.query('history')
+      const res = await caller.history()
 
       expect(isEmpty(res.notes)).toBe(true)
       expect(isEmpty(res.todos)).toBe(true)
@@ -18,7 +18,7 @@ describe('history', () => {
     testApiRoute(async ({ caller }) => {
       const { id: todo_0_id } = await createTestTodo()
 
-      const res = await caller.query('history')
+      const res = await caller.history()
 
       expect(isEmpty(res.notes)).toBe(true)
 
@@ -31,7 +31,7 @@ describe('history', () => {
     testApiRoute(async ({ caller }) => {
       const { id: note_0_id } = await createTestNote()
 
-      const res = await caller.query('history')
+      const res = await caller.history()
 
       assert(isNotEmpty(res.notes))
 
@@ -45,7 +45,7 @@ describe('history', () => {
       const { id: note_0_id, name: note_0_name, slug: note_0_slug } = await createTestNote()
       const { id: todo_0_id, name: todo_0_name, slug: todo_0_slug } = await createTestTodo()
 
-      const res = await caller.query('history')
+      const res = await caller.history()
 
       assert(isNotEmpty(res.notes))
 
@@ -74,7 +74,7 @@ describe('history', () => {
       const { id: todo_2_id } = await createTestTodo()
       const { id: todo_3_id } = await createTestTodo()
 
-      const res = await caller.query('history')
+      const res = await caller.history()
 
       expect(res.notes[0]?.id).toBe(note_3_id)
       expect(res.notes[1]?.id).toBe(note_2_id)
@@ -94,7 +94,7 @@ describe('history', () => {
         await createTestTodo()
       }
 
-      const res = await caller.query('history')
+      const res = await caller.history()
 
       expect(res.notes.length).toBe(HISTORY_RESULT_LIMIT_PER_TYPE)
 
@@ -109,7 +109,7 @@ describe('history', () => {
       const { id: todo_0_id } = await createTestTodo()
       await createTestTodo({ userId: getTestUser('1').userId })
 
-      const res = await caller.query('history')
+      const res = await caller.history()
 
       expect(res.notes.length).toBe(1)
       expect(res.notes[0]?.id).toBe(note_0_id)

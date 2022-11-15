@@ -1,4 +1,4 @@
-import { TRPCClientError } from '@trpc/react'
+import { TRPCClientError } from '@trpc/react-query'
 
 import { Callout } from 'components/form/Callout'
 

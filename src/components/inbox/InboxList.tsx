@@ -4,7 +4,7 @@ import { isEmpty } from 'libs/array'
 import { isNetworkError, trpc } from 'libs/trpc'
 
 export const InboxList = () => {
-  const { data, isLoading } = trpc.useQuery(['inbox.list'], { useErrorBoundary: isNetworkError })
+  const { data, isLoading } = trpc.inbox.list.useQuery(undefined, { useErrorBoundary: isNetworkError })
 
   if (!isLoading && isEmpty(data)) {
     return <Drawer.Nis text="Start by creating a new inbox entry." />

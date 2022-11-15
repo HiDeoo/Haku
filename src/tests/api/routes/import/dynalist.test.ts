@@ -21,15 +21,15 @@ describe('import', () => {
   describe('dynalist', () => {
     test('should not import from an invalid OPML', () =>
       testApiRoute(async ({ caller }) => {
-        await expect(() =>
-          caller.mutation('import.dynalist', { opml: '<?xml version="1.0" encoding="utf-8"?>' })
-        ).rejects.toThrow(API_ERROR_IMPORT_DYNALIST_INVALID_OPML)
+        await expect(() => caller.import.dynalist({ opml: '<?xml version="1.0" encoding="utf-8"?>' })).rejects.toThrow(
+          API_ERROR_IMPORT_DYNALIST_INVALID_OPML
+        )
       }))
 
     test('should not import from an empty OPML', () =>
       testApiRoute(async ({ caller }) => {
         await expect(() =>
-          caller.mutation('import.dynalist', {
+          caller.import.dynalist({
             opml: `<?xml version="1.0" encoding="utf-8"?>
           <opml version="2.0">
             ${opmlHead}
@@ -43,7 +43,7 @@ describe('import', () => {
     test('should not import from an OPML with multiple root entries', () =>
       testApiRoute(async ({ caller }) => {
         await expect(() =>
-          caller.mutation('import.dynalist', {
+          caller.import.dynalist({
             opml: `<?xml version="1.0" encoding="utf-8"?>
             <opml version="2.0">
             ${opmlHead}
@@ -60,9 +60,7 @@ describe('import', () => {
       testApiRoute(async ({ caller }) => {
         const { opml } = getFakeOpml([])
 
-        await expect(() => caller.mutation('import.dynalist', { opml })).rejects.toThrow(
-          API_ERROR_IMPORT_DYNALIST_INVALID_OPML
-        )
+        await expect(() => caller.import.dynalist({ opml })).rejects.toThrow(API_ERROR_IMPORT_DYNALIST_INVALID_OPML)
       }))
 
     test('should import a basic todo', () =>
@@ -71,7 +69,7 @@ describe('import', () => {
 
         const { name, opml } = getFakeOpml([{ content }])
 
-        const res = await caller.mutation('import.dynalist', { opml })
+        const res = await caller.import.dynalist({ opml })
 
         const testTodo = await getTestTodo(res.id)
 
@@ -92,7 +90,7 @@ describe('import', () => {
       testApiRoute(async ({ caller }) => {
         const { name, opml } = getFakeOpml([{ completed: true }])
 
-        const res = await caller.mutation('import.dynalist', { opml })
+        const res = await caller.import.dynalist({ opml })
 
         const testTodo = await getTestTodo(res.id)
 
@@ -112,7 +110,7 @@ describe('import', () => {
       testApiRoute(async ({ caller }) => {
         const { name, opml } = getFakeOpml([{ collapsed: true }])
 
-        const res = await caller.mutation('import.dynalist', { opml })
+        const res = await caller.import.dynalist({ opml })
 
         const testTodo = await getTestTodo(res.id)
 
@@ -134,7 +132,7 @@ describe('import', () => {
 
         const { name, opml } = getFakeOpml([{ note }])
 
-        const res = await caller.mutation('import.dynalist', { opml })
+        const res = await caller.import.dynalist({ opml })
 
         const testTodo = await getTestTodo(res.id)
 
@@ -158,7 +156,7 @@ end of todo node note`
 
         const { name, opml } = getFakeOpml([{ note }])
 
-        const res = await caller.mutation('import.dynalist', { opml })
+        const res = await caller.import.dynalist({ opml })
 
         const testTodo = await getTestTodo(res.id)
 
@@ -184,7 +182,7 @@ test()
 
         const { name, opml } = getFakeOpml([{ note }])
 
-        const res = await caller.mutation('import.dynalist', { opml })
+        const res = await caller.import.dynalist({ opml })
 
         const testTodo = await getTestTodo(res.id)
 
@@ -217,7 +215,7 @@ test()`
           },
         ])
 
-        const res = await caller.mutation('import.dynalist', { opml })
+        const res = await caller.import.dynalist({ opml })
 
         const testTodo = await getTestTodo(res.id)
 
@@ -304,7 +302,7 @@ test()`
           node_4,
         ])
 
-        const res = await caller.mutation('import.dynalist', { opml })
+        const res = await caller.import.dynalist({ opml })
 
         const testTodo = await getTestTodo(res.id)
 

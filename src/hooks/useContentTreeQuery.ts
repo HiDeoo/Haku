@@ -4,9 +4,7 @@ import { isNetworkError, trpc } from 'libs/trpc'
 export function useContentTreeQuery() {
   const { type } = useContentType()
 
-  return trpc.useQuery([getContentTreeQueryPath(type)], { useErrorBoundary: isNetworkError })
-}
+  const procedurePath = type === ContentType.NOTE ? trpc.note.list : trpc.todo.list
 
-export function getContentTreeQueryPath(type?: ContentType) {
-  return type === ContentType.NOTE ? 'note.list' : 'todo.list'
+  return procedurePath.useQuery(undefined, { useErrorBoundary: isNetworkError })
 }

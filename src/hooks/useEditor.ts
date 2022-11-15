@@ -53,7 +53,7 @@ export function useEditor(options: UseEditorOptions, deps?: DependencyList): Edi
   const { addToast } = useToast()
   const setEditorImageModal = useSetAtom(editorImageModalAtom)
 
-  const { mutateAsync } = trpc.useMutation(['image.add'])
+  const { mutateAsync } = trpc.image.add.useMutation()
 
   const { className, contentId, extensions, setLinkModalOpened, spellcheck, starterKitOptions, ...editorOptions } =
     options

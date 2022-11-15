@@ -14,7 +14,7 @@ import { isNetworkError, trpc } from 'libs/trpc'
 import { clst } from 'styles/clst'
 
 export const ContentHistory = ({ focusedType }: ContentHistoryProps) => {
-  const { data, isLoading } = trpc.useQuery(['history'], { useErrorBoundary: isNetworkError })
+  const { data, isLoading } = trpc.history.useQuery(undefined, { useErrorBoundary: isNetworkError })
 
   const isNoteFocusedType = focusedType === ContentType.NOTE
   const alternateType = isNoteFocusedType ? ContentType.TODO : ContentType.NOTE

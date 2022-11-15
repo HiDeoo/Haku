@@ -28,7 +28,7 @@ describe('todo', () => {
   describe('list', () => {
     test('should return an empty tree', () =>
       testApiRoute(async ({ caller }) => {
-        const res = await caller.query('todo.list')
+        const res = await caller.todo.list()
 
         expect(res.length).toBe(0)
       }))
@@ -38,7 +38,7 @@ describe('todo', () => {
         const { name: todo_0 } = await createTestTodo({ name: 'todo_0' })
         const { name: todo_1 } = await createTestTodo({ name: 'todo_1' })
 
-        const res = await caller.query('todo.list')
+        const res = await caller.todo.list()
 
         expect(res.length).toBe(2)
 
@@ -59,7 +59,7 @@ describe('todo', () => {
         const { name: folder_1 } = await createTestTodoFolder({ name: 'folder_1' })
         const { name: folder_2 } = await createTestTodoFolder({ name: 'folder_2' })
 
-        const res = await caller.query('todo.list')
+        const res = await caller.todo.list()
 
         expect(res.length).toBe(6)
 
@@ -180,7 +180,7 @@ describe('todo', () => {
 
         const { name: folder_2 } = await createTestTodoFolder({ name: 'folder_2' })
 
-        const res = await caller.query('todo.list')
+        const res = await caller.todo.list()
 
         expect(res.length).toBe(5)
 
@@ -288,7 +288,7 @@ describe('todo', () => {
         await createTestTodo({ name: 'todo_0_folder_0_user_1', folderId: folder_0_user_1_id, userId: userId1 })
         await createTestTodo({ name: 'todo_0_folder_0_0_user_1', folderId: folder_0_0_user_0_id, userId: userId1 })
 
-        const res = await caller.query('todo.list')
+        const res = await caller.todo.list()
 
         expect(res.length).toBe(2)
 
@@ -321,7 +321,7 @@ describe('todo', () => {
 
         await createTestNoteFolder({ name: 'folder_0_type_note' })
 
-        const res = await caller.query('todo.list')
+        const res = await caller.todo.list()
 
         expect(res.length).toBe(1)
 
@@ -344,7 +344,7 @@ describe('todo', () => {
         const { name: folder_a_z } = await createTestTodoFolder({ name: 'folder_a_z', parentId: folder_a_id })
         const { name: folder_a_a } = await createTestTodoFolder({ name: 'folder_a_a', parentId: folder_a_id })
 
-        const res = await caller.query('todo.list')
+        const res = await caller.todo.list()
 
         expect(res.length).toBe(4)
 
@@ -373,7 +373,7 @@ describe('todo', () => {
       testApiRoute(async ({ caller }) => {
         await createTestTodo()
 
-        const res = await caller.query('todo.list')
+        const res = await caller.todo.list()
 
         assertIsTreeItem(res[0])
         expect(hasKey(res[0], 'root')).toBe(false)
@@ -386,7 +386,7 @@ describe('todo', () => {
       testApiRoute(async ({ caller }) => {
         const name = 'todo'
 
-        const res = await caller.mutation('todo.add', { name })
+        const res = await caller.todo.add({ name })
 
         const testTodo = await getTestTodo(res.id)
 
@@ -402,7 +402,7 @@ describe('todo', () => {
 
         const name = 'todo'
 
-        const res = await caller.mutation('todo.add', { name, folderId })
+        const res = await caller.todo.add({ name, folderId })
 
         const testTodo = await getTestTodo(res.id)
 
@@ -416,7 +416,7 @@ describe('todo', () => {
       testApiRoute(async ({ caller }) => {
         const name = 'todo Todo 1/10 ½ 🤔'
 
-        const res = await caller.mutation('todo.add', { name })
+        const res = await caller.todo.add({ name })
 
         const testTodo = await getTestTodo(res.id)
 
@@ -430,7 +430,7 @@ describe('todo', () => {
       testApiRoute(async ({ caller }) => {
         const name = 'Test Note'
 
-        const res = await caller.mutation('todo.add', { name })
+        const res = await caller.todo.add({ name })
 
         const testTodo = await getTestTodo(res.id)
 
@@ -454,9 +454,7 @@ describe('todo', () => {
         const name = 'todo'
         const folderId = cuid()
 
-        await expect(() => caller.mutation('todo.add', { name, folderId })).rejects.toThrow(
-          API_ERROR_FOLDER_DOES_NOT_EXIST
-        )
+        await expect(() => caller.todo.add({ name, folderId })).rejects.toThrow(API_ERROR_FOLDER_DOES_NOT_EXIST)
 
         const testTodos = await getTestTodos({ name, folderId })
 
@@ -469,9 +467,7 @@ describe('todo', () => {
 
         const name = 'todo'
 
-        await expect(() => caller.mutation('todo.add', { name, folderId })).rejects.toThrow(
-          API_ERROR_FOLDER_DOES_NOT_EXIST
-        )
+        await expect(() => caller.todo.add({ name, folderId })).rejects.toThrow(API_ERROR_FOLDER_DOES_NOT_EXIST)
 
         const testTodos = await getTestTodos({ name, folderId })
 
@@ -484,9 +480,7 @@ describe('todo', () => {
 
         const name = 'todo'
 
-        await expect(() => caller.mutation('todo.add', { name, folderId })).rejects.toThrow(
-          API_ERROR_FOLDER_INVALID_TYPE
-        )
+        await expect(() => caller.todo.add({ name, folderId })).rejects.toThrow(API_ERROR_FOLDER_INVALID_TYPE)
 
         const testTodos = await getTestTodos({ name, folderId })
 
@@ -497,7 +491,7 @@ describe('todo', () => {
       testApiRoute(async ({ caller }) => {
         const { name } = await createTestTodo()
 
-        await expect(() => caller.mutation('todo.add', { name })).rejects.toThrow(API_ERROR_TODO_ALREADY_EXISTS)
+        await expect(() => caller.todo.add({ name })).rejects.toThrow(API_ERROR_TODO_ALREADY_EXISTS)
 
         const testTodos = await getTestTodos({ name })
 
@@ -509,9 +503,7 @@ describe('todo', () => {
         const { id: folderId } = await createTestTodoFolder()
         const { name } = await createTestTodo({ folderId })
 
-        await expect(() => caller.mutation('todo.add', { name, folderId })).rejects.toThrow(
-          API_ERROR_TODO_ALREADY_EXISTS
-        )
+        await expect(() => caller.todo.add({ name, folderId })).rejects.toThrow(API_ERROR_TODO_ALREADY_EXISTS)
 
         const testTodos = await getTestTodos({ name, folderId })
 
@@ -527,7 +519,7 @@ describe('todo', () => {
 
         const newName = 'newName'
 
-        const res = await caller.mutation('todo.update', { id, name: newName })
+        const res = await caller.todo.update({ id, name: newName })
 
         expect(res.name).toBe(newName)
 
@@ -544,9 +536,7 @@ describe('todo', () => {
         const { id, modifiedAt, name } = await createTestTodo()
         const { name: newName } = await createTestTodo()
 
-        await expect(() => caller.mutation('todo.update', { id, name: newName })).rejects.toThrow(
-          API_ERROR_TODO_ALREADY_EXISTS
-        )
+        await expect(() => caller.todo.update({ id, name: newName })).rejects.toThrow(API_ERROR_TODO_ALREADY_EXISTS)
 
         const testTodo = await getTestTodo(id)
 
@@ -561,7 +551,7 @@ describe('todo', () => {
 
         const { id, modifiedAt, slug } = await createTestTodo({ folderId })
 
-        const res = await caller.mutation('todo.update', { id, folderId: newFolderId })
+        const res = await caller.todo.update({ id, folderId: newFolderId })
 
         expect(res.folderId).toBe(newFolderId)
 
@@ -579,7 +569,7 @@ describe('todo', () => {
 
         const { id, modifiedAt, slug } = await createTestTodo({ folderId })
 
-        const res = await caller.mutation('todo.update', { id, folderId: null })
+        const res = await caller.todo.update({ id, folderId: null })
 
         expect(res.folderId).toBeNull()
 
@@ -599,7 +589,7 @@ describe('todo', () => {
         const { id, modifiedAt } = await createTestTodo({ folderId, name: 'todo' })
         await createTestTodo({ folderId: newFolderId, name: 'todo' })
 
-        await expect(() => caller.mutation('todo.update', { id, folderId: newFolderId })).rejects.toThrow(
+        await expect(() => caller.todo.update({ id, folderId: newFolderId })).rejects.toThrow(
           API_ERROR_TODO_ALREADY_EXISTS
         )
 
@@ -614,7 +604,7 @@ describe('todo', () => {
       testApiRoute(async ({ caller }) => {
         const { id, folderId, modifiedAt } = await createTestTodo()
 
-        await expect(() => caller.mutation('todo.update', { id, folderId: cuid() })).rejects.toThrow(
+        await expect(() => caller.todo.update({ id, folderId: cuid() })).rejects.toThrow(
           API_ERROR_FOLDER_DOES_NOT_EXIST
         )
 
@@ -631,7 +621,7 @@ describe('todo', () => {
 
         const { id, folderId, modifiedAt } = await createTestTodo()
 
-        await expect(() => caller.mutation('todo.update', { id, folderId: newFolderId })).rejects.toThrow(
+        await expect(() => caller.todo.update({ id, folderId: newFolderId })).rejects.toThrow(
           API_ERROR_FOLDER_DOES_NOT_EXIST
         )
 
@@ -648,7 +638,7 @@ describe('todo', () => {
 
         const { id, folderId, modifiedAt } = await createTestTodo()
 
-        await expect(() => caller.mutation('todo.update', { id, folderId: newFolderId })).rejects.toThrow(
+        await expect(() => caller.todo.update({ id, folderId: newFolderId })).rejects.toThrow(
           API_ERROR_FOLDER_INVALID_TYPE
         )
 
@@ -667,7 +657,7 @@ describe('todo', () => {
 
         const newName = 'newName'
 
-        const res = await caller.mutation('todo.update', { id, name: newName, folderId: newFolderId })
+        const res = await caller.todo.update({ id, name: newName, folderId: newFolderId })
 
         expect(res.name).toBe(newName)
         expect(res.folderId).toBe(newFolderId)
@@ -685,9 +675,7 @@ describe('todo', () => {
       testApiRoute(async ({ caller }) => {
         const { id, modifiedAt, name } = await createTestTodo({ userId: getTestUser('1').userId })
 
-        await expect(() => caller.mutation('todo.update', { id, name: 'newName' })).rejects.toThrow(
-          API_ERROR_TODO_DOES_NOT_EXIST
-        )
+        await expect(() => caller.todo.update({ id, name: 'newName' })).rejects.toThrow(API_ERROR_TODO_DOES_NOT_EXIST)
 
         const testTodo = await getTestTodo(id)
 
@@ -700,7 +688,7 @@ describe('todo', () => {
       testApiRoute(async ({ caller }) => {
         const newName = 'newName'
 
-        await expect(() => caller.mutation('todo.update', { id: cuid(), name: newName })).rejects.toThrow(
+        await expect(() => caller.todo.update({ id: cuid(), name: newName })).rejects.toThrow(
           API_ERROR_TODO_DOES_NOT_EXIST
         )
 
@@ -717,7 +705,7 @@ describe('todo', () => {
 
         const fetchSpy = jest.spyOn(global, 'fetch')
 
-        await caller.mutation('todo.delete', { id })
+        await caller.todo.delete({ id })
 
         const testTodo = await getTestTodo(id)
 
@@ -741,7 +729,7 @@ describe('todo', () => {
       testApiRoute(async ({ caller }) => {
         const { id } = await createTestTodo({ userId: getTestUser('1').userId })
 
-        await expect(() => caller.mutation('todo.delete', { id })).rejects.toThrow(API_ERROR_TODO_DOES_NOT_EXIST)
+        await expect(() => caller.todo.delete({ id })).rejects.toThrow(API_ERROR_TODO_DOES_NOT_EXIST)
 
         const testFolder = await getTestTodo(id)
 
@@ -752,7 +740,7 @@ describe('todo', () => {
       testApiRoute(async ({ caller }) => {
         const id = cuid()
 
-        await expect(() => caller.mutation('todo.delete', { id })).rejects.toThrow(API_ERROR_TODO_DOES_NOT_EXIST)
+        await expect(() => caller.todo.delete({ id })).rejects.toThrow(API_ERROR_TODO_DOES_NOT_EXIST)
 
         const testFolder = await getTestTodo(id)
 

@@ -4,25 +4,25 @@ import { type InboxEntriesData } from 'libs/db/inbox'
 import { trpc } from 'libs/trpc'
 
 export function useInboxEntryMutation() {
-  const { cancelQuery, getQueryData, invalidateQueries, setQueryData } = trpc.useContext()
+  const utils = trpc.useContext()
 
   const {
     error: errorAdd,
     isLoading: isLoadingAdd,
     mutate: mutateAdd,
     mutateAsync: mutateAddAsync,
-  } = trpc.useMutation(['inbox.add'], {
+  } = trpc.inbox.add.useMutation({
     onError: (_error, _variables, context) => {
       if (isInboxEntryContext(context) && context.oldInboxEntries) {
-        setQueryData(['inbox.list'], context.oldInboxEntries)
+        utils.inbox.list.setData(undefined, context.oldInboxEntries)
       }
     },
     onMutate: async (newInboxEntry) => {
-      await cancelQuery(['inbox.list'])
+      utils.inbox.list.cancel()
 
-      const oldInboxEntries = getQueryData(['inbox.list'])
+      const oldInboxEntries = utils.inbox.list.getData()
 
-      setQueryData(['inbox.list'], (prevInboxEntries: InboxEntriesData) => [
+      utils.inbox.list.setData(undefined, (prevInboxEntries) => [
         { ...newInboxEntry, createdAt: new Date(), id: cuid() },
         ...(prevInboxEntries ?? []),
       ])
@@ -30,7 +30,7 @@ export function useInboxEntryMutation() {
       return { oldInboxEntries }
     },
     onSettled: () => {
-      invalidateQueries(['inbox.list'])
+      utils.inbox.list.invalidate()
     },
   })
 
@@ -38,26 +38,26 @@ export function useInboxEntryMutation() {
     error: errorDelete,
     isLoading: isLoadingDelete,
     mutate: mutateDelete,
-  } = trpc.useMutation(['inbox.delete'], {
+  } = trpc.inbox.delete.useMutation({
     onError: (_error, _variables, context) => {
       if (isInboxEntryContext(context) && context.oldInboxEntries) {
-        setQueryData(['inbox.list'], context.oldInboxEntries)
+        utils.inbox.list.setData(undefined, context.oldInboxEntries)
       }
     },
     onMutate: async (newInboxEntry) => {
-      await cancelQuery(['inbox.list'])
+      utils.inbox.list.cancel()
 
-      const oldInboxEntries = getQueryData(['inbox.list'])
+      const oldInboxEntries = utils.inbox.list.getData()
 
-      setQueryData(
-        ['inbox.list'],
-        (prevInboxEntries: InboxEntriesData) => prevInboxEntries?.filter((entry) => entry.id !== newInboxEntry.id) ?? []
+      utils.inbox.list.setData(
+        undefined,
+        (prevInboxEntries) => prevInboxEntries?.filter((entry) => entry.id !== newInboxEntry.id) ?? []
       )
 
       return { oldInboxEntries }
     },
     onSettled: () => {
-      invalidateQueries(['inbox.list'])
+      utils.inbox.list.invalidate()
     },
   })
 

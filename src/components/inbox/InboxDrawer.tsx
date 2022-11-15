@@ -1,8 +1,8 @@
+import { QueryObserver, useQueryClient } from '@tanstack/react-query'
 import { useAtomValue, useSetAtom } from 'jotai'
 import dynamic from 'next/dynamic'
 import { useEffect, useMemo, useState } from 'react'
 import { RiInboxFill } from 'react-icons/ri'
-import { QueryObserver } from 'react-query'
 
 import { inboxDrawerAtom, setInboxDrawerOpenedAtom } from 'atoms/togglable'
 import { IconButton } from 'components/form/IconButton'
@@ -11,20 +11,19 @@ import { Drawer } from 'components/ui/Drawer'
 import { useGlobalShortcuts } from 'hooks/useGlobalShortcuts'
 import { isNotEmpty } from 'libs/array'
 import { type InboxEntriesData } from 'libs/db/inbox'
-import { trpc } from 'libs/trpc'
 import { clst } from 'styles/clst'
 
 const Inbox = dynamic<InboxProps>(import('components/inbox/Inbox').then((module) => module.Inbox))
 
 export const InboxDrawer = () => {
-  const { queryClient } = trpc.useContext()
+  const queryClient = useQueryClient()
 
   const [showInboxIndicator, setShowInboxIndicator] = useState(false)
 
   useEffect(() => {
     const observer = new QueryObserver<unknown, unknown, InboxEntriesData>(queryClient, {
       enabled: false,
-      queryKey: ['inbox.list'],
+      queryKey: [['inbox', 'list'], { type: 'query' }],
     })
 
     const unsubscribe = observer.subscribe((result) => {

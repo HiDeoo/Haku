@@ -10,23 +10,27 @@ import { isNetworkError, trpc } from 'libs/trpc'
 export function useNoteQuery(id: NoteData['id'], options: UseNoteQueryOptions) {
   const setContentAvailableOffline = useSetAtom(contentAvailableOfflineAtom)
 
-  const { cancelQuery } = trpc.useContext()
+  const utils = trpc.useContext()
+  const cancelTodoNodeById = utils.todo.node.byId.cancel
 
   useEffect(() => {
     if (!options.enabled) {
-      cancelQuery(['todo.node.byId'])
+      cancelTodoNodeById()
     }
-  }, [cancelQuery, options.enabled])
+  }, [cancelTodoNodeById, options.enabled])
 
-  return trpc.useQuery(['note.byId', { id }], {
-    ...options,
-    onSuccess: async () => {
-      const isCached = await isResourceCached(SW_CACHES.Api, '/api/trpc/note.byId', { id })
+  return trpc.note.byId.useQuery(
+    { id },
+    {
+      ...options,
+      onSuccess: async () => {
+        const isCached = await isResourceCached(SW_CACHES.Api, '/api/trpc/note.byId', { id })
 
-      setContentAvailableOffline(isCached)
-    },
-    useErrorBoundary: isNetworkError,
-  })
+        setContentAvailableOffline(isCached)
+      },
+      useErrorBoundary: isNetworkError,
+    }
+  )
 }
 
 interface UseNoteQueryOptions {
