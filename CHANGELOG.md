@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+### 🚀 Features
+
+- Pasting multi-line text in the to-do editor will now automatically create multiple to-dos.
+
 ### 🐞 Bug Fixes
 
 - The navigation palette no longer contains an entry for the currently opened note or to-do, if any.
