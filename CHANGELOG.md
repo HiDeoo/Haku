@@ -6,8 +6,9 @@ All notable changes to this project will be documented in this file.
 
 ### 🐞 Bug Fixes
 
-- The navigation palette no longer contains an entry for the currently opened note or todo, if any.
+- The navigation palette no longer contains an entry for the currently opened note or to-do, if any.
 - Fix an issue preventing to use the command palette 'Go to Note or Todo' entry.
+- Fix an issue when renaming the current to-do hiding its content.
 
 ## v0.2.1
 

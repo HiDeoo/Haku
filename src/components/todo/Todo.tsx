@@ -24,6 +24,8 @@ import { useTodoQuery } from 'hooks/useTodoQuery'
 import { type TodoMetadata } from 'libs/db/todo'
 import { type TodoNodeData } from 'libs/db/todoNodes'
 
+const todoRegExp = /^\/todos\/(?<id>c[\dA-Za-z]+)\/?/
+
 function pristineStateSelector(state: TodoEditorState) {
   return state.pristine
 }
@@ -62,7 +64,15 @@ export const Todo = ({ id }: TodoProps) => {
     }
   }, [todoNodeItems])
 
-  useRouteChange(() => {
+  useRouteChange((url) => {
+    const match = url.match(todoRegExp)
+    const urlId = match?.groups?.['id']
+
+    // Do not reset if we are still on the same todo, e.g. after renaming the todo.
+    if (id === urlId) {
+      return
+    }
+
     resetTodoAtoms()
   })
 
