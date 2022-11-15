@@ -15,13 +15,11 @@ export const TodoNodeHandle = memo(({ collapsed, hasChildren, id, status, toggle
     'relative m-0 min-w-0 shrink-0 p-0 last-of-type:mr-1 py-1 pr-1',
     'bg-transparent text-zinc-300 shadow-none rounded-none',
     'hover:bg-inherit disabled:opacity-100 disabled:cursor-default disabled:bg-transparent',
-    {
-      'text-zinc-400': status === TodoNodeStatus.COMPLETED,
-      'text-zinc-500': status === TodoNodeStatus.CANCELLED,
-    }
+    status === TodoNodeStatus.COMPLETED && 'text-zinc-400',
+    status === TodoNodeStatus.CANCELLED && 'text-zinc-500'
   )
 
-  const circleBaseClasses = { 'group-hover:invisible': hasChildren }
+  const circleBaseClasses = hasChildren && 'group-hover:invisible'
 
   const circleClasses = clst('h-[0.45rem] w-[0.45rem]', circleBaseClasses)
 

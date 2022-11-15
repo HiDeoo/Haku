@@ -34,7 +34,7 @@ export const Note = ({ id }: NoteProps) => {
   useNavigationPrompt(!editorState.pristine)
 
   const { data, isLoading } = useNoteQuery(id, { enabled: editorState.pristine })
-  const { isLoading: isSaving, mutate } = trpc.useMutation(['note.update'])
+  const { isLoading: isSaving, mutate } = trpc.note.update.useMutation()
 
   const updateToc = useCallback(({ editor }: EditorEvents['create'], emitUpdate = true) => {
     const toc = getToc(editor)
@@ -158,7 +158,7 @@ export const Note = ({ id }: NoteProps) => {
         ) : (
           <EditorContent
             editor={editor}
-            className="grid h-full w-full overflow-y-auto supports-max:pb-[max(0px,env(safe-area-inset-bottom))]"
+            className="grid h-full w-full overflow-y-auto pb-[max(0px,env(safe-area-inset-bottom))]"
           />
         )}
         <NoteInspector

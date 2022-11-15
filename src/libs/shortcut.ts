@@ -1,6 +1,8 @@
+import { type ModifierKey } from 'react'
+
 import { isApplePlatform, isTextInputElement } from 'libs/html'
 
-const modifiers = ['Alt', 'Control', 'Meta', 'Shift']
+const modifiers: ModifierKey[] = ['Alt', 'Control', 'Meta', 'Shift']
 
 const platformNativeMetaModifier = isApplePlatform ? 'Meta' : 'Control'
 
@@ -55,11 +57,23 @@ export function isDescribedShortcut(shortcut: ParsedShortcut): shortcut is Descr
   return typeof shortcut.group === 'string' && typeof shortcut.label === 'string'
 }
 
+function isModifierKey(key: string): key is ModifierKey {
+  return modifiers.includes(key as ModifierKey)
+}
+
 function parseKeybinding(keybinding: Keybinding): ParsedKeybinding {
   const parsedKeybinding = keybinding.trim().split('+')
 
   const key = parsedKeybinding.pop()
-  const mods = parsedKeybinding.map((mod) => (mod === 'Meta' ? platformNativeMetaModifier : mod))
+  const mods: ModifierKey[] = []
+
+  for (const mod of parsedKeybinding) {
+    if (!isModifierKey(mod)) {
+      continue
+    }
+
+    mods.push(mod === 'Meta' ? platformNativeMetaModifier : mod)
+  }
 
   if (!key) {
     throw new Error('Missing keybinding key.')
@@ -77,7 +91,7 @@ export interface Shortcut<TKeybinding = Keybinding> {
 }
 
 export type Keybinding = string
-type ParsedKeybinding = [mods: string[], key: string]
+type ParsedKeybinding = [mods: ModifierKey[], key: string]
 
 type ParsedShortcut = Shortcut & { readonly parsedKeybinding: ParsedKeybinding }
 

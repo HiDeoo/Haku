@@ -18,9 +18,9 @@ export const Layout = ({ children, sidebar }: LayoutProps) => {
     sidebar
       ? 'md:border-l md:border-l-zinc-600/30'
       : [
-          'supports-max:pb-[max(0px,env(safe-area-inset-bottom))]',
-          'supports-max:pl-[max(0px,env(safe-area-inset-left))]',
-          ' supports-max:pr-[max(0px,env(safe-area-inset-right))]',
+          'pb-[max(0px,env(safe-area-inset-bottom))]',
+          'pl-[max(0px,env(safe-area-inset-left))]',
+          'pr-[max(0px,env(safe-area-inset-right))]',
         ],
     sidebar && !sidebarCollapsed && 'border-l border-l-zinc-600/30'
   )

@@ -27,14 +27,14 @@ describe('image', () => {
           sizeInBytes: getBytesFromMegaBytes(IMAGE_MAX_SIZE_IN_MEGABYTES) + 1,
         })
 
-        await expect(() => caller.mutation('image.add', { filename, image, referenceId: cuid() })).rejects.toThrow()
+        await expect(() => caller.image.add({ filename, image, referenceId: cuid() })).rejects.toThrow()
       }))
 
     test('should not upload an image with an invalid reference ID', () =>
       testApiRoute(async ({ caller }) => {
         const { filename, image } = await getFakeImage()
 
-        await expect(() => caller.mutation('image.add', { filename, image, referenceId: cuid() })).rejects.toThrow(
+        await expect(() => caller.image.add({ filename, image, referenceId: cuid() })).rejects.toThrow(
           API_ERROR_IMAGE_REFERENCE_DOES_NOT_EXIST
         )
       }))
@@ -45,7 +45,7 @@ describe('image', () => {
 
         const { filename, image } = await getFakeImage()
 
-        await expect(() => caller.mutation('image.add', { filename, image, referenceId: id })).rejects.toThrow(
+        await expect(() => caller.image.add({ filename, image, referenceId: id })).rejects.toThrow(
           API_ERROR_IMAGE_REFERENCE_DOES_NOT_EXIST
         )
       }))
@@ -56,7 +56,7 @@ describe('image', () => {
 
         const { filename, image } = await getFakeImage()
 
-        await expect(() => caller.mutation('image.add', { filename, image, referenceId: id })).rejects.toThrow(
+        await expect(() => caller.image.add({ filename, image, referenceId: id })).rejects.toThrow(
           API_ERROR_IMAGE_REFERENCE_DOES_NOT_EXIST
         )
       }))
@@ -65,14 +65,14 @@ describe('image', () => {
       testApiRoute(async ({ caller }) => {
         const { filename, image, referenceId } = await getFakeImage({ extension: 'bmp' })
 
-        await expect(() => caller.mutation('image.add', { filename, image, referenceId })).rejects.toThrow()
+        await expect(() => caller.image.add({ filename, image, referenceId })).rejects.toThrow()
       }))
 
     test.each(IMAGE_SUPPORTED_TYPES)('should upload an %s file', async (type) =>
       testApiRoute(async ({ caller }) => {
         const { filename, image, referenceId } = await getFakeImage({ extension: type.split('/')[1] })
 
-        const res = await caller.mutation('image.add', { filename, image, referenceId })
+        const res = await caller.image.add({ filename, image, referenceId })
 
         expect(res).toBeDefined()
       })
@@ -86,7 +86,7 @@ describe('image', () => {
 
         const { filename, image, referenceId } = await getFakeImage()
 
-        await expect(() => caller.mutation('image.add', { filename, image, referenceId })).rejects.toThrow(
+        await expect(() => caller.image.add({ filename, image, referenceId })).rejects.toThrow(
           API_ERROR_IMAGE_UPLOAD_UNKNOWN
         )
 
@@ -100,7 +100,7 @@ describe('image', () => {
         const { id } = await createTestTodo()
         const { filename, image } = await getFakeImage()
 
-        const res = await caller.mutation('image.add', { filename, image, referenceId: id })
+        const res = await caller.image.add({ filename, image, referenceId: id })
 
         expect(res).toBeDefined()
       }))
@@ -110,7 +110,7 @@ describe('image', () => {
         const { id } = await createTestNote()
         const { filename, image } = await getFakeImage()
 
-        const res = await caller.mutation('image.add', { filename, image, referenceId: id })
+        const res = await caller.image.add({ filename, image, referenceId: id })
 
         expect(res).toBeDefined()
       }))
@@ -129,7 +129,7 @@ describe('image', () => {
         server.use(
           rest.post(uploadUrl, async (req) => {
             const formData = await multipartParser.parse({
-              body: req.body,
+              body: await req.text(),
               headers: { 'Content-Type': req.headers.get('Content-Type') },
             })
 
@@ -146,7 +146,7 @@ describe('image', () => {
           })
         )
 
-        const res = await caller.mutation('image.add', { filename, image, referenceId: id })
+        const res = await caller.image.add({ filename, image, referenceId: id })
 
         const cloudinaryApiReqIndex = fetchSpy.mock.calls.findIndex(([callUrl]) => callUrl === uploadUrl)
 
@@ -179,7 +179,7 @@ describe('image', () => {
 
         const { filename, image, referenceId } = await getFakeImage({ width })
 
-        const res = await caller.mutation('image.add', { filename, image, referenceId })
+        const res = await caller.image.add({ filename, image, referenceId })
 
         expect(Object.keys(res.responsive).length).toBe(1)
 
@@ -192,7 +192,7 @@ describe('image', () => {
 
         const { filename, image, referenceId } = await getFakeImage({ width })
 
-        const res = await caller.mutation('image.add', { filename, image, referenceId })
+        const res = await caller.image.add({ filename, image, referenceId })
 
         const expectedWidths = getResponsiveWidths(width)
 
@@ -211,7 +211,7 @@ describe('image', () => {
 
         const { filename, image, referenceId } = await getFakeImage({ width })
 
-        const res = await caller.mutation('image.add', { filename, image, referenceId })
+        const res = await caller.image.add({ filename, image, referenceId })
 
         const expectedWidths = getResponsiveWidths(width)
 
@@ -230,7 +230,7 @@ describe('image', () => {
 
         const { filename, image, referenceId } = await getFakeImage({ width })
 
-        const res = await caller.mutation('image.add', { filename, image, referenceId })
+        const res = await caller.image.add({ filename, image, referenceId })
 
         const expectedWidths = getResponsiveWidths(width)
 
@@ -247,7 +247,7 @@ describe('image', () => {
       testApiRoute(async ({ caller }) => {
         const { filename, image, referenceId } = await getFakeImage({ extension: 'jpg' })
 
-        const res = await caller.mutation('image.add', { filename, image, referenceId })
+        const res = await caller.image.add({ filename, image, referenceId })
 
         expect(isSignedImageUrlWithTransforms(res.original, ['fl_progressive'], true)).toBe(true)
       }))
@@ -256,7 +256,7 @@ describe('image', () => {
       testApiRoute(async ({ caller }) => {
         const { filename, image, referenceId } = await getFakeImage({ extension: 'png' })
 
-        const res = await caller.mutation('image.add', { filename, image, referenceId })
+        const res = await caller.image.add({ filename, image, referenceId })
 
         expect(isSignedImageUrlWithTransforms(res.original, [])).toBe(true)
         expect(isSignedImageUrlWithTransforms(res.original, ['pr-true'])).toBe(false)

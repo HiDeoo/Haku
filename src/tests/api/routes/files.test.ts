@@ -8,7 +8,7 @@ describe('file', () => {
   describe('list', () => {
     test('should return an empty list', () =>
       testApiRoute(async ({ caller }) => {
-        const res = await caller.query('file.list')
+        const res = await caller.file.list()
 
         expect(res.length).toBe(0)
       }))
@@ -18,7 +18,7 @@ describe('file', () => {
         const { id: note_0_id } = await createTestNote({ name: 'note_0' })
         const { id: note_1_id } = await createTestNote({ name: 'note_1' })
 
-        const res = await caller.query('file.list')
+        const res = await caller.file.list()
 
         expect(res.length).toBe(2)
 
@@ -34,7 +34,7 @@ describe('file', () => {
         const { id: todo_0_id } = await createTestTodo({ name: 'todo_0' })
         const { id: todo_1_id } = await createTestTodo({ name: 'todo_1' })
 
-        const res = await caller.query('file.list')
+        const res = await caller.file.list()
 
         expect(res.length).toBe(2)
 
@@ -53,7 +53,7 @@ describe('file', () => {
         const { id: Z_note_id } = await createTestNote({ name: 'Z_note' })
         const { id: a_note_id } = await createTestNote({ name: 'a_note' })
 
-        const res = await caller.query('file.list')
+        const res = await caller.file.list()
 
         expect(res.length).toBe(4)
 
@@ -80,7 +80,7 @@ describe('file', () => {
         const { id: todo_0_id } = await createTestTodo({ name: 'todo_0' })
         await createTestTodo({ name: 'todo_1', userId: userId1 })
 
-        const res = await caller.query('file.list')
+        const res = await caller.file.list()
 
         expect(res.length).toBe(2)
         expect(res[0]?.id).toBe(note_0_id)
@@ -91,7 +91,7 @@ describe('file', () => {
       testApiRoute(async ({ caller }) => {
         const { id, name, slug } = await createTestNote({ name: 'note_0' })
 
-        const res = await caller.query('file.list')
+        const res = await caller.file.list()
 
         expect(res.length).toBe(1)
 

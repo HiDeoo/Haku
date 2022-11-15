@@ -22,7 +22,7 @@ describe('note', () => {
   describe('list', () => {
     test('should return an empty tree', () =>
       testApiRoute(async ({ caller }) => {
-        const res = await caller.query('note.list')
+        const res = await caller.note.list()
 
         expect(res.length).toBe(0)
       }))
@@ -32,7 +32,7 @@ describe('note', () => {
         const { name: note_0 } = await createTestNote({ name: 'note_0' })
         const { name: note_1 } = await createTestNote({ name: 'note_1' })
 
-        const res = await caller.query('note.list')
+        const res = await caller.note.list()
 
         expect(res.length).toBe(2)
 
@@ -53,7 +53,7 @@ describe('note', () => {
         const { name: folder_1 } = await createTestNoteFolder({ name: 'folder_1' })
         const { name: folder_2 } = await createTestNoteFolder({ name: 'folder_2' })
 
-        const res = await caller.query('note.list')
+        const res = await caller.note.list()
 
         expect(res.length).toBe(6)
 
@@ -173,7 +173,7 @@ describe('note', () => {
           folderId: folder_2_0_0_1_id,
         })
 
-        const res = await caller.query('note.list')
+        const res = await caller.note.list()
 
         expect(res.length).toBe(5)
 
@@ -281,7 +281,7 @@ describe('note', () => {
         await createTestNote({ name: 'note_0_folder_0_user_1', folderId: folder_0_user_1_id, userId: userId1 })
         await createTestNote({ name: 'note_0_folder_0_0_user_1', folderId: folder_0_0_user_0_id, userId: userId1 })
 
-        const res = await caller.query('note.list')
+        const res = await caller.note.list()
 
         expect(res.length).toBe(2)
 
@@ -314,7 +314,7 @@ describe('note', () => {
 
         await createTestTodoFolder({ name: 'folder_0_type_todo' })
 
-        const res = await caller.query('note.list')
+        const res = await caller.note.list()
 
         expect(res.length).toBe(1)
 
@@ -337,7 +337,7 @@ describe('note', () => {
         const { name: folder_a_z } = await createTestNoteFolder({ name: 'folder_a_z', parentId: folder_a_id })
         const { name: folder_a_a } = await createTestNoteFolder({ name: 'folder_a_a', parentId: folder_a_id })
 
-        const res = await caller.query('note.list')
+        const res = await caller.note.list()
 
         expect(res.length).toBe(4)
 
@@ -366,7 +366,7 @@ describe('note', () => {
       testApiRoute(async ({ caller }) => {
         await createTestNote()
 
-        const res = await caller.query('note.list')
+        const res = await caller.note.list()
 
         assertIsTreeItem(res[0])
         expect(hasKey(res[0], 'html')).toBe(false)
@@ -379,7 +379,7 @@ describe('note', () => {
       testApiRoute(async ({ caller }) => {
         const { html, folderId, id, name, slug } = await createTestNote()
 
-        const res = await caller.query('note.byId', { id })
+        const res = await caller.note.byId({ id })
 
         expect(res.name).toBe(name)
         expect(res.slug).toBe(slug)
@@ -391,14 +391,14 @@ describe('note', () => {
 
     test('should not return a nonexisting note', async () =>
       testApiRoute(async ({ caller }) => {
-        await expect(() => caller.query('note.byId', { id: cuid() })).rejects.toThrow(API_ERROR_NOTE_DOES_NOT_EXIST)
+        await expect(() => caller.note.byId({ id: cuid() })).rejects.toThrow(API_ERROR_NOTE_DOES_NOT_EXIST)
       }))
 
     test('should not return a note not owned by the current user', async () =>
       testApiRoute(async ({ caller }) => {
         const { id } = await createTestNote({ userId: getTestUser('1').userId })
 
-        await expect(() => caller.query('note.byId', { id })).rejects.toThrow(API_ERROR_NOTE_DOES_NOT_EXIST)
+        await expect(() => caller.note.byId({ id })).rejects.toThrow(API_ERROR_NOTE_DOES_NOT_EXIST)
       }))
   })
 
@@ -407,7 +407,7 @@ describe('note', () => {
       testApiRoute(async ({ caller }) => {
         const name = 'note'
 
-        const res = await caller.mutation('note.add', { name })
+        const res = await caller.note.add({ name })
 
         const testNote = await getTestNote(res.id)
 
@@ -423,7 +423,7 @@ describe('note', () => {
 
         const name = 'note'
 
-        const res = await caller.mutation('note.add', { name, folderId })
+        const res = await caller.note.add({ name, folderId })
 
         const testNote = await getTestNote(res.id)
 
@@ -437,7 +437,7 @@ describe('note', () => {
       testApiRoute(async ({ caller }) => {
         const name = 'note Note 1/10 ½ 🤔'
 
-        const res = await caller.mutation('note.add', { name })
+        const res = await caller.note.add({ name })
 
         const testNote = await getTestNote(res.id)
 
@@ -451,7 +451,7 @@ describe('note', () => {
       testApiRoute(async ({ caller }) => {
         const name = 'Test Note'
 
-        const res = await caller.mutation('note.add', { name })
+        const res = await caller.note.add({ name })
 
         const testNote = await getTestNote(res.id)
 
@@ -466,9 +466,7 @@ describe('note', () => {
         const name = 'note'
         const folderId = cuid()
 
-        await expect(() => caller.mutation('note.add', { name, folderId })).rejects.toThrow(
-          API_ERROR_FOLDER_DOES_NOT_EXIST
-        )
+        await expect(() => caller.note.add({ name, folderId })).rejects.toThrow(API_ERROR_FOLDER_DOES_NOT_EXIST)
 
         const testNotes = await getTestNotes({ name, folderId })
 
@@ -481,9 +479,7 @@ describe('note', () => {
 
         const name = 'note'
 
-        await expect(() => caller.mutation('note.add', { name, folderId })).rejects.toThrow(
-          API_ERROR_FOLDER_DOES_NOT_EXIST
-        )
+        await expect(() => caller.note.add({ name, folderId })).rejects.toThrow(API_ERROR_FOLDER_DOES_NOT_EXIST)
 
         const testNotes = await getTestNotes({ name, folderId })
 
@@ -496,9 +492,7 @@ describe('note', () => {
 
         const name = 'note'
 
-        await expect(() => caller.mutation('note.add', { name, folderId })).rejects.toThrow(
-          API_ERROR_FOLDER_INVALID_TYPE
-        )
+        await expect(() => caller.note.add({ name, folderId })).rejects.toThrow(API_ERROR_FOLDER_INVALID_TYPE)
 
         const testNotes = await getTestNotes({ name, folderId })
 
@@ -509,7 +503,7 @@ describe('note', () => {
       testApiRoute(async ({ caller }) => {
         const { name } = await createTestNote()
 
-        await expect(() => caller.mutation('note.add', { name })).rejects.toThrow(API_ERROR_NOTE_ALREADY_EXISTS)
+        await expect(() => caller.note.add({ name })).rejects.toThrow(API_ERROR_NOTE_ALREADY_EXISTS)
 
         const testNotes = await getTestNotes({ name })
 
@@ -521,9 +515,7 @@ describe('note', () => {
         const { id: folderId } = await createTestNoteFolder()
         const { name } = await createTestNote({ folderId })
 
-        await expect(() => caller.mutation('note.add', { name, folderId })).rejects.toThrow(
-          API_ERROR_NOTE_ALREADY_EXISTS
-        )
+        await expect(() => caller.note.add({ name, folderId })).rejects.toThrow(API_ERROR_NOTE_ALREADY_EXISTS)
 
         const testNotes = await getTestNotes({ name, folderId })
 
@@ -539,7 +531,7 @@ describe('note', () => {
 
         const newName = 'newName'
 
-        const res = await caller.mutation('note.update', { id, name: newName })
+        const res = await caller.note.update({ id, name: newName })
 
         expect(res.name).toBe(newName)
         expect(hasKey(res, 'html')).toBe(false)
@@ -559,9 +551,7 @@ describe('note', () => {
         const { id, modifiedAt, name } = await createTestNote()
         const { name: newName } = await createTestNote()
 
-        await expect(() => caller.mutation('note.update', { id, name: newName })).rejects.toThrow(
-          API_ERROR_NOTE_ALREADY_EXISTS
-        )
+        await expect(() => caller.note.update({ id, name: newName })).rejects.toThrow(API_ERROR_NOTE_ALREADY_EXISTS)
 
         const testNote = await getTestNote(id)
 
@@ -576,7 +566,7 @@ describe('note', () => {
 
         const { html, id, modifiedAt, slug, text } = await createTestNote({ folderId })
 
-        const res = await caller.mutation('note.update', { id, folderId: newFolderId })
+        const res = await caller.note.update({ id, folderId: newFolderId })
 
         expect(res.folderId).toBe(newFolderId)
         expect(hasKey(res, 'html')).toBe(false)
@@ -597,7 +587,7 @@ describe('note', () => {
 
         const { html, id, modifiedAt, slug, text } = await createTestNote({ folderId })
 
-        const res = await caller.mutation('note.update', { id, folderId: null })
+        const res = await caller.note.update({ id, folderId: null })
 
         expect(res.folderId).toBeNull()
         expect(hasKey(res, 'html')).toBe(false)
@@ -620,7 +610,7 @@ describe('note', () => {
         const { id, modifiedAt } = await createTestNote({ folderId, name: 'note' })
         await createTestNote({ folderId: newFolderId, name: 'note' })
 
-        await expect(() => caller.mutation('note.update', { id, folderId: newFolderId })).rejects.toThrow(
+        await expect(() => caller.note.update({ id, folderId: newFolderId })).rejects.toThrow(
           API_ERROR_NOTE_ALREADY_EXISTS
         )
 
@@ -635,7 +625,7 @@ describe('note', () => {
       testApiRoute(async ({ caller }) => {
         const { id, folderId, modifiedAt } = await createTestNote()
 
-        await expect(() => caller.mutation('note.update', { id, folderId: cuid() })).rejects.toThrow(
+        await expect(() => caller.note.update({ id, folderId: cuid() })).rejects.toThrow(
           API_ERROR_FOLDER_DOES_NOT_EXIST
         )
 
@@ -652,7 +642,7 @@ describe('note', () => {
 
         const { id, folderId, modifiedAt } = await createTestNote()
 
-        await expect(() => caller.mutation('note.update', { id, folderId: newFolderId })).rejects.toThrow(
+        await expect(() => caller.note.update({ id, folderId: newFolderId })).rejects.toThrow(
           API_ERROR_FOLDER_DOES_NOT_EXIST
         )
 
@@ -669,7 +659,7 @@ describe('note', () => {
 
         const { id, folderId, modifiedAt } = await createTestNote()
 
-        await expect(() => caller.mutation('note.update', { id, folderId: newFolderId })).rejects.toThrow(
+        await expect(() => caller.note.update({ id, folderId: newFolderId })).rejects.toThrow(
           API_ERROR_FOLDER_INVALID_TYPE
         )
 
@@ -690,7 +680,7 @@ describe('note', () => {
         const newHtml = '<p>test</p>'
         const newText = 'test\n\n'
 
-        const res = await caller.mutation('note.update', {
+        const res = await caller.note.update({
           id,
           name: newName,
           folderId: newFolderId,
@@ -718,9 +708,7 @@ describe('note', () => {
       testApiRoute(async ({ caller }) => {
         const { id, modifiedAt, name } = await createTestNote({ userId: getTestUser('1').userId })
 
-        await expect(() => caller.mutation('note.update', { id, name: 'newName' })).rejects.toThrow(
-          API_ERROR_NOTE_DOES_NOT_EXIST
-        )
+        await expect(() => caller.note.update({ id, name: 'newName' })).rejects.toThrow(API_ERROR_NOTE_DOES_NOT_EXIST)
 
         const testNote = await getTestNote(id)
 
@@ -733,7 +721,7 @@ describe('note', () => {
       testApiRoute(async ({ caller }) => {
         const newName = 'newName'
 
-        await expect(() => caller.mutation('note.update', { id: cuid(), name: newName })).rejects.toThrow(
+        await expect(() => caller.note.update({ id: cuid(), name: newName })).rejects.toThrow(
           API_ERROR_NOTE_DOES_NOT_EXIST
         )
 
@@ -749,7 +737,7 @@ describe('note', () => {
         const newHtml = '<p>test</p>'
         const newText = 'test\n\n'
 
-        const res = await caller.mutation('note.update', { id, html: newHtml, text: newText })
+        const res = await caller.note.update({ id, html: newHtml, text: newText })
 
         expect(res.name).toBe(name)
         expect(res.folderId).toBe(folderId)
@@ -771,7 +759,7 @@ describe('note', () => {
 
         const newHtml = '<p>test</p>'
 
-        await expect(() => caller.mutation('note.update', { id, html: newHtml })).rejects.toThrow(
+        await expect(() => caller.note.update({ id, html: newHtml })).rejects.toThrow(
           API_ERROR_NOTE_HTML_OR_TEXT_MISSING
         )
 
@@ -788,7 +776,7 @@ describe('note', () => {
 
         const newText = 'test\n\n'
 
-        await expect(() => caller.mutation('note.update', { id, text: newText })).rejects.toThrow(
+        await expect(() => caller.note.update({ id, text: newText })).rejects.toThrow(
           API_ERROR_NOTE_HTML_OR_TEXT_MISSING
         )
 
@@ -807,7 +795,7 @@ describe('note', () => {
 
         const fetchSpy = jest.spyOn(global, 'fetch')
 
-        await caller.mutation('note.delete', { id })
+        await caller.note.delete({ id })
 
         const testNote = await getTestNote(id)
 
@@ -831,7 +819,7 @@ describe('note', () => {
       testApiRoute(async ({ caller }) => {
         const { id } = await createTestNote({ userId: getTestUser('1').userId })
 
-        await expect(() => caller.mutation('note.delete', { id })).rejects.toThrow(API_ERROR_NOTE_DOES_NOT_EXIST)
+        await expect(() => caller.note.delete({ id })).rejects.toThrow(API_ERROR_NOTE_DOES_NOT_EXIST)
 
         const testFolder = await getTestNote(id)
 
@@ -842,7 +830,7 @@ describe('note', () => {
       testApiRoute(async ({ caller }) => {
         const id = cuid()
 
-        await expect(() => caller.mutation('note.delete', { id })).rejects.toThrow(API_ERROR_NOTE_DOES_NOT_EXIST)
+        await expect(() => caller.note.delete({ id })).rejects.toThrow(API_ERROR_NOTE_DOES_NOT_EXIST)
 
         const testFolder = await getTestNote(id)
 

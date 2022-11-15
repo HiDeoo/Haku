@@ -1,57 +1,57 @@
 import { addTodo, removeTodo, updateTodo } from 'libs/db/todo'
 import { getTodoTree } from 'libs/db/tree'
 import { z, zAtLeastOneOf, zId } from 'libs/validation'
-import { createRouter } from 'server'
-import { withAuth } from 'server/middlewares/withAuth'
+import { authProcedure, router } from 'server'
 import { todoNodeRouter } from 'server/routers/todo/node'
 
-export const todoRouter = createRouter()
-  .middleware(withAuth)
-  .query('list', {
-    async resolve({ ctx }) {
-      const tree = await getTodoTree(ctx.user.id)
+export const todoRouter = router({
+  list: authProcedure.query(async ({ ctx }) => {
+    const tree = await getTodoTree(ctx.user.id)
 
-      return tree
-    },
-  })
-  .mutation('add', {
-    input: z.object({
-      name: z.string(),
-      folderId: zId.optional(),
-    }),
-    async resolve({ ctx, input }) {
+    return tree
+  }),
+  add: authProcedure
+    .input(
+      z.object({
+        name: z.string(),
+        folderId: zId.optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
       const todo = await addTodo(ctx.user.id, input.name, input.folderId)
 
       return todo
-    },
-  })
-  .mutation('update', {
-    input: z
-      .object({
-        id: zId,
-      })
-      .and(
-        zAtLeastOneOf(
-          z.object({
-            name: z.string(),
-            folderId: zId.nullable(),
-          })
+    }),
+  update: authProcedure
+    .input(
+      z
+        .object({
+          id: zId,
+        })
+        .and(
+          zAtLeastOneOf(
+            z.object({
+              name: z.string(),
+              folderId: zId.nullable(),
+            })
+          )
         )
-      ),
-    async resolve({ ctx, input }) {
+    )
+    .mutation(async ({ ctx, input }) => {
       const todo = await updateTodo(input.id, ctx.user.id, input)
 
       return todo
-    },
-  })
-  .mutation('delete', {
-    input: z.object({
-      id: zId,
     }),
-    async resolve({ ctx, input }) {
+  delete: authProcedure
+    .input(
+      z.object({
+        id: zId,
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
       await removeTodo(input.id, ctx.user.id)
 
       return
-    },
-  })
-  .merge('node.', todoNodeRouter)
+    }),
+  node: todoNodeRouter,
+})

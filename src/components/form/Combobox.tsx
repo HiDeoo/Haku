@@ -67,7 +67,6 @@ export const Combobox = <TItem, TFormFields extends FieldValues>({
   })
 
   const {
-    getComboboxProps,
     getInputProps,
     getItemProps,
     getLabelProps,
@@ -78,7 +77,6 @@ export const Combobox = <TItem, TFormFields extends FieldValues>({
     isOpen,
     selectItem,
   } = useCombobox({
-    circularNavigation: true,
     initialSelectedItem: value,
     items: filteredItems,
     itemToString: renderItem,
@@ -168,7 +166,7 @@ export const Combobox = <TItem, TFormFields extends FieldValues>({
       <Label {...getLabelProps({ disabled: isDisabled() })} errorMessage={errorMessage}>
         {label}
       </Label>
-      <Flex {...getComboboxProps({ className: 'relative' })}>
+      <Flex className="relative">
         {loading ? <Spinner className="absolute top-1.5 right-12 h-5 w-5 text-blue-500" /> : null}
         <TextInput
           {...inputProps}

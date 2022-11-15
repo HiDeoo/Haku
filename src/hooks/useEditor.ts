@@ -9,7 +9,7 @@ import {
   useEditor as useTipTap,
   ReactNodeViewRenderer,
 } from '@tiptap/react'
-import StarterKit, { type StarterKitOptions } from '@tiptap/starter-kit'
+import { StarterKit, type StarterKitOptions } from '@tiptap/starter-kit'
 import { useSetAtom } from 'jotai'
 import { useCallback, type DependencyList } from 'react'
 import { RiErrorWarningLine } from 'react-icons/ri'
@@ -53,7 +53,7 @@ export function useEditor(options: UseEditorOptions, deps?: DependencyList): Edi
   const { addToast } = useToast()
   const setEditorImageModal = useSetAtom(editorImageModalAtom)
 
-  const { mutateAsync } = trpc.useMutation(['image.add'])
+  const { mutateAsync } = trpc.image.add.useMutation()
 
   const { className, contentId, extensions, setLinkModalOpened, spellcheck, starterKitOptions, ...editorOptions } =
     options

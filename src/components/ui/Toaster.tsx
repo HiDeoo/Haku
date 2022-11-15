@@ -11,8 +11,7 @@ export const Toaster = () => {
 
   const viewportClasses = clst(
     'fixed max-h-screen z-[60] flex max-w-md flex-col items-end gap-2.5 p-3.5',
-    'supports-max:bottom-[max(0px,env(safe-area-inset-bottom))]',
-    'supports-max:right-[max(0px,env(safe-area-inset-right))]',
+    'bottom-[max(0px,env(safe-area-inset-bottom))] right-[max(0px,env(safe-area-inset-right))]',
     'overflow-y-auto overflow-x-hidden',
     'focus:outline-none',
     isNotEmpty(toasts) && 'focus-visible:ring-2 focus-visible:ring-blue-600'

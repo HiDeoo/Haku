@@ -5,9 +5,7 @@ import { ClipboardCopyButton } from 'components/form/ClipboardCopyButton'
 import { Select } from 'components/form/Select'
 import { CODE_BLOCK_DEFAULT_LANGUAGE } from 'constants/editor'
 import { getLanguageName } from 'libs/editor'
-
-const triggerClases =
-  'shadow-none bg-zinc-700 hover:bg-zinc-600 px-2 py-1 text-xs rounded min-w-0 w-28 rounded-b-none z-10'
+import { clst } from 'styles/clst'
 
 export const EditorCodeBlock = ({ editor, extension, node, updateAttributes }: NodeViewProps) => {
   const wrapper = useRef<HTMLDivElement>()
@@ -46,9 +44,17 @@ export const EditorCodeBlock = ({ editor, extension, node, updateAttributes }: N
     if (event.key === 'Tab' && !event.shiftKey) {
       event.preventDefault()
 
-      copySelect.current?.focus()
+      requestAnimationFrame(() => {
+        copySelect.current?.focus()
+      })
     }
   }
+
+  const triggerClases = clst(
+    'shadow-none bg-zinc-700 hover:bg-zinc-600 px-2 py-1 text-xs rounded min-w-0 w-28 rounded-b-none z-10',
+    'active:bg-zinc-500 focus:outline-none',
+    'focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-zinc-800 focus-visible:ring-offset-2'
+  )
 
   return (
     <NodeViewWrapper className="code-block relative" ref={wrapper}>
@@ -61,7 +67,6 @@ export const EditorCodeBlock = ({ editor, extension, node, updateAttributes }: N
         triggerClassName={triggerClases}
         onButtonKeyDown={handleSelectKeyDown}
         className="absolute bottom-full right-0"
-        triggerPressedClassName="bg-zinc-500 hover:bg-zinc-500"
         defaultItem={node.attrs['language'] ?? CODE_BLOCK_DEFAULT_LANGUAGE}
         menuClassName="rounded text-xs bg-zinc-600 -mt-0.5 rounded-t-none"
       />

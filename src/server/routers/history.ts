@@ -1,13 +1,10 @@
 import { getHistory } from 'libs/db/history'
-import { createRouter } from 'server'
-import { withAuth } from 'server/middlewares/withAuth'
+import { authProcedure, router } from 'server'
 
-export const historyRouter = createRouter()
-  .middleware(withAuth)
-  .query('history', {
-    async resolve({ ctx }) {
-      const history = await getHistory(ctx.user.id)
+export const historyRouter = router({
+  history: authProcedure.query(async ({ ctx }) => {
+    const history = await getHistory(ctx.user.id)
 
-      return history
-    },
-  })
+    return history
+  }),
+})

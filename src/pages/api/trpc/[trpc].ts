@@ -1,6 +1,5 @@
 import { createNextApiHandler } from '@trpc/server/adapters/next'
 
-import { IMAGE_MAX_SIZE_IN_MEGABYTES } from 'constants/image'
 import { createContext } from 'server/context'
 import { appRouter } from 'server/routers'
 
@@ -22,7 +21,9 @@ export default handler
 export const config = {
   api: {
     bodyParser: {
-      sizeLimit: `${IMAGE_MAX_SIZE_IN_MEGABYTES}mb`,
+      // This is defined in `IMAGE_MAX_SIZE_IN_MEGABYTES` in `src/constants/image.ts` but the configuration object must
+      // only contain static constant literals without expressions.
+      sizeLimit: `4mb`,
     },
   },
 }

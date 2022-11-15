@@ -33,8 +33,7 @@ export const PalettePicker = <TItem extends PaletteItem>({
 
   const searchableItems = useMemo(() => items.map((item) => ({ item, str: itemToString(item) })), [items, itemToString])
 
-  const { getComboboxProps, getInputProps, getItemProps, getMenuProps, highlightedIndex, inputValue } = useCombobox({
-    circularNavigation: true,
+  const { getInputProps, getItemProps, getMenuProps, highlightedIndex, inputValue } = useCombobox({
     initialHighlightedIndex: 0,
     isOpen: true,
     items: filteredItems,
@@ -96,10 +95,6 @@ export const PalettePicker = <TItem extends PaletteItem>({
     }
   }
 
-  function handleBlur() {
-    onOpenChange(false)
-  }
-
   function renderFilteredItem(item: TItem, isHighlighted: boolean) {
     const itemStr = itemToString(item)
 
@@ -116,13 +111,12 @@ export const PalettePicker = <TItem extends PaletteItem>({
 
   return (
     <>
-      <div {...getComboboxProps({ className: 'relative p-3' })}>
+      <div className="relative p-3">
         <TextInput
           enterKeyHint={enterKeyHint}
           {...getInputProps({
             className: isLoading ? 'pr-8' : undefined,
             onKeyDown: handleKeyDown,
-            onBlur: handleBlur,
             placeholder,
             spellCheck: false,
           })}

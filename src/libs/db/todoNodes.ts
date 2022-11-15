@@ -8,7 +8,6 @@ import {
   API_ERROR_TODO_NODE_DELETE_PARENT_NODE_CONFLICT,
   API_ERROR_TODO_NODE_DELETE_ROOT_NODE_CONFLICT,
   API_ERROR_TODO_NODE_DELETE_UPDATE_CONFLICT,
-  API_ERROR_TODO_NODE_DOES_NOT_EXIST,
   API_ERROR_TODO_NODE_INSERT_CHILD_DELETE_CONFLICT,
   API_ERROR_TODO_NODE_INSERT_CHILD_DOES_NOT_EXIST,
   API_ERROR_TODO_NODE_NOTE_HTML_OR_TEXT_MISSING,
@@ -20,7 +19,7 @@ import {
 } from 'constants/error'
 import { isEmpty } from 'libs/array'
 import { handleDbError, prisma } from 'libs/db'
-import { getTodoById, type TodoMetadata } from 'libs/db/todo'
+import { type TodoMetadata } from 'libs/db/todo'
 import { hasKey } from 'libs/object'
 
 type TodoNodeDataWithChildren = Prisma.TodoNodeGetPayload<{ select: typeof todoNodeDataSelect }>
@@ -43,7 +42,7 @@ const todoNodeDataSelect = Prisma.validator<Prisma.TodoNodeSelect>()({
 })
 
 export async function getTodoNodes(todoId: TodoMetadata['id'], userId: UserId): Promise<TodoNodesData> {
-  const result = await prisma.todo.findFirst({
+  const result = await prisma.todo.findUnique({
     where: { id: todoId, userId },
     select: {
       name: true,
@@ -65,22 +64,32 @@ export async function getTodoNodes(todoId: TodoMetadata['id'], userId: UserId): 
 
 export function updateTodoNodes(todoId: TodoMetadata['id'], userId: UserId, data: UpdateTodoNodesData): Promise<void> {
   return prisma.$transaction(async (prisma) => {
-    const todo = await getTodoById(todoId, userId)
-
-    if (!todo) {
-      throw new TRPCError({ code: 'NOT_FOUND', message: API_ERROR_TODO_DOES_NOT_EXIST })
-    }
-
     const deletedNodeIds = await validateMutations(todoId, data)
 
     try {
       for (const { id, ...nodeUpdate } of Object.values(data.mutations.update)) {
-        await prisma.todoNode.update({ data: { ...nodeUpdate, children: data.children[id] }, where: { id } })
+        await prisma.todoNode.update({
+          data: { ...nodeUpdate, children: data.children[id] },
+          where: {
+            id,
+            todo: {
+              id: todoId,
+              userId,
+            },
+          },
+        })
       }
+    } catch (error) {
+      handleDbError(error, {
+        update: API_ERROR_TODO_DOES_NOT_EXIST,
+      })
+    }
 
+    try {
       await prisma.todo.update({
         where: {
           id: todoId,
+          userId,
         },
         data: {
           root: data.children.root,
@@ -98,10 +107,10 @@ export function updateTodoNodes(todoId: TodoMetadata['id'], userId: UserId, data
       })
     } catch (error) {
       handleDbError(error, {
+        createMany: API_ERROR_TODO_DOES_NOT_EXIST,
         unique: {
           id: API_ERROR_TODO_NODE_ALREADY_EXISTS,
         },
-        update: API_ERROR_TODO_NODE_DOES_NOT_EXIST,
       })
     }
   })

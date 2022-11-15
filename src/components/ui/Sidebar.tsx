@@ -50,10 +50,10 @@ export const Sidebar = () => {
     'motion-safe:transition-[width] motion-safe:duration-150 motion-safe:ease-in-out',
     collapsed
       ? [
-          'w-0 md:w-12 md:supports-max:w-[calc(theme(spacing.12)+max(0px,env(safe-area-inset-left)))]',
+          'w-0 md:w-12 md:w-[calc(theme(spacing.12)+max(0px,env(safe-area-inset-left)))]',
           'opacity-0 md:opacity-100 overflow-hidden md:flex',
         ]
-      : 'w-[17rem] supports-max:w-[calc(17rem+max(0px,env(safe-area-inset-left)))]'
+      : 'w-[17rem] w-[calc(17rem+max(0px,env(safe-area-inset-left)))]'
   )
 
   return (

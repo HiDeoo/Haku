@@ -59,11 +59,11 @@ export const SidebarMenu = () => {
   }
 
   const menuClasses = clst(
-    'z-10 py-2 supports-max:pb-[calc(theme(spacing.2)+max(0px,env(safe-area-inset-bottom)))]',
+    'z-10 py-2 pb-[calc(theme(spacing.2)+max(0px,env(safe-area-inset-bottom)))]',
     sidebarCollapsed
-      ? 'px-2 supports-max:pl-[calc(theme(spacing.2)+max(0px,env(safe-area-inset-left)))] h-full gap-1'
+      ? 'px-2 pl-[calc(theme(spacing.2)+max(0px,env(safe-area-inset-left)))] h-full gap-1'
       : [
-          'px-2.5 supports-max:pl-[calc(theme(spacing[2.5])+max(0px,env(safe-area-inset-left)))]',
+          'px-2.5 pl-[calc(theme(spacing[2.5])+max(0px,env(safe-area-inset-left)))]',
           'border-t border-zinc-600/40 shadow-[0_-1px_1px_0_theme(colors.black)]',
         ]
   )
@@ -93,7 +93,7 @@ export const SidebarMenu = () => {
             side={sidebarCollapsed ? 'right' : 'top'}
             className="animate-tooltip z-40 text-[0.84rem] leading-[1.2rem]"
           >
-            <Arrow className="fill-zinc-700" width={16} height={8} offset={sidebarCollapsed ? 7 : 0} />
+            <Arrow className="fill-zinc-700" width={16} height={8} />
             <Flex direction="col" className="rounded-md bg-zinc-700 p-1.5 shadow shadow-black/75">
               <Item asChild>
                 <SidebarMenuItem label="Logout" icon={RiLogoutCircleRLine} onClick={logout} />
@@ -140,7 +140,7 @@ function handleSidebarMenuInstallShortcutClick() {
 const sidebarMenuItemClasses = clst(
   'mx-0 flex items-center justify-start gap-2.5 bg-zinc-700 text-left shadow-none px-2 py-1 rounded font-medium',
   'hover:bg-blue-600 hover:text-zinc-100',
-  '[&[data-highlighted]]:ring-0 [&[data-highlighted]]:ring-offset-0 [&[data-highlighted]]:bg-blue-600'
+  'data-[highlighted]:ring-0 data-[highlighted]:ring-offset-0 data-[highlighted]:bg-blue-600'
 )
 
 const SidebarMenuItem = forwardRef<HTMLButtonElement, SidebarMenuItemProps>(

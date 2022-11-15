@@ -24,7 +24,7 @@ const depthOffset = '1.25rem'
 
 const supportsMaxCss = typeof window === 'object' && window.CSS.supports('padding', 'max(0px)')
 
-const nisClasses = 'gap-6 p-3 text-center supports-max:pl-[calc(theme(spacing.3)+max(0px,env(safe-area-inset-left)))]'
+const nisClasses = 'gap-6 p-3 text-center pl-[calc(theme(spacing.3)+max(0px,env(safe-area-inset-left)))]'
 
 export const ContentTree = () => {
   const contentType = useContentType()

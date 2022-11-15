@@ -1,6 +1,7 @@
 {
   "extends": "@hideoo/tsconfig",
   "compilerOptions": {
+    "allowJs": false,
     "baseUrl": "src",
     "exactOptionalPropertyTypes": false,
     "jsx": "preserve",

@@ -22,7 +22,7 @@ import {
 } from 'constants/error'
 import { isDateAfter } from 'libs/date'
 import { type TodoNodeData } from 'libs/db/todoNodes'
-import { type InferMutationInput } from 'libs/trpc'
+import { type RouterInput } from 'libs/trpc'
 import { getTestUser, testApiRoute } from 'tests/api'
 import {
   createTestTodo,
@@ -33,7 +33,7 @@ import {
   updateTestTodoRoot,
 } from 'tests/api/db'
 
-const baseMutation: InferMutationInput<'todo.node.update'>['mutations'] = {
+const baseMutation: RouterInput['todo']['node']['update']['mutations'] = {
   delete: [],
   insert: {},
   update: {},
@@ -45,7 +45,7 @@ describe('todo.node', () => {
       testApiRoute(async ({ caller }) => {
         const { id, name } = await createTestTodo()
 
-        const res = await caller.query('todo.node.byId', { id })
+        const res = await caller.todo.node.byId({ id })
 
         expect(res.name).toBe(name)
       }))
@@ -54,7 +54,7 @@ describe('todo.node', () => {
       testApiRoute(async ({ caller }) => {
         const { id, nodes, root } = await createTestTodo()
 
-        const res = await caller.query('todo.node.byId', { id })
+        const res = await caller.todo.node.byId({ id })
 
         expect(res.children.root.length).toBe(1)
         expect(res.children.root[0]).toBe(root[0])
@@ -79,7 +79,7 @@ describe('todo.node', () => {
         const node = await createTestTodoNode({ todoId: id, collapsed, content, noteHtml, noteText, status })
         await updateTestTodoRoot(id, [...root, node.id])
 
-        const res = await caller.query('todo.node.byId', { id })
+        const res = await caller.todo.node.byId({ id })
 
         expect(res.nodes[node.id]?.id).toBe(node.id)
         expect(res.nodes[node.id]?.parentId).toBeUndefined()
@@ -97,7 +97,7 @@ describe('todo.node', () => {
         const { id: otherTodoId } = await createTestTodo()
         await createTestTodoNode({ todoId: otherTodoId })
 
-        const res = await caller.query('todo.node.byId', { id })
+        const res = await caller.todo.node.byId({ id })
 
         expect(res.children.root.length).toBe(1)
         expect(res.children.root[0]).toBe(root[0])
@@ -143,7 +143,7 @@ describe('todo.node', () => {
 
         await updateTestTodoRoot(id, [node_0.id, node_1.id, node_2.id])
 
-        const res = await caller.query('todo.node.byId', { id })
+        const res = await caller.todo.node.byId({ id })
 
         expect(res.children.root.length).toBe(3)
         expect(res.children.root[0]).toBe(node_0.id)
@@ -199,19 +199,34 @@ describe('todo.node', () => {
       testApiRoute(async ({ caller }) => {
         const { id } = await createTestTodo({ userId: getTestUser('1').userId })
 
-        await expect(() => caller.query('todo.node.byId', { id })).rejects.toThrow(API_ERROR_TODO_DOES_NOT_EXIST)
+        await expect(() => caller.todo.node.byId({ id })).rejects.toThrow(API_ERROR_TODO_DOES_NOT_EXIST)
       }))
   })
 
   describe('update', () => {
     test('should not mutate todo nodes not owned by the current user', async () =>
       testApiRoute(async ({ caller }) => {
-        const { id, root } = await createTestTodo({ userId: getTestUser('1').userId })
+        const { id, nodes, root } = await createTestTodo({ userId: getTestUser('1').userId })
 
         const { id: nodeId } = await createTestTodoNode({ todoId: id })
 
         await expect(() =>
-          caller.mutation('todo.node.update', { id, children: { root: [...root, nodeId] }, mutations: baseMutation })
+          caller.todo.node.update({ id, children: { root: [...root, nodeId] }, mutations: baseMutation })
+        ).rejects.toThrow(API_ERROR_TODO_DOES_NOT_EXIST)
+
+        const rootNode = nodes[0]
+
+        assert(rootNode)
+
+        await expect(() =>
+          caller.todo.node.update({
+            id,
+            children: { root: [...root, nodeId] },
+            mutations: {
+              ...baseMutation,
+              update: { [rootNode.id]: { ...rootNode } },
+            },
+          })
         ).rejects.toThrow(API_ERROR_TODO_DOES_NOT_EXIST)
       }))
 
@@ -221,7 +236,7 @@ describe('todo.node', () => {
 
         const { id: nodeId } = await createTestTodoNode({ todoId: id })
 
-        await caller.mutation('todo.node.update', {
+        await caller.todo.node.update({
           id,
           children: { root: [...root, nodeId] },
           mutations: baseMutation,
@@ -244,7 +259,7 @@ describe('todo.node', () => {
 
         const { id: nodeId } = await createTestTodoNode({ todoId: id })
 
-        await caller.mutation('todo.node.update', {
+        await caller.todo.node.update({
           id,
           children: { root: [nodeId, ...root] },
           mutations: baseMutation,
@@ -267,7 +282,7 @@ describe('todo.node', () => {
 
         const { id: nodeId } = await createTestTodoNode({ todoId: id })
 
-        await caller.mutation('todo.node.update', {
+        await caller.todo.node.update({
           id,
           children: { root: [nodeId] },
           mutations: baseMutation,
@@ -288,7 +303,7 @@ describe('todo.node', () => {
 
         const newTodoNode = getFakeTodoNode()
 
-        await caller.mutation('todo.node.update', {
+        await caller.todo.node.update({
           id,
           children: { root: [newTodoNode.id] },
           mutations: { ...baseMutation, insert: { [newTodoNode.id]: newTodoNode } },
@@ -310,7 +325,7 @@ describe('todo.node', () => {
         const { id: nodeId } = await createTestTodoNode()
 
         await expect(() =>
-          caller.mutation('todo.node.update', {
+          caller.todo.node.update({
             id,
             children: { root: [nodeId] },
             mutations: baseMutation,
@@ -330,7 +345,7 @@ describe('todo.node', () => {
         updatedTodoNode.noteText = null
 
         await expect(() =>
-          caller.mutation('todo.node.update', {
+          caller.todo.node.update({
             id,
             children: { root },
             mutations: { ...baseMutation, update: { [updatedTodoNode.id]: updatedTodoNode } },
@@ -346,7 +361,7 @@ describe('todo.node', () => {
         newTodoNode.noteHtml = null
 
         await expect(() =>
-          caller.mutation('todo.node.update', {
+          caller.todo.node.update({
             id,
             children: { root },
             mutations: { ...baseMutation, insert: { [newTodoNode.id]: newTodoNode } },
@@ -360,7 +375,7 @@ describe('todo.node', () => {
 
         const newTodoNode = getFakeTodoNode()
 
-        await caller.mutation('todo.node.update', {
+        await caller.todo.node.update({
           id,
           children: { root },
           mutations: { ...baseMutation, insert: { [newTodoNode.id]: newTodoNode } },
@@ -393,7 +408,7 @@ describe('todo.node', () => {
 
         const newTodoNode = getFakeTodoNode()
 
-        await caller.mutation('todo.node.update', {
+        await caller.todo.node.update({
           id,
           children: { root, [newTodoNode.id]: [newTodoNodeChildId] },
           mutations: { ...baseMutation, insert: { [newTodoNode.id]: newTodoNode } },
@@ -417,7 +432,7 @@ describe('todo.node', () => {
         const newTodoNode = getFakeTodoNode()
         const newTodoNodeChild = getFakeTodoNode()
 
-        await caller.mutation('todo.node.update', {
+        await caller.todo.node.update({
           id,
           children: { root, [newTodoNode.id]: [newTodoNodeChild.id] },
           mutations: {
@@ -446,7 +461,7 @@ describe('todo.node', () => {
         newTodoNode.noteHtml = '<p></p>'
         newTodoNode.noteText = ''
 
-        await caller.mutation('todo.node.update', {
+        await caller.todo.node.update({
           id,
           children: { root },
           mutations: { ...baseMutation, insert: { [newTodoNode.id]: newTodoNode } },
@@ -473,7 +488,7 @@ describe('todo.node', () => {
         const rootNode_children = [...rootNode.children, newTodoNode_0.id]
         const newTodoNode_0_children = [newTodoNode_0_0.id]
 
-        await caller.mutation('todo.node.update', {
+        await caller.todo.node.update({
           id,
           children: { root, [newTodoNode_0.id]: newTodoNode_0_children, [rootNode.id]: rootNode_children },
           mutations: {
@@ -526,7 +541,7 @@ describe('todo.node', () => {
 
         assert(rootNode)
 
-        await caller.mutation('todo.node.update', {
+        await caller.todo.node.update({
           id,
           children: { root, [rootNode.id]: [...rootNode.children, newTodoNode.id] },
           mutations: {
@@ -565,7 +580,7 @@ describe('todo.node', () => {
         const newTodoNode = getFakeTodoNode({ id: nodes[0]?.id })
 
         await expect(() =>
-          caller.mutation('todo.node.update', {
+          caller.todo.node.update({
             id,
             children: { root },
             mutations: { ...baseMutation, insert: { [newTodoNode.id]: newTodoNode } },
@@ -580,7 +595,7 @@ describe('todo.node', () => {
         const newTodoNode = getFakeTodoNode()
 
         await expect(() =>
-          caller.mutation('todo.node.update', {
+          caller.todo.node.update({
             id,
             children: { root, [newTodoNode.id]: ['nonexistingChildId'] },
             mutations: { ...baseMutation, insert: { [newTodoNode.id]: newTodoNode } },
@@ -597,7 +612,7 @@ describe('todo.node', () => {
         const newTodoNode = getFakeTodoNode()
 
         await expect(() =>
-          caller.mutation('todo.node.update', {
+          caller.todo.node.update({
             id,
             children: { root, [newTodoNode.id]: [deletedTodoNode.id] },
             mutations: {
@@ -631,7 +646,7 @@ describe('todo.node', () => {
           status: newStatus,
         })
 
-        await caller.mutation('todo.node.update', {
+        await caller.todo.node.update({
           id,
           children: { root },
           mutations: { ...baseMutation, update: { [updatedTodoNode.id]: updatedTodoNode } },
@@ -665,7 +680,7 @@ describe('todo.node', () => {
 
         const updatedTodoNode = getFakeTodoNode({ id: updatedTodoNodeId })
 
-        await caller.mutation('todo.node.update', {
+        await caller.todo.node.update({
           id,
           children: { root, [updatedTodoNode.id]: [childTodoNode.id] },
           mutations: { ...baseMutation, update: { [updatedTodoNode.id]: updatedTodoNode } },
@@ -694,7 +709,7 @@ describe('todo.node', () => {
 
         const updatedTodoNode = getFakeTodoNode({ id: updatedTodoNodeId })
 
-        await caller.mutation('todo.node.update', {
+        await caller.todo.node.update({
           id,
           children: { root, [updatedTodoNode.id]: [childTodoNode.id] },
           mutations: {
@@ -726,7 +741,7 @@ describe('todo.node', () => {
 
         const updatedTodoNode = getFakeTodoNode({ id: updatedTodoNodeId, noteHtml: '<p></p>', noteText: '' })
 
-        await caller.mutation('todo.node.update', {
+        await caller.todo.node.update({
           id,
           children: { root, [updatedTodoNode.id]: [childTodoNode.id] },
           mutations: { ...baseMutation, update: { [updatedTodoNode.id]: updatedTodoNode } },
@@ -750,7 +765,7 @@ describe('todo.node', () => {
 
         assert(updatedTodoNode)
 
-        await caller.mutation('todo.node.update', {
+        await caller.todo.node.update({
           id,
           children: { root, [updatedTodoNode.id]: [todoNode_1.id, todoNode_0.id] },
           mutations: {
@@ -780,7 +795,7 @@ describe('todo.node', () => {
         const updatedTodoNode = getFakeTodoNode({ id: cuid(), content: 'updated todo node' })
 
         await expect(() =>
-          caller.mutation('todo.node.update', {
+          caller.todo.node.update({
             id,
             children: { root },
             mutations: { ...baseMutation, update: { [updatedTodoNode.id]: updatedTodoNode } },
@@ -799,7 +814,7 @@ describe('todo.node', () => {
         const updatedTodoNode = getFakeTodoNode({ id: updatedTodoNodeId })
 
         await expect(() =>
-          caller.mutation('todo.node.update', {
+          caller.todo.node.update({
             id,
             children: { root, [updatedTodoNode.id]: ['nonexistingChildId'] },
             mutations: { ...baseMutation, update: { [updatedTodoNode.id]: updatedTodoNode } },
@@ -820,7 +835,7 @@ describe('todo.node', () => {
         const updatedTodoNode = getFakeTodoNode({ id: updatedTodoNodeId })
 
         await expect(() =>
-          caller.mutation('todo.node.update', {
+          caller.todo.node.update({
             id,
             children: { root, [updatedTodoNode.id]: [deletedTodoNode.id] },
             mutations: {
@@ -838,7 +853,7 @@ describe('todo.node', () => {
 
         const deletedTodoNode = await createTestTodoNode({ todoId: id })
 
-        await caller.mutation('todo.node.update', {
+        await caller.todo.node.update({
           id,
           children: { root },
           mutations: { ...baseMutation, delete: [deletedTodoNode.id] },
@@ -865,7 +880,7 @@ describe('todo.node', () => {
 
         await updateTestTodoRoot(id, [deletedTodoNode.id])
 
-        await caller.mutation('todo.node.update', {
+        await caller.todo.node.update({
           id,
           children: { root: [rootNode.id] },
           mutations: {
@@ -901,7 +916,7 @@ describe('todo.node', () => {
 
         await updateTestTodoNodeChildren(rootNode.id, [todoNode_0.id])
 
-        await caller.mutation('todo.node.update', {
+        await caller.todo.node.update({
           id,
           children: { root, [rootNode.id]: [] },
           mutations: {
@@ -942,7 +957,7 @@ describe('todo.node', () => {
         assert(deletedRootNode)
 
         await expect(() =>
-          caller.mutation('todo.node.update', {
+          caller.todo.node.update({
             id,
             children: { root: [] },
             mutations: {
@@ -966,7 +981,7 @@ describe('todo.node', () => {
         await updateTestTodoNodeChildren(rootNode.id, [todoNode_0.id])
 
         await expect(() =>
-          caller.mutation('todo.node.update', {
+          caller.todo.node.update({
             id,
             children: { root },
             mutations: { ...baseMutation, delete: [todoNode_0.id] },
@@ -983,7 +998,7 @@ describe('todo.node', () => {
         assert(deletedTodoNodeId)
 
         await expect(() =>
-          caller.mutation('todo.node.update', {
+          caller.todo.node.update({
             id,
             children: { root },
             mutations: { ...baseMutation, delete: [deletedTodoNodeId] },
@@ -1000,7 +1015,7 @@ describe('todo.node', () => {
         assert(deletedTodoNodeId)
 
         await expect(() =>
-          caller.mutation('todo.node.update', {
+          caller.todo.node.update({
             id,
             children: { root },
             mutations: { ...baseMutation, delete: ['nonexistingTodoNodeId'] },
@@ -1017,7 +1032,7 @@ describe('todo.node', () => {
         assert(deletedTodoNode)
 
         await expect(() =>
-          caller.mutation('todo.node.update', {
+          caller.todo.node.update({
             id,
             children: { root },
             mutations: {
@@ -1199,7 +1214,7 @@ describe('todo.node', () => {
         const node_3_new_collapsed = false
         const node_4_new_status = TodoNodeStatus.CANCELLED
 
-        await caller.mutation('todo.node.update', {
+        await caller.todo.node.update({
           id,
           children: {
             root: [node_0.id, node_0_3.id, node_3.id, node_2.id],

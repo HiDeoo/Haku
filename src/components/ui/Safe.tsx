@@ -3,7 +3,7 @@ import { clst } from 'styles/clst'
 
 const safeClasses = clst(
   'overflow-y-auto overflow-x-hidden',
-  'supports-max:pr-[max(0px,env(safe-area-inset-right))] supports-max:pb-[max(0px,env(safe-area-inset-bottom))]'
+  'pr-[max(0px,env(safe-area-inset-right))] pb-[max(0px,env(safe-area-inset-bottom))]'
 )
 
 export const Safe = ({ children }: SafeProps) => {

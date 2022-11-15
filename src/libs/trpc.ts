@@ -1,11 +1,11 @@
 import { httpLink } from '@trpc/client/links/httpLink'
 import { type withTRPC } from '@trpc/next'
-import { createReactQueryHooks } from '@trpc/react'
-import { type inferProcedureOutput, type inferProcedureInput } from '@trpc/server'
+import { createTRPCReact } from '@trpc/react-query'
+import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server'
 
 import { type AppRouter } from 'server/routers'
 
-export const trpc = createReactQueryHooks<AppRouter>()
+export const trpc = createTRPCReact<AppRouter>()
 
 export function isNetworkError(error: unknown) {
   return error instanceof TypeError && error.message === 'Failed to fetch'
@@ -38,12 +38,5 @@ export function getTRPCConfiguration(): Parameters<typeof withTRPC>[0] {
   }
 }
 
-type MutationPath = keyof AppRouter['_def']['mutations']
-
-export type InferMutationInput<TRouteKey extends MutationPath> = inferProcedureInput<
-  AppRouter['_def']['mutations'][TRouteKey]
->
-
-export type InferMutationOutput<TRouteKey extends MutationPath> = inferProcedureOutput<
-  AppRouter['_def']['mutations'][TRouteKey]
->
+export type RouterInput = inferRouterInputs<AppRouter>
+export type RouterOutput = inferRouterOutputs<AppRouter>

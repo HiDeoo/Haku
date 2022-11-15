@@ -50,7 +50,7 @@ export async function addNote(
 }
 
 export async function getNote(id: NoteData['id'], userId: UserId): Promise<NoteData> {
-  const note = await prisma.note.findFirst({ where: { id, userId }, select: noteDataSelect })
+  const note = await prisma.note.findUnique({ where: { id, userId }, select: noteDataSelect })
 
   if (!note) {
     throw new TRPCError({ code: 'NOT_FOUND', message: API_ERROR_NOTE_DOES_NOT_EXIST })
@@ -81,12 +81,6 @@ export function updateNote(
   data: UpdateNoteData
 ): Promise<NoteMetadata | NoteData> {
   return prisma.$transaction(async (prisma) => {
-    const note = await getNoteById(id, userId)
-
-    if (!note) {
-      throw new TRPCError({ code: 'NOT_FOUND', message: API_ERROR_NOTE_DOES_NOT_EXIST })
-    }
-
     if ((data.html && !data.text) || (data.text && !data.html)) {
       throw new TRPCError({ code: 'BAD_REQUEST', message: API_ERROR_NOTE_HTML_OR_TEXT_MISSING })
     }
@@ -97,6 +91,7 @@ export function updateNote(
       return await prisma.note.update({
         where: {
           id,
+          userId,
         },
         data: {
           folderId: data.folderId,
@@ -114,27 +109,22 @@ export function updateNote(
           userId_name: API_ERROR_NOTE_ALREADY_EXISTS,
           folderId_userId_name: API_ERROR_NOTE_ALREADY_EXISTS,
         },
+        update: API_ERROR_NOTE_DOES_NOT_EXIST,
       })
     }
   })
 }
 
-export function removeNote(id: NoteMetadata['id'], userId: UserId) {
-  return prisma.$transaction(async (prisma) => {
-    const note = await getNoteById(id, userId)
+export async function removeNote(id: NoteMetadata['id'], userId: UserId) {
+  await deleteFromCloudinaryByTag(id)
 
-    if (!note) {
-      throw new TRPCError({ code: 'NOT_FOUND', message: API_ERROR_NOTE_DOES_NOT_EXIST })
-    }
-
-    await deleteFromCloudinaryByTag(id)
-
-    return prisma.note.delete({ where: { id } })
-  })
-}
-
-function getNoteById(id: Note['id'], userId: UserId): Promise<Note | null> {
-  return prisma.note.findFirst({ where: { id, userId } })
+  try {
+    return await prisma.note.delete({ where: { id, userId } })
+  } catch (error) {
+    handleDbError(error, {
+      delete: API_ERROR_NOTE_DOES_NOT_EXIST,
+    })
+  }
 }
 
 type NoteMetadataGroupedByFolder = Map<NoteMetadata['folderId'], NoteMetadata[]>

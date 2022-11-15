@@ -6,10 +6,9 @@ import { Form } from 'components/form/Form'
 import { TextArea } from 'components/form/TextArea'
 import { Box } from 'components/ui/Box'
 import { Safe } from 'components/ui/Safe'
-import { ContentType } from 'constants/contentType'
-import { getContentTreeQueryPath } from 'hooks/useContentTreeQuery'
+import { useContentTreeUtils } from 'hooks/useContentTreeUtils'
 import { useNetworkStatus } from 'hooks/useNetworkStatus'
-import { type InferMutationOutput, trpc } from 'libs/trpc'
+import { type RouterOutput, trpc } from 'libs/trpc'
 
 const Dynalist: Page = () => {
   const { offline } = useNetworkStatus()
@@ -22,16 +21,17 @@ const Dynalist: Page = () => {
     formState: { errors },
   } = useForm<FormFields>()
 
-  const { error, isLoading, mutate } = trpc.useMutation(['import.dynalist'], { onSuccess: handleMutationSuccess })
-  const { invalidateQueries } = trpc.useContext()
+  const { error, isLoading, mutate } = trpc.import.dynalist.useMutation({ onSuccess: handleMutationSuccess })
+  const contentTreeUtils = useContentTreeUtils()
+  const utils = trpc.useContext()
 
   const handleFormSubmit = handleSubmit((data) => {
     mutate(data)
   })
 
-  function handleMutationSuccess(newMetadata: InferMutationOutput<'import.dynalist'>) {
-    invalidateQueries([getContentTreeQueryPath(ContentType.TODO)])
-    invalidateQueries(['file.list'])
+  function handleMutationSuccess(newMetadata: RouterOutput['import']['dynalist']) {
+    contentTreeUtils.invalidate()
+    utils.file.list.invalidate()
 
     push(`/todos/${newMetadata.id}/${newMetadata.slug}`)
   }

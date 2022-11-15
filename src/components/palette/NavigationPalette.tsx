@@ -6,6 +6,7 @@ import { RiBookletLine, RiTodoLine } from 'react-icons/ri'
 import { fileHistoryAtom } from 'atoms/fileHistory'
 import { navigationPaletteOpenedAtom } from 'atoms/togglable'
 import { Palette, type PaletteItem } from 'components/palette/Palette'
+import { useContentId } from 'hooks/useContentId'
 import { ContentType, getContentType } from 'hooks/useContentType'
 import { useGlobalShortcuts } from 'hooks/useGlobalShortcuts'
 import { unshiftFromIndex } from 'libs/array'
@@ -15,9 +16,11 @@ import { trpc } from 'libs/trpc'
 export const NavigationPalette = () => {
   const { push } = useRouter()
 
+  const { contentId } = useContentId()
+
   const [opened, setOpened] = useAtom(navigationPaletteOpenedAtom)
 
-  const { data, isLoading } = trpc.useQuery(['file.list'], { enabled: opened })
+  const { data, isLoading } = trpc.file.list.useQuery(undefined, { enabled: opened })
 
   const fileHistory = useAtomValue(fileHistoryAtom)
 
@@ -26,18 +29,18 @@ export const NavigationPalette = () => {
       return []
     }
 
-    let orderedData = [...data]
+    let orderedData = [...data.filter((file) => file.id !== contentId)]
 
-    for (const [i, id] of [...fileHistory].reverse().entries()) {
+    for (const id of [...fileHistory].reverse()) {
       const index = orderedData.findIndex((file) => file.id === id)
 
-      if (i !== fileHistory.length - 1) {
+      if (index !== -1) {
         orderedData = unshiftFromIndex(orderedData, index)
       }
     }
 
     return orderedData
-  }, [data, fileHistory])
+  }, [contentId, data, fileHistory])
 
   useGlobalShortcuts(
     useMemo(

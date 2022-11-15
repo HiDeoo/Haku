@@ -1,8 +1,7 @@
 import { type InboxEntry, Prisma } from '@prisma/client'
-import { TRPCError } from '@trpc/server'
 
 import { API_ERROR_INBOX_ENTRY_DOES_NOT_EXIST } from 'constants/error'
-import { prisma } from 'libs/db'
+import { handleDbError, prisma } from 'libs/db'
 
 export type InboxEntryData = Prisma.InboxEntryGetPayload<{ select: typeof inboxEntryDataSelect }>
 export type InboxEntriesData = InboxEntryData[]
@@ -28,18 +27,12 @@ export function getInboxEntries(userId: UserId): Promise<InboxEntriesData> {
   })
 }
 
-export function removeInboxEntry(userId: UserId, id: InboxEntry['id']) {
-  return prisma.$transaction(async (prisma) => {
-    const inboxEntry = await getInboxEntryById(userId, id)
-
-    if (!inboxEntry) {
-      throw new TRPCError({ code: 'NOT_FOUND', message: API_ERROR_INBOX_ENTRY_DOES_NOT_EXIST })
-    }
-
-    return prisma.inboxEntry.delete({ where: { id } })
-  })
-}
-
-function getInboxEntryById(userId: UserId, id: InboxEntry['id']): Promise<InboxEntry | null> {
-  return prisma.inboxEntry.findFirst({ where: { id, userId } })
+export async function removeInboxEntry(userId: UserId, id: InboxEntry['id']) {
+  try {
+    return await prisma.inboxEntry.delete({ where: { id, userId } })
+  } catch (error) {
+    handleDbError(error, {
+      delete: API_ERROR_INBOX_ENTRY_DOES_NOT_EXIST,
+    })
+  }
 }

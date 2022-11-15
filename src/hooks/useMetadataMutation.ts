@@ -2,29 +2,29 @@ import { useRouter } from 'next/router'
 import { useCallback } from 'react'
 
 import { useContentId } from 'hooks/useContentId'
-import { getContentTreeQueryPath } from 'hooks/useContentTreeQuery'
+import { useContentTreeUtils } from 'hooks/useContentTreeUtils'
 import { ContentType, useContentType } from 'hooks/useContentType'
-import { type NoteData } from 'libs/db/note'
-import { type TodoNodesData } from 'libs/db/todoNodes'
 import { trpc } from 'libs/trpc'
 
 export function useMetadataMutation() {
   const { push, replace } = useRouter()
   const { contentId } = useContentId()
   const { type, urlPath } = useContentType()
+  const contentTreeUtils = useContentTreeUtils()
+  const utils = trpc.useContext()
 
-  const { invalidateQueries, setQueryData } = trpc.useContext()
+  const procedurePath = type === ContentType.NOTE ? trpc.note : trpc.todo
 
   const {
     error: errorAdd,
     isLoading: isLoadingAdd,
     mutate: mutateAdd,
     reset: resetAdd,
-  } = trpc.useMutation([type === ContentType.NOTE ? 'note.add' : 'todo.add'], {
+  } = procedurePath.add.useMutation({
     onSuccess: (newMetadata) => {
-      invalidateQueries([getContentTreeQueryPath(type)])
-      invalidateQueries(['file.list'])
-      invalidateQueries(['history'])
+      contentTreeUtils.invalidate()
+      utils.file.list.invalidate()
+      utils.history.invalidate()
 
       push(`${urlPath}/${newMetadata.id}/${newMetadata.slug}`)
     },
@@ -35,11 +35,11 @@ export function useMetadataMutation() {
     isLoading: isLoadingDelete,
     mutate: mutateDelete,
     reset: resetDelete,
-  } = trpc.useMutation([type === ContentType.NOTE ? 'note.delete' : 'todo.delete'], {
+  } = procedurePath.delete.useMutation({
     onSuccess: (_newMetadata, variables) => {
-      invalidateQueries([getContentTreeQueryPath(type)])
-      invalidateQueries(['file.list'])
-      invalidateQueries(['history'])
+      contentTreeUtils.invalidate()
+      utils.file.list.invalidate()
+      utils.history.invalidate()
 
       if (variables.id === contentId) {
         replace(urlPath, undefined, { shallow: true })
@@ -52,23 +52,35 @@ export function useMetadataMutation() {
     isLoading: isLoadingUpdate,
     mutate: mutateUpdate,
     reset: resetUpdate,
-  } = trpc.useMutation([type === ContentType.NOTE ? 'note.update' : 'todo.update'], {
+  } = procedurePath.update.useMutation({
     onSuccess: (newMetadata, variables) => {
-      invalidateQueries([getContentTreeQueryPath(type)])
-      invalidateQueries(['file.list'])
-      invalidateQueries(['history'])
+      contentTreeUtils.invalidate()
+      utils.file.list.invalidate()
+      utils.history.invalidate()
 
       if (variables.id === contentId) {
         if (type === ContentType.NOTE) {
-          setQueryData(['note.byId', { id: variables.id }], (prevNote: NoteData) => ({
-            ...prevNote,
-            name: newMetadata.name,
-          }))
+          utils.note.byId.setData({ id: variables.id }, (prevNote) => {
+            if (!prevNote) {
+              return
+            }
+
+            return {
+              ...prevNote,
+              name: newMetadata.name,
+            }
+          })
         } else {
-          setQueryData(['todo.node.byId', { id: variables.id }], (prevTodoNodes: TodoNodesData) => ({
-            ...prevTodoNodes,
-            name: newMetadata.name,
-          }))
+          utils.todo.node.byId.setData({ id: variables.id }, (prevTodoNodes) => {
+            if (!prevTodoNodes) {
+              return
+            }
+
+            return {
+              ...prevTodoNodes,
+              name: newMetadata.name,
+            }
+          })
         }
 
         replace(`${urlPath}/${newMetadata.id}/${newMetadata.slug}`, undefined, { shallow: true })

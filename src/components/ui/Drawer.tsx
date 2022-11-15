@@ -19,13 +19,13 @@ const overlayClasses = 'animate-modal-overlay fixed inset-0 z-40 bg-zinc-900/80'
 
 const headerClasses = clst(
   'border-b border-black/10 bg-zinc-900 py-2 pl-3 pr-2 font-bold',
-  'supports-max:pl-[calc(theme(spacing.3)+max(0px,env(safe-area-inset-left)))]'
+  'pl-[calc(theme(spacing.3)+max(0px,env(safe-area-inset-left)))]'
 )
 
 const listClasses = clst(
   'grow overflow-y-auto border-t border-b border-zinc-900 p-3',
-  'supports-max:pl-[calc(theme(spacing.3)+max(0px,env(safe-area-inset-left)))]',
-  'supports-max:pb-[calc(theme(spacing.3)+max(0px,env(safe-area-inset-bottom)))]'
+  'pl-[calc(theme(spacing.3)+max(0px,env(safe-area-inset-left)))]',
+  'pb-[calc(theme(spacing.3)+max(0px,env(safe-area-inset-bottom)))]'
 )
 
 export const Drawer = ({ children, className, onOpenChange, opened, title, trigger }: DrawerProps) => {
@@ -56,7 +56,7 @@ export const Drawer = ({ children, className, onOpenChange, opened, title, trigg
 const DrawerForm = ({ children, ...props }: DrawerFormProps) => {
   const formClasses = clst(
     'z-10 bg-zinc-900/10 p-3 shadow-[0px_1px_2px_0px_theme(colors.black/50%)]',
-    'supports-max:pl-[calc(theme(spacing.3)+max(0px,env(safe-area-inset-left)))]'
+    'pl-[calc(theme(spacing.3)+max(0px,env(safe-area-inset-left)))]'
   )
 
   return (
@@ -75,7 +75,7 @@ const DrawerNis = ({ text }: DrawerNisProps) => {
       fullHeight
       direction="col"
       alignItems="center"
-      className="mt-6 p-3 supports-max:pl-[calc(theme(spacing.3)+max(0px,env(safe-area-inset-left)))]"
+      className="mt-6 p-3 pl-[calc(theme(spacing.3)+max(0px,env(safe-area-inset-left)))]"
     >
       <span>{text}</span>
     </Flex>

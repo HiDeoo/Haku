@@ -1,32 +1,33 @@
 import { addAllowedEmail, getAllowedEmails, removeAllowedEmail } from 'libs/db/emailAllowList'
 import { z, zEmail, zId } from 'libs/validation'
-import { createRouter } from 'server'
+import { adminProcedure, router } from 'server'
 
-export const adminEmailRouter = createRouter()
-  .query('list', {
-    async resolve() {
-      const emails = await getAllowedEmails()
+export const adminEmailRouter = router({
+  list: adminProcedure.query(async () => {
+    const emails = await getAllowedEmails()
 
-      return emails
-    },
-  })
-  .mutation('add', {
-    input: z.object({
-      email: zEmail,
-    }),
-    async resolve({ input }) {
+    return emails
+  }),
+  add: adminProcedure
+    .input(
+      z.object({
+        email: zEmail,
+      })
+    )
+    .mutation(async ({ input }) => {
       const email = await addAllowedEmail(input.email)
 
       return email
-    },
-  })
-  .mutation('delete', {
-    input: z.object({
-      id: zId,
     }),
-    async resolve({ input }) {
+  delete: adminProcedure
+    .input(
+      z.object({
+        id: zId,
+      })
+    )
+    .mutation(async ({ input }) => {
       await removeAllowedEmail(input.id)
 
       return
-    },
-  })
+    }),
+})

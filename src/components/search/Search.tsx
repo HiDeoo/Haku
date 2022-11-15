@@ -22,7 +22,7 @@ export const Search = ({ queryInputRef }: SearchProps) => {
   const form = useForm<FormFields>({ defaultValues: search, shouldUnregister: false })
   const searchQueryData = form.watch()
 
-  const { data, fetchStatus, refetch } = trpc.useQuery(['search', searchQueryData], {
+  const { data, fetchStatus, refetch } = trpc.search.useQuery(searchQueryData, {
     enabled: false,
   })
 

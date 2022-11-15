@@ -33,11 +33,6 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  experimental: {
-    browsersListForSwc: true,
-    legacyBrowsers: false,
-    newNextLinkBehavior: true,
-  },
   headers() {
     return [
       { source: '/:path*', headers: commonHeaders },

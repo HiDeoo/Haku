@@ -12,7 +12,7 @@ describe('inbox', () => {
   describe('all', () => {
     test('should return an empty list', () =>
       testApiRoute(async ({ caller }) => {
-        const res = await caller.query('inbox.list')
+        const res = await caller.inbox.list()
 
         expect(res.length).toBe(0)
       }))
@@ -23,7 +23,7 @@ describe('inbox', () => {
         const { id: inbox_entry_1_id } = await createTestInboxEntry()
         const { id: inbox_entry_2_id } = await createTestInboxEntry()
 
-        const res = await caller.query('inbox.list')
+        const res = await caller.inbox.list()
 
         expect(res.length).toBe(3)
 
@@ -38,7 +38,7 @@ describe('inbox', () => {
           text: 'inbox entry text',
         })
 
-        const res = await caller.query('inbox.list')
+        const res = await caller.inbox.list()
 
         expect(res.length).toBe(1)
 
@@ -57,7 +57,7 @@ describe('inbox', () => {
         await createTestInboxEntry({ userId: userId1 })
         const { id: inbox_entry_1_id } = await createTestInboxEntry()
 
-        const res = await caller.query('inbox.list')
+        const res = await caller.inbox.list()
 
         expect(res.length).toBe(2)
         expect(res[0]?.id).toBe(inbox_entry_1_id)
@@ -68,14 +68,14 @@ describe('inbox', () => {
   describe('add', () => {
     test('should not add an inbox entry with no text', async () =>
       testApiRoute(async ({ caller }) => {
-        await expect(() => caller.mutation('inbox.add', { text: '' })).rejects.toThrow()
+        await expect(() => caller.inbox.add({ text: '' })).rejects.toThrow()
       }))
 
     test('should add an inbox entry', async () =>
       testApiRoute(async ({ caller }) => {
         const text = faker.random.words()
 
-        const res = await caller.mutation('inbox.add', { text })
+        const res = await caller.inbox.add({ text })
 
         const testInboxEntry = await getTestInboxEntry(res.id)
 
@@ -90,7 +90,7 @@ describe('inbox', () => {
       testApiRoute(async ({ caller }) => {
         const { id } = await createTestInboxEntry()
 
-        await caller.mutation('inbox.delete', { id })
+        await caller.inbox.delete({ id })
 
         const testInboxEntry = await getTestInboxEntry(id)
 
@@ -101,9 +101,7 @@ describe('inbox', () => {
       testApiRoute(async ({ caller }) => {
         const { id } = await createTestInboxEntry({ userId: getTestUser('1').userId })
 
-        await expect(() => caller.mutation('inbox.delete', { id })).rejects.toThrow(
-          API_ERROR_INBOX_ENTRY_DOES_NOT_EXIST
-        )
+        await expect(() => caller.inbox.delete({ id })).rejects.toThrow(API_ERROR_INBOX_ENTRY_DOES_NOT_EXIST)
 
         const testInboxEntry = await getTestInboxEntry(id)
 
@@ -114,9 +112,7 @@ describe('inbox', () => {
       testApiRoute(async ({ caller }) => {
         const id = cuid()
 
-        await expect(() => caller.mutation('inbox.delete', { id })).rejects.toThrow(
-          API_ERROR_INBOX_ENTRY_DOES_NOT_EXIST
-        )
+        await expect(() => caller.inbox.delete({ id })).rejects.toThrow(API_ERROR_INBOX_ENTRY_DOES_NOT_EXIST)
 
         const testInboxEntry = await getTestInboxEntry(id)
 

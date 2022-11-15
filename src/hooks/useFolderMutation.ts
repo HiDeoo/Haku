@@ -1,23 +1,23 @@
 import { useRouter } from 'next/router'
 import { useCallback } from 'react'
 
-import { getContentTreeQueryPath } from 'hooks/useContentTreeQuery'
+import { useContentTreeUtils } from 'hooks/useContentTreeUtils'
 import { ContentType, useContentType } from 'hooks/useContentType'
 import { trpc } from 'libs/trpc'
 
 export function useFolderMutation() {
   const { push } = useRouter()
   const { type, urlPath } = useContentType()
-  const { invalidateQueries } = trpc.useContext()
+  const contentTreeUtils = useContentTreeUtils()
 
   const {
     error: errorAdd,
     isLoading: isLoadingAdd,
     mutate: mutateAdd,
     reset: resetAdd,
-  } = trpc.useMutation(['folder.add'], {
+  } = trpc.folder.add.useMutation({
     onSuccess: () => {
-      invalidateQueries([getContentTreeQueryPath(type)])
+      contentTreeUtils.invalidate()
     },
   })
 
@@ -26,9 +26,9 @@ export function useFolderMutation() {
     isLoading: isLoadingDelete,
     mutate: mutateDelete,
     reset: resetDelete,
-  } = trpc.useMutation(['folder.delete'], {
+  } = trpc.folder.delete.useMutation({
     onSuccess: () => {
-      invalidateQueries([getContentTreeQueryPath(type)])
+      contentTreeUtils.invalidate()
 
       push(urlPath)
     },
@@ -39,9 +39,9 @@ export function useFolderMutation() {
     isLoading: isLoadingUpdate,
     mutate: mutateUpdate,
     reset: resetUpdate,
-  } = trpc.useMutation(['folder.update'], {
+  } = trpc.folder.update.useMutation({
     onSuccess: () => {
-      invalidateQueries([getContentTreeQueryPath(type)])
+      contentTreeUtils.invalidate()
     },
   })
 
