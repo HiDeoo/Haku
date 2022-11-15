@@ -197,7 +197,42 @@ export const TodoNodeItem = memo(
         event.preventDefault()
         event.stopPropagation()
 
-        const text = event.clipboardData.getData('text/plain').replaceAll(/\n/gm, ' ')
+        const clipboardData = event.clipboardData.getData('text/plain')
+
+        if (node && contentEditable.current && /\n/.test(clipboardData)) {
+          const caretIndex = getContentEditableCaretIndex(contentEditable.current)
+
+          const update = { id: node.id, parentId: node.parentId }
+
+          const newNodesContent = clipboardData
+            .split('\n')
+            .filter((line) => line.trim().length > 0)
+            .reverse()
+
+          for (const [index, newNodeContent] of newNodesContent.entries()) {
+            const content = newNodeContent.trim()
+
+            // If the current node is empty, fill it with the first line of the pasted content.
+            if (index === newNodesContent.length - 1 && node.content.trim().length === 0) {
+              updateContent({ id: node.id, content })
+
+              continue
+            }
+
+            const newId = cuid()
+
+            addNode({
+              ...update,
+              direction: caretIndex === 0 && node.content.length > 0 ? 'up' : 'down',
+              newId,
+              content,
+            })
+          }
+
+          return
+        }
+
+        const text = clipboardData.replaceAll(/\n/gm, ' ')
         const range = window.getSelection()?.getRangeAt(0)
 
         if (range && node?.id) {
@@ -211,8 +246,8 @@ export const TodoNodeItem = memo(
 
           const nextCaretIndex = range.startOffset + text.length
 
-          // Pasting large content may lead to a loss of focus, we can safely prevent that by refocusing the current node
-          // and having the caret being placed right after the pasted content.
+          // Pasting large content may lead to a loss of focus, we can safely prevent that by refocusing the current
+          // node and having the caret being placed right after the pasted content.
           requestAnimationFrame(() => {
             focusContent(nextCaretIndex)
           })

@@ -464,6 +464,39 @@ describe('useTodoNode', () => {
       expect(todoMutations.current[newTodoNodeId]).toBe('insert')
       expect(todoMutations.current[parent.id]).toBe('update')
     })
+
+    test('should add a new todo node with provided content', () => {
+      const { children, nodes } = setFakeTodoNodes([{}])
+      const node = getTodoNodeFromIndexes(nodes, children, 0)
+
+      const { result } = renderHook(() => useTodoNode(node.id))
+      const { result: todoNodes } = renderHook(() => useAtomValue(todoNodeNodesAtom))
+      const { result: todoChildren } = renderHook(() => useAtomValue(todoNodeChildrenAtom))
+      const { result: todoMutations } = renderHook(() => useAtomValue(todoNodeMutationsAtom))
+
+      const newId = cuid()
+
+      const newContent = 'new content'
+
+      act(() => {
+        result.current.addNode({ direction: 'down', id: node.id, newId, parentId: node.parentId, content: newContent })
+      })
+
+      expect(todoChildren.current.root.length).toBe(2)
+      expect(todoChildren.current.root[0]).toBe(node.id)
+
+      const newTodoNodeId = todoChildren.current.root[1]
+      assert(newTodoNodeId)
+
+      expect(todoChildren.current[newTodoNodeId]).toEqual([])
+
+      expect(todoNodes.current[newTodoNodeId]).toBeDefined()
+      expect(todoNodes.current[newTodoNodeId]?.id).toBe(newId)
+      expect(todoNodes.current[newTodoNodeId]?.content).toBe(newContent)
+      expect(todoNodes.current[newTodoNodeId]?.parentId).toBeUndefined()
+
+      expect(todoMutations.current[newTodoNodeId]).toBe('insert')
+    })
   })
 
   describe('deleteNode', () => {

@@ -89,7 +89,7 @@ export const toggleCancelledAtom = atom(null, (get, set, { id }: AtomParamsWithP
 
 export const addNodeAtom = atom(
   null,
-  (get, set, { direction = 'down', id, newId, parentId = 'root' }: AtomParamsNodeAddition) => {
+  (get, set, { content = '', direction = 'down', id, newId, parentId = 'root' }: AtomParamsNodeAddition) => {
     const node = get(todoNodeNodesAtom)[id]
     const children = get(todoNodeChildrenAtom)
     const nodeChildrenIds = children[id]
@@ -101,7 +101,7 @@ export const addNodeAtom = atom(
       [newId]: {
         id: newId,
         collapsed: false,
-        content: '',
+        content,
         noteHtml: null,
         noteText: null,
         parentId: addAsChildren ? id : parentId === 'root' ? undefined : parentId,
@@ -393,6 +393,7 @@ export interface AtomParamsNoteUpdate {
 }
 
 interface AtomParamsNodeAddition extends AtomParamsWithParentId {
+  content?: string
   direction: 'up' | 'down'
   newId: TodoNodeData['id']
 }
