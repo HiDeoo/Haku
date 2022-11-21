@@ -43,7 +43,7 @@ const SearchInputCheckbox = ({ contentType }: SearchInputCheckboxProps) => {
     },
   })
   const isChecked: boolean = value
-  const isInvalid = typeof formState.errors.types?.[contentType]?.message !== 'undefined'
+  const isInvalid = formState.errors.types?.[contentType]?.message !== undefined
 
   const isInboxSearchResult = contentType === SearchableContentType.INBOX
   const cType =

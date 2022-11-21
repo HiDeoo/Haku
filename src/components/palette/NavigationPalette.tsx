@@ -29,7 +29,7 @@ export const NavigationPalette = () => {
       return []
     }
 
-    let orderedData = [...data.filter((file) => file.id !== contentId)]
+    let orderedData = data.filter((file) => file.id !== contentId)
 
     for (const id of [...fileHistory].reverse()) {
       const index = orderedData.findIndex((file) => file.id === id)

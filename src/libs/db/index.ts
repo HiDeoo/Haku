@@ -61,11 +61,11 @@ export function handleDbError(error: unknown, options: DbErrorHandlerOptions): n
 }
 
 function isDbErrorMetaWithTarget(meta: unknown): meta is DbErrorMetaWithTarget {
-  return typeof meta !== 'undefined' && Array.isArray((meta as DbErrorMetaWithTarget).target)
+  return meta !== undefined && Array.isArray((meta as DbErrorMetaWithTarget).target)
 }
 
 function isDbErrorMetaWithCause(meta: unknown): meta is DbErrorMetaWithCause {
-  return typeof meta !== 'undefined' && typeof (meta as DbErrorMetaWithCause).cause === 'string'
+  return meta !== undefined && typeof (meta as DbErrorMetaWithCause).cause === 'string'
 }
 
 // Multi-column constraints should be identified using a string being an underscore separated list of columns.

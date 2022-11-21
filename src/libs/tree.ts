@@ -14,14 +14,10 @@ export function hierarchicalListToTree<TFolder extends HierarchicalListFolder, T
     indexMap[folder.id] = index
     clonedList[index] = treeFolder = { ...folder, children: [], items: [] }
 
-    if (!treeFolder.parentId) {
-      addItemsToFolder(treeFolder, items)
-
-      tree.push(treeFolder)
-    } else {
+    if (treeFolder.parentId) {
       const parentIndex = indexMap[treeFolder.parentId]
 
-      if (typeof parentIndex === 'undefined') {
+      if (parentIndex === undefined) {
         throw hierarchyError
       }
 
@@ -34,6 +30,10 @@ export function hierarchicalListToTree<TFolder extends HierarchicalListFolder, T
       addItemsToFolder(treeFolder, items)
 
       parent.children.push(treeFolder)
+    } else {
+      addItemsToFolder(treeFolder, items)
+
+      tree.push(treeFolder)
     }
   }
 
@@ -45,7 +45,7 @@ export function hierarchicalListToTree<TFolder extends HierarchicalListFolder, T
 export function isTreeFolder<TFolder extends HierarchicalListFolder, TItem extends HierarchicalListItem>(
   folder?: TItem | TFolder | TreeFolder<TFolder, TItem>
 ): folder is TreeFolder<TFolder, TItem> {
-  return typeof (folder as TreeFolder<TFolder, TItem>).children !== 'undefined'
+  return (folder as TreeFolder<TFolder, TItem>).children !== undefined
 }
 
 export function assertIsTreeFolder<TFolder extends HierarchicalListFolder, TItem extends HierarchicalListItem>(

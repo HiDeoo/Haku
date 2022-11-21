@@ -37,8 +37,8 @@ export const ContentModal = () => {
   const { action, data: content, opened } = useAtomValue(contentModalAtom)
   const setOpened = useSetAtom(setContentModalOpenedAtom)
 
-  const isUpdating = action === 'update' && typeof content !== 'undefined'
-  const isRemoving = action === 'delete' && typeof content !== 'undefined'
+  const isUpdating = action === 'update' && content !== undefined
+  const isRemoving = action === 'delete' && content !== undefined
 
   const restoreFocusOnClose = useRef(true)
 

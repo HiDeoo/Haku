@@ -1428,7 +1428,7 @@ describe('useTodoNode', () => {
     })
 
     test('should toggle completed a root todo node', () => {
-      const { children, nodes } = setFakeTodoNodes([{}])
+      const { children, nodes } = setFakeTodoNodes([{ status: TodoNodeStatus.ACTIVE }])
       const node = getTodoNodeFromIndexes(nodes, children, 0)
 
       const { result } = renderHook(() => useTodoNode(node.id))
@@ -1437,13 +1437,11 @@ describe('useTodoNode', () => {
         result.current.toggleCompleted({ id: node.id })
       })
 
-      expect(result.current.node?.status).toBe(
-        node.status !== TodoNodeStatus.COMPLETED ? TodoNodeStatus.COMPLETED : TodoNodeStatus.ACTIVE
-      )
+      expect(result.current.node?.status).toBe(TodoNodeStatus.COMPLETED)
     })
 
     test('should toggle completed a nested todo node', () => {
-      const { children, nodes } = setFakeTodoNodes([{ children: [{}] }])
+      const { children, nodes } = setFakeTodoNodes([{ children: [{ status: TodoNodeStatus.ACTIVE }] }])
       const node = getTodoNodeFromIndexes(nodes, children, 0, 0)
 
       const { result } = renderHook(() => useTodoNode(node.id))
@@ -1452,9 +1450,7 @@ describe('useTodoNode', () => {
         result.current.toggleCompleted({ id: node.id })
       })
 
-      expect(result.current.node?.status).toBe(
-        node.status !== TodoNodeStatus.COMPLETED ? TodoNodeStatus.COMPLETED : TodoNodeStatus.ACTIVE
-      )
+      expect(result.current.node?.status).toBe(TodoNodeStatus.COMPLETED)
     })
 
     test('should mark an existing todo node as updated after toggling its completion', () => {
@@ -1563,7 +1559,7 @@ describe('useTodoNode', () => {
     })
 
     test('should toggle cancelled a root todo node', () => {
-      const { children, nodes } = setFakeTodoNodes([{}])
+      const { children, nodes } = setFakeTodoNodes([{ status: TodoNodeStatus.ACTIVE }])
       const node = getTodoNodeFromIndexes(nodes, children, 0)
 
       const { result } = renderHook(() => useTodoNode(node.id))
@@ -1572,13 +1568,11 @@ describe('useTodoNode', () => {
         result.current.toggleCancelled({ id: node.id })
       })
 
-      expect(result.current.node?.status).toBe(
-        node.status !== TodoNodeStatus.CANCELLED ? TodoNodeStatus.CANCELLED : TodoNodeStatus.ACTIVE
-      )
+      expect(result.current.node?.status).toBe(TodoNodeStatus.CANCELLED)
     })
 
     test('should toggle cancelled a nested todo node', () => {
-      const { children, nodes } = setFakeTodoNodes([{ children: [{}] }])
+      const { children, nodes } = setFakeTodoNodes([{ children: [{ status: TodoNodeStatus.ACTIVE }] }])
       const node = getTodoNodeFromIndexes(nodes, children, 0, 0)
 
       const { result } = renderHook(() => useTodoNode(node.id))
@@ -1587,9 +1581,7 @@ describe('useTodoNode', () => {
         result.current.toggleCancelled({ id: node.id })
       })
 
-      expect(result.current.node?.status).toBe(
-        node.status !== TodoNodeStatus.CANCELLED ? TodoNodeStatus.CANCELLED : TodoNodeStatus.ACTIVE
-      )
+      expect(result.current.node?.status).toBe(TodoNodeStatus.CANCELLED)
     })
 
     test('should mark an existing todo node as updated after toggling its cancellation', () => {

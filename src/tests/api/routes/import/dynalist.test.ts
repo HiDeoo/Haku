@@ -457,27 +457,27 @@ function validateTodoNode(
 ) {
   expect(todoNode).toBeDefined()
 
-  if (typeof validation.collapsed !== 'undefined') {
+  if (validation.collapsed !== undefined) {
     expect(todoNode?.collapsed).toBe(validation.collapsed)
   }
 
-  if (typeof validation.content !== 'undefined') {
+  if (validation.content !== undefined) {
     expect(todoNode?.content).toBe(validation.content)
   }
 
-  if (typeof validation.noteHtml !== 'undefined') {
+  if (validation.noteHtml !== undefined) {
     expect(todoNode?.noteHtml).toBe(validation.noteHtml)
   }
 
-  if (typeof validation.noteText !== 'undefined') {
+  if (validation.noteText !== undefined) {
     expect(todoNode?.noteText).toBe(validation.noteText)
   }
 
-  if (typeof validation.status !== 'undefined') {
+  if (validation.status !== undefined) {
     expect(todoNode?.status).toBe(validation.status)
   }
 
-  if (typeof validation.completed !== 'undefined') {
+  if (validation.completed !== undefined) {
     expect(todoNode?.status).toBe(validation.completed ? TodoNodeStatus.COMPLETED : TodoNodeStatus.ACTIVE)
   }
 }

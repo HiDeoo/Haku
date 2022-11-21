@@ -31,8 +31,8 @@ export const FolderModal = () => {
   const { action, data: folder, opened } = useAtomValue(folderModalAtom)
   const setOpened = useSetAtom(setFolderModalOpenedAtom)
 
-  const isUpdating = action === 'update' && typeof folder !== 'undefined'
-  const isRemoving = action === 'delete' && typeof folder !== 'undefined'
+  const isUpdating = action === 'update' && folder !== undefined
+  const isRemoving = action === 'delete' && folder !== undefined
 
   useEffect(() => {
     resetForm()
