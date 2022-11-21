@@ -49,7 +49,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       'focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-zinc-800 focus-visible:ring-offset-2',
       'min-w-[75px] px-3.5 py-1.5 mx-1.5 first-of-type:ml-0 last-of-type:mr-0',
       className,
-      typeof pressedClassName !== 'undefined' && isPressed && pressedClassName
+      pressedClassName !== undefined && isPressed && pressedClassName
     )
 
     return (
@@ -69,7 +69,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 Button.displayName = 'Button'
 
 function isButtonPropsWithOnClickHandler(props: ButtonProps): props is ButtonPropsWithOnClickHandler {
-  return typeof (props as ButtonPropsWithOnClickHandler).onClick !== 'undefined'
+  return (props as ButtonPropsWithOnClickHandler).onClick !== undefined
 }
 
 export interface ButtonProps {

@@ -94,9 +94,9 @@ export const Search = ({ queryInputRef }: SearchProps) => {
         </Drawer.Form>
       </FormProvider>
       {data && isEmpty(data) && searchQueryData.q.length >= SEARCH_QUERY_MIN_LENGTH ? (
-        !isLoading ? (
+        isLoading ? null : (
           <Drawer.Nis text="No matching results." />
-        ) : null
+        )
       ) : (
         <Root orientation="vertical" asChild ref={resultsContainer} role="navigation">
           <Drawer.List>

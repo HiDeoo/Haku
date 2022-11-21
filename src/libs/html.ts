@@ -47,7 +47,7 @@ export function isTextInputElement(element: EventTarget | Element | null): boole
 export function getContentEditableWordAtCursorPosition(element: HTMLElement): string | undefined {
   const caretIndex = getContentEditableCaretIndex(element)
 
-  if (typeof caretIndex === 'undefined') {
+  if (caretIndex === undefined) {
     return
   }
 
@@ -214,7 +214,7 @@ function getContentEditableLines(element: HTMLElement): ContentEditableLine[] {
 
     if (lineHeight > prevLineHeight || index === element.textContent.length - 1) {
       // When hitting a new line, revert to the previous range to get the complete line (ignoring the end of text).
-      elementRange.setEnd(element.firstChild, index - (index !== element.textContent.length - 1 ? 1 : -1))
+      elementRange.setEnd(element.firstChild, index - (index === element.textContent.length - 1 ? -1 : 1))
 
       lines.push({ range: [elementRange.startOffset, elementRange.endOffset], text: elementRange.toString() })
 

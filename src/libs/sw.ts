@@ -34,7 +34,7 @@ export async function isResourceCached(cacheName: string, resource: string, inpu
   const cache = await caches.open(cacheName)
   const response = await cache.match(resourceUri)
 
-  return typeof response !== 'undefined'
+  return response !== undefined
 }
 
 export async function checkServiceWorkerUpdate() {

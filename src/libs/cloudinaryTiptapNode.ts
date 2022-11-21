@@ -174,7 +174,7 @@ function uploadImagesToEditor(
   let uploadStarted = false
   const uploadQueue: UploadQueue = new Set()
 
-  const isEmptyTextNode = typeof editor.state.doc.nodeAt(editor.state.selection.from - 1)?.text?.length === 'undefined'
+  const isEmptyTextNode = editor.state.doc.nodeAt(editor.state.selection.from - 1)?.text?.length === undefined
 
   for (let index = files.length; index >= 0; index--) {
     const item = files[index]

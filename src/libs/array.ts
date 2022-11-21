@@ -1,9 +1,9 @@
 export function isEmpty(array: unknown[] | undefined): array is undefined | [] {
-  return typeof array === 'undefined' || array.length === 0
+  return array === undefined || array.length === 0
 }
 
 export function isNotEmpty<T>(array: ReadonlyArray<T> | undefined): array is NonEmptyArray<T> {
-  return typeof array !== 'undefined' && array.length > 0
+  return array !== undefined && array.length > 0
 }
 
 export function addAtIndex<TData>(array: TData[], index: number, ...items: TData[]): TData[] {

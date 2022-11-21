@@ -60,7 +60,7 @@ const InspectorSection = ({
 }: InspectorSectionProps) => {
   const sectionClasses = clst(
     'shrink-0 pt-2 pb-3 border-t border-zinc-600/25 first-of-type:border-0 overflow-hidden select-none',
-    typeof title === 'undefined' && !collapsed && 'pt-3',
+    title === undefined && !collapsed && 'pt-3',
     collapsed ? 'px-2.5 py-2.5' : 'px-3',
     sectionClassName
   )

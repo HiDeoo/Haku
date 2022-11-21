@@ -71,7 +71,7 @@ export function useInboxEntryMutation() {
 }
 
 function isInboxEntryContext(context: unknown): context is InboxEntryContext {
-  return typeof context === 'object' && typeof (context as InboxEntryContext).oldInboxEntries !== 'undefined'
+  return typeof context === 'object' && (context as InboxEntryContext).oldInboxEntries !== undefined
 }
 
 interface InboxEntryContext {

@@ -95,7 +95,7 @@ async function seedTodos() {
       }
     }
 
-    const newTodo = await addTodo(getUserId(1), todo.name, folderId, typeof todo.nodes === 'undefined')
+    const newTodo = await addTodo(getUserId(1), todo.name, folderId, todo.nodes === undefined)
 
     if (todo.nodes) {
       const children: UpdateTodoNodesData['children'] = { root: [] }
@@ -122,10 +122,10 @@ function parseTodoNodesToSeed(
 
     children[id] = []
 
-    if (!parentId) {
-      children.root.push(id)
-    } else {
+    if (parentId) {
       children[parentId]?.push(id)
+    } else {
+      children.root.push(id)
     }
 
     insert[id] = {

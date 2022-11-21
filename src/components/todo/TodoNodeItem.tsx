@@ -307,12 +307,7 @@ export const TodoNodeItem = memo(
 
         contentEditable.current.focus()
 
-        if (
-          caretPositionOrIndex &&
-          typeof caretPositionOrIndex !== 'number' &&
-          direction &&
-          typeof fromLevel !== 'undefined'
-        ) {
+        if (caretPositionOrIndex && typeof caretPositionOrIndex !== 'number' && direction && fromLevel !== undefined) {
           // Adjust the caret left position based on the level offset difference between the previous and current levels.
           const left = Math.max(
             0,
@@ -402,14 +397,14 @@ export const TodoNodeItem = memo(
               </div>
             </Flex>
           </Flex>
-          {!node.collapsed ? (
+          {node.collapsed ? null : (
             <TodoNodeChildren
               id={id}
               level={level + 1}
               onFocusTodoNode={onFocusTodoNode}
               setTodoNodeItemRef={setTodoNodeItemRef}
             />
-          ) : null}
+          )}
         </div>
       )
     }

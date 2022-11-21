@@ -64,7 +64,7 @@ export const toggleCompletedAtom = atom(null, (get, set, { id }: AtomParamsWithP
     ...prevNodes,
     [id]: {
       ...node,
-      status: node.status !== TodoNodeStatus.COMPLETED ? TodoNodeStatus.COMPLETED : TodoNodeStatus.ACTIVE,
+      status: node.status === TodoNodeStatus.COMPLETED ? TodoNodeStatus.ACTIVE : TodoNodeStatus.COMPLETED,
     },
   }))
 })
@@ -82,7 +82,7 @@ export const toggleCancelledAtom = atom(null, (get, set, { id }: AtomParamsWithP
     ...prevNodes,
     [id]: {
       ...node,
-      status: node.status !== TodoNodeStatus.CANCELLED ? TodoNodeStatus.CANCELLED : TodoNodeStatus.ACTIVE,
+      status: node.status === TodoNodeStatus.CANCELLED ? TodoNodeStatus.ACTIVE : TodoNodeStatus.CANCELLED,
     },
   }))
 })

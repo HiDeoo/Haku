@@ -40,7 +40,7 @@ function createMutationModalAtom<TData>(): [
   const setModalOpenedAtom = atom(null, (get, set, opened: boolean) => {
     const online = get(onlineAtom)
 
-    return set(modalAtom, { ...get(modalAtom), action: 'insert', data: undefined, opened: !online ? false : opened })
+    return set(modalAtom, { ...get(modalAtom), action: 'insert', data: undefined, opened: online ? opened : false })
   })
 
   return [modalAtom, setModalOpenedAtom]

@@ -12,5 +12,5 @@ export function useOfflineCache() {
     resetContentAvailableOffline()
   }, [resetContentAvailableOffline])
 
-  return { availableOffline: contentAvailableOffline, ready: typeof contentAvailableOffline !== 'undefined' }
+  return { availableOffline: contentAvailableOffline, ready: contentAvailableOffline !== undefined }
 }

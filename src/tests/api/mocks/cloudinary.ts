@@ -14,7 +14,7 @@ export const cloudinaryHandlers = [
       headers: { 'Content-Type': req.headers.get('Content-Type') },
     })
 
-    assert(typeof formData.files[0] !== 'undefined', 'Missing file to upload in form data.')
+    assert(formData.files[0] !== undefined, 'Missing file to upload in form data.')
 
     const [filename, extension] = formData.files[0].filename.split('.')
 

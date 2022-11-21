@@ -89,7 +89,7 @@ function isValidTodoNodeDynalistOpml(todoNodeDynalistOpml: unknown): todoNodeDyn
   }
 
   if (
-    typeof (todoNodeDynalistOpml as TodoNodeDynalistOpml).children !== 'undefined' &&
+    (todoNodeDynalistOpml as TodoNodeDynalistOpml).children !== undefined &&
     !Array.isArray((todoNodeDynalistOpml as TodoNodeDynalistOpml).children)
   ) {
     return false

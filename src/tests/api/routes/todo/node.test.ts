@@ -636,7 +636,7 @@ describe('todo.node', () => {
         const newContent = 'updated todo node'
         const newNote = 'updated todo node note'
         const newStatus =
-          nodes[0]?.status !== TodoNodeStatus.COMPLETED ? TodoNodeStatus.COMPLETED : TodoNodeStatus.ACTIVE
+          nodes[0]?.status === TodoNodeStatus.COMPLETED ? TodoNodeStatus.ACTIVE : TodoNodeStatus.COMPLETED
         const updatedTodoNode = getFakeTodoNode({
           id: updatedTodoNodeId,
           collapsed: newCollapsed,

@@ -77,7 +77,7 @@ function isContent(hrefAndRef: HrefAndRef): hrefAndRef is { href: string; ref: R
 }
 
 function isFolder(hrefAndRef: HrefAndRef): hrefAndRef is { ref: React.ForwardedRef<HTMLDivElement> } {
-  return typeof hrefAndRef.href === 'undefined'
+  return hrefAndRef.href === undefined
 }
 
 interface ContentTreeNodeProps {
