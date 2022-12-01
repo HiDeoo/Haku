@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## Unreleased
+
+### 🐞 Bug Fixes
+
+- Fix an issue with the command and navigation palettes sometime displaying only partial results.
+
 ## v0.3.0
 
 ### 🚀 Features

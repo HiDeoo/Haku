@@ -57,7 +57,6 @@ specifiers:
   execa: 5.1.1
   file-type: 16.5.3
   form-data: 4.0.0
-  fuzzaldrin-plus: 0.6.0
   highlight.js: 11.6.0
   html-entities: 2.3.3
   husky: 8.0.2
@@ -83,6 +82,7 @@ specifiers:
   react: 18.2.0
   react-dom: 18.2.0
   react-error-boundary: 3.1.4
+  react-fzf: 0.1.1
   react-hook-form: 7.39.4
   react-icons: 4.6.0
   react-linkify-it: 1.0.7
@@ -133,7 +133,6 @@ dependencies:
   downshift: 7.0.1_react@18.2.0
   file-type: 16.5.3
   form-data: 4.0.0
-  fuzzaldrin-plus: 0.6.0
   highlight.js: 11.6.0
   html-entities: 2.3.3
   jotai: 1.9.2_react@18.2.0
@@ -148,6 +147,7 @@ dependencies:
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-error-boundary: 3.1.4_react@18.2.0
+  react-fzf: 0.1.1_react@18.2.0
   react-hook-form: 7.39.4_react@18.2.0
   react-icons: 4.6.0_react@18.2.0
   react-linkify-it: 1.0.7_react@18.2.0
@@ -4323,8 +4323,8 @@ packages:
     resolution: {integrity: sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==}
     dev: true
 
-  /fuzzaldrin-plus/0.6.0:
-    resolution: {integrity: sha1-gy9kifvodnaUWVmckUpnDsIpR+4=}
+  /fzf/0.5.1:
+    resolution: {integrity: sha512-AJ9BBt/3K/IyCF+pQjdG194kVSS1hU/v/RnZgiCtYZzA0rj2OBVwwjBRUOclo9yJl2ovjtdw3C31/8/rnT0uug==}
     dev: false
 
   /gensync/1.0.0-beta.2:
@@ -6703,6 +6703,15 @@ packages:
       react: '>=16.13.1'
     dependencies:
       '@babel/runtime': 7.16.3
+      react: 18.2.0
+    dev: false
+
+  /react-fzf/0.1.1_react@18.2.0:
+    resolution: {integrity: sha512-ke9pvxgRDmnjsaM9OoBDF1lZYWFRXaA/FuhZ8XpOh0QbtzncC52XtKROgrXEV3OmTWLR29JscUM9O67gfJE0Vg==}
+    peerDependencies:
+      react: '>=16'
+    dependencies:
+      fzf: 0.5.1
       react: 18.2.0
     dev: false
 
