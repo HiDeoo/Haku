@@ -1,11 +1,12 @@
+import { type BaseEvent } from '@react-types/shared'
 import {
   useCombobox,
   type UseComboboxStateChangeOptions,
   type UseComboboxState,
   type UseComboboxStateChange,
 } from 'downshift'
-import fuzzaldrin from 'fuzzaldrin-plus'
-import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from 'react'
+import { type KeyboardEvent, useRef, useState } from 'react'
+import { FzfHighlight, useFzf } from 'react-fzf'
 import {
   type Control,
   useController,
@@ -40,21 +41,13 @@ export const Combobox = <TItem, TFormFields extends FieldValues>({
   name,
 }: ComboboxProps<TItem, TFormFields>) => {
   const container = useRef<HTMLDivElement>(null)
+  const [query, setQuery] = useState('')
 
-  const [isPending, startTransition] = useTransition()
-
-  const [filteredItems, setFilteredItems] = useState(items)
-
-  const renderItem = useCallback(
-    (item: TItem | null): string => {
-      if (!item || !itemToString) {
-        return item ? String(item) : ''
-      }
-
-      return itemToString(item)
-    },
-    [itemToString]
-  )
+  const { getFzfHighlightProps, results } = useFzf({
+    items: items,
+    itemToString: itemToMenuItem ?? itemToString,
+    query,
+  })
 
   const {
     field: { onChange, value },
@@ -66,48 +59,41 @@ export const Combobox = <TItem, TFormFields extends FieldValues>({
     rules: { validate },
   })
 
-  const {
-    getInputProps,
-    getItemProps,
-    getLabelProps,
-    getMenuProps,
-    getToggleButtonProps,
-    highlightedIndex,
-    inputValue,
-    isOpen,
-    selectItem,
-  } = useCombobox({
-    initialSelectedItem: value,
-    items: filteredItems,
-    itemToString: renderItem,
-    onSelectedItemChange: handleSelectedItemChange,
-    stateReducer,
+  const { getInputProps, getItemProps, getLabelProps, getMenuProps, getToggleButtonProps, highlightedIndex, isOpen } =
+    useCombobox({
+      initialSelectedItem: value,
+      items: results,
+      itemToString,
+      onSelectedItemChange: handleSelectedItemChange,
+      stateReducer,
+    })
+
+  const inputProps = getInputProps({
+    onKeyDown(event) {
+      if (event.key === 'Escape' && !isOpen && isContinuableEvent(event)) {
+        event.nativeEvent.preventDownshiftDefault = true
+        event.continuePropagation()
+      }
+    },
   })
 
-  const inputProps = getInputProps()
-
-  const searchableItems = useMemo(
-    () => items.map((item) => ({ item, str: itemToMenuItem ? itemToMenuItem(item) : renderItem(item) })),
-    [items, itemToMenuItem, renderItem]
-  )
-
-  useEffect(() => {
-    selectItem(defaultItem)
-  }, [defaultItem, selectItem])
+  function handleSelectedItemChange(changes: UseComboboxStateChange<TItem>) {
+    onChange(changes.selectedItem)
+  }
 
   function stateReducer(state: UseComboboxState<TItem>, { type, changes }: UseComboboxStateChangeOptions<TItem>) {
     switch (type) {
       case useCombobox.stateChangeTypes.InputChange: {
-        startTransition(() => {
-          const needle = changes.inputValue?.toLowerCase() ?? ''
-          const results = changes.inputValue
-            ? fuzzaldrin.filter(searchableItems, needle, { key: 'str' }).map((result) => result.item)
-            : items
-
-          setFilteredItems(results)
-        })
+        setQuery(changes.inputValue ?? '')
 
         return changes
+      }
+      case useCombobox.stateChangeTypes.ItemClick:
+      case useCombobox.stateChangeTypes.InputKeyDownEnter: {
+        return {
+          ...changes,
+          inputValue: itemToString(changes.selectedItem),
+        }
       }
       case useCombobox.stateChangeTypes.InputKeyDownEscape:
       case useCombobox.stateChangeTypes.ToggleButtonClick:
@@ -116,11 +102,9 @@ export const Combobox = <TItem, TFormFields extends FieldValues>({
           return changes
         }
 
-        onChange(state.selectedItem)
-
         return {
           ...changes,
-          inputValue: renderItem(state.selectedItem ?? null),
+          inputValue: itemToString(state.selectedItem),
           isOpen: false,
           selectedItem: state.selectedItem,
         }
@@ -135,28 +119,8 @@ export const Combobox = <TItem, TFormFields extends FieldValues>({
     return !isOpen || 'required'
   }
 
-  function handleSelectedItemChange(changes: UseComboboxStateChange<TItem>) {
-    onChange(changes.selectedItem)
-  }
-
-  function renderFilteredItem(item: TItem, isHighlighted: boolean) {
-    const itemStr = itemToMenuItem ? itemToMenuItem(item) : renderItem(item)
-
-    if (inputValue.length === 0) {
-      return itemStr
-    }
-
-    return fuzzaldrin.wrap(itemStr, inputValue, {
-      wrap: { tagClass: isHighlighted ? 'text-blue-300' : 'text-blue-400' },
-    })
-  }
-
   function isDisabled() {
     return disabled || loading
-  }
-
-  function getInputValue() {
-    return loading ? 'Loading…' : inputProps.value
   }
 
   const triggerIconClasses = clst('motion-safe:transition-transform motion-safe:duration-200', isOpen && 'rotate-180')
@@ -173,9 +137,9 @@ export const Combobox = <TItem, TFormFields extends FieldValues>({
           className="mr-1.5"
           spellCheck={false}
           readOnly={isDisabled()}
-          value={getInputValue()}
           enterKeyHint={enterKeyHint}
           errorMessage={errorMessage}
+          value={loading ? 'Loading…' : inputProps.value}
         />
         <Button
           {...getToggleButtonProps({
@@ -190,16 +154,24 @@ export const Combobox = <TItem, TFormFields extends FieldValues>({
       <ControlMenu
         className="mr-9"
         container={container}
-        items={filteredItems}
-        itemToString={renderItem}
+        items={results}
+        itemToString={itemToMenuItem ?? itemToString}
         menuProps={getMenuProps()}
         getItemProps={getItemProps}
-        isOpen={!isPending && isOpen}
         highlightedIndex={highlightedIndex}
-        itemToInnerHtml={renderFilteredItem}
+        isOpen={isOpen}
+        itemRenderer={(item, isHighlighted, index) => (
+          <FzfHighlight
+            {...getFzfHighlightProps({ className: isHighlighted ? 'text-blue-300' : 'text-blue-400', index, item })}
+          />
+        )}
       />
     </div>
   )
+}
+
+function isContinuableEvent(event: KeyboardEvent | BaseEvent<KeyboardEvent>): event is ContinuableEvent {
+  return typeof (event as BaseEvent<KeyboardEvent>).continuePropagation === 'function'
 }
 
 interface ComboboxProps<TItem, TFormFields extends FieldValues> {
@@ -209,9 +181,13 @@ interface ComboboxProps<TItem, TFormFields extends FieldValues> {
   enterKeyHint?: React.ComponentPropsWithoutRef<'input'>['enterKeyHint']
   errorMessage?: string
   items: TItem[]
-  itemToMenuItem?: (item: TItem | null) => string
-  itemToString?: (item: TItem | null) => string
+  itemToMenuItem?: (item: TItem | null | undefined) => string
+  itemToString: (item: TItem | null | undefined) => string
   label: string
   loading?: boolean
   name: FieldPath<TFormFields>
+}
+
+type ContinuableEvent = BaseEvent<KeyboardEvent> & {
+  nativeEvent: BaseEvent<KeyboardEvent>['nativeEvent'] & { preventDownshiftDefault: boolean }
 }

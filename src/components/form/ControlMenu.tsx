@@ -13,8 +13,8 @@ export const ControlMenu = <TItem,>({
   getItemProps,
   highlightedIndex,
   isOpen,
+  itemRenderer,
   items,
-  itemToInnerHtml,
   itemToString,
   menuClassName,
   menuProps,
@@ -70,16 +70,9 @@ export const ControlMenu = <TItem,>({
             return (
               <li
                 key={`${itemToString(item)}-${index}`}
-                {...getItemProps({
-                  className: menuItemClasses,
-                  dangerouslySetInnerHTML: itemToInnerHtml
-                    ? { __html: itemToInnerHtml(item, isHighlighted) }
-                    : undefined,
-                  item,
-                  index,
-                })}
+                {...getItemProps({ className: menuItemClasses, item: item, index })}
               >
-                {itemToInnerHtml ? null : itemToString(item)}
+                {itemRenderer ? itemRenderer(item, isHighlighted, index) : itemToString(item)}
               </li>
             )
           })}
@@ -95,9 +88,9 @@ export interface ControlMenuProps<TItem> {
   getItemProps: UseSelectPropGetters<TItem>['getItemProps']
   highlightedIndex: UseSelectState<TItem>['highlightedIndex']
   isOpen: UseSelectState<TItem>['isOpen']
-  itemToInnerHtml?: (item: TItem, isHighlighted: boolean) => string
-  itemToString: (item: TItem | null) => string
+  itemRenderer?: (item: TItem, isHighlighted: boolean, index: number) => React.ReactNode
   items: TItem[]
+  itemToString: (item: TItem | null) => string
   menuClassName?: string
   menuProps: ReturnType<UseSelectPropGetters<TItem>['getMenuProps']>
 }
