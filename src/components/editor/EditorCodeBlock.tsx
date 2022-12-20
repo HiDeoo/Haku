@@ -1,10 +1,10 @@
-import { type NodeViewProps, NodeViewContent, NodeViewWrapper } from '@tiptap/react'
+import { type Node, type NodeViewProps, NodeViewContent, NodeViewWrapper } from '@tiptap/react'
 import { useEffect, useRef } from 'react'
 
 import { ClipboardCopyButton } from 'components/form/ClipboardCopyButton'
 import { Select } from 'components/form/Select'
 import { CODE_BLOCK_DEFAULT_LANGUAGE } from 'constants/editor'
-import { getLanguageName } from 'libs/editor'
+import { getLanguageName, type getLowlight } from 'libs/editor'
 import { clst } from 'styles/clst'
 
 export const EditorCodeBlock = ({ editor, extension, node, updateAttributes }: NodeViewProps) => {
@@ -12,7 +12,8 @@ export const EditorCodeBlock = ({ editor, extension, node, updateAttributes }: N
   const languageSelect = useRef<HTMLButtonElement>(null)
   const copySelect = useRef<HTMLButtonElement>(null)
 
-  const languages = extension.options.lowlight.listLanguagesWithoutAliases()
+  const options = extension.options as Node<{ lowlight: ReturnType<typeof getLowlight> }>['options']
+  const languages = options.lowlight.listLanguagesWithoutAliases()
 
   function handleLanguageChange(language: string) {
     updateAttributes({ language })
@@ -56,18 +57,21 @@ export const EditorCodeBlock = ({ editor, extension, node, updateAttributes }: N
     'focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-zinc-800 focus-visible:ring-offset-2'
   )
 
+  const language: unknown = node.attrs['language']
+  const defaultItem = typeof language === 'string' ? language : CODE_BLOCK_DEFAULT_LANGUAGE
+
   return (
     <NodeViewWrapper className="code-block relative" ref={wrapper}>
       <Select
         tabIndex={-1}
         items={languages}
         ref={languageSelect}
+        defaultItem={defaultItem}
         itemToString={getLanguageName}
         onChange={handleLanguageChange}
         triggerClassName={triggerClases}
         onButtonKeyDown={handleSelectKeyDown}
         className="absolute bottom-full right-0"
-        defaultItem={node.attrs['language'] ?? CODE_BLOCK_DEFAULT_LANGUAGE}
         menuClassName="rounded text-xs bg-zinc-600 -mt-0.5 rounded-t-none"
       />
       <ClipboardCopyButton

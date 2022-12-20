@@ -128,7 +128,12 @@ export function getToc(editor: Editor) {
         transaction.setNodeMarkup(pos, undefined, { ...node.attrs, id: cuid() })
       }
 
-      toc.push({ id: node.attrs['id'], level: node.attrs['level'], name: node.textContent, pos })
+      const id: unknown = node.attrs['id']
+      const level: unknown = node.attrs['level']
+
+      if (typeof id === 'string' && typeof level === 'number') {
+        toc.push({ id, level, name: node.textContent, pos })
+      }
     }
   })
 

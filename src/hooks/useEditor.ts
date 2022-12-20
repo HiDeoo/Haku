@@ -128,11 +128,13 @@ function getExtensions(
 
                 const linkMark = this.editor.view.state.schema.marks['link']?.isInSet($from.marks())
 
-                if (!linkMark?.attrs?.['href']) {
+                const href: unknown = linkMark?.attrs?.['href']
+
+                if (!href || typeof href !== 'string') {
                   return false
                 }
 
-                window.open(linkMark.attrs['href'])
+                window.open(href)
 
                 return true
               },
