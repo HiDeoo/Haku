@@ -2,6 +2,7 @@ import 'styles/globals.css'
 
 import { Provider as TooltipProvider } from '@radix-ui/react-tooltip'
 import { withTRPC } from '@trpc/next'
+import { type Session } from 'next-auth'
 import { SessionProvider } from 'next-auth/react'
 import { type AppProps } from 'next/app'
 import dynamic from 'next/dynamic'
@@ -45,6 +46,6 @@ function Haku({ Component, pageProps: { session, ...pageProps } }: AppPropsWithL
 
 export default withTRPC<AppRouter>(getTRPCConfiguration())(Haku)
 
-type AppPropsWithLayout = AppProps & {
+type AppPropsWithLayout = AppProps<{ session: Session }> & {
   Component: Page
 }
