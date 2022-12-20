@@ -14,8 +14,8 @@ export const ErrorBoundary = ({ children }: ErrorBoundaryProps) => {
 }
 
 const Fallback = ({ error, resetErrorBoundary }: FallbackProps) => {
-  function handleReportAndTryAgainPress() {
-    openGitHubErrorReport(error)
+  async function handleReportAndTryAgainPress() {
+    await openGitHubErrorReport(error)
 
     resetErrorBoundary()
   }

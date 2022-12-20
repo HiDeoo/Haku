@@ -29,9 +29,9 @@ const Dynalist: Page = () => {
     mutate(data)
   })
 
-  function handleMutationSuccess(newMetadata: RouterOutput['import']['dynalist']) {
-    contentTreeUtils.invalidate()
-    utils.file.list.invalidate()
+  async function handleMutationSuccess(newMetadata: RouterOutput['import']['dynalist']) {
+    await contentTreeUtils.invalidate()
+    await utils.file.list.invalidate()
 
     push(`/todos/${newMetadata.id}/${newMetadata.slug}`)
   }

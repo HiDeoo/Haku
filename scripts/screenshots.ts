@@ -81,7 +81,7 @@ async function generateScreenshots({ browser, storageState }: BrowserWithStorage
   for (const sizeToScreenshot of sizesToScreenshot) {
     const page = await context.newPage()
 
-    page.setViewportSize({ width: sizeToScreenshot.width, height: sizeToScreenshot.height })
+    await page.setViewportSize({ width: sizeToScreenshot.width, height: sizeToScreenshot.height })
 
     for (const pageToScreenshot of pagesToScreenshot) {
       await page.goto(appUrl)

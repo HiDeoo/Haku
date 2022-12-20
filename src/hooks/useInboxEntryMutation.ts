@@ -18,7 +18,7 @@ export function useInboxEntryMutation() {
       }
     },
     onMutate: async (newInboxEntry) => {
-      utils.inbox.list.cancel()
+      await utils.inbox.list.cancel()
 
       const oldInboxEntries = utils.inbox.list.getData()
 
@@ -29,8 +29,8 @@ export function useInboxEntryMutation() {
 
       return { oldInboxEntries }
     },
-    onSettled: () => {
-      utils.inbox.list.invalidate()
+    onSettled: async () => {
+      await utils.inbox.list.invalidate()
     },
   })
 
@@ -45,7 +45,7 @@ export function useInboxEntryMutation() {
       }
     },
     onMutate: async (newInboxEntry) => {
-      utils.inbox.list.cancel()
+      await utils.inbox.list.cancel()
 
       const oldInboxEntries = utils.inbox.list.getData()
 
@@ -56,8 +56,8 @@ export function useInboxEntryMutation() {
 
       return { oldInboxEntries }
     },
-    onSettled: () => {
-      utils.inbox.list.invalidate()
+    onSettled: async () => {
+      await utils.inbox.list.invalidate()
     },
   })
 

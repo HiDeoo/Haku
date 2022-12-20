@@ -21,10 +21,10 @@ export function useMetadataMutation() {
     mutate: mutateAdd,
     reset: resetAdd,
   } = procedurePath.add.useMutation({
-    onSuccess: (newMetadata) => {
-      contentTreeUtils.invalidate()
-      utils.file.list.invalidate()
-      utils.history.invalidate()
+    onSuccess: async (newMetadata) => {
+      await contentTreeUtils.invalidate()
+      await utils.file.list.invalidate()
+      await utils.history.invalidate()
 
       push(`${urlPath}/${newMetadata.id}/${newMetadata.slug}`)
     },
@@ -36,10 +36,10 @@ export function useMetadataMutation() {
     mutate: mutateDelete,
     reset: resetDelete,
   } = procedurePath.delete.useMutation({
-    onSuccess: (_newMetadata, variables) => {
-      contentTreeUtils.invalidate()
-      utils.file.list.invalidate()
-      utils.history.invalidate()
+    onSuccess: async (_newMetadata, variables) => {
+      await contentTreeUtils.invalidate()
+      await utils.file.list.invalidate()
+      await utils.history.invalidate()
 
       if (variables.id === contentId) {
         replace(urlPath, undefined, { shallow: true })
@@ -53,10 +53,10 @@ export function useMetadataMutation() {
     mutate: mutateUpdate,
     reset: resetUpdate,
   } = procedurePath.update.useMutation({
-    onSuccess: (newMetadata, variables) => {
-      contentTreeUtils.invalidate()
-      utils.file.list.invalidate()
-      utils.history.invalidate()
+    onSuccess: async (newMetadata, variables) => {
+      await contentTreeUtils.invalidate()
+      await utils.file.list.invalidate()
+      await utils.history.invalidate()
 
       if (variables.id === contentId) {
         if (type === ContentType.NOTE) {
