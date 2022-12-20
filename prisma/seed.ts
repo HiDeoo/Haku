@@ -78,7 +78,7 @@ async function seedNotes() {
     if (note.html || note.text) {
       assert(note.html && note.text, 'Both html and text must be provided to create a note with content.')
 
-      updateNote(newNote.id, getUserId(1), { html: note.html, text: note.text })
+      await updateNote(newNote.id, getUserId(1), { html: note.html, text: note.text })
     }
   }
 }

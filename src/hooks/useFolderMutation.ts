@@ -16,8 +16,8 @@ export function useFolderMutation() {
     mutate: mutateAdd,
     reset: resetAdd,
   } = trpc.folder.add.useMutation({
-    onSuccess: () => {
-      contentTreeUtils.invalidate()
+    onSuccess: async () => {
+      await contentTreeUtils.invalidate()
     },
   })
 
@@ -27,8 +27,8 @@ export function useFolderMutation() {
     mutate: mutateDelete,
     reset: resetDelete,
   } = trpc.folder.delete.useMutation({
-    onSuccess: () => {
-      contentTreeUtils.invalidate()
+    onSuccess: async () => {
+      await contentTreeUtils.invalidate()
 
       push(urlPath)
     },
@@ -40,8 +40,8 @@ export function useFolderMutation() {
     mutate: mutateUpdate,
     reset: resetUpdate,
   } = trpc.folder.update.useMutation({
-    onSuccess: () => {
-      contentTreeUtils.invalidate()
+    onSuccess: async () => {
+      await contentTreeUtils.invalidate()
     },
   })
 
