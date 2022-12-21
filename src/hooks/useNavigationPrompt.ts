@@ -36,7 +36,7 @@ export function useNavigationPrompt(
             history.go(state.idx < history.state.idx ? -1 : 1)
           }
 
-          throw `Route change to "${url}" aborted by the user. You can safely ignore this error.`
+          throw new Error(`Route change to "${url}" aborted by the user. You can safely ignore this error.`)
         }
       }
     }

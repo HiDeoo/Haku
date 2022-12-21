@@ -23,11 +23,11 @@ export const Navbar = ({ children, disabled, title }: NavbarProps) => {
     <Flex alignItems="center" className={navbarClasses}>
       {title && title.length > 0 && <div className="grow truncate font-semibold text-zinc-50">{title}</div>}
       {Children.map(children, (child) => {
-        if (!isValidElement(child)) {
+        if (!isValidElement<{ disabled?: boolean }>(child)) {
           return null
         }
 
-        return cloneElement(child, { ...child.props, disabled: child.props.disabled || disabled })
+        return cloneElement(child, { ...child.props, disabled: child.props.disabled ?? disabled })
       })}
     </Flex>
   )

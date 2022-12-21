@@ -69,7 +69,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 Button.displayName = 'Button'
 
 function isButtonPropsWithOnClickHandler(props: ButtonProps): props is ButtonPropsWithOnClickHandler {
-  return (props as ButtonPropsWithOnClickHandler).onClick !== undefined
+  return (props as Partial<ButtonPropsWithOnClickHandler>).onClick !== undefined
 }
 
 export interface ButtonProps {
@@ -94,6 +94,6 @@ export interface ButtonPropsWithOnClickHandler extends ButtonProps {
   onClick: (event: PressEvent) => void
 }
 
-type UseButtonProps = AriaButtonProps<'button'>
+type UseButtonProps = AriaButtonProps
 
 type PressEvent = Parameters<NonNullable<UseButtonProps['onPress']>>[0]

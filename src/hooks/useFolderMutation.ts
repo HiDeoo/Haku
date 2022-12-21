@@ -52,7 +52,7 @@ export function useFolderMutation() {
   }, [resetAdd, resetDelete, resetUpdate])
 
   return {
-    error: errorAdd || errorDelete || errorUpdate,
+    error: errorAdd ?? errorDelete ?? errorUpdate,
     isLoading: isLoadingAdd || isLoadingDelete || isLoadingUpdate,
     mutateAdd,
     mutateDelete,

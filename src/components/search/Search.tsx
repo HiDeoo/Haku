@@ -63,7 +63,7 @@ export const Search = ({ queryInputRef }: SearchProps) => {
   const { ref: queryTextInput, ...queryTextInputProps } = form.register('q', {
     minLength: { message: `min. ${SEARCH_QUERY_MIN_LENGTH} characters`, value: SEARCH_QUERY_MIN_LENGTH },
     required: 'required',
-    setValueAs: (value) => value.trim(),
+    setValueAs: (value) => (typeof value === 'string' ? value.trim() : value),
   })
 
   return (

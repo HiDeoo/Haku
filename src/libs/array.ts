@@ -2,7 +2,7 @@ export function isEmpty(array: unknown[] | undefined): array is undefined | [] {
   return array === undefined || array.length === 0
 }
 
-export function isNotEmpty<T>(array: ReadonlyArray<T> | undefined): array is NonEmptyArray<T> {
+export function isNotEmpty<T>(array: readonly T[] | undefined): array is NonEmptyArray<T> {
   return array !== undefined && array.length > 0
 }
 
@@ -23,21 +23,20 @@ export function groupByKey<
   TKey extends TIndex,
   TRecord extends unknown & { [key in TKey]: TIndex }
 >(records: TRecord[], key: TKey): Record<TRecord[TKey], TRecord[]> {
-  const groupedRecords = {} as Record<TRecord[TKey], TRecord[]>
+  type GroupedRecords = Record<TRecord[TKey], TRecord[]>
+  const groupedRecords: Partial<GroupedRecords> = {}
 
   for (const record of records) {
     const keyValue = record[key]
 
-    if (typeof keyValue === 'string') {
-      groupedRecords[keyValue] = [...(groupedRecords[keyValue] ?? []), record]
-    }
+    groupedRecords[keyValue] = [...(groupedRecords[keyValue] ?? []), record]
   }
 
-  return groupedRecords
+  return groupedRecords as GroupedRecords
 }
 
 export function sortTupleArrayAlphabetically<TItem extends [string, string]>(array: TItem[]): TItem[] {
   return array.sort((a, b) => a[0].localeCompare(b[0]))
 }
 
-type NonEmptyArray<T> = readonly [T, ...ReadonlyArray<T>]
+type NonEmptyArray<T> = readonly [T, ...(readonly T[])]

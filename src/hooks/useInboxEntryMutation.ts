@@ -62,7 +62,7 @@ export function useInboxEntryMutation() {
   })
 
   return {
-    error: errorAdd || errorDelete,
+    error: errorAdd ?? errorDelete,
     isLoading: isLoadingAdd || isLoadingDelete,
     mutateAdd,
     mutateAddAsync,

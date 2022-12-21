@@ -95,7 +95,7 @@ export const Todo = ({ id }: TodoProps) => {
   )
 
   const setTodoNodeItemRef = useCallback(
-    async (id: TodoNodeData['id'], item: TodoNodeItemHandle | null) => {
+    (id: TodoNodeData['id'], item: TodoNodeItemHandle | null) => {
       if (item) {
         todoNodeItems.set(id, item)
       } else {

@@ -31,7 +31,7 @@ export const Inspector = ({ children, collapsed, controls, disabled }: Inspector
         className="scrollbar-hide overflow-y-auto pr-[max(0px,env(safe-area-inset-right))]"
       >
         {Children.map(children, (child) => {
-          if (!isValidElement(child)) {
+          if (!isValidElement<Record<string, unknown>>(child)) {
             return null
           }
 
@@ -72,11 +72,11 @@ const InspectorSection = ({
       {!collapsed && title ? <div className={titleClasses}>{title}</div> : null}
       <Flex wrap alignItems="baseline" className={contentClasses}>
         {Children.map(children, (child) => {
-          if (!isValidElement(child)) {
+          if (!isValidElement<InspectorSectionProps>(child)) {
             return null
           }
 
-          return cloneElement(child, { ...child.props, collapsed, disabled: child.props.disabled || disabled })
+          return cloneElement(child, { ...child.props, collapsed, disabled: child.props.disabled ?? disabled })
         })}
       </Flex>
     </Flex>

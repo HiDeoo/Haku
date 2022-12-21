@@ -26,7 +26,7 @@ export const Shimmer = ({ children, className }: ShimmerProps) => {
     <Flex direction="col" className={shimmerClasses}>
       {pastDelay
         ? Children.map(children, (child, index) => {
-            if (!isValidElement(child)) {
+            if (!isValidElement<Record<string, unknown>>(child)) {
               return null
             }
 

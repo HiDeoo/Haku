@@ -347,7 +347,7 @@ export function getClosestNode(
   if (!sibblingId) {
     if (direction === 'up') {
       return nodes[parentId]
-    } else if (direction === 'down' && parentId !== 'root') {
+    } else if (parentId !== 'root') {
       return getClosestNode({ direction, id: parentId, parentId: nodes[parentId]?.parentId }, nodes, children, true)
     }
 

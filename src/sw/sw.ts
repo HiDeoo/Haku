@@ -36,7 +36,9 @@ function handleMessageEvent(event: ExtendableMessageEvent) {
     return
   }
 
-  switch (event.data.type) {
+  const type: string = event.data.type
+
+  switch (type) {
     case 'INSTALL': {
       event.waitUntil(sw.clients.claim())
 
@@ -75,7 +77,7 @@ function handleMessageEvent(event: ExtendableMessageEvent) {
       break
     }
     default: {
-      console.error(`Unsupported service worker message type '${event.data.type}'.`)
+      console.error(`Unsupported service worker message type '${type}'.`)
     }
   }
 }
@@ -227,14 +229,14 @@ async function preloadAndCacheResponse(
   const preloadResponse = await event.preloadResponse
 
   if (preloadResponse) {
-    await cacheResponse(cacheRequestInfo, preloadResponse, cacheName)
+    await cacheResponse(cacheRequestInfo, preloadResponse as Response, cacheName)
 
     return preloadResponse
   }
 }
 
 async function cacheResponse(requestInfo: RequestInfo, response: Response, cacheName: string) {
-  if (response && response.ok) {
+  if (response.ok) {
     const cache = await caches.open(cacheName)
 
     cache.put(requestInfo, response.clone())

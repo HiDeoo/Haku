@@ -120,7 +120,7 @@ export const Combobox = <TItem, TFormFields extends FieldValues>({
   }
 
   function isDisabled() {
-    return disabled || loading
+    return disabled ?? loading
   }
 
   const triggerIconClasses = clst('motion-safe:transition-transform motion-safe:duration-200', isOpen && 'rotate-180')

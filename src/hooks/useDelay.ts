@@ -4,7 +4,7 @@ export function useDelay(enabled = true, delayInMs = 250): boolean {
   const [pastDelay, setPastDelay] = useState(false)
 
   useEffect(() => {
-    let timeout: ReturnType<typeof setTimeout>
+    let timeout: ReturnType<typeof setTimeout> | undefined
 
     if (enabled) {
       timeout = setTimeout(() => {

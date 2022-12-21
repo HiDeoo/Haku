@@ -5,7 +5,7 @@ import { server } from 'tests/api/mocks/http'
 // https://github.com/vercel/next.js/discussions/13678#discussioncomment-22383
 import 'next'
 
-let tableNames: { tableName: string }[]
+let tableNames: { tableName: string }[] | undefined
 
 beforeAll(async () => {
   tableNames = await prisma.$queryRaw`SELECT "tablename" AS "tableName" FROM "pg_tables" WHERE "schemaname"='public'`

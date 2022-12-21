@@ -443,7 +443,7 @@ describe('todo', () => {
 
         assert(typeof testTodo?.root[0] === 'string')
 
-        const testTodoNode = await getTestTodoNode(testTodo?.root[0])
+        const testTodoNode = await getTestTodoNode(testTodo.root[0])
 
         expect(testTodoNode).toBeDefined()
         expect(testTodoNode?.todoId).toBe(res.id)

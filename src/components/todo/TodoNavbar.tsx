@@ -22,7 +22,7 @@ export const TodoNavbar = ({ disabled, focusTodoNode, todoId, todoName }: TodoNa
 
   const { isLoading, mutate } = trpc.todo.node.update.useMutation()
 
-  const navbarDisabled = disabled || isLoading
+  const navbarDisabled = disabled ?? isLoading
 
   const getTodoAtoms = useAtomCallback(
     useCallback((get) => {

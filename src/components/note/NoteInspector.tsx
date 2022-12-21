@@ -57,7 +57,7 @@ export const NoteInspector = ({ disabled, editor, editorState, setLinkModalOpene
   const isH5 = editor?.isActive('heading', { level: 5 })
   const isH6 = editor?.isActive('heading', { level: 6 })
 
-  const isHeading = isH1 || isH2 || isH3 || isH4 || isH5 || isH6
+  const isHeading = isH1 ?? isH2 ?? isH3 ?? isH4 ?? isH5 ?? isH6
   const headingMenuIcon = isH1 ? RiH1 : isH2 ? RiH2 : isH3 ? RiH3 : isH4 ? RiH4 : isH5 ? RiH5 : isH6 ? RiH6 : RiHeading
 
   function addHorizontalRule() {

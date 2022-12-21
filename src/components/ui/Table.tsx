@@ -10,7 +10,7 @@ const TableHead = ({ children }: TableProps) => {
   return (
     <thead>
       {Children.map(children, (child) => {
-        if (!isValidElement(child)) {
+        if (!isValidElement<TableRowProps>(child)) {
           return null
         }
 
@@ -34,7 +34,7 @@ const TableRow = ({ children, inTableHead }: TableRowProps) => {
   return (
     <tr className={rowClasses}>
       {Children.map(children, (child) => {
-        if (!isValidElement(child)) {
+        if (!isValidElement<TableCellProps>(child)) {
           return null
         }
 
