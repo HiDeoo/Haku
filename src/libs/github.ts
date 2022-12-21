@@ -14,11 +14,11 @@ export async function openGitHubErrorReport(error: Error) {
   const os = parser.getOS()
 
   const params: [string, string][] = [
-    ['browser_version', `${browser.name} ${browser.version}`],
+    ['browser_version', `${browser.name ?? 'unknown browser'} ${browser.version ?? 'unknown version'}`],
     ['error', encodeURIComponent(error.stack ?? '')],
     ['haku_environment', isPwa() ? 'PWA' : 'Browser'],
     ['haku_version', process.env.NEXT_PUBLIC_VERSION],
-    ['os_version', `${os.name} ${os.version}`],
+    ['os_version', `${os.name ?? 'unknown os'} ${os.version ?? 'unknown version'}`],
     ['template', '2_automated_bug_report.yml'],
   ]
 

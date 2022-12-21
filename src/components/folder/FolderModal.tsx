@@ -44,7 +44,7 @@ export const FolderModal = () => {
 
     if (isUpdating) {
       mutateUpdate({ ...data, id: folder.id, parentId }, { onSuccess: handleMutationSuccess })
-    } else if (!isUpdating) {
+    } else {
       mutateAdd({ ...data, parentId, type }, { onSuccess: handleMutationSuccess })
     }
   })

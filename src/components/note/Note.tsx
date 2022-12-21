@@ -71,8 +71,8 @@ export const Note = ({ id }: NoteProps) => {
       { id, html, text },
       {
         onSettled: (_: unknown, error: unknown) => {
-          editor?.setEditable(true)
-          editor?.commands.focus()
+          editor.setEditable(true)
+          editor.commands.focus()
 
           setEditorState((prevEditorState) => ({
             ...prevEditorState,

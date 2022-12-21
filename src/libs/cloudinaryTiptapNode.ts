@@ -73,12 +73,16 @@ export function CloudinaryTiptapNode(options: CloudinaryTiptapNodeOptions) {
     ],
     renderHTML({ HTMLAttributes }) {
       if (HTMLAttributes['pending']) {
-        return ['div', { class: 'italic text-blue-200' }, `Uploading ${HTMLAttributes['pendingName']}…`]
+        return [
+          'div',
+          { class: 'italic text-blue-200' },
+          `Uploading ${typeof HTMLAttributes['pendingName'] === 'string' ? HTMLAttributes['pendingName'] : ''}…`,
+        ]
       }
 
-      const srcSetElements = Object.entries(HTMLAttributes['data'].responsive ?? {}).map(
-        ([width, url]) => `${url} ${width}w`
-      )
+      const srcSetElements = Object.entries(
+        (HTMLAttributes['data'].responsive as ImageData['responsive'] | undefined) ?? {}
+      ).map(([width, url]) => `${url} ${width}w`)
 
       return [
         'img',

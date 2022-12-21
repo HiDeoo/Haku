@@ -73,7 +73,7 @@ function handleServiceWorkerUpdate(
         if (navigator.serviceWorker.controller) {
           onAvailableUpdate(updateServiceWorker)
         } else {
-          registration.waiting?.postMessage({ type: 'INSTALL' })
+          registration.waiting.postMessage({ type: 'INSTALL' })
         }
       }
     })

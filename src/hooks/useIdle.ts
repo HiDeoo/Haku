@@ -55,7 +55,7 @@ export function useIdle(idleHandler: () => void, durationInSeconds = 10) {
     return () => {
       enabled.current = false
 
-      if (timeout?.current) {
+      if (timeout.current) {
         clearTimeout(timeout.current)
       }
 

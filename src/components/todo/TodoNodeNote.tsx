@@ -39,10 +39,6 @@ export const TodoNodeNote = forwardRef<TodoNodeNoteHandle, TodoNodeNoteProps>(
       editor?.commands.focus('end')
     }
 
-    if (!node) {
-      return null
-    }
-
     return (
       <EditorContent
         editor={editor}

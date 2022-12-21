@@ -1,5 +1,13 @@
 {
   "extends": ["@hideoo", "plugin:@next/next/core-web-vitals"],
+  "overrides": [
+    {
+      "files": ["src/sw/sw.ts"],
+      "parserOptions": {
+        "project": ["src/sw/tsconfig.json"]
+      }
+    }
+  ],
   "rules": {
     "@next/next/no-img-element": "off",
 

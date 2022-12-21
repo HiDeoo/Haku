@@ -13,10 +13,10 @@ import { getTestUser } from 'tests/api'
 function createTestFolder(options: TestFolderOptions) {
   return prisma.folder.create({
     data: {
-      name: options?.name ?? faker.lorem.words(),
-      parentId: options?.parentId,
+      name: options.name ?? faker.lorem.words(),
+      parentId: options.parentId,
       type: options.type,
-      userId: options?.userId ?? getTestUser().id,
+      userId: options.userId ?? getTestUser().id,
     },
   })
 }
@@ -34,7 +34,7 @@ export function getTestFolders(options: TestFolderOptions) {
     where: {
       ...options,
       type: options.type,
-      userId: options?.userId ?? getTestUser().id,
+      userId: options.userId ?? getTestUser().id,
     },
   })
 }

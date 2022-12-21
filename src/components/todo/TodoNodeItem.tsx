@@ -157,7 +157,7 @@ export const TodoNodeItem = memo(
         } else if (isShortcutEvent(event, shortcutMap['ArrowUp']) && contentEditable.current) {
           const caretPosition = getContentEditableCaretPosition(contentEditable.current)
 
-          if (caretPosition && caretPosition.atFirstLine) {
+          if (caretPosition?.atFirstLine) {
             focusClosestNode({ ...update, direction: 'up', caretPosition }, event)
           }
         } else if (isShortcutEvent(event, shortcutMap['Meta+ArrowUp'])) {
@@ -169,7 +169,7 @@ export const TodoNodeItem = memo(
         } else if (isShortcutEvent(event, shortcutMap['ArrowDown']) && contentEditable.current) {
           const caretPosition = getContentEditableCaretPosition(contentEditable.current)
 
-          if (caretPosition && caretPosition.atLastLine) {
+          if (caretPosition?.atLastLine) {
             focusClosestNode({ ...update, direction: 'down', caretPosition }, event)
           }
         } else if (isShortcutEvent(event, shortcutMap['Meta+ArrowDown'])) {
@@ -199,7 +199,7 @@ export const TodoNodeItem = memo(
 
         const clipboardData = event.clipboardData.getData('text/plain')
 
-        if (node && contentEditable.current && /\n/.test(clipboardData)) {
+        if (node && contentEditable.current && clipboardData.includes('\n')) {
           const caretIndex = getContentEditableCaretIndex(contentEditable.current)
 
           const update = { id: node.id, parentId: node.parentId }
@@ -340,7 +340,7 @@ export const TodoNodeItem = memo(
 
       // Editing behaves best when rendering a trailing newline.
       // https://github.com/FormidableLabs/use-editable/issues/8#issuecomment-817390829
-      const content = `${node?.content}\n`
+      const content = `${node.content}\n`
 
       const isNoteVisible = isNoteFocused || (node.noteText && node.noteText.length > 0)
 

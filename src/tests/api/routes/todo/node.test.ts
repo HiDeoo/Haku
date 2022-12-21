@@ -158,7 +158,6 @@ describe('todo.node', () => {
 
           return (
             todoNodeA &&
-            todoNodeB &&
             todoNodeA.id === todoNodeB.id &&
             todoNodeA.collapsed === todoNodeB.collapsed &&
             todoNodeA.content === todoNodeB.content &&
@@ -166,7 +165,7 @@ describe('todo.node', () => {
             todoNodeA.noteText === todoNodeB.noteText &&
             todoNodeA.status === todoNodeB.status &&
             todoNodeAChildren?.length === todoNodeB.children.length &&
-            todoNodeAChildren?.every((child, index) => child === todoNodeB.children[index])
+            todoNodeAChildren.every((child, index) => child === todoNodeB.children[index])
           )
         }
 

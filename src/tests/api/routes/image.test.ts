@@ -293,7 +293,7 @@ async function getFakeImage(options?: FakeImageOptions) {
 
   return {
     filename: `${faker.random.words().toLowerCase().replace(/\W/g, '-')}${
-      options?.width ? `_${options?.width}` : ''
+      options?.width ? `_${options.width}` : ''
     }.${extension}`,
     image:
       dataUriPrefix +
