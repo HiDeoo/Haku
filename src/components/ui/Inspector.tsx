@@ -31,7 +31,7 @@ export const Inspector = ({ children, collapsed, controls, disabled }: Inspector
         className="scrollbar-hide overflow-y-auto pr-[max(0px,env(safe-area-inset-right))]"
       >
         {Children.map(children, (child) => {
-          if (!isValidElement<Record<string, unknown>>(child)) {
+          if (!isValidElement<InspectorSectionProps>(child)) {
             return null
           }
 
@@ -72,7 +72,14 @@ const InspectorSection = ({
       {!collapsed && title ? <div className={titleClasses}>{title}</div> : null}
       <Flex wrap alignItems="baseline" className={contentClasses}>
         {Children.map(children, (child) => {
-          if (!isValidElement<InspectorSectionProps>(child)) {
+          if (
+            !isValidElement<
+              | InspectorIconButtonProps
+              | InspectorIconButtonMenuProps
+              | InspectorIconMenuItemProps
+              | InspectorToggleProps
+            >(child)
+          ) {
             return null
           }
 
