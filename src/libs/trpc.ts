@@ -1,5 +1,5 @@
 import { httpLink } from '@trpc/client/links/httpLink'
-import { type withTRPC } from '@trpc/next'
+import { type WithTRPCNoSSROptions } from '@trpc/next'
 import { createTRPCReact } from '@trpc/react-query'
 import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server'
 
@@ -11,7 +11,7 @@ export function isNetworkError(error: unknown) {
   return error instanceof TypeError && error.message === 'Failed to fetch'
 }
 
-export function getTRPCConfiguration(): Parameters<typeof withTRPC>[0] {
+export function getTRPCConfiguration(): WithTRPCNoSSROptions<AppRouter> {
   return {
     config() {
       const url = `${

@@ -1,4 +1,4 @@
-import { atom, type WritableAtom, type PrimitiveAtom } from 'jotai'
+import { atom, type WritableAtom, type PrimitiveAtom } from 'jotai/vanilla'
 
 import { onlineAtom } from 'atoms/network'
 import { SearchableContentType } from 'constants/contentType'
@@ -28,8 +28,8 @@ export const commandPaletteOpenedAtom = atom(false)
 export const navigationPaletteOpenedAtom = atom(false)
 
 function createMutationModalAtom<TData>(): [
-  WritableAtom<MutationModal<TData>, MutationModal<TData>>,
-  WritableAtom<null, boolean>
+  WritableAtom<MutationModal<TData>, [MutationModal<TData>], void>,
+  WritableAtom<null, [boolean], void>
 ] {
   const modalAtom = atom<MutationModal<TData>>({
     action: 'insert',
@@ -46,7 +46,9 @@ function createMutationModalAtom<TData>(): [
   return [modalAtom, setModalOpenedAtom]
 }
 
-function createDrawerAtom<TData>(initialData: TData): [PrimitiveAtom<Drawer<TData>>, WritableAtom<null, boolean>] {
+function createDrawerAtom<TData>(
+  initialData: TData
+): [PrimitiveAtom<Drawer<TData>>, WritableAtom<null, [boolean], void>] {
   const drawerAtom = atom<Drawer<TData>>({
     data: initialData,
     opened: false,

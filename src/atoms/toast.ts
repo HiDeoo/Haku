@@ -1,5 +1,5 @@
 import { type ToastImplProps } from '@radix-ui/react-toast'
-import { atom } from 'jotai'
+import { atom } from 'jotai/vanilla'
 import { RiNotification2Line } from 'react-icons/ri'
 
 import { type IconProps } from 'components/ui/Icon'

@@ -1,6 +1,6 @@
 import { Arrow, Content, Item, Portal, Root, Trigger } from '@radix-ui/react-dropdown-menu'
-import { useAtomValue, useSetAtom } from 'jotai'
-import { useResetAtom } from 'jotai/utils'
+import { useAtomValue, useSetAtom } from 'jotai/react'
+import { useResetAtom } from 'jotai/react/utils'
 import { useRouter } from 'next/router'
 import { forwardRef } from 'react'
 import { BsFillLayersFill } from 'react-icons/bs'

@@ -1,6 +1,6 @@
 import { TodoNodeStatus } from '@prisma/client'
-import { atom } from 'jotai'
-import { atomWithReset } from 'jotai/utils'
+import { atom } from 'jotai/vanilla'
+import { atomWithReset } from 'jotai/vanilla/utils'
 
 import { addAtIndex, isEmpty, isNotEmpty, removeAtIndex } from 'libs/array'
 import { type TodoNodeDataWithParentId, type TodoNodeData, type TodoNodesData } from 'libs/db/todoNodes'

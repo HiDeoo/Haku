@@ -1,7 +1,6 @@
 import cuid from 'cuid'
 
-import { type InboxEntriesData } from 'libs/db/inbox'
-import { trpc } from 'libs/trpc'
+import { type RouterOutput, trpc } from 'libs/trpc'
 
 export function useInboxEntryMutation() {
   const utils = trpc.useContext()
@@ -23,7 +22,7 @@ export function useInboxEntryMutation() {
       const oldInboxEntries = utils.inbox.list.getData()
 
       utils.inbox.list.setData(undefined, (prevInboxEntries) => [
-        { ...newInboxEntry, createdAt: new Date(), id: cuid() },
+        { ...newInboxEntry, createdAt: new Date().toISOString(), id: cuid() },
         ...(prevInboxEntries ?? []),
       ])
 
@@ -75,5 +74,5 @@ function isInboxEntryContext(context: unknown): context is InboxEntryContext {
 }
 
 interface InboxEntryContext {
-  oldInboxEntries?: InboxEntriesData
+  oldInboxEntries?: RouterOutput['inbox']['list']
 }

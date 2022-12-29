@@ -26,7 +26,10 @@ export const FolderPicker = <TFormFields extends FieldValues>({
       return [[], undefined]
     }
 
-    return getFolderList([{ ...rootFolder, children: data.filter(isTreeFolder), items: [] }], defaultFolderId)
+    return getFolderList(
+      [{ ...rootFolder, children: data.filter(isTreeFolder) as TreeFolders, items: [] }],
+      defaultFolderId
+    )
   }, [data, defaultFolderId])
 
   return (

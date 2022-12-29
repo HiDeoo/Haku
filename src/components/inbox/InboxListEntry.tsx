@@ -6,7 +6,7 @@ import { Drawer } from 'components/ui/Drawer'
 import { LIST_BUTTON_CLASSES, LIST_BUTTON_PRESSED_CLASSES } from 'components/ui/List'
 import { useInboxEntryMutation } from 'hooks/useInboxEntryMutation'
 import { useNetworkStatus } from 'hooks/useNetworkStatus'
-import { type InboxEntryData } from 'libs/db/inbox'
+import { type RouterOutput } from 'libs/trpc'
 import { clst } from 'styles/clst'
 
 export const InboxListEntry = ({ entry }: InboxListEntryProps) => {
@@ -43,5 +43,5 @@ export const InboxListEntry = ({ entry }: InboxListEntryProps) => {
 }
 
 interface InboxListEntryProps {
-  entry: InboxEntryData
+  entry: RouterOutput['inbox']['list'][number]
 }

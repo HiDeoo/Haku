@@ -1,5 +1,5 @@
 import { Link as Roving, Root } from '@radix-ui/react-toolbar'
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai/react'
 import { RiFileTextLine, RiFolderLine } from 'react-icons/ri'
 
 import { sidebarCollapsedAtom } from 'atoms/collapsible'

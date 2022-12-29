@@ -1,5 +1,5 @@
 import { QueryObserver, useQueryClient } from '@tanstack/react-query'
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai/react'
 import dynamic from 'next/dynamic'
 import { useEffect, useMemo, useState } from 'react'
 import { RiInboxFill } from 'react-icons/ri'

@@ -1,4 +1,4 @@
-import { useAtom } from 'jotai'
+import { useAtom } from 'jotai/react'
 import { useCallback } from 'react'
 
 import { editorImageModalAtom } from 'atoms/togglable'

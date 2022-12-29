@@ -1,5 +1,5 @@
-import { useAtom } from 'jotai'
-import { useAtomCallback, useResetAtom } from 'jotai/utils'
+import { useAtom } from 'jotai/react'
+import { useAtomCallback, useResetAtom } from 'jotai/react/utils'
 import { useCallback, useMemo } from 'react'
 
 import { todoEditorStateAtom } from 'atoms/todo'

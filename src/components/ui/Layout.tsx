@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai'
+import { useAtomValue } from 'jotai/react'
 import dynamic from 'next/dynamic'
 
 import { sidebarCollapsedAtom } from 'atoms/collapsible'

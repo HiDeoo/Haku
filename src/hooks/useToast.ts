@@ -1,4 +1,4 @@
-import { useSetAtom } from 'jotai'
+import { useSetAtom } from 'jotai/react'
 
 import { addToastAtom } from 'atoms/toast'
 
