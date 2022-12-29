@@ -1,4 +1,4 @@
-import fs from 'node:fs'
+import fs from 'fs'
 
 import tsconfigPaths from 'vite-tsconfig-paths'
 import { defineConfig } from 'vitest/config'
