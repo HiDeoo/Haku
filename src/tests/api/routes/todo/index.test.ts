@@ -1,7 +1,6 @@
-import assert from 'assert'
-
 import cuid from 'cuid'
 import slug from 'url-slug'
+import { assert, describe, expect, test, vi } from 'vitest'
 
 import {
   API_ERROR_FOLDER_DOES_NOT_EXIST,
@@ -703,7 +702,7 @@ describe('todo', () => {
       testApiRoute(async ({ caller }) => {
         const { id } = await createTestTodo()
 
-        const fetchSpy = jest.spyOn(global, 'fetch')
+        const fetchSpy = vi.spyOn(global, 'fetch')
 
         await caller.todo.delete({ id })
 

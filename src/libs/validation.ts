@@ -1,6 +1,6 @@
 import { FolderType, TodoNodeStatus } from '@prisma/client'
 import { TRPCError } from '@trpc/server'
-import { fromBuffer } from 'file-type'
+import { fileTypeFromBuffer } from 'file-type'
 import { z } from 'zod'
 
 export { z } from 'zod'
@@ -27,7 +27,7 @@ export async function validateBase64Image(base64Image: string, maxFileSizeInByte
     throw new TRPCError({ code: 'BAD_REQUEST' })
   }
 
-  const fileType = await fromBuffer(dataBuffer)
+  const fileType = await fileTypeFromBuffer(dataBuffer)
 
   if (!fileType || !supportedTypes.includes(fileType.mime)) {
     throw new TRPCError({ code: 'BAD_REQUEST' })

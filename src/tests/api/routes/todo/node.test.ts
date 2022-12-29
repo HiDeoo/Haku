@@ -1,8 +1,7 @@
-import assert from 'assert'
-
 import { faker } from '@faker-js/faker'
 import { TodoNodeStatus, type TodoNode } from '@prisma/client'
 import cuid from 'cuid'
+import { assert, describe, expect, test } from 'vitest'
 
 import {
   API_ERROR_TODO_DOES_NOT_EXIST,

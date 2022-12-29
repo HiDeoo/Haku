@@ -1,5 +1,6 @@
 import { FolderType } from '@prisma/client'
 import cuid from 'cuid'
+import { describe, expect, test } from 'vitest'
 
 import {
   API_ERROR_FOLDER_ALREADY_EXISTS,
