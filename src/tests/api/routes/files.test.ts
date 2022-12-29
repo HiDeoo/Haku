@@ -1,6 +1,4 @@
-import assert from 'assert'
-
-import { describe, expect, test } from 'vitest'
+import { assert, describe, expect, test } from 'vitest'
 
 import { ContentType } from 'constants/contentType'
 import { getTestUser, testApiRoute } from 'tests/api'

@@ -1,8 +1,6 @@
-import assert from 'assert'
-
 import { faker } from '@faker-js/faker'
 import cuid from 'cuid'
-import { describe, expect, test } from 'vitest'
+import { assert, describe, expect, test } from 'vitest'
 
 import { API_ERROR_INBOX_ENTRY_DOES_NOT_EXIST } from 'constants/error'
 import { isDateEqual } from 'libs/date'

@@ -1,9 +1,7 @@
-import assert from 'assert'
-
 import { faker } from '@faker-js/faker'
 import { type TodoNode, TodoNodeStatus } from '@prisma/client'
 import slug from 'url-slug'
-import { describe, expect, test } from 'vitest'
+import { assert, describe, expect, test } from 'vitest'
 
 import { API_ERROR_IMPORT_DYNALIST_INVALID_OPML } from 'constants/error'
 import { type TodoNodeData } from 'libs/db/todoNodes'

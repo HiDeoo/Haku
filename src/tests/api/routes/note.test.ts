@@ -1,8 +1,6 @@
-import assert from 'assert'
-
 import cuid from 'cuid'
 import slug from 'url-slug'
-import { describe, expect, test, vi } from 'vitest'
+import { assert, describe, expect, test, vi } from 'vitest'
 
 import {
   API_ERROR_FOLDER_DOES_NOT_EXIST,

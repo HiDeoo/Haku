@@ -1,9 +1,7 @@
-import assert from 'assert'
-
 import { faker } from '@faker-js/faker'
 import cuid from 'cuid'
 import multipartParser from 'lambda-multipart-parser'
-import { describe, expect, test, vi } from 'vitest'
+import { assert, describe, expect, test, vi } from 'vitest'
 
 import { API_ERROR_IMAGE_REFERENCE_DOES_NOT_EXIST, API_ERROR_IMAGE_UPLOAD_UNKNOWN } from 'constants/error'
 import { HttpMethod } from 'constants/http'
