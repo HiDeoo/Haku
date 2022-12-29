@@ -3,6 +3,7 @@ import assert from 'assert'
 import { faker } from '@faker-js/faker'
 import cuid from 'cuid'
 import multipartParser from 'lambda-multipart-parser'
+import { describe, expect, test, vi } from 'vitest'
 
 import { API_ERROR_IMAGE_REFERENCE_DOES_NOT_EXIST, API_ERROR_IMAGE_UPLOAD_UNKNOWN } from 'constants/error'
 import { HttpMethod } from 'constants/http'
@@ -82,7 +83,7 @@ describe('image', () => {
       testApiRoute(async ({ caller }) => {
         server.use(rest.post(getCloudinaryApiUrl('/image/upload'), (_req, res, ctx) => res.once(ctx.status(500))))
 
-        const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => undefined)
+        const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined)
 
         const { filename, image, referenceId } = await getFakeImage()
 
@@ -124,7 +125,7 @@ describe('image', () => {
         const extension = 'png'
         const { filename, image } = await getFakeImage({ extension })
 
-        const fetchSpy = jest.spyOn(global, 'fetch')
+        const fetchSpy = vi.spyOn(global, 'fetch')
 
         server.use(
           rest.post(uploadUrl, async (req) => {

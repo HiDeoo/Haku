@@ -1,5 +1,7 @@
 import assert from 'assert'
 
+import { describe, expect, test } from 'vitest'
+
 import { ContentType } from 'constants/contentType'
 import { getTestUser, testApiRoute } from 'tests/api'
 import { createTestNote, createTestTodo } from 'tests/api/db'

@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker'
+import { describe, expect, test } from 'vitest'
 
 import { SearchableContentType } from 'constants/contentType'
 import { API_ERROR_SEARCH_REQUIRES_AT_LEAST_ONE_TYPE } from 'constants/error'

@@ -2,7 +2,7 @@ import { TodoNodeStatus } from '@prisma/client'
 import { TRPCError } from '@trpc/server'
 import cuid from 'cuid'
 import { decode } from 'html-entities'
-import markdownToTxt from 'markdown-to-txt'
+import { markdownToTxt } from 'markdown-to-txt'
 import { opmlToJSON, type opmlToJsonResult } from 'opml-to-json'
 
 import { API_ERROR_IMPORT_DYNALIST_INVALID_OPML, API_ERROR_TODO_NODE_ROOT_NODE_EMPTY } from 'constants/error'

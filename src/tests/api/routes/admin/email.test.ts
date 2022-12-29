@@ -1,4 +1,5 @@
 import cuid from 'cuid'
+import { describe, expect, test } from 'vitest'
 
 import { API_ERROR_EMAIL_ALREADY_EXISTS, API_ERROR_EMAIL_DOES_NOT_EXISTS } from 'constants/error'
 import { testApiRoute } from 'tests/api'
