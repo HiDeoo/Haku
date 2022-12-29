@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai'
+import { useAtomValue } from 'jotai/react'
 import Link from 'next/link'
 import { RiArrowRightSLine } from 'react-icons/ri'
 

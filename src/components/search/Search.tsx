@@ -1,6 +1,6 @@
 import { Link as Roving, Root } from '@radix-ui/react-toolbar'
 import { type BaseEvent } from '@react-types/shared'
-import { useAtom } from 'jotai'
+import { useAtom } from 'jotai/react'
 import { useRef } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { RiSearchLine } from 'react-icons/ri'

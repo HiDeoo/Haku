@@ -1,4 +1,4 @@
-import { useSetAtom } from 'jotai'
+import { useSetAtom } from 'jotai/react'
 
 import { fileHistoryAtom } from 'atoms/fileHistory'
 import { useRouteChange } from 'hooks/useRouteChange'

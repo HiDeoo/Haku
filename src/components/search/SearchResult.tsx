@@ -1,4 +1,4 @@
-import { useSetAtom } from 'jotai'
+import { useSetAtom } from 'jotai/react'
 import { useRouter } from 'next/router'
 import { forwardRef } from 'react'
 import { RiBookletLine, RiInboxFill, RiTodoLine } from 'react-icons/ri'

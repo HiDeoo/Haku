@@ -1,5 +1,5 @@
 import { Action, Close, Description, Root } from '@radix-ui/react-toast'
-import { useSetAtom } from 'jotai'
+import { useSetAtom } from 'jotai/react'
 import { useCallback, useRef } from 'react'
 import { RiCloseLine } from 'react-icons/ri'
 

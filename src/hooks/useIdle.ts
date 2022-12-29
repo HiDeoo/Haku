@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai'
+import { useAtomValue } from 'jotai/react'
 import { useEffect, useRef, useState } from 'react'
 import { throttle } from 'throttle-debounce'
 

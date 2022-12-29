@@ -10,7 +10,7 @@ import {
   ReactNodeViewRenderer,
 } from '@tiptap/react'
 import { StarterKit, type StarterKitOptions } from '@tiptap/starter-kit'
-import { useSetAtom } from 'jotai'
+import { useSetAtom } from 'jotai/react'
 import { useCallback, type DependencyList } from 'react'
 import { RiErrorWarningLine } from 'react-icons/ri'
 

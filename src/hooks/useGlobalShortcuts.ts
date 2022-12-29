@@ -1,4 +1,4 @@
-import { useSetAtom } from 'jotai'
+import { useSetAtom } from 'jotai/react'
 import { useEffect, useMemo } from 'react'
 
 import { registerGlobalShortcutsAtom, unregisterGlobalShortcutsAtom } from 'atoms/shortcuts'

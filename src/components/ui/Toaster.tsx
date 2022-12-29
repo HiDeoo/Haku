@@ -1,5 +1,5 @@
 import { Provider, Viewport } from '@radix-ui/react-toast'
-import { useAtomValue } from 'jotai'
+import { useAtomValue } from 'jotai/react'
 
 import { toastsAtom } from 'atoms/toast'
 import { Toast } from 'components/ui/Toast'

@@ -1,4 +1,4 @@
-import { useAtom, useSetAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai/react'
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 import {

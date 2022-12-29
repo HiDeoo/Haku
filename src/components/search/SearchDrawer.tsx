@@ -1,4 +1,4 @@
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai/react'
 import dynamic from 'next/dynamic'
 import { useCallback, useMemo, useRef } from 'react'
 import { RiSearchLine } from 'react-icons/ri'

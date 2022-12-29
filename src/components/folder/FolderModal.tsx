@@ -1,4 +1,4 @@
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai/react'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { RiFolderAddLine } from 'react-icons/ri'

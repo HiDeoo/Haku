@@ -1,5 +1,6 @@
-import { useAtomValue, useSetAtom } from 'jotai'
-import { selectAtom, useAtomCallback } from 'jotai/utils'
+import { useAtomValue, useSetAtom } from 'jotai/react'
+import { useAtomCallback } from 'jotai/react/utils'
+import { selectAtom } from 'jotai/vanilla/utils'
 import { createContext, useCallback } from 'react'
 
 import { type TodoSyncStatus, todoSyncStatusAtom } from 'atoms/todo'

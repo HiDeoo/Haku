@@ -1,4 +1,4 @@
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai/react'
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 import { RiBookletLine, RiTodoLine } from 'react-icons/ri'

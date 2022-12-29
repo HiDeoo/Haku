@@ -1,5 +1,5 @@
 import { type Editor } from '@tiptap/react'
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai/react'
 import {
   RiArrowDropRightFill,
   RiArrowGoBackLine,

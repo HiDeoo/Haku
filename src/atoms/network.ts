@@ -1,5 +1,5 @@
-import { atom } from 'jotai'
-import { atomWithReset } from 'jotai/utils'
+import { atom } from 'jotai/vanilla'
+import { atomWithReset } from 'jotai/vanilla/utils'
 
 export const onlineAtom = atom<boolean>(typeof navigator === 'undefined' ? true : navigator.onLine)
 

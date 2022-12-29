@@ -4,7 +4,7 @@ import { faker } from '@faker-js/faker'
 import { TodoNodeStatus } from '@prisma/client'
 import { act, renderHook } from '@testing-library/react'
 import cuid from 'cuid'
-import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai/react'
 
 import { todoNodeChildrenAtom, todoNodeMutationsAtom, todoNodeNodesAtom } from 'atoms/todoNode'
 import { useTodoNode } from 'hooks/useTodoNode'

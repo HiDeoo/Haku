@@ -1,5 +1,6 @@
-import { useAtomValue, useSetAtom } from 'jotai'
-import { selectAtom, useAtomCallback, useResetAtom } from 'jotai/utils'
+import { useAtomValue, useSetAtom } from 'jotai/react'
+import { useAtomCallback, useResetAtom } from 'jotai/react/utils'
+import { selectAtom } from 'jotai/vanilla/utils'
 import { useCallback, useContext, useEffect, useRef } from 'react'
 
 import { resetTodoAtomsAtom, type TodoEditorState, todoEditorStateAtom, todoFocusMapAtom } from 'atoms/todo'

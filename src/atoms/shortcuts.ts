@@ -1,4 +1,4 @@
-import { atom, type PrimitiveAtom, type WritableAtom } from 'jotai'
+import { atom, type PrimitiveAtom, type WritableAtom } from 'jotai/vanilla'
 
 import { getShortcutMap, type Shortcut, type ShortcutMap } from 'libs/shortcut'
 
@@ -13,7 +13,7 @@ export const [registerLocalShortcutsAtom, unregisterLocalShortcutsAtom] =
 
 function createShortcutsWriteOnlyAtoms(
   shortcutsAtom: PrimitiveAtom<ShortcutMap>
-): [WritableAtom<null, readonly Shortcut[]>, WritableAtom<null, readonly Shortcut[]>] {
+): [WritableAtom<null, [readonly Shortcut[]], void>, WritableAtom<null, [readonly Shortcut[]], void>] {
   const registerAtom = atom(null, (_get, set, shortcuts: readonly Shortcut[]) => {
     set(shortcutsAtom, (prevGlobalShortcuts) => ({ ...prevGlobalShortcuts, ...getShortcutMap(shortcuts) }))
   })

@@ -1,4 +1,4 @@
-import { useAtom } from 'jotai'
+import { useAtom } from 'jotai/react'
 import { useMemo } from 'react'
 
 import { shortcutModalOpenedAtom } from 'atoms/togglable'
