@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### 🐞 Bug Fixes
 
+- Fix an issue preventing to save a todo after deleting a todo node while preserving its children.
 - Fix an issue with the command and navigation palettes sometime displaying only partial results.
 
 ## v0.3.0

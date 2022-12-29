@@ -930,20 +930,63 @@ describe('todo.node', () => {
 
         expect(testTodo?.nodes.length).toBe(1)
 
-        const testRootTodoNode = await getTestTodo(rootNode.id)
+        const testRootTodoNode = await getTestTodoNode(rootNode.id)
         expect(testRootTodoNode).toBeDefined()
 
-        const testTodoNode_0 = await getTestTodo(todoNode_0.id)
+        const testTodoNode_0 = await getTestTodoNode(todoNode_0.id)
         expect(testTodoNode_0).toBe(null)
 
-        const testTodoNode_0_0 = await getTestTodo(todoNode_0_0.id)
+        const testTodoNode_0_0 = await getTestTodoNode(todoNode_0_0.id)
         expect(testTodoNode_0_0).toBe(null)
 
-        const testTodoNode_0_0_0 = await getTestTodo(todoNode_0_0_0.id)
+        const testTodoNode_0_0_0 = await getTestTodoNode(todoNode_0_0_0.id)
         expect(testTodoNode_0_0_0).toBe(null)
 
-        const testTodoNode_0_0_1 = await getTestTodo(todoNode_0_0_1.id)
+        const testTodoNode_0_0_1 = await getTestTodoNode(todoNode_0_0_1.id)
         expect(testTodoNode_0_0_1).toBe(null)
+      }))
+
+    test('should not delete nested todo nodes marked for updates', async () =>
+      testApiRoute(async ({ caller }) => {
+        const { id, modifiedAt, nodes } = await createTestTodo()
+
+        const todoNode_0_0 = await createTestTodoNode({ todoId: id })
+        const todoNode_0_1 = await createTestTodoNode({ todoId: id })
+        const todoNode_0 = await createTestTodoNode({ todoId: id, children: [todoNode_0_0.id, todoNode_0_1.id] })
+
+        const rootNode = nodes[0]
+
+        assert(rootNode)
+
+        await updateTestTodoNodeChildren(rootNode.id, [todoNode_0.id])
+
+        await caller.todo.node.update({
+          id,
+          children: { root: [todoNode_0.id], [todoNode_0.id]: [todoNode_0_0.id, todoNode_0_1.id] },
+          mutations: {
+            ...baseMutation,
+            delete: [rootNode.id],
+            update: { [todoNode_0.id]: { ...todoNode_0 } },
+          },
+        })
+
+        const testTodo = await getTestTodo(id)
+
+        expect(isDateAfter(testTodo?.modifiedAt, modifiedAt)).toBe(true)
+
+        expect(testTodo?.nodes.length).toBe(3)
+
+        let testTodoNode = await getTestTodoNode(rootNode.id)
+        expect(testTodoNode).toBeNull()
+
+        testTodoNode = await getTestTodoNode(todoNode_0.id)
+        expect(testTodoNode).toBeDefined()
+
+        testTodoNode = await getTestTodoNode(todoNode_0_0.id)
+        expect(testTodoNode).toBeDefined()
+
+        testTodoNode = await getTestTodoNode(todoNode_0_1.id)
+        expect(testTodoNode).toBeDefined()
       }))
 
     test('should not delete all root todo nodes', async () =>
