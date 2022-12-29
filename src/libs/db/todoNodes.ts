@@ -156,7 +156,7 @@ async function validateMutations(todoId: TodoMetadata['id'], update: UpdateTodoN
       throw new TRPCError({ code: 'BAD_REQUEST', message: API_ERROR_TODO_NODE_DELETE_PARENT_NODE_CONFLICT })
     }
 
-    getNestedTodoNodeIds(deletedTodoNodeId, nodesMap, children, deletedNodeIds)
+    getNestedTodoNodeIdsForUpdate(update, deletedTodoNodeId, nodesMap, children, deletedNodeIds)
   }
 
   for (const insertedTodoNode of Object.values(update.mutations.insert)) {
@@ -236,7 +236,8 @@ function getTodosNodesMapKeyedById(nodes: TodoNodeDataWithChildren[]): [TodoNode
   return [nodesMap, childrenMap]
 }
 
-function getNestedTodoNodeIds(
+function getNestedTodoNodeIdsForUpdate(
+  update: UpdateTodoNodesData,
   id: TodoNodeData['id'],
   nodes: TodoNodeDataMap,
   children: TodoNodeChildrenMap,
@@ -251,7 +252,9 @@ function getNestedTodoNodeIds(
 
     if (deletedNodeChildren) {
       for (const child of deletedNodeChildren) {
-        getNestedTodoNodeIds(child, nodes, children, ids)
+        if (!hasKey(update.mutations.update, child)) {
+          getNestedTodoNodeIdsForUpdate(update, child, nodes, children, ids)
+        }
       }
     }
   }
