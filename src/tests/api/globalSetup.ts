@@ -1,7 +1,7 @@
 import { waitForPostgres } from '@jcoreio/wait-for-postgres'
 import { loadEnvConfig } from '@next/env'
 import compose from 'docker-compose'
-import execa from 'execa'
+import { execaCommand } from 'execa'
 
 loadEnvConfig(process.cwd())
 
@@ -16,7 +16,7 @@ export async function setup() {
     timeout: 5000,
   })
 
-  await execa.command('prisma migrate deploy', { env: { ...process.env, DB_URL: process.env.DB_URL } })
+  await execaCommand('prisma migrate deploy', { env: { ...process.env, DB_URL: process.env.DB_URL } })
 }
 
 export async function teardown() {

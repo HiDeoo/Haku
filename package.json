@@ -8,7 +8,7 @@
   "private": true,
   "scripts": {
     "dev": "pnpm build:sw && next dev",
-    "db:migrate": "dotenv -c -- ts-node prisma/migrate.ts",
+    "db:migrate": "dotenv -c -- ts-node-esm prisma/migrate.mts",
     "build": "next build && pnpm build:sw --prod",
     "build:sw": "ts-node scripts/serviceWorker",
     "build:analyze": "ANALYZE=true pnpm build",
@@ -111,7 +111,7 @@
     "docker-compose": "0.23.17",
     "dotenv-cli": "6.0.0",
     "eslint": "8.30.0",
-    "execa": "5.1.1",
+    "execa": "6.1.0",
     "happy-dom": "8.1.1",
     "husky": "8.0.2",
     "lambda-multipart-parser": "1.0.1",
