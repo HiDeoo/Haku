@@ -1,5 +1,10 @@
 lockfileVersion: 5.4
 
+patchedDependencies:
+  use-editable@2.3.3:
+    hash: 6pf2bqqvqnphzd2hlnhi4xko5i
+    path: patches/use-editable@2.3.3.patch
+
 specifiers:
   '@faker-js/faker': 7.6.0
   '@hideoo/eslint-config': 0.14.1
@@ -171,7 +176,7 @@ dependencies:
   throttle-debounce: 5.0.0
   ua-parser-js: 1.0.32
   url-slug: 3.0.4
-  use-editable: 2.3.3_react@18.2.0
+  use-editable: 2.3.3_6pf2bqqvqnphzd2hlnhi4xko5i_react@18.2.0
   zod: 3.20.2
 
 devDependencies:
@@ -6383,13 +6388,14 @@ packages:
       tslib: 2.4.1
     dev: false
 
-  /use-editable/2.3.3_react@18.2.0:
+  /use-editable/2.3.3_6pf2bqqvqnphzd2hlnhi4xko5i_react@18.2.0:
     resolution: {integrity: sha512-7wVD2JbfAFJ3DK0vITvXBdpd9JAz5BcKAAolsnLBuBn6UDDwBGuCIAGvR3yA2BNKm578vAMVHFCWaOcA+BhhiA==}
     peerDependencies:
       react: '>= 16.8.0'
     dependencies:
       react: 18.2.0
     dev: false
+    patched: true
 
   /use-isomorphic-layout-effect/1.1.2_kzbn2opkn2327fwg5yzwzya5o4:
     resolution: {integrity: sha512-49L8yCO3iGT/ZF9QttjwLF/ZD9Iwto5LnH5LmEdk/6cFmXddqi2ulF0edxTwjj+7mqvpVVGQWvbXZdn32wRSHA==}

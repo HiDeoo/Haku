@@ -1,0 +1,13 @@
+diff --git a/dist/use-editable.es.js b/dist/use-editable.es.js
+index 96b260cf6b3b167b640bf903a9dbae652e883d31..05a6c055433839b332eb52b6809adf3e7ebd9f59 100644
+--- a/dist/use-editable.es.js
++++ b/dist/use-editable.es.js
+@@ -174,7 +174,7 @@ export function useEditable(c, a, b) {
+       }
+       return h;
+     }
+-  }));
++  }), [ c, a, b.disabled, e, e.disconnected, e.observer, e.position ]);
+   useLayoutEffect((function() {
+     if (!c.current || b.disabled) {
+       e.history.length = 0, e.historyAt = -1;
