@@ -135,6 +135,9 @@
   },
   "packageManager": "pnpm@7.13.0",
   "pnpm": {
+    "patchedDependencies": {
+      "use-editable@2.3.3": "patches/use-editable@2.3.3.patch"
+    },
     "peerDependencyRules": {
       "ignoreMissing": [
         "vite"
