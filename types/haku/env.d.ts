@@ -30,7 +30,7 @@ declare global {
       NEXTAUTH_SECRET: string
 
       DB_URL: string
-      MIGRATE_DB_URL: string
+      DIRECT_DB_URL: string
       SHADOW_DB_URL: string
     }
   }

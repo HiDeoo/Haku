@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client'
-import { type Sql } from '@prisma/client/runtime'
+import { type Sql } from '@prisma/client/runtime/library'
 import { TRPCError } from '@trpc/server'
 
 import { ContentType, type SearchableContentType } from 'constants/contentType'
