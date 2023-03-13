@@ -1,9 +1,9 @@
 import { type Editor } from '@tiptap/core'
+import { type Node as Doc, Fragment, type Schema, Slice } from '@tiptap/pm/model'
+import { Plugin } from '@tiptap/pm/state'
+import { Step, type Mappable, StepResult } from '@tiptap/pm/transform'
 import { Node } from '@tiptap/react'
 import cuid from 'cuid'
-import { type Node as Doc, Fragment, type Schema, Slice } from 'prosemirror-model'
-import { Plugin } from 'prosemirror-state'
-import { Step, type Mappable, StepResult } from 'prosemirror-transform'
 
 import { IMAGE_MAX_SIZE_IN_MEGABYTES, IMAGE_SUPPORTED_TYPES } from 'constants/image'
 import { type ImageData } from 'libs/cloudinary'
