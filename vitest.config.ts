@@ -14,7 +14,7 @@ export default defineConfig({
     include: [`src/tests/${process.env['TEST_TYPE']}/**/*.test.ts`],
     globalSetup: getConfigFilePath('globalSetup.ts'),
     setupFiles: getConfigFilePath('filesSetup.ts'),
-    threads: process.env['TEST_TYPE'] !== 'api',
+    singleThread: process.env['TEST_TYPE'] === 'api',
   },
 })
 
