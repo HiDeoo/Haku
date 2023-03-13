@@ -25,5 +25,5 @@ function isErrorType(error: string | string[] | undefined): error is ErrorType {
 }
 
 const errorTypes = ['AccessDenied', 'Configuration', 'EmailSignin', 'Default', 'Verification'] as const
-type ErrorType = typeof errorTypes[number]
+type ErrorType = (typeof errorTypes)[number]
 type QueryStringErrorType = string | string[] | undefined
