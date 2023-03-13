@@ -32,10 +32,7 @@ function isLoadingSyncStatusSelector(syncStatus: TodoSyncStatus) {
 }
 
 export function useTodoNode(id: TodoNodeData['id']) {
-  const getNodeById = useCallback(
-    <TData>(nodesMap: Record<TodoNodeData['id'], TData>, nodeId = id) => nodesMap[nodeId],
-    [id]
-  )
+  const getNodeById = useCallback(<TData>(nodesMap: Record<TodoNodeData['id'], TData>) => nodesMap[id], [id])
 
   const isLoading = useAtomValue(selectAtom(todoSyncStatusAtom, isLoadingSyncStatusSelector))
 
