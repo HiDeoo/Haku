@@ -1,6 +1,6 @@
 import { Presence } from '@radix-ui/react-presence'
-import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/router'
+import { signIn } from 'next-auth/react'
 import { useReducer, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 

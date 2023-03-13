@@ -2,10 +2,10 @@ import 'styles/globals.css'
 
 import { Provider as TooltipProvider } from '@radix-ui/react-tooltip'
 import { withTRPC } from '@trpc/next'
-import { type Session } from 'next-auth'
-import { SessionProvider } from 'next-auth/react'
 import { type AppProps } from 'next/app'
 import dynamic from 'next/dynamic'
+import { type Session } from 'next-auth'
+import { SessionProvider } from 'next-auth/react'
 
 import { ErrorBoundary } from 'components/app/ErrorBoundary'
 import { NetworkAgent } from 'components/app/NetworkAgent'

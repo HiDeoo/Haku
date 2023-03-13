@@ -1,6 +1,6 @@
 import { useSetAtom } from 'jotai/react'
-import { signIn, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
+import { signIn, useSession } from 'next-auth/react'
 import { useEffect } from 'react'
 
 import { contentTypeAtom } from 'atoms/contentType'
