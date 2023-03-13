@@ -16,7 +16,7 @@ export async function setup() {
     timeout: 5000,
   })
 
-  await execaCommand('prisma migrate deploy', { env: { ...process.env, DB_URL: process.env.DB_URL } })
+  await execaCommand('prisma migrate deploy')
 }
 
 export async function teardown() {

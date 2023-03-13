@@ -3,7 +3,7 @@ import { type IncomingHttpHeaders } from 'http'
 import { type inferAsyncReturnType } from '@trpc/server'
 import { type CreateNextContextOptions } from '@trpc/server/adapters/next'
 import { type NextApiResponse, type NextApiRequest } from 'next'
-import { unstable_getServerSession } from 'next-auth'
+import { getServerSession } from 'next-auth'
 
 import { authOptions } from 'pages/api/auth/[...nextauth]'
 
@@ -21,7 +21,7 @@ function isAdmin(headers?: IncomingHttpHeaders) {
 }
 
 async function getUser(req: NextApiRequest, res: NextApiResponse) {
-  const session = await unstable_getServerSession(req, res, authOptions)
+  const session = await getServerSession(req, res, authOptions)
 
   return session?.user
 }

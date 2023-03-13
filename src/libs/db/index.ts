@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client'
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime'
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 import { TRPCError } from '@trpc/server'
 import { type TRPC_ERROR_CODE_KEY } from '@trpc/server/rpc'
 
