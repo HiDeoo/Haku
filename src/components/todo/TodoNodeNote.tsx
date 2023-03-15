@@ -8,7 +8,7 @@ import { type TodoNodeDataWithParentId } from 'libs/db/todoNodes'
 import { ShiftEnter } from 'libs/editor'
 
 const editorContentClasses =
-  'pr-2 text-[0.84rem] leading-[1.2rem] pr-[calc(theme(spacing.2)+max(0px,env(safe-area-inset-right)))]'
+  'todoNodeNote pr-2 text-[0.84rem] leading-[1.2rem] pr-[calc(theme(spacing.2)+max(0px,env(safe-area-inset-right)))]'
 
 export const TodoNodeNote = forwardRef<TodoNodeNoteHandle, TodoNodeNoteProps>(
   ({ node, onBlur, onChange, onFocus, onShiftEnter }, forwardedRef) => {
