@@ -179,7 +179,6 @@ function getContentSecurityPolicy(nonce: string): string {
     `img-src 'self' ${CLOUDINARY_BASE_DELIVERY_URL} data:`,
     "manifest-src 'self'",
     "worker-src 'self'",
-    "prefetch-src 'self'",
     "connect-src 'self'",
     "base-uri 'none'",
   ].join('; ')
