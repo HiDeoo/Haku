@@ -49,7 +49,7 @@ jobs:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
 
       - name: Generate Prisma Client
-        run: pnpm prisma generate
+        run: pnpm db:generate
 
       - name: Run Prettier
         run: pnpm prettier --check .

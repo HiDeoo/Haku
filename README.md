@@ -74,7 +74,7 @@ Haku is still in development as I plan to add more features when I get the time.
 ## Architecture
 
 - [Next.js](https://nextjs.org/) for the React application and API routes (hosted on [Vercel](https://vercel.com) in production).
-- [Postgres](https://www.postgresql.org) database accessed through [Prisma](https://www.prisma.io) (hosted on [Supabase](https://supabase.com) in production and development - a local Docker version is used during tests).
+- [Postgres](https://www.postgresql.org) database accessed through [Prisma](https://www.prisma.io) (hosted on [Supabase](https://supabase.com) in production and development accessed through a [Data Proxy](https://www.prisma.io/data-platform/proxy) - a local Docker version is used during tests).
 - [NextAuth.js](https://next-auth.js.org) for the authentication.
 - [tRPC](https://trpc.io) for end-to-end typesafe APIs.
 - [Cloudinary](https://cloudinary.com) for image uploads.
