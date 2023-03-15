@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+### 💄 UI
+
+- Reduce todo notes paragraph spacing.
+
 ### 🐞 Bug Fixes
 
 - Fix an issue preventing to save a todo after deleting a todo node while preserving its children.
