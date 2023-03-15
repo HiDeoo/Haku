@@ -1,6 +1,6 @@
 import { type ToastImplProps } from '@radix-ui/react-toast'
 import { atom } from 'jotai/vanilla'
-import { RiNotification2Line } from 'react-icons/ri'
+import IconNotification2Line from '~icons/ri/notification-2-line'
 
 import { type IconProps } from 'components/ui/Icon'
 
@@ -13,7 +13,7 @@ export const addToastAtom = atom(null, (_, set, newToast: AtomParamsNewToast) =>
     ...prevToasts,
     {
       ...newToast,
-      icon: newToast.icon ?? RiNotification2Line,
+      icon: newToast.icon ?? IconNotification2Line,
       id: toastId++,
       type: newToast.type ?? 'foreground',
     },

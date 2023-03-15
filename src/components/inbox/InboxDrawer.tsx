@@ -2,7 +2,7 @@ import { QueryObserver, useQueryClient } from '@tanstack/react-query'
 import { useAtomValue, useSetAtom } from 'jotai/react'
 import dynamic from 'next/dynamic'
 import { useEffect, useMemo, useState } from 'react'
-import { RiInboxFill } from 'react-icons/ri'
+import IconInboxFill from '~icons/ri/inbox-fill'
 
 import { inboxDrawerAtom, setInboxDrawerOpenedAtom } from 'atoms/togglable'
 import { IconButton } from 'components/form/IconButton'
@@ -70,7 +70,7 @@ export const InboxDrawer = () => {
       opened={opened}
       onOpenChange={setOpened}
       className="flex flex-col overflow-hidden"
-      trigger={<IconButton icon={RiInboxFill} tooltip="Inbox" className={triggerClasses} />}
+      trigger={<IconButton icon={IconInboxFill} tooltip="Inbox" className={triggerClasses} />}
     >
       <Inbox />
     </Drawer>

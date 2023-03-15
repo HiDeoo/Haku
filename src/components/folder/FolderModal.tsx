@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai/react'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { RiFolderAddLine } from 'react-icons/ri'
+import IconFolderAddLine from '~icons/ri/folder-add-line'
 
 import { folderModalAtom, setFolderModalOpenedAtom } from 'atoms/togglable'
 import { FolderPicker } from 'components/folder/FolderPicker'
@@ -76,7 +76,7 @@ export const FolderModal = () => {
         onOpenChange={setOpened}
         opened={opened && !isRemoving}
         title={`${isUpdating ? 'Edit' : 'New'} Folder`}
-        trigger={<IconButton icon={RiFolderAddLine} tooltip="New Folder" disabled={offline} />}
+        trigger={<IconButton icon={IconFolderAddLine} tooltip="New Folder" disabled={offline} />}
       >
         <Form onSubmit={handleFormSubmit} error={error}>
           <TextInput

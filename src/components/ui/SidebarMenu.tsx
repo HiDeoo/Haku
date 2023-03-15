@@ -3,17 +3,15 @@ import { useAtomValue, useSetAtom } from 'jotai/react'
 import { useResetAtom } from 'jotai/react/utils'
 import { useRouter } from 'next/router'
 import { forwardRef } from 'react'
-import { BsFillLayersFill } from 'react-icons/bs'
-import {
-  RiBugLine,
-  RiInboxArchiveLine,
-  RiInstallLine,
-  RiKeyboardFill,
-  RiLogoutCircleRLine,
-  RiMenuFoldLine,
-  RiMenuUnfoldLine,
-  RiMore2Fill,
-} from 'react-icons/ri'
+import IconLayersFill from '~icons/bi/layers-fill'
+import IconBugLine from '~icons/ri/bug-line'
+import IconInboxArchiveLine from '~icons/ri/inbox-archive-line'
+import IconInstallLine from '~icons/ri/install-line'
+import IconKeyboardFill from '~icons/ri/keyboard-fill'
+import IconLogoutCircleRLine from '~icons/ri/logout-circle-r-line'
+import IconMenuFoldLine from '~icons/ri/menu-fold-line'
+import IconMenuUnfoldLine from '~icons/ri/menu-unfold-line'
+import IconMore2Fill from '~icons/ri/more-2-fill'
 
 import { sidebarCollapsedAtom, toggleSidebarCollapsedAtom } from 'atoms/collapsible'
 import { deferrefPromptEventAtom } from 'atoms/pwa'
@@ -79,13 +77,13 @@ export const SidebarMenu = () => {
       <SearchDrawer />
       <IconButton
         onPress={toggleSidebarCollapsed}
-        icon={sidebarCollapsed ? RiMenuUnfoldLine : RiMenuFoldLine}
+        icon={sidebarCollapsed ? IconMenuUnfoldLine : IconMenuFoldLine}
         tooltip={`${sidebarCollapsed ? 'Expand' : 'Collapse'} Menu`}
         key={`sidebar-menu-${sidebarCollapsed ? 'expand' : 'collapse'}-button`}
       />
       <Root>
         <Trigger asChild>
-          <IconButton icon={RiMore2Fill} tooltip="More" className="last-of-type:mr-0.5" />
+          <IconButton icon={IconMore2Fill} tooltip="More" className="last-of-type:mr-0.5" />
         </Trigger>
         <Portal>
           <Content
@@ -96,18 +94,18 @@ export const SidebarMenu = () => {
             <Arrow className="fill-zinc-700" width={16} height={8} />
             <Flex direction="col" className="rounded-md bg-zinc-700 p-1.5 shadow shadow-black/75">
               <Item asChild>
-                <SidebarMenuItem label="Logout" icon={RiLogoutCircleRLine} onClick={logout} />
+                <SidebarMenuItem label="Logout" icon={IconLogoutCircleRLine} onClick={logout} />
               </Item>
               <Item asChild>
-                <SidebarMenuItem label="Report Bug" icon={RiBugLine} onClick={openGitHubIssuePage} />
+                <SidebarMenuItem label="Report Bug" icon={IconBugLine} onClick={openGitHubIssuePage} />
               </Item>
               <Item asChild>
-                <SidebarMenuItem label="Import Data" icon={RiInboxArchiveLine} onClick={handleImportDataClick} />
+                <SidebarMenuItem label="Import Data" icon={IconInboxArchiveLine} onClick={handleImportDataClick} />
               </Item>
               <Item asChild>
                 <SidebarMenuItem
                   label="Keyboard Shortcuts"
-                  icon={RiKeyboardFill}
+                  icon={IconKeyboardFill}
                   onClick={handleKeyboardShortcutsClick}
                 />
               </Item>
@@ -115,14 +113,14 @@ export const SidebarMenu = () => {
                 <Item asChild>
                   <SidebarMenuItem
                     label="Get Apple Shortcut"
-                    icon={BsFillLayersFill}
+                    icon={IconLayersFill}
                     onClick={handleSidebarMenuInstallShortcutClick}
                   />
                 </Item>
               ) : null}
               {deferrefPromptEvent ? (
                 <Item asChild>
-                  <SidebarMenuItem label="Install App" icon={RiInstallLine} onClick={handleInstallAppClick} />
+                  <SidebarMenuItem label="Install App" icon={IconInstallLine} onClick={handleInstallAppClick} />
                 </Item>
               ) : null}
             </Flex>

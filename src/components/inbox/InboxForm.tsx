@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form'
-import { RiAddLine } from 'react-icons/ri'
+import IconAddLine from '~icons/ri/add-line'
 
 import { IconButton } from 'components/form/IconButton'
 import { TextInput } from 'components/form/TextInput'
@@ -44,7 +44,7 @@ export const InboxForm = () => {
         type="submit"
         tooltip="Add"
         className="px-2"
-        icon={RiAddLine}
+        icon={IconAddLine}
         loading={isLoading}
         disabled={isLoading || offline}
       />

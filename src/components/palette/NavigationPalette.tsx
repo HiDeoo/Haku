@@ -1,7 +1,8 @@
 import { useAtom, useAtomValue } from 'jotai/react'
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
-import { RiBookletLine, RiTodoLine } from 'react-icons/ri'
+import IconBookletLine from '~icons/ri/booklet-line'
+import IconTodoLine from '~icons/ri/todo-line'
 
 import { fileHistoryAtom } from 'atoms/fileHistory'
 import { navigationPaletteOpenedAtom } from 'atoms/togglable'
@@ -95,7 +96,7 @@ function itemToIcon(item: FileData | null) {
     return null
   }
 
-  return item.type === ContentType.NOTE ? RiBookletLine : RiTodoLine
+  return item.type === ContentType.NOTE ? IconBookletLine : IconTodoLine
 }
 
 type Navigation = FileData & PaletteItem

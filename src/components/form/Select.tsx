@@ -1,6 +1,6 @@
 import { useSelect, type UseSelectStateChange } from 'downshift'
 import { forwardRef, useCallback, useRef } from 'react'
-import { RiArrowDownSLine } from 'react-icons/ri'
+import IconArrowDownSLine from '~icons/ri/arrow-down-s-line'
 
 import { ControlMenu, type ControlMenuProps } from 'components/form/ControlMenu'
 import { Label } from 'components/form/Label'
@@ -75,7 +75,7 @@ const SelectComponent = <TItem,>(
       >
         <Flex alignItems="center" justifyContent="between" className="gap-1">
           <div className="truncate">{renderItem(labelItem)}</div>
-          <Icon icon={RiArrowDownSLine} className={triggerIconClasses} />
+          <Icon icon={IconArrowDownSLine} className={triggerIconClasses} />
         </Flex>
       </button>
       <ControlMenu

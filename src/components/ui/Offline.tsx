@@ -1,4 +1,4 @@
-import { RiCloudOffLine } from 'react-icons/ri'
+import IconCloudOffLine from '~icons/ri/cloud-off-line'
 
 import { Callout } from 'components/form/Callout'
 import { Flex } from 'components/ui/Flex'
@@ -12,7 +12,7 @@ export const Offline = () => {
       <Callout
         intent="neutral"
         iconLabel="Offline"
-        icon={RiCloudOffLine}
+        icon={IconCloudOffLine}
         title="You are disconnected"
         message={
           <>

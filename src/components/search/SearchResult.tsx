@@ -1,7 +1,9 @@
 import { useSetAtom } from 'jotai/react'
 import { useRouter } from 'next/router'
 import { forwardRef } from 'react'
-import { RiBookletLine, RiInboxFill, RiTodoLine } from 'react-icons/ri'
+import IconBookletLine from '~icons/ri/booklet-line'
+import IconInboxFill from '~icons/ri/inbox-fill'
+import IconTodoLine from '~icons/ri/todo-line'
 
 import { setInboxDrawerOpenedAtom, setSearchDrawerOpenedAtom } from 'atoms/togglable'
 import { Drawer } from 'components/ui/Drawer'
@@ -53,10 +55,10 @@ export const SearchResult = forwardRef<HTMLDivElement, SearchResultProps>(({ res
 
   const name = isInboxSearchResult ? 'Inbox' : result.name
   const icon = isInboxSearchResult
-    ? RiInboxFill
+    ? IconInboxFill
     : result.type === SearchableContentType.NOTE
-    ? RiBookletLine
-    : RiTodoLine
+    ? IconBookletLine
+    : IconTodoLine
   const iconLabel = capitalize(result.type)
 
   return (

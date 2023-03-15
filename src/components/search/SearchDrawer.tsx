@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai/react'
 import dynamic from 'next/dynamic'
 import { useCallback, useMemo, useRef } from 'react'
-import { RiSearchLine } from 'react-icons/ri'
+import IconSearchLine from '~icons/ri/search-line'
 
 import { searchDrawerAtom, setSearchDrawerOpenedAtom } from 'atoms/togglable'
 import { IconButton } from 'components/form/IconButton'
@@ -51,7 +51,7 @@ export const SearchDrawer = () => {
       opened={opened}
       onOpenChange={handleOpenChange}
       className="flex flex-col overflow-hidden"
-      trigger={<IconButton icon={RiSearchLine} tooltip="Search" />}
+      trigger={<IconButton icon={IconSearchLine} tooltip="Search" />}
     >
       <Search queryInputRef={queryInput} />
     </Drawer>

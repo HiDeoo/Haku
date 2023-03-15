@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { RiQuestionMark } from 'react-icons/ri'
+import IconQuestionMark from '~icons/ri/question-mark'
 
 import { Inspector } from 'components/ui/Inspector'
 import { Modal } from 'components/ui/Modal'
@@ -16,7 +16,7 @@ export const EditorSyntaxModal = () => {
       className="pb-1"
       title="Syntax Help"
       onOpenChange={setOpened}
-      trigger={<Inspector.IconButton tooltip="Syntax Help" icon={RiQuestionMark} />}
+      trigger={<Inspector.IconButton tooltip="Syntax Help" icon={IconQuestionMark} />}
       contentClassName="xs:min-w-[unset] xs:max-w-[unset] xs:w-[60vw] xs:max-w-4xl"
     >
       <EditorSyntaxSection title="Headings">

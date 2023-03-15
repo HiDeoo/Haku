@@ -9,6 +9,20 @@
     }
   ],
   "rules": {
+    "import/order": [
+      "warn",
+      {
+        "alphabetize": { "order": "asc", "caseInsensitive": true },
+        "newlines-between": "always",
+        "pathGroups": [
+          {
+            "pattern": "~icons/**",
+            "group": "external"
+          }
+        ]
+      }
+    ],
+
     "@next/next/no-img-element": "off",
 
     "unicorn/prefer-node-protocol": "off"

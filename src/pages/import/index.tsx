@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai/react'
 import Link from 'next/link'
-import { RiArrowRightSLine } from 'react-icons/ri'
+import IconArrowRightSLine from '~icons/ri/arrow-right-s-line'
 
 import { sidebarCollapsedAtom } from 'atoms/collapsible'
 import { Icon } from 'components/ui/Icon'
@@ -27,7 +27,7 @@ const Import: Page = () => {
               return (
                 <Link {...props} href={`/import/${source.toLowerCase()}`} prefetch={false} className={linkCkasses}>
                   <span className="grow truncate">{source}</span>
-                  <Icon icon={RiArrowRightSLine} className={iconClasses} aria-hidden />
+                  <Icon icon={IconArrowRightSLine} className={iconClasses} aria-hidden />
                 </Link>
               )
             }}

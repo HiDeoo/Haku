@@ -16,7 +16,7 @@ import {
   type Path,
   type ValidateResult,
 } from 'react-hook-form'
-import { RiArrowDownSLine } from 'react-icons/ri'
+import IconArrowDownSLine from '~icons/ri/arrow-down-s-line'
 
 import { Button } from 'components/form/Button'
 import { ControlMenu } from 'components/form/ControlMenu'
@@ -148,7 +148,7 @@ export const Combobox = <TItem, TFormFields extends FieldValues>({
             disabled: isDisabled(),
           })}
         >
-          <Icon icon={RiArrowDownSLine} className={triggerIconClasses} />
+          <Icon icon={IconArrowDownSLine} className={triggerIconClasses} />
         </Button>
       </Flex>
       <ControlMenu

@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai/react'
 import Link from 'next/link'
-import { RiArrowRightSLine } from 'react-icons/ri'
+import IconArrowRightSLine from '~icons/ri/arrow-right-s-line'
 
 import { sidebarCollapsedAtom } from 'atoms/collapsible'
 import { Icon } from 'components/ui/Icon'
@@ -62,7 +62,7 @@ const ContentHistorySection = ({ entries, isLoading, type }: ContentHistorySecti
               return (
                 <Link {...props} href={`${urlPath}/${entry.id}/${entry.slug}`} prefetch={false} className={linkCkasses}>
                   <span className="grow truncate">{entry.name}</span>
-                  <Icon icon={RiArrowRightSLine} className={iconClasses} aria-hidden />
+                  <Icon icon={IconArrowRightSLine} className={iconClasses} aria-hidden />
                 </Link>
               )
             }}

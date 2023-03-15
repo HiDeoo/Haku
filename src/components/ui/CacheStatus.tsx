@@ -1,5 +1,5 @@
-import { MdAirplanemodeInactive } from 'react-icons/md'
-import { RiFlightTakeoffLine } from 'react-icons/ri'
+import IconAirplaneOff from '~icons/mdi/airplane-off'
+import IconFlightTakeoffLine from '~icons/ri/flight-takeoff-line'
 
 import { Navbar } from 'components/ui/Navbar'
 import { useContentType } from 'hooks/useContentType'
@@ -14,7 +14,7 @@ export const CacheStatus = () => {
   }
 
   const tooltip = `${cType} ${availableOffline ? 'available' : 'unavailable'} for offline use`
-  const icon = availableOffline ? RiFlightTakeoffLine : MdAirplanemodeInactive
+  const icon = availableOffline ? IconFlightTakeoffLine : IconAirplaneOff
   const iconLabel = `${availableOffline ? 'Available' : 'Unavailable'} offline`
 
   return <Navbar.Icon tooltip={tooltip} iconLabel={iconLabel} icon={icon} />

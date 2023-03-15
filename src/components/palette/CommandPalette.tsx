@@ -1,18 +1,16 @@
 import { useAtom, useSetAtom } from 'jotai/react'
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
-import {
-  RiBookletLine,
-  RiFileAddLine,
-  RiFolderAddLine,
-  RiInboxFill,
-  RiKeyboardFill,
-  RiLink,
-  RiLogoutCircleRLine,
-  RiMenu2Line,
-  RiSearchLine,
-  RiTodoLine,
-} from 'react-icons/ri'
+import IconBookletLine from '~icons/ri/booklet-line'
+import IconFileAddLine from '~icons/ri/file-add-line'
+import IconFolderAddLine from '~icons/ri/folder-add-line'
+import IconInboxFill from '~icons/ri/inbox-fill'
+import IconKeyboardFill from '~icons/ri/keyboard-fill'
+import IconLink from '~icons/ri/link'
+import IconLogoutCircleRLine from '~icons/ri/logout-circle-r-line'
+import IconMenu2Line from '~icons/ri/menu-2-line'
+import IconSearchLine from '~icons/ri/search-line'
+import IconTodoLine from '~icons/ri/todo-line'
 
 import { toggleSidebarCollapsedAtom } from 'atoms/collapsible'
 import {
@@ -44,7 +42,7 @@ export const CommandPalette = () => {
   const { cType, type } = useContentType()
   const isBrowsingNotes = type === ContentType.NOTE
   const altContentType = getContentType(isBrowsingNotes ? ContentType.TODO : ContentType.NOTE)
-  const altIcon = isBrowsingNotes ? RiTodoLine : RiBookletLine
+  const altIcon = isBrowsingNotes ? IconTodoLine : IconBookletLine
 
   const setContentModalOpened = useSetAtom(setContentModalOpenedAtom)
   const setFolderModalOpened = useSetAtom(setFolderModalOpenedAtom)
@@ -76,7 +74,7 @@ export const CommandPalette = () => {
     () => [
       {
         name: `Create New ${cType}`,
-        icon: RiFileAddLine,
+        icon: IconFileAddLine,
         disabled: offline,
         action: () => {
           setContentModalOpened(true)
@@ -84,7 +82,7 @@ export const CommandPalette = () => {
       },
       {
         name: 'Create New Folder',
-        icon: RiFolderAddLine,
+        icon: IconFolderAddLine,
         disabled: offline,
         action: () => {
           setFolderModalOpened(true)
@@ -92,14 +90,14 @@ export const CommandPalette = () => {
       },
       {
         name: 'Search in Notes and Todos',
-        icon: RiSearchLine,
+        icon: IconSearchLine,
         action: () => {
           setSearchDrawerOpened(true)
         },
       },
       {
         name: 'Go to Note or Todo',
-        icon: RiLink,
+        icon: IconLink,
         action: () => {
           // When switching to the navigation palette, we need to wait for the command palette to be closed and the
           // previous focus to have been restored otherwise the navigation palette will be opened and immediately
@@ -118,26 +116,26 @@ export const CommandPalette = () => {
       },
       {
         name: 'Open Inbox',
-        icon: RiInboxFill,
+        icon: IconInboxFill,
         action: () => {
           setInboxDrawerOpened(true)
         },
       },
       {
         name: `Collapse / Expand Menu`,
-        icon: RiMenu2Line,
+        icon: IconMenu2Line,
         action: toggleSidebarCollapsed,
       },
       {
         name: 'Display Keyboard Shortcuts',
-        icon: RiKeyboardFill,
+        icon: IconKeyboardFill,
         action: () => {
           setShortcutModalOpened(true)
         },
       },
       {
         name: 'Logout',
-        icon: RiLogoutCircleRLine,
+        icon: IconLogoutCircleRLine,
         disabled: offline,
         action: () => {
           logout()

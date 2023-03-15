@@ -1,6 +1,9 @@
 import { TodoNodeStatus } from '@prisma/client'
 import { memo } from 'react'
-import { RiAddLine, RiCheckboxBlankCircleFill, RiCheckboxBlankCircleLine, RiSubtractLine } from 'react-icons/ri'
+import IconAddLine from '~icons/ri/add-line'
+import IconCheckboxBlankCircleFill from '~icons/ri/checkbox-blank-circle-fill'
+import IconCheckboxBlankCircleLine from '~icons/ri/checkbox-blank-circle-line'
+import IconSubtractLine from '~icons/ri/subtract-line'
 
 import { type AtomParamsWithParentId } from 'atoms/todoNode'
 import { Button } from 'components/form/Button'
@@ -42,9 +45,9 @@ export const TodoNodeHandle = memo(({ collapsed, hasChildren, id, status, toggle
       className={buttonClasses}
       pressedClassName={'pressedButtonClasses'}
     >
-      {collapsed ? <Icon icon={RiCheckboxBlankCircleLine} className={collapsedCircleClasses} /> : null}
-      <Icon icon={RiCheckboxBlankCircleFill} className={circleClasses} />
-      {hasChildren ? <Icon icon={collapsed ? RiAddLine : RiSubtractLine} className={actionClasses} /> : null}
+      {collapsed ? <Icon icon={IconCheckboxBlankCircleLine} className={collapsedCircleClasses} /> : null}
+      <Icon icon={IconCheckboxBlankCircleFill} className={circleClasses} />
+      {hasChildren ? <Icon icon={collapsed ? IconAddLine : IconSubtractLine} className={actionClasses} /> : null}
     </Button>
   )
 })

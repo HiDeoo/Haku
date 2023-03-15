@@ -7,6 +7,7 @@
     "jsx": "preserve",
     "noEmit": true,
     "target": "es2015",
+    "types": ["unplugin-icons/types/react"],
     "typeRoots": ["node_modules/@types", "types"]
   },
   "ts-node": {

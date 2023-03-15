@@ -1,6 +1,6 @@
 import { Close, Content, Overlay, Portal, Root, Title, Trigger } from '@radix-ui/react-dialog'
 import { forwardRef } from 'react'
-import { RiCloseLine } from 'react-icons/ri'
+import IconCloseLine from '~icons/ri/close-line'
 
 import { Form, type FormProps } from 'components/form/Form'
 import { IconButton } from 'components/form/IconButton'
@@ -42,7 +42,7 @@ export const Drawer = ({ children, className, onOpenChange, opened, title, trigg
             <Flex as="header" alignItems="center" justifyContent="between" className={headerClasses}>
               <Title>{title}</Title>
               <Close asChild>
-                <IconButton tooltip="Close" icon={RiCloseLine} className="rounded-full p-1" />
+                <IconButton tooltip="Close" icon={IconCloseLine} className="rounded-full p-1" />
               </Close>
             </Flex>
             <div className={childrenClasses}>{children}</div>

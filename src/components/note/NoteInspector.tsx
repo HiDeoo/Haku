@@ -1,33 +1,31 @@
 import { type Editor } from '@tiptap/react'
 import { useAtomValue, useSetAtom } from 'jotai/react'
-import {
-  RiArrowDropRightFill,
-  RiArrowGoBackLine,
-  RiArrowGoForwardLine,
-  RiBold,
-  RiCodeBoxLine,
-  RiCodeLine,
-  RiDoubleQuotesR,
-  RiEditLine,
-  RiFormatClear,
-  RiH1,
-  RiH2,
-  RiH3,
-  RiH4,
-  RiH5,
-  RiH6,
-  RiHeading,
-  RiImageAddLine,
-  RiItalic,
-  RiLink,
-  RiListOrdered,
-  RiListUnordered,
-  RiMarkPenLine,
-  RiMenuFoldLine,
-  RiMenuUnfoldLine,
-  RiSeparator,
-  RiStrikethrough,
-} from 'react-icons/ri'
+import IconArrowDropRightFill from '~icons/ri/arrow-drop-right-fill'
+import IconArrowGoBackLine from '~icons/ri/arrow-go-back-line'
+import IconArrowGoForwardLine from '~icons/ri/arrow-go-forward-line'
+import IconBold from '~icons/ri/bold'
+import IconCodeBoxLine from '~icons/ri/code-box-line'
+import IconCodeLine from '~icons/ri/code-line'
+import IconDoubleQuotesR from '~icons/ri/double-quotes-r'
+import IconEditLine from '~icons/ri/edit-line'
+import IconFormatClear from '~icons/ri/format-clear'
+import IconH1 from '~icons/ri/h-1'
+import IconH2 from '~icons/ri/h-2'
+import IconH3 from '~icons/ri/h-3'
+import IconH4 from '~icons/ri/h-4'
+import IconH5 from '~icons/ri/h-5'
+import IconH6 from '~icons/ri/h-6'
+import IconHeading from '~icons/ri/heading'
+import IconImageAddLine from '~icons/ri/image-add-line'
+import IconItalic from '~icons/ri/italic'
+import IconLink from '~icons/ri/link'
+import IconListOrdered from '~icons/ri/list-ordered'
+import IconListUnordered from '~icons/ri/list-unordered'
+import IconMarkPenLine from '~icons/ri/mark-pen-line'
+import IconMenuFoldLine from '~icons/ri/menu-fold-line'
+import IconMenuUnfoldLine from '~icons/ri/menu-unfold-line'
+import IconSeparator from '~icons/ri/separator'
+import IconStrikethrough from '~icons/ri/strikethrough'
 
 import { noteInspectorCollapsedAtom, sidebarCollapsedAtom, toggleNoteInspectorCollapsedAtom } from 'atoms/collapsible'
 import { EditorSyntaxModal } from 'components/editor/EditorSyntaxModal'
@@ -58,7 +56,19 @@ export const NoteInspector = ({ disabled, editor, editorState, setLinkModalOpene
   const isH6 = editor?.isActive('heading', { level: 6 })
 
   const isHeading = isH1 ?? isH2 ?? isH3 ?? isH4 ?? isH5 ?? isH6
-  const headingMenuIcon = isH1 ? RiH1 : isH2 ? RiH2 : isH3 ? RiH3 : isH4 ? RiH4 : isH5 ? RiH5 : isH6 ? RiH6 : RiHeading
+  const headingMenuIcon = isH1
+    ? IconH1
+    : isH2
+    ? IconH2
+    : isH3
+    ? IconH3
+    : isH4
+    ? IconH4
+    : isH5
+    ? IconH5
+    : isH6
+    ? IconH6
+    : IconHeading
 
   function addHorizontalRule() {
     editor?.chain().focus().setHorizontalRule().run()
@@ -145,7 +155,7 @@ export const NoteInspector = ({ disabled, editor, editorState, setLinkModalOpene
           <>
             <IconButton
               onPress={toggleCollapsed}
-              icon={collapsed ? RiMenuFoldLine : RiMenuUnfoldLine}
+              icon={collapsed ? IconMenuFoldLine : IconMenuUnfoldLine}
               tooltip={`${collapsed ? 'Expand' : 'Collapse'} Inspector`}
               key={`note-inspector-${collapsed ? 'expand' : 'collapse'}-button`}
             />
@@ -156,16 +166,16 @@ export const NoteInspector = ({ disabled, editor, editorState, setLinkModalOpene
           <Inspector.IconButton
             tooltip="Undo"
             onPress={undo}
-            icon={RiArrowGoBackLine}
+            icon={IconArrowGoBackLine}
             disabled={!editor?.can().undo()}
           />
           <Inspector.IconButton
             tooltip="Redo"
             onPress={redo}
-            icon={RiArrowGoForwardLine}
+            icon={IconArrowGoForwardLine}
             disabled={!editor?.can().redo()}
           />
-          <Inspector.IconButton tooltip="Clear Format" onPress={clearFormat} icon={RiFormatClear} />
+          <Inspector.IconButton tooltip="Clear Format" onPress={clearFormat} icon={IconFormatClear} />
           <EditorSyntaxModal />
         </Inspector.Section>
         <Inspector.Section title="Text">
@@ -175,71 +185,71 @@ export const NoteInspector = ({ disabled, editor, editorState, setLinkModalOpene
             disabled={isCodeBlock}
             tooltip="Toggle Heading"
           >
-            <Inspector.IconMenuItem icon={RiH1} onClick={() => toggleHeading(1)} />
-            <Inspector.IconMenuItem icon={RiH2} onClick={() => toggleHeading(2)} />
-            <Inspector.IconMenuItem icon={RiH3} onClick={() => toggleHeading(3)} />
-            <Inspector.IconMenuItem icon={RiH4} onClick={() => toggleHeading(4)} />
-            <Inspector.IconMenuItem icon={RiH5} onClick={() => toggleHeading(5)} />
-            <Inspector.IconMenuItem icon={RiH6} onClick={() => toggleHeading(6)} />
+            <Inspector.IconMenuItem icon={IconH1} onClick={() => toggleHeading(1)} />
+            <Inspector.IconMenuItem icon={IconH2} onClick={() => toggleHeading(2)} />
+            <Inspector.IconMenuItem icon={IconH3} onClick={() => toggleHeading(3)} />
+            <Inspector.IconMenuItem icon={IconH4} onClick={() => toggleHeading(4)} />
+            <Inspector.IconMenuItem icon={IconH5} onClick={() => toggleHeading(5)} />
+            <Inspector.IconMenuItem icon={IconH6} onClick={() => toggleHeading(6)} />
           </Inspector.IconMenu>
           <Inspector.Toggle
-            icon={RiBold}
+            icon={IconBold}
             onToggle={toggleBold}
             tooltip="Toggle Bold"
             disabled={isCodeBlock}
             toggled={editor?.isActive('bold')}
           />
           <Inspector.Toggle
-            icon={RiItalic}
+            icon={IconItalic}
             disabled={isCodeBlock}
             onToggle={toggleItalic}
             tooltip="Toggle Italic"
             toggled={editor?.isActive('italic')}
           />
           <Inspector.Toggle
-            icon={RiCodeLine}
+            icon={IconCodeLine}
             onToggle={toggleCode}
             tooltip="Toggle Code"
             disabled={isCodeBlock}
             toggled={editor?.isActive('code')}
           />
           <Inspector.Toggle
-            icon={RiStrikethrough}
+            icon={IconStrikethrough}
             disabled={isCodeBlock}
             onToggle={toggleStrike}
             tooltip="Toggle Strike"
             toggled={editor?.isActive('strike')}
           />
           <Inspector.Toggle
-            icon={RiMarkPenLine}
+            icon={IconMarkPenLine}
             disabled={isCodeBlock}
             onToggle={toggleHighlight}
             tooltip="Toggle Highlight"
             toggled={editor?.isActive('highlight')}
           />
           <Inspector.Toggle
-            icon={RiLink}
+            icon={IconLink}
             onToggle={toggleLink}
             disabled={isCodeBlock}
             toggled={editor?.isActive('link')}
             tooltip={`${editor?.isActive('link') ? 'Edit' : 'Toggle'} Link`}
           />
           <Inspector.Toggle
-            icon={RiDoubleQuotesR}
+            icon={IconDoubleQuotesR}
             onToggle={toggleQuote}
             tooltip="Toggle Quote"
             disabled={isCodeBlock}
             toggled={editor?.isActive('blockquote')}
           />
           <Inspector.Toggle
-            icon={RiListUnordered}
+            icon={IconListUnordered}
             disabled={isCodeBlock}
             onToggle={toggleBulletList}
             tooltip="Toggle Bullet List"
             toggled={editor?.isActive('bulletList')}
           />
           <Inspector.Toggle
-            icon={RiListOrdered}
+            icon={IconListOrdered}
             disabled={isCodeBlock}
             onToggle={toggleOrderedList}
             tooltip="Toggle Ordered List"
@@ -248,7 +258,7 @@ export const NoteInspector = ({ disabled, editor, editorState, setLinkModalOpene
         </Inspector.Section>
         <Inspector.Section title="Content">
           <Inspector.Toggle
-            icon={RiCodeBoxLine}
+            icon={IconCodeBoxLine}
             onToggle={toggleCodeBlock}
             tooltip="Toggle Code Block"
             toggled={editor?.isActive('codeBlock')}
@@ -257,10 +267,10 @@ export const NoteInspector = ({ disabled, editor, editorState, setLinkModalOpene
             multiple
             onChange={handleImageChange}
             accept={IMAGE_SUPPORTED_TYPES}
-            trigger={<Inspector.IconButton tooltip="Upload Images" icon={RiImageAddLine} />}
+            trigger={<Inspector.IconButton tooltip="Upload Images" icon={IconImageAddLine} />}
           />
           <Inspector.IconButton
-            icon={RiSeparator}
+            icon={IconSeparator}
             disabled={isCodeBlock}
             tooltip="Insert Separator"
             onPress={addHorizontalRule}
@@ -281,7 +291,7 @@ export const NoteInspector = ({ disabled, editor, editorState, setLinkModalOpene
         ) : null}
       </Inspector>
       <FloatingButton
-        icon={RiEditLine}
+        icon={IconEditLine}
         className="right-2"
         onPress={toggleCollapsed}
         tooltip="Expand Inspector"
@@ -308,7 +318,7 @@ const TocEntry = ({ editor, entry }: TocEntryProps) => {
       alignItems="center"
       style={{ paddingLeft: `calc(0.625rem * (${entry.level - 1}))` }}
     >
-      <Icon icon={RiArrowDropRightFill} className="mr-0.5 mt-px shrink-0" />
+      <Icon icon={IconArrowDropRightFill} className="mr-0.5 mt-px shrink-0" />
       <a onClick={handleClick} href={`#${entry.id}`} className={linkClasses}>
         {entry.name}
       </a>
