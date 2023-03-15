@@ -7,19 +7,21 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "dev": "pnpm build:sw && next dev",
+    "dev": "pnpm db:generate:proxy && pnpm build:sw && next dev",
+    "db:generate": "dotenv -c -- prisma generate",
+    "db:generate:proxy": "pnpm db:generate --data-proxy",
     "db:migrate": "dotenv -c -- prisma migrate",
     "build": "next build && pnpm build:sw --prod",
-    "build:sw": "ts-node scripts/serviceWorker",
+    "build:sw": "dotenv -c -- ts-node scripts/serviceWorker",
     "build:analyze": "ANALYZE=true pnpm build",
     "build:screenshots": "ts-node scripts/screenshots",
     "start": "next start",
     "lint": "next lint -d . --max-warnings=0 && tsc --noEmit && tsc --noEmit -p src/sw/tsconfig.json",
-    "test:api": "TEST_TYPE=api vitest",
+    "test:api": "pnpm db:generate && TEST_TYPE=api vitest",
     "test:client": "TEST_TYPE=client vitest",
     "prepare": "husky install",
     "preinstall": "npx only-allow pnpm",
-    "vercel-build": "prisma generate && pnpm db:migrate deploy && pnpm build"
+    "vercel-build": "pnpm db:generate:proxy && pnpm db:migrate deploy && pnpm build"
   },
   "dependencies": {
     "@iconify-json/bi": "1.1.15",
