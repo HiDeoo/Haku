@@ -1,5 +1,5 @@
-import { RiDeleteBin7Line } from 'react-icons/ri'
 import { LinkItUrl } from 'react-linkify-it'
+import IconDeleteBin7Line from '~icons/ri/delete-bin-7-line'
 
 import { ClipboardCopyButton } from 'components/form/ClipboardCopyButton'
 import { Drawer } from 'components/ui/Drawer'
@@ -36,7 +36,7 @@ export const InboxListEntry = ({ entry }: InboxListEntryProps) => {
           className={LIST_BUTTON_CLASSES}
           pressedClassName={LIST_BUTTON_PRESSED_CLASSES}
         />
-        <Drawer.List.Button icon={RiDeleteBin7Line} tooltip="Delete" onPress={handleRemovePress} disabled={offline} />
+        <Drawer.List.Button icon={IconDeleteBin7Line} tooltip="Delete" onPress={handleRemovePress} disabled={offline} />
       </div>
     </Drawer.List.Item>
   )

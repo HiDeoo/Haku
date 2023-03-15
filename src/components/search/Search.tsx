@@ -3,7 +3,7 @@ import { type BaseEvent } from '@react-types/shared'
 import { useAtom } from 'jotai/react'
 import { useRef } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import { RiSearchLine } from 'react-icons/ri'
+import IconSearchLine from '~icons/ri/search-line'
 
 import { searchDrawerAtom, type SearchDrawerData } from 'atoms/togglable'
 import { IconButton } from 'components/form/IconButton'
@@ -88,7 +88,7 @@ export const Search = ({ queryInputRef }: SearchProps) => {
             className="px-2"
             tooltip="Search"
             loading={isLoading}
-            icon={RiSearchLine}
+            icon={IconSearchLine}
             disabled={isLoading}
           />
         </Drawer.Form>

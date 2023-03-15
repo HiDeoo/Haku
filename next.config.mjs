@@ -1,4 +1,5 @@
 import bundleAnalyzer from '@next/bundle-analyzer'
+import iconPlugin from 'unplugin-icons/webpack'
 
 const withBundleAnalyzer = bundleAnalyzer({ enabled: process.env.ANALYZE === 'true' })
 
@@ -18,6 +19,13 @@ const commonHeaders = [
  */
 const nextConfig = {
   webpack: (config, { dev, isServer }) => {
+    config.plugins.push(
+      iconPlugin({
+        compiler: 'jsx',
+        jsx: 'react',
+      })
+    )
+
     if (!dev && !isServer) {
       return {
         ...config,

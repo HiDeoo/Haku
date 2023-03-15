@@ -1,7 +1,8 @@
 import { useAtomValue, useSetAtom } from 'jotai/react'
 import { useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
-import { RiErrorWarningLine, RiFileAddLine } from 'react-icons/ri'
+import IconErrorWarningLine from '~icons/ri/error-warning-line'
+import IconFileAddLine from '~icons/ri/file-add-line'
 
 import { contentModalAtom, setContentModalOpenedAtom } from 'atoms/togglable'
 import { FolderPicker } from 'components/folder/FolderPicker'
@@ -79,7 +80,7 @@ export const ContentModal = () => {
 
     addToast({
       details: 'Please try again.',
-      icon: RiErrorWarningLine,
+      icon: IconErrorWarningLine,
       text: `Failed to ${action} ${lcType}.`,
       type: 'foreground',
     })
@@ -112,7 +113,7 @@ export const ContentModal = () => {
         onOpenChange={setOpened}
         opened={opened && !isRemoving}
         onCloseAutoFocus={handleModalCloseAutoFocus}
-        trigger={<IconButton icon={RiFileAddLine} tooltip={title} disabled={offline} />}
+        trigger={<IconButton icon={IconFileAddLine} tooltip={title} disabled={offline} />}
       >
         <Form onSubmit={handleFormSubmit} error={error}>
           <TextInput

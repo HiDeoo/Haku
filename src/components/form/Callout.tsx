@@ -1,5 +1,6 @@
 import { forwardRef } from 'react'
-import { RiCheckLine, RiErrorWarningLine } from 'react-icons/ri'
+import IconCheckLine from '~icons/ri/check-line'
+import IconErrorWarningLine from '~icons/ri/error-warning-line'
 
 import { Flex } from 'components/ui/Flex'
 import { Icon, type IconProps } from 'components/ui/Icon'
@@ -11,7 +12,7 @@ export const Callout = forwardRef<HTMLDivElement, CalloutProps>(
     const isSuccess = intent === 'success'
     const isError = intent === 'error'
 
-    const calloutIcon = icon ?? (isSuccess ? RiCheckLine : RiErrorWarningLine)
+    const calloutIcon = icon ?? (isSuccess ? IconCheckLine : IconErrorWarningLine)
     const calloutIconLabel = iconLabel ?? (isSuccess ? 'Success' : 'Error')
 
     const containerClasses = clst(

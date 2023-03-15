@@ -1,7 +1,8 @@
 import { Root, Thumb } from '@radix-ui/react-switch'
 import { useAtomValue } from 'jotai/react'
 import { useRouter } from 'next/router'
-import { RiBookletLine, RiTodoLine } from 'react-icons/ri'
+import IconBookletLine from '~icons/ri/booklet-line'
+import IconTodoLine from '~icons/ri/todo-line'
 
 import { sidebarCollapsedAtom } from 'atoms/collapsible'
 import { Icon } from 'components/ui/Icon'
@@ -54,11 +55,11 @@ export const ContentTypeSwitch = () => {
         <Root checked={isBrowsingNotes} onCheckedChange={handleCheckedChange} className={rootClasses}>
           <Thumb asChild>
             <div className={gridClasses}>
-              <Icon icon={RiBookletLine} className={leftNodeClasses} label="Notes" />
-              <Icon icon={RiTodoLine} className={rightNodeClasses} label="Todos" />
+              <Icon icon={IconBookletLine} className={leftNodeClasses} label="Notes" />
+              <Icon icon={IconTodoLine} className={rightNodeClasses} label="Todos" />
               <div className={altGridClasses}>
-                <Icon icon={RiBookletLine} className="top-0 left-0" />
-                <Icon icon={RiTodoLine} className="top-0 right-0" />
+                <Icon icon={IconBookletLine} className="top-0 left-0" />
+                <Icon icon={IconTodoLine} className="top-0 right-0" />
               </div>
             </div>
           </Thumb>

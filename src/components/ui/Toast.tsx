@@ -1,7 +1,7 @@
 import { Action, Close, Description, Root } from '@radix-ui/react-toast'
 import { useSetAtom } from 'jotai/react'
 import { useCallback, useRef } from 'react'
-import { RiCloseLine } from 'react-icons/ri'
+import IconCloseLine from '~icons/ri/close-line'
 
 import { removeToastAtom, type WarmToast } from 'atoms/toast'
 import { Button } from 'components/form/Button'
@@ -56,7 +56,7 @@ export const Toast = ({ toast }: ToastProps) => {
       </Description>
       <Close asChild>
         <IconButton
-          icon={RiCloseLine}
+          icon={IconCloseLine}
           aria-label="Dismiss"
           iconClassName="h-5 w-5"
           className="shrink-0 rounded-full p-0.5 text-zinc-300 hover:bg-zinc-500 hover:text-zinc-100"

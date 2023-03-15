@@ -1,4 +1,4 @@
-import { IoExtensionPuzzleOutline } from 'react-icons/io5'
+import IconExtensionPuzzleOutline from '~icons/ion/extension-puzzle-outline'
 
 import { Icon } from 'components/ui/Icon'
 import { clst } from 'styles/clst'
@@ -20,10 +20,10 @@ export const Puzzle = ({ layout }: PuzzleProps) => {
 
   return (
     <div className="relative h-48 w-32">
-      <Icon icon={IoExtensionPuzzleOutline} className={topLeftPuzzleClasses} />
-      <Icon icon={IoExtensionPuzzleOutline} className={topRightPuzzleClasses} />
-      <Icon icon={IoExtensionPuzzleOutline} className={bottomLeftPuzzleClasses} />
-      <Icon icon={IoExtensionPuzzleOutline} className={bottomRightPuzzleClasses} />
+      <Icon icon={IconExtensionPuzzleOutline} className={topLeftPuzzleClasses} />
+      <Icon icon={IconExtensionPuzzleOutline} className={topRightPuzzleClasses} />
+      <Icon icon={IconExtensionPuzzleOutline} className={bottomLeftPuzzleClasses} />
+      <Icon icon={IconExtensionPuzzleOutline} className={bottomRightPuzzleClasses} />
     </div>
   )
 }

@@ -1,5 +1,7 @@
 import { forwardRef, useCallback, useRef, useState } from 'react'
-import { RiCheckLine, RiClipboardLine, RiErrorWarningLine } from 'react-icons/ri'
+import IconCheckLine from '~icons/ri/check-line'
+import IconClipboardLine from '~icons/ri/clipboard-line'
+import IconErrorWarningLine from '~icons/ri/error-warning-line'
 
 import { IconButton, type IconButtonProps } from 'components/form/IconButton'
 import { useToast } from 'hooks/useToast'
@@ -29,7 +31,7 @@ export const ClipboardCopyButton = forwardRef<HTMLButtonElement, ClipboardCopyBu
 
         addToast({
           details: 'Please try again.',
-          icon: RiErrorWarningLine,
+          icon: IconErrorWarningLine,
           text: 'Failed to copy to the clipboard.',
           type: 'foreground',
         })
@@ -40,7 +42,7 @@ export const ClipboardCopyButton = forwardRef<HTMLButtonElement, ClipboardCopyBu
       }
     }, [addToast, content])
 
-    const icon = status === 'idle' ? RiClipboardLine : status === 'copied' ? RiCheckLine : RiErrorWarningLine
+    const icon = status === 'idle' ? IconClipboardLine : status === 'copied' ? IconCheckLine : IconErrorWarningLine
     const iconClasses = clst(status !== 'idle' && 'motion-safe:animate-bounce-in')
 
     return (

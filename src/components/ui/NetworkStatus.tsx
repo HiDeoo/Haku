@@ -1,4 +1,4 @@
-import { RiCloudOffLine } from 'react-icons/ri'
+import IconCloudOffLine from '~icons/ri/cloud-off-line'
 
 import { Navbar } from 'components/ui/Navbar'
 import { useNetworkStatus } from 'hooks/useNetworkStatus'
@@ -10,5 +10,5 @@ export const NetworkStatus = () => {
     return null
   }
 
-  return <Navbar.Icon tooltip="You are disconnected" iconLabel="Offline" icon={RiCloudOffLine} />
+  return <Navbar.Icon tooltip="You are disconnected" iconLabel="Offline" icon={IconCloudOffLine} />
 }

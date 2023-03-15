@@ -8,7 +8,7 @@ import {
   Title,
   Trigger,
 } from '@radix-ui/react-dialog'
-import { RiCloseLine } from 'react-icons/ri'
+import IconCloseLine from '~icons/ri/close-line'
 
 import { Button } from 'components/form/Button'
 import { IconButton } from 'components/form/IconButton'
@@ -68,7 +68,7 @@ export const Modal = ({
                 <IconButton
                   tabIndex={-1}
                   tooltip="Close"
-                  icon={RiCloseLine}
+                  icon={IconCloseLine}
                   disabled={disabled}
                   className="ml-2.5 rounded-full p-1"
                 />

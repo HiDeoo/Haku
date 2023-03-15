@@ -12,7 +12,7 @@ import {
 import { StarterKit, type StarterKitOptions } from '@tiptap/starter-kit'
 import { useSetAtom } from 'jotai/react'
 import { useCallback, type DependencyList } from 'react'
-import { RiErrorWarningLine } from 'react-icons/ri'
+import IconErrorWarningLine from '~icons/ri/error-warning-line'
 
 import { editorImageModalAtom } from 'atoms/togglable'
 import { EditorCodeBlock } from 'components/editor/EditorCodeBlock'
@@ -71,7 +71,7 @@ export function useEditor(options: UseEditorOptions, deps?: DependencyList): Edi
     (error: CloudinaryError) => {
       addToast({
         details: error.details,
-        icon: RiErrorWarningLine,
+        icon: IconErrorWarningLine,
         text: error.message,
         type: 'foreground',
       })

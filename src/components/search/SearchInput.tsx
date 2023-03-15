@@ -1,7 +1,9 @@
 import { Root } from '@radix-ui/react-checkbox'
 import { forwardRef } from 'react'
 import { useController, useFormContext } from 'react-hook-form'
-import { RiBookletLine, RiInboxFill, RiTodoLine } from 'react-icons/ri'
+import IconBookletLine from '~icons/ri/booklet-line'
+import IconInboxFill from '~icons/ri/inbox-fill'
+import IconTodoLine from '~icons/ri/todo-line'
 
 import { type SearchDrawerData } from 'atoms/togglable'
 import { TextInput, type TextInputProps } from 'components/form/TextInput'
@@ -51,10 +53,10 @@ const SearchInputCheckbox = ({ contentType }: SearchInputCheckboxProps) => {
       ? capitalize(SearchableContentType.INBOX)
       : getContentType(contentType).cType
   const icon = isInboxSearchResult
-    ? RiInboxFill
+    ? IconInboxFill
     : contentType === SearchableContentType.NOTE
-    ? RiBookletLine
-    : RiTodoLine
+    ? IconBookletLine
+    : IconTodoLine
 
   const chechboxClasses = clst(
     'mr-1 rounded bg-zinc-600 hover:bg-zinc-700/75 active:bg-zinc-800/50 p-1.5 focus:outline-none',

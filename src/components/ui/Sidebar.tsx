@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai/react'
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
-import { RiMenu2Line } from 'react-icons/ri'
+import IconMenu2Line from '~icons/ri/menu-2-line'
 
 import { noteInspectorCollapsedAtom, sidebarCollapsedAtom, toggleSidebarCollapsedAtom } from 'atoms/collapsible'
 import { ContentTree } from 'components/content/ContentTree'
@@ -68,7 +68,7 @@ export const Sidebar = () => {
         <SidebarMenu />
       </Flex>
       <FloatingButton
-        icon={RiMenu2Line}
+        icon={IconMenu2Line}
         className="left-2"
         tooltip="Expand Menu"
         onPress={toggleCollapsed}

@@ -1,6 +1,7 @@
 import { Link as Roving, Root } from '@radix-ui/react-toolbar'
 import { useAtomValue, useSetAtom } from 'jotai/react'
-import { RiFileTextLine, RiFolderLine } from 'react-icons/ri'
+import IconFileTextLine from '~icons/ri/file-text-line'
+import IconFolderLine from '~icons/ri/folder-line'
 
 import { sidebarCollapsedAtom } from 'atoms/collapsible'
 import { contentModalAtom, folderModalAtom, setContentModalOpenedAtom } from 'atoms/togglable'
@@ -118,7 +119,7 @@ const Folder = ({ contentType, depth = 1, folder, offline, selectedId, style }: 
   return (
     <>
       <Roving asChild>
-        <ContentTreeNode style={style} text={folder.name} iconLabel="folder" icon={RiFolderLine}>
+        <ContentTreeNode style={style} text={folder.name} iconLabel="folder" icon={IconFolderLine}>
           <ContextMenu.Label text={`Folder: ${folder.name}`} />
           <ContextMenu.Separator />
           <ContextMenu.Item text="Edit" onClick={handleEditClick} disabled={offline} />
@@ -165,7 +166,7 @@ const Content = ({ content, contentType, depth = 0, offline, selectedId }: Conte
     <Roving asChild>
       <ContentTreeNode
         text={content.name}
-        icon={RiFileTextLine}
+        icon={IconFileTextLine}
         style={getNodeStyle(depth)}
         iconLabel={contentType.lcType}
         selected={selectedId === content.id}

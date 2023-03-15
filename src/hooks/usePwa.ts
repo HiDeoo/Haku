@@ -1,6 +1,6 @@
 import { useSetAtom } from 'jotai/react'
 import { useEffect } from 'react'
-import { RiRefreshLine } from 'react-icons/ri'
+import IconRefreshLine from '~icons/ri/refresh-line'
 
 import { deferrefPromptEventAtom } from 'atoms/pwa'
 import { useInterval } from 'hooks/useInterval'
@@ -18,7 +18,7 @@ export function usePwa() {
           action: updateServiceWorker,
           actionLabel: 'Refresh',
           duration: 86_400_000, // 1 day
-          icon: RiRefreshLine,
+          icon: IconRefreshLine,
           text: 'A new version of Haku is available.',
           type: 'background',
         })
