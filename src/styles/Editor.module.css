@@ -46,6 +46,10 @@
     @apply my-4;
 
     color: var(--editor-text-color);
+
+    :global(.todoNodeNote) & {
+      @apply my-0.5;
+    }
   }
 
   & > p:first-child {
