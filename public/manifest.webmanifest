@@ -10,6 +10,9 @@
   "orientation": "portrait",
   "background_color": "#27272a",
   "theme_color": "#27272a",
+  "launch_handler": {
+    "client_mode": ["navigate-existing", "navigate-new"]
+  },
   "icons": [
     {
       "src": "/images/icons/144.png",
