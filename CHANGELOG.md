@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.0.1
+
+### 🐞 Bug Fixes
+
+- Fix a potential issue when pasting content in a todo node that could cause the clipboard content to be lost.
+
 ## v1.0.0
 
 ### 💄 UI
