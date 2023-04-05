@@ -72,11 +72,11 @@ export const TodoNodeItem = memo(
       useEditable(contentEditable, handleContentChange, { disabled: isLoading || isNoteFocused })
 
       const focusClosestNode = useCallback(
-        async (
+        (
           { caretPosition, direction, id, parentId }: TodoNodeItemFocusClosestNodeParams,
           event?: React.KeyboardEvent
         ) => {
-          const closestNodeId = await getClosestNodeId({ direction, id, parentId })
+          const closestNodeId = getClosestNodeId({ direction, id, parentId })
 
           if (!closestNodeId) {
             return
@@ -194,64 +194,42 @@ export const TodoNodeItem = memo(
       }
 
       function handleContentPasteCapture(event: React.ClipboardEvent) {
-        event.preventDefault()
-        event.stopPropagation()
-
-        const clipboardData = event.clipboardData.getData('text/plain')
-
-        if (node && contentEditable.current && clipboardData.includes('\n')) {
-          const caretIndex = getContentEditableCaretIndex(contentEditable.current)
-
-          const update = { id: node.id, parentId: node.parentId }
-
-          const newNodesContent = clipboardData
-            .split('\n')
-            .filter((line) => line.trim().length > 0)
-            .reverse()
-
-          for (const [index, newNodeContent] of newNodesContent.entries()) {
-            const content = newNodeContent.trim()
-
-            // If the current node is empty, fill it with the first line of the pasted content.
-            if (index === newNodesContent.length - 1 && node.content.trim().length === 0) {
-              updateContent({ id: node.id, content })
-
-              continue
-            }
-
-            const newId = cuid()
-
-            addNode({
-              ...update,
-              direction: caretIndex === 0 && node.content.length > 0 ? 'up' : 'down',
-              newId,
-              content,
-            })
-          }
-
+        if (!node || !contentEditable.current) {
           return
         }
 
-        const text = clipboardData.replaceAll(/\n/gm, ' ')
-        const range = window.getSelection()?.getRangeAt(0)
+        const clipboardData = event.clipboardData.getData('text/plain')
 
-        if (range && node?.id) {
-          updateContent({
-            id: node.id,
-            content:
-              node.content.slice(0, range.startOffset) +
-              text.replaceAll(/\n/gm, ' ') +
-              node.content.slice(range.endOffset),
-          })
+        // If the clipboard data contains a single line, we let `useEditable` handle the paste event.
+        if (!clipboardData.includes('\n')) {
+          return
+        }
 
-          const nextCaretIndex = range.startOffset + text.length
+        // Otherwise, we need to prevent the default behavior and handle the paste event manually.
+        event.preventDefault()
+        event.stopPropagation()
 
-          // Pasting large content may lead to a loss of focus, we can safely prevent that by refocusing the current
-          // node and having the caret being placed right after the pasted content.
-          requestAnimationFrame(() => {
-            focusContent(nextCaretIndex)
+        // We need to handle differently the first line and all the other lines.
+        const [firstLine, ...otherLines] = clipboardData.split('\n')
+
+        // We first need to create new nodes for all lines except the first one.
+        const newNodesContent = otherLines.filter((line) => line.trim().length > 0).reverse()
+
+        const caretIndex = getContentEditableCaretIndex(contentEditable.current)
+        const update = { id: node.id, parentId: node.parentId }
+
+        for (const newNodeContent of newNodesContent.values()) {
+          addNode({
+            ...update,
+            direction: caretIndex === 0 && node.content.length > 0 ? 'up' : 'down',
+            newId: cuid(),
+            content: newNodeContent.trim(),
           })
         }
+
+        // Then, we update the current node with the first line as if it was a regular paste event.
+        // https://twitter.com/LeaVerou/status/1462122134256422913
+        document.execCommand('insertText', false, firstLine)
       }
 
       function preserveCaret(callback: () => void) {
